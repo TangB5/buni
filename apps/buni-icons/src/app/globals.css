@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+:root {
+  --avs-primary:   #C0573E;
+  --avs-secondary: #F5EBE0;
+  --avs-accent:    #1D1D1B;
+  --avs-kente:     #D4A017;
+  --avs-ndop:      #4A6741;
+  --avs-raffia:    #C8A96E;
+  --avs-earth:     #8B4513;
+
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'DM Sans', 'Helvetica Neue', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  --shadow-avs:    3px 3px 0px 0px var(--avs-accent);
+  --shadow-avs-md: 5px 5px 0px 0px var(--avs-primary);
+
+  --radius-avs:    0.375rem;
+  --radius-avs-lg: 1.5rem;
+  --radius-avs-xl: 2rem;
+
+  --transition: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@layer base {
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { font-family: var(--font-body); }
+}
+
+@layer components {
+  .avs-input {
+    width: 100%;
+    border-radius: var(--radius-avs);
+    border: 2px solid color-mix(in srgb, var(--avs-accent) 15%, transparent);
+    background: white;
+    padding: 0.625rem 1rem;
+    font-size: 0.875rem;
+    color: var(--avs-accent);
+    outline: none;
+    transition: all 250ms;
+  }
+  .avs-input::placeholder { color: color-mix(in srgb, var(--avs-accent) 35%, transparent); }
+  .avs-input:hover { border-color: color-mix(in srgb, var(--avs-accent) 25%, transparent); }
+  .avs-input:focus { border-color: var(--avs-primary); box-shadow: 0 0 0 2px color-mix(in srgb, var(--avs-primary) 20%, transparent); }
+  
+  .avs-input-error { border-color: rgb(248 113 113); }
+  .avs-input-error:focus { border-color: rgb(239 68 68); box-shadow: 0 0 0 2px rgb(254 226 226); }
+  
+  .avs-label { 
+    display: block;
+    margin-bottom: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: color-mix(in srgb, var(--avs-accent) 50%, transparent);
+  }
+  
+  .avs-card { 
+    border-radius: var(--radius-avs-xl);
+    border: 1px solid color-mix(in srgb, var(--avs-accent) 8%, transparent);
+    background: var(--avs-secondary);
+    box-shadow: var(--shadow-avs);
+  }
+  
+  .avs-btn-primary { 
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-avs);
+    background: var(--avs-primary);
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: bold;
+    color: var(--avs-secondary);
+    box-shadow: var(--shadow-avs);
+    transition: all 250ms;
+    border: none;
+    cursor: pointer;
+  }
+  .avs-btn-primary:hover { transform: translateY(-0.125rem); box-shadow: var(--shadow-avs-md); }
+  
+  .avs-btn-secondary { 
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-avs);
+    border: 2px solid color-mix(in srgb, var(--avs-accent) 20%, transparent);
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--avs-accent);
+    transition: all 250ms;
+    background: transparent;
+    cursor: pointer;
+  }
+  .avs-btn-secondary:hover { border-color: var(--avs-primary); color: var(--avs-primary); }
+}
+
+@layer utilities {
+  .text-avs-primary { color: var(--avs-primary); }
+  .text-avs-secondary { color: var(--avs-secondary); }
+  .text-avs-accent { color: var(--avs-accent); }
+  .text-avs-kente { color: var(--avs-kente); }
+  
+  .bg-avs-primary { background-color: var(--avs-primary); }
+  .bg-avs-secondary { background-color: var(--avs-secondary); }
+  .bg-avs-accent { background-color: var(--avs-accent); }
+  .bg-avs-kente { background-color: var(--avs-kente); }
+  
+  .rounded-avs { border-radius: var(--radius-avs); }
+  .rounded-avs-lg { border-radius: var(--radius-avs-lg); }
+  .rounded-avs-xl { border-radius: var(--radius-avs-xl); }
+  
+  .shadow-avs { box-shadow: var(--shadow-avs); }
+  .shadow-avs-md { box-shadow: var(--shadow-avs-md); }
+  
+  .font-body { font-family: var(--font-body); }
+  .font-display { font-family: var(--font-display); }
+  .font-mono { font-family: var(--font-mono); }
+  
+  .scrollbar-thin { scrollbar-width: thin; scrollbar-color: rgba(29,29,27,.15) transparent; }
+  .tabular-nums   { font-variant-numeric: tabular-nums; }
+}

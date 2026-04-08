@@ -1,14 +1,21 @@
 'use client';
-import { useEffect } from 'react';
+import { useCallback } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 
 export const useAuth = () => {
-  const store = useAuthStore();
-  useEffect(() => { store.setHydrated(); }, []);
-  return store;
+  const { user, isHydrated, token, isAdmin, isCurator } = useAuthStore();
+  return {
+    user, token, isHydrated,
+    isAuthenticated: !!user,
+    isAdmin: isAdmin(),
+    isCurator: isCurator(),
+  };
 };
 
+// useLogin / useRegister / useLogout — à implémenter avec le client API de chaque app
+export { useAuthStore };
+
 export const useLogout = () => {
-  const clearAuth = useAuthStore(s => s.clearAuth);
-  return () => { clearAuth(); if (typeof window !== 'undefined') window.location.href = '/'; };
+  const logout = useAuthStore(s => s.logout);
+  return useCallback(() => { logout(); }, [logout]);
 };

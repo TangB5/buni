@@ -1,0 +1,913 @@
+/* =============================================================================
+   AVS — Motifs culturels africains en CSS
+   Version 2.0 — Géométries multicouches élaborées
+
+   CATALOGUE :
+   ── Kente (Ghana / Akan)
+      .avs-pattern-kente-royale      — Bandes tricolores entrelacées, tissu royal
+      .avs-pattern-kente-etoile      — Étoile à 8 branches, géométrie sacrée
+   ── Ndop (Cameroun / Bamiléké)
+      .avs-pattern-ndop-ceremoniel   — Grille + losanges + points rituels
+      .avs-pattern-ndop-sultan       — Hexagones Sultan Njoya, réseau complexe
+   ── Bogolan (Mali / Bambara)
+      .avs-pattern-bogolan-terre     — Géométrie binaire terre/lumière
+      .avs-pattern-bogolan-fanga     — Chevrons entrelacés, énergie masculine
+   ── Adinkra (Ghana / Akan)
+      .avs-pattern-adinkra-sankofa   — Spirales mémorielles, double symétrie
+      .avs-pattern-adinkra-nkyinkyin — Cône conic rotatif, adaptabilité
+   ── Wax (Pan-africain)
+      .avs-pattern-wax-dakar         — Floral géométrisé Sénégal, fond clair
+      .avs-pattern-wax-lagos         — Cercles concentriques Yoruba
+   ── Kuba (Congo / Kasai)
+      .avs-pattern-kuba-kasai        — Entrelacs velours de raphia
+   ── Ndebele (Afrique du Sud / Zimbabwe)
+      .avs-pattern-ndebele-amabhaxa  — Peinture murale graphique, couleurs vives
+   ── Berber (Maroc / Amazigh)
+      .avs-pattern-berber-amazigh    — Tapis losanges et chevrons ancestraux
+
+   ANCIENS MOTIFS (rétrocompatibilité) :
+      .avs-pattern-wax               — Wax classique (fond clair)
+      .avs-pattern-wax-bold          — Wax haute densité (fond sombre)
+      .avs-pattern-ndop              — Ndop standard
+      .avs-pattern-ndop-royal        — Ndop royal (ancien)
+      .avs-pattern-kente             — Kente standard
+   ============================================================================= */
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   KENTE (Ghana · Peuple Akan)
+   Tissu royal tissé en bandelettes de soie entrelacées.
+   Chaque combinaison de couleurs encode un message lisible par les initiés.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/* Kente Royale — Bandes tricolores Or / Cramoisi / Vert sur fond nuit */
+.avs-pattern-kente-royale {
+  background-color: #1a1208;
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      var(--avs-kente, #d4a017) 0px,
+      var(--avs-kente, #d4a017) 6px,
+      transparent 6px,
+      transparent 12px,
+      var(--avs-primary, #c0573e) 12px,
+      var(--avs-primary, #c0573e) 16px,
+      transparent 16px,
+      transparent 22px,
+      var(--avs-ndop, #4a6741) 22px,
+      var(--avs-ndop, #4a6741) 26px,
+      transparent 26px,
+      transparent 32px,
+      var(--avs-kente, #d4a017) 32px,
+      var(--avs-kente, #d4a017) 36px,
+      #1a1208 36px,
+      #1a1208 48px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(245, 235, 224, 0.06) 0px,
+      rgba(245, 235, 224, 0.06) 2px,
+      transparent 2px,
+      transparent 6px,
+      rgba(212, 160, 23, 0.12) 6px,
+      rgba(212, 160, 23, 0.12) 8px,
+      transparent 8px,
+      transparent 16px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 22px,
+      rgba(192, 87, 62, 0.15) 22px,
+      rgba(192, 87, 62, 0.15) 24px,
+      transparent 24px,
+      transparent 48px
+    );
+  background-size:
+    48px 100%,
+    100% 16px,
+    48px 100%;
+}
+
+/* Kente Étoile — Étoile à 8 branches, géométrie sacrée */
+.avs-pattern-kente-etoile {
+  background-color: #1a1208;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      var(--avs-kente, #d4a017) 0px,
+      var(--avs-kente, #d4a017) 3px,
+      transparent 3px,
+      transparent 12px,
+      var(--avs-primary, #c0573e) 12px,
+      var(--avs-primary, #c0573e) 15px,
+      transparent 15px,
+      transparent 24px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0px,
+      transparent 9px,
+      var(--avs-ndop, #4a6741) 9px,
+      var(--avs-ndop, #4a6741) 12px,
+      transparent 12px,
+      transparent 21px,
+      rgba(212, 160, 23, 0.4) 21px,
+      rgba(212, 160, 23, 0.4) 24px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(245, 235, 224, 0.04) 0px,
+      rgba(245, 235, 224, 0.04) 1px,
+      transparent 1px,
+      transparent 24px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(245, 235, 224, 0.04) 0px,
+      rgba(245, 235, 224, 0.04) 1px,
+      transparent 1px,
+      transparent 24px
+    );
+  background-size:
+    24px 24px,
+    24px 24px,
+    24px 24px,
+    24px 24px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   NDOP (Cameroun · Sultanat Bamoum · Chefferies Bamiléké)
+   Tissu sacré réservé à la royauté. Fond indigo profond, motifs géométriques
+   en fil de raphia doré. Chaque losange et carré encode un message spirituel.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/* Ndop Cérémoniel — Grille royale + losanges rituels + points sacrés */
+.avs-pattern-ndop-ceremoniel {
+  background-color: #071828;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(200, 169, 110, 0.3) 0px,
+      rgba(200, 169, 110, 0.3) 1.5px,
+      transparent 1.5px,
+      transparent 20px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(200, 169, 110, 0.3) 0px,
+      rgba(200, 169, 110, 0.3) 1.5px,
+      transparent 1.5px,
+      transparent 20px
+    ),
+    repeating-linear-gradient(
+      45deg,
+      transparent 0px,
+      transparent 8px,
+      rgba(200, 169, 110, 0.18) 8px,
+      rgba(200, 169, 110, 0.18) 10px,
+      transparent 10px,
+      transparent 20px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0px,
+      transparent 8px,
+      rgba(200, 169, 110, 0.18) 8px,
+      rgba(200, 169, 110, 0.18) 10px,
+      transparent 10px,
+      transparent 20px
+    ),
+    radial-gradient(circle at 50% 50%, rgba(200, 169, 110, 0.55) 2px, transparent 2.5px),
+    radial-gradient(circle at 0% 0%, rgba(200, 169, 110, 0.35) 1.5px, transparent 2px);
+  background-size:
+    20px 20px,
+    20px 20px,
+    20px 20px,
+    20px 20px,
+    20px 20px,
+    10px 10px;
+  background-position:
+    0 0,
+    0 0,
+    0 0,
+    0 0,
+    10px 10px,
+    5px 5px;
+}
+
+/* Ndop Sultan — Réseau hexagonal Sultan Njoya, entrelacs complexes */
+.avs-pattern-ndop-sultan {
+  background-color: #060f1a;
+  background-image:
+    repeating-linear-gradient(
+      30deg,
+      rgba(200, 169, 110, 0.22) 0px,
+      rgba(200, 169, 110, 0.22) 1px,
+      transparent 1px,
+      transparent 14px
+    ),
+    repeating-linear-gradient(
+      150deg,
+      rgba(200, 169, 110, 0.22) 0px,
+      rgba(200, 169, 110, 0.22) 1px,
+      transparent 1px,
+      transparent 14px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(200, 169, 110, 0.22) 0px,
+      rgba(200, 169, 110, 0.22) 1px,
+      transparent 1px,
+      transparent 14px
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(200, 169, 110, 0.6) 2.5px,
+      rgba(200, 169, 110, 0.1) 3px,
+      transparent 4px
+    ),
+    radial-gradient(circle at 0% 100%, rgba(200, 169, 110, 0.4) 2px, transparent 3px),
+    radial-gradient(circle at 100% 0%, rgba(200, 169, 110, 0.4) 2px, transparent 3px);
+  background-size:
+    28px 28px,
+    28px 28px,
+    28px 28px,
+    28px 28px,
+    28px 28px,
+    28px 28px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   BOGOLAN (Mali · Bambara · Mandé)
+   Tissu de boue fermentée et feuilles d'arbre. Géométrie binaire
+   terre sombre / lumière ivoire. Chaque motif raconte une histoire clanique.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/* Bogolan Terre — Géométrie binaire terreuse, fond sombre chaud */
+.avs-pattern-bogolan-terre {
+  background-color: #3d1f0a;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      #5c2e0e 0px,
+      #5c2e0e 8px,
+      #8b4513 8px,
+      #8b4513 10px,
+      transparent 10px,
+      transparent 20px,
+      rgba(245, 235, 224, 0.08) 20px,
+      rgba(245, 235, 224, 0.08) 22px,
+      transparent 22px,
+      transparent 32px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 10px,
+      rgba(245, 235, 224, 0.1) 10px,
+      rgba(245, 235, 224, 0.1) 12px,
+      transparent 12px,
+      transparent 22px,
+      rgba(139, 69, 19, 0.4) 22px,
+      rgba(139, 69, 19, 0.4) 24px,
+      transparent 24px,
+      transparent 32px
+    ),
+    repeating-linear-gradient(
+      45deg,
+      transparent 0px,
+      transparent 14px,
+      rgba(245, 235, 224, 0.06) 14px,
+      rgba(245, 235, 224, 0.06) 16px,
+      transparent 16px,
+      transparent 32px
+    );
+  background-size:
+    32px 32px,
+    32px 32px,
+    32px 32px;
+}
+
+/* Bogolan Fanga — Force Mandé, chevrons virils entrelacés */
+.avs-pattern-bogolan-fanga {
+  background-color: #2a1506;
+  background-image:
+    repeating-linear-gradient(
+      60deg,
+      #8b4513 0px,
+      #8b4513 4px,
+      #5c2e0e 4px,
+      #5c2e0e 8px,
+      #3d1f0a 8px,
+      #3d1f0a 12px,
+      rgba(245, 235, 224, 0.1) 12px,
+      rgba(245, 235, 224, 0.1) 14px,
+      #3d1f0a 14px,
+      #3d1f0a 20px
+    ),
+    repeating-linear-gradient(
+      -60deg,
+      transparent 0px,
+      transparent 8px,
+      rgba(192, 87, 62, 0.2) 8px,
+      rgba(192, 87, 62, 0.2) 10px,
+      transparent 10px,
+      transparent 20px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 18px,
+      rgba(245, 235, 224, 0.05) 18px,
+      rgba(245, 235, 224, 0.05) 20px
+    );
+  background-size:
+    20px 20px,
+    20px 20px,
+    100% 20px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   ADINKRA (Ghana · Akan · Gyaman)
+   Symboles philosophiques imprimés sur tissu pour les cérémonies.
+   Chaque symbole encode un proverbe — Sankofa "revenir en arrière pour avancer",
+   Nkyinkyin "l'adaptabilité".
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/* Adinkra Sankofa — Spirales mémorielles en double symétrie */
+.avs-pattern-adinkra-sankofa {
+  background-color: #1a0f00;
+  background-image:
+    radial-gradient(
+      circle at 25% 25%,
+      rgba(212, 160, 23, 0.45) 3px,
+      rgba(212, 160, 23, 0.12) 5px,
+      transparent 8px
+    ),
+    radial-gradient(
+      circle at 75% 75%,
+      rgba(212, 160, 23, 0.45) 3px,
+      rgba(212, 160, 23, 0.12) 5px,
+      transparent 8px
+    ),
+    radial-gradient(circle at 75% 25%, rgba(192, 87, 62, 0.35) 2.5px, transparent 5px),
+    radial-gradient(circle at 25% 75%, rgba(192, 87, 62, 0.35) 2.5px, transparent 5px),
+    repeating-linear-gradient(
+      45deg,
+      transparent 0px,
+      transparent 15px,
+      rgba(212, 160, 23, 0.08) 15px,
+      rgba(212, 160, 23, 0.08) 16px,
+      transparent 16px,
+      transparent 32px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0px,
+      transparent 15px,
+      rgba(212, 160, 23, 0.08) 15px,
+      rgba(212, 160, 23, 0.08) 16px,
+      transparent 16px,
+      transparent 32px
+    ),
+    radial-gradient(circle, rgba(212, 160, 23, 0.06) 1px, transparent 1px);
+  background-size:
+    32px 32px,
+    32px 32px,
+    32px 32px,
+    32px 32px,
+    32px 32px,
+    32px 32px,
+    8px 8px;
+  background-position:
+    0 0,
+    16px 16px,
+    0 16px,
+    16px 0,
+    0 0,
+    0 0,
+    4px 4px;
+}
+
+/* Adinkra Nkyinkyin — Adaptabilité, cône conic rotatif */
+.avs-pattern-adinkra-nkyinkyin {
+  background-color: #0e0700;
+  background-image:
+    repeating-conic-gradient(
+      from 0deg at 50% 50%,
+      rgba(212, 160, 23, 0.2) 0deg,
+      rgba(212, 160, 23, 0.2) 45deg,
+      transparent 45deg,
+      transparent 90deg,
+      rgba(192, 87, 62, 0.15) 90deg,
+      rgba(192, 87, 62, 0.15) 135deg,
+      transparent 135deg,
+      transparent 180deg,
+      rgba(212, 160, 23, 0.2) 180deg,
+      rgba(212, 160, 23, 0.2) 225deg,
+      transparent 225deg,
+      transparent 270deg,
+      rgba(192, 87, 62, 0.15) 270deg,
+      rgba(192, 87, 62, 0.15) 315deg,
+      transparent 315deg,
+      transparent 360deg
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(212, 160, 23, 0.5) 2px,
+      rgba(212, 160, 23, 0.15) 4px,
+      transparent 6px
+    ),
+    radial-gradient(circle at 0% 0%, rgba(192, 87, 62, 0.4) 1.5px, transparent 3px),
+    radial-gradient(circle at 100% 100%, rgba(192, 87, 62, 0.4) 1.5px, transparent 3px),
+    radial-gradient(circle at 0% 100%, rgba(212, 160, 23, 0.3) 1.5px, transparent 3px),
+    radial-gradient(circle at 100% 0%, rgba(212, 160, 23, 0.3) 1.5px, transparent 3px);
+  background-size:
+    28px 28px,
+    28px 28px,
+    28px 28px,
+    28px 28px,
+    28px 28px,
+    28px 28px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   WAX (Pan-africain · Origines hollandaises réappropriées)
+   Tissu imprimé à la cire batik, réinterprété partout en Afrique subsaharienne.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/* Wax Dakar — Floral géométrisé Sénégalais, fond ivoire */
+.avs-pattern-wax-dakar {
+  background-color: var(--avs-secondary, #f5ebe0);
+  background-image:
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(192, 87, 62, 0.28) 5px,
+      rgba(192, 87, 62, 0.1) 8px,
+      transparent 11px
+    ),
+    radial-gradient(
+      circle at 0% 0%,
+      rgba(42, 74, 107, 0.25) 3px,
+      rgba(42, 74, 107, 0.08) 5px,
+      transparent 8px
+    ),
+    radial-gradient(circle at 50% 0%, rgba(212, 160, 23, 0.3) 2px, transparent 4px),
+    radial-gradient(circle at 0% 50%, rgba(212, 160, 23, 0.3) 2px, transparent 4px),
+    radial-gradient(circle at 100% 50%, rgba(192, 87, 62, 0.2) 2px, transparent 4px),
+    radial-gradient(circle at 50% 100%, rgba(192, 87, 62, 0.2) 2px, transparent 4px),
+    repeating-linear-gradient(
+      45deg,
+      transparent 0px,
+      transparent 10px,
+      rgba(192, 87, 62, 0.06) 10px,
+      rgba(192, 87, 62, 0.06) 11px,
+      transparent 11px,
+      transparent 22px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0px,
+      transparent 10px,
+      rgba(42, 74, 107, 0.06) 10px,
+      rgba(42, 74, 107, 0.06) 11px,
+      transparent 11px,
+      transparent 22px
+    );
+  background-size:
+    44px 44px,
+    44px 44px,
+    44px 44px,
+    44px 44px,
+    44px 44px,
+    44px 44px,
+    44px 44px,
+    44px 44px;
+  background-position:
+    22px 22px,
+    0 0,
+    22px 0,
+    0 22px,
+    44px 22px,
+    22px 44px,
+    0 0,
+    0 0;
+}
+
+/* Wax Lagos — Cercles concentriques Yoruba, fond sable */
+.avs-pattern-wax-lagos {
+  background-color: #f0e0d0;
+  background-image:
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(192, 87, 62, 0.6) 3px,
+      rgba(192, 87, 62, 0.2) 6px,
+      rgba(42, 74, 107, 0.15) 9px,
+      transparent 12px
+    ),
+    radial-gradient(
+      circle at 0% 0%,
+      rgba(212, 160, 23, 0.5) 2px,
+      rgba(212, 160, 23, 0.15) 5px,
+      transparent 8px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0px,
+      transparent 10px,
+      rgba(192, 87, 62, 0.12) 10px,
+      rgba(192, 87, 62, 0.12) 12px,
+      transparent 12px,
+      transparent 20px,
+      rgba(42, 74, 107, 0.08) 20px,
+      rgba(42, 74, 107, 0.08) 22px,
+      transparent 22px,
+      transparent 32px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 14px,
+      rgba(212, 160, 23, 0.1) 14px,
+      rgba(212, 160, 23, 0.1) 16px,
+      transparent 16px,
+      transparent 32px
+    );
+  background-size:
+    32px 32px,
+    32px 32px,
+    32px 32px,
+    32px 32px;
+  background-position:
+    16px 16px,
+    0 0,
+    0 0,
+    0 0;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   KUBA (Congo · Royaume Kasai)
+   Tissu de velours de raphia, artisanat palatial de la cour Kuba.
+   Entrelacs géométriques d'une précision mathématique remarquable.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/* Kuba Kasai — Entrelacs velours de raphia sur fond nuit chaude */
+.avs-pattern-kuba-kasai {
+  background-color: #1c1008;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(200, 169, 110, 0.35) 0px,
+      rgba(200, 169, 110, 0.35) 2px,
+      transparent 2px,
+      transparent 8px,
+      rgba(200, 169, 110, 0.15) 8px,
+      rgba(200, 169, 110, 0.15) 9px,
+      transparent 9px,
+      transparent 16px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(200, 169, 110, 0.35) 0px,
+      rgba(200, 169, 110, 0.35) 2px,
+      transparent 2px,
+      transparent 8px,
+      rgba(200, 169, 110, 0.15) 8px,
+      rgba(200, 169, 110, 0.15) 9px,
+      transparent 9px,
+      transparent 16px
+    ),
+    repeating-linear-gradient(
+      45deg,
+      transparent 0px,
+      transparent 6px,
+      rgba(192, 87, 62, 0.2) 6px,
+      rgba(192, 87, 62, 0.2) 8px,
+      transparent 8px,
+      transparent 16px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0px,
+      transparent 6px,
+      rgba(212, 160, 23, 0.15) 6px,
+      rgba(212, 160, 23, 0.15) 8px,
+      transparent 8px,
+      transparent 16px
+    ),
+    radial-gradient(circle, rgba(200, 169, 110, 0.4) 1.5px, transparent 2px);
+  background-size:
+    16px 16px,
+    16px 16px,
+    16px 16px,
+    16px 16px,
+    8px 8px;
+  background-position:
+    0 0,
+    0 0,
+    0 0,
+    0 0,
+    4px 4px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   NDEBELE (Afrique du Sud · Zimbabwe)
+   Peinture murale des femmes Ndebele — géométrie graphique et couleurs
+   vives comme langage de résistance et d'identité culturelle.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/* Ndebele Amabhaxa — Peinture murale graphique, bandes de couleurs primaires */
+.avs-pattern-ndebele-amabhaxa {
+  background-color: var(--avs-secondary, #f5ebe0);
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      var(--avs-primary, #c0573e) 0px,
+      var(--avs-primary, #c0573e) 6px,
+      var(--avs-secondary, #f5ebe0) 6px,
+      var(--avs-secondary, #f5ebe0) 10px,
+      var(--avs-indigo, #2a4a6b) 10px,
+      var(--avs-indigo, #2a4a6b) 16px,
+      var(--avs-secondary, #f5ebe0) 16px,
+      var(--avs-secondary, #f5ebe0) 20px,
+      var(--avs-kente, #d4a017) 20px,
+      var(--avs-kente, #d4a017) 26px,
+      var(--avs-secondary, #f5ebe0) 26px,
+      var(--avs-secondary, #f5ebe0) 30px,
+      var(--avs-ndop, #4a6741) 30px,
+      var(--avs-ndop, #4a6741) 36px,
+      var(--avs-secondary, #f5ebe0) 36px,
+      var(--avs-secondary, #f5ebe0) 42px,
+      var(--avs-primary, #c0573e) 42px,
+      var(--avs-primary, #c0573e) 48px,
+      var(--avs-accent, #1d1d1b) 48px,
+      var(--avs-accent, #1d1d1b) 52px,
+      var(--avs-secondary, #f5ebe0) 52px,
+      var(--avs-secondary, #f5ebe0) 60px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(29, 29, 27, 0.1) 0px,
+      rgba(29, 29, 27, 0.1) 2px,
+      transparent 2px,
+      transparent 18px,
+      rgba(29, 29, 27, 0.08) 18px,
+      rgba(29, 29, 27, 0.08) 20px,
+      transparent 20px,
+      transparent 40px,
+      rgba(29, 29, 27, 0.06) 40px,
+      rgba(29, 29, 27, 0.06) 42px,
+      transparent 42px,
+      transparent 60px
+    );
+  background-size:
+    60px 100%,
+    100% 60px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   BERBER / AMAZIGH (Maroc · Algérie · Afrique du Nord)
+   Tapis Berbère — tissage géométrique ancestral des femmes Amazigh.
+   Losanges, chevrons et symboles de protection.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/* Berber Amazigh — Tapis losanges et chevrons, fond brun ocre */
+.avs-pattern-berber-amazigh {
+  background-color: #2a1506;
+  background-image:
+    repeating-linear-gradient(
+      60deg,
+      rgba(200, 169, 110, 0.3) 0px,
+      rgba(200, 169, 110, 0.3) 1.5px,
+      transparent 1.5px,
+      transparent 12px
+    ),
+    repeating-linear-gradient(
+      -60deg,
+      rgba(200, 169, 110, 0.3) 0px,
+      rgba(200, 169, 110, 0.3) 1.5px,
+      transparent 1.5px,
+      transparent 12px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(192, 87, 62, 0.25) 0px,
+      rgba(192, 87, 62, 0.25) 1.5px,
+      transparent 1.5px,
+      transparent 12px
+    ),
+    radial-gradient(circle at 50% 50%, rgba(200, 169, 110, 0.55) 2px, transparent 3px),
+    radial-gradient(circle at 0% 50%, rgba(192, 87, 62, 0.4) 1.5px, transparent 2.5px),
+    radial-gradient(circle at 100% 50%, rgba(192, 87, 62, 0.4) 1.5px, transparent 2.5px),
+    radial-gradient(circle at 50% 0%, rgba(200, 169, 110, 0.35) 1.5px, transparent 2.5px),
+    radial-gradient(circle at 50% 100%, rgba(200, 169, 110, 0.35) 1.5px, transparent 2.5px);
+  background-size:
+    24px 24px,
+    24px 24px,
+    24px 24px,
+    24px 24px,
+    24px 24px,
+    24px 24px,
+    24px 24px,
+    24px 24px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   RÉTROCOMPATIBILITÉ — Anciens motifs AVS v1.0
+   Conservés pour ne pas casser les projets existants.
+   Préférez les nouvelles classes ci-dessus pour les nouveaux projets.
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+.avs-pattern-wax {
+  background-color: var(--avs-secondary, #f5ebe0);
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent 0px,
+      transparent 14px,
+      rgba(192, 87, 62, 0.18) 14px,
+      rgba(192, 87, 62, 0.18) 16px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0px,
+      transparent 14px,
+      rgba(212, 160, 23, 0.14) 14px,
+      rgba(212, 160, 23, 0.14) 16px
+    ),
+    radial-gradient(circle, rgba(29, 29, 27, 0.12) 1px, transparent 1px);
+  background-size:
+    32px 32px,
+    32px 32px,
+    16px 16px;
+}
+
+.avs-pattern-wax-bold {
+  background-color: var(--avs-accent, #1d1d1b);
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent 0px,
+      transparent 8px,
+      rgba(192, 87, 62, 0.35) 8px,
+      rgba(192, 87, 62, 0.35) 10px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0px,
+      transparent 8px,
+      rgba(212, 160, 23, 0.25) 8px,
+      rgba(212, 160, 23, 0.25) 10px
+    ),
+    radial-gradient(circle, rgba(245, 235, 224, 0.06) 1.5px, transparent 1.5px);
+  background-size:
+    20px 20px,
+    20px 20px,
+    10px 10px;
+}
+
+.avs-pattern-ndop {
+  background-color: #1e3a5f;
+  background-image:
+    repeating-conic-gradient(rgba(245, 235, 224, 0.15) 0deg 90deg, transparent 90deg 180deg),
+    radial-gradient(circle at 50% 50%, rgba(245, 235, 224, 0.12) 4px, transparent 5px),
+    radial-gradient(circle at 0% 0%, rgba(245, 235, 224, 0.08) 2px, transparent 3px);
+  background-size:
+    24px 24px,
+    24px 24px,
+    12px 12px;
+}
+
+.avs-pattern-ndop-royal {
+  background-color: #0d2340;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(200, 169, 110, 0.2) 0px,
+      rgba(200, 169, 110, 0.2) 1px,
+      transparent 1px,
+      transparent 24px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(200, 169, 110, 0.2) 0px,
+      rgba(200, 169, 110, 0.2) 1px,
+      transparent 1px,
+      transparent 24px
+    ),
+    radial-gradient(circle, rgba(200, 169, 110, 0.4) 1.5px, transparent 2px);
+  background-size:
+    24px 24px,
+    24px 24px,
+    24px 24px;
+  background-position:
+    0 0,
+    0 0,
+    12px 12px;
+}
+
+.avs-pattern-kente {
+  background-color: var(--avs-accent, #1d1d1b);
+  background-image:
+    repeating-linear-gradient(
+      90deg,
+      var(--avs-kente, #d4a017) 0px,
+      var(--avs-kente, #d4a017) 4px,
+      var(--avs-primary, #c0573e) 4px,
+      var(--avs-primary, #c0573e) 8px,
+      var(--avs-accent, #1d1d1b) 8px,
+      var(--avs-accent, #1d1d1b) 16px,
+      var(--avs-kente, #d4a017) 16px,
+      var(--avs-kente, #d4a017) 20px,
+      transparent 20px,
+      transparent 32px
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(245, 235, 224, 0.04) 0px,
+      rgba(245, 235, 224, 0.04) 2px,
+      transparent 2px,
+      transparent 8px
+    );
+  background-size:
+    32px 100%,
+    100% 8px;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
+   UTILITAIRES
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+/* Overlay isolé — pour superposer du contenu sur un pattern */
+.avs-pattern-overlay {
+  position: relative;
+  isolation: isolate;
+}
+.avs-pattern-overlay::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  opacity: 0.6;
+  z-index: -1;
+}
+
+/* Animation subtile au survol (mouvement de tissu) */
+@media (prefers-reduced-motion: no-preference) {
+  .avs-pattern-animated {
+    transition:
+      background-size 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+      background-position 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .avs-pattern-kente-royale.avs-pattern-animated:hover {
+    background-size:
+      44px 100%,
+      100% 14px,
+      44px 100%;
+  }
+  .avs-pattern-ndop-ceremoniel.avs-pattern-animated:hover {
+    background-size:
+      18px 18px,
+      18px 18px,
+      18px 18px,
+      18px 18px,
+      18px 18px,
+      9px 9px;
+  }
+  .avs-pattern-bogolan-terre.avs-pattern-animated:hover {
+    background-size:
+      28px 28px,
+      28px 28px,
+      28px 28px;
+  }
+  .avs-pattern-adinkra-sankofa.avs-pattern-animated:hover {
+    background-size:
+      28px 28px,
+      28px 28px,
+      28px 28px,
+      28px 28px,
+      28px 28px,
+      28px 28px,
+      7px 7px;
+  }
+  .avs-pattern-wax-dakar.avs-pattern-animated:hover {
+    background-size:
+      40px 40px,
+      40px 40px,
+      40px 40px,
+      40px 40px,
+      40px 40px,
+      40px 40px,
+      40px 40px,
+      40px 40px;
+  }
+  .avs-pattern-kuba-kasai.avs-pattern-animated:hover {
+    background-size:
+      14px 14px,
+      14px 14px,
+      14px 14px,
+      14px 14px,
+      7px 7px;
+  }
+}

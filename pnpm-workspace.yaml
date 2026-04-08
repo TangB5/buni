@@ -1,4 +1,4 @@
 packages:
-  - "packages/*"
-
-autoInstallPeers: true
+  - 'apps/*'
+  - 'packages/*'
+  - 'services/*'

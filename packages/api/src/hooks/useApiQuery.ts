@@ -14,7 +14,7 @@ export const queryKeys = {
 export const useGet = <T>(
   key: readonly unknown[],
   url: string,
-  opts?: Omit<UseQueryOptions<T>, 'queryKey' | 'queryFn'>
+  opts?: Omit<UseQueryOptions<T, AxiosError>, 'queryKey' | 'queryFn'>
 ) => useQuery<T, AxiosError>({
   queryKey: key,
   queryFn:  () => apiClient.get<T>(url).then(r => r.data),

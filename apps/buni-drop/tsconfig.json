@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "plugins": [{ "name": "next" }],
+    "paths": {
+      "@/*": ["./src/*"],
+      "@buni/ui":       ["../../packages/ui/src/index.ts"],
+      "@buni/tokens":   ["../../packages/tokens/src/index.ts"],
+      "@buni/patterns": ["../../packages/patterns/src/index.ts"],
+      "@buni/auth":     ["../../packages/auth/src/index.ts"],
+      "@buni/api":      ["../../packages/api/src/index.ts"],
+      "@buni/config":   ["../../packages/config/src/index.ts"],
+      "@buni/analytics":["../../packages/analytics/src/index.ts"],
+      "@buni/utils":    ["../../packages/utils/src/index.ts"]
+    }
+  },
+  "include": ["src/**/*", "next.config.ts", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}

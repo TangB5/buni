@@ -1,21 +1,30 @@
 {
   "compilerOptions": {
-    "composite": true,
-    "declarationMap": true,
-    "emitDeclarationOnly": true,
-    "importHelpers": true,
-    "isolatedModules": true,
-    "lib": ["es2022"],
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
-    "noEmitOnError": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitOverride": true,
-    "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "skipLibCheck": true,
     "strict": true,
-    "target": "es2022",
-    "customConditions": ["@buni/source"]
-  }
+    "noUncheckedIndexedAccess": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "moduleResolution": "bundler",
+    "jsx": "preserve",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "target": "ES2022",
+    "module": "ESNext",
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "incremental": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@buni/ui":        ["packages/ui/src/index.ts"],
+      "@buni/tokens":    ["packages/tokens/src/index.ts"],
+      "@buni/patterns":  ["packages/patterns/src/index.ts"],
+      "@buni/icons":     ["packages/icons/src/index.ts"],
+      "@buni/auth":      ["packages/auth/src/index.ts"],
+      "@buni/api":       ["packages/api/src/index.ts"],
+      "@buni/config":    ["packages/config/src/index.ts"],
+      "@buni/analytics": ["packages/analytics/src/index.ts"],
+      "@buni/utils":     ["packages/utils/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "dist", ".next", "coverage"]
 }

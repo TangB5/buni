@@ -1,43 +1,36 @@
 import { create } from 'zustand';
-import { persist, devtools } from 'zustand/middleware';
-import type { User, AuthTokens } from '../types';
+import { devtools, persist } from 'zustand/middleware';
+import { User } from '../types';
 
-interface AuthStore {
-  user:            User | null;
-  tokens:          AuthTokens | null;
-  isHydrated:      boolean;
-  isAuthenticated: boolean;
-  isAdmin:         boolean;
-  isCurator:       boolean;
-  canContribute:   boolean;
-  setUser:    (user: User, tokens: AuthTokens) => void;
-  clearAuth:  () => void;
-  setHydrated:() => void;
+
+interface AuthState {
+  user:        User | null;
+  token:       string | null;
+  isHydrated:  boolean;
+  setUser:     (user: User, token: string) => void;
+  logout:      () => void;
+  setHydrated: () => void;
+  isAdmin:     () => boolean;
+  isCurator:   () => boolean;
 }
 
-export const useAuthStore = create<AuthStore>()(
+export const useAuthStore = create<AuthState>()(
   devtools(
     persist(
       (set, get) => ({
-        user:            null,
-        tokens:          null,
-        isHydrated:      false,
-        isAuthenticated: false,
-        isAdmin:         false,
-        isCurator:       false,
-        canContribute:   false,
-        setUser: (user, tokens) => set({
-          user, tokens,
-          isAuthenticated: true,
-          isAdmin:         user.role === 'admin',
-          isCurator:       user.role === 'curator' || user.role === 'admin',
-          canContribute:   user.role !== 'viewer',
-        }),
-        clearAuth:   () => set({ user: null, tokens: null, isAuthenticated: false, isAdmin: false, isCurator: false, canContribute: false }),
-        setHydrated: () => set({ isHydrated: true }),
+        user: null, token: null, isHydrated: false,
+        setUser:    (user, token)  => set({ user, token }, false, 'auth/setUser'),
+        logout:     ()             => set({ user:null, token:null }, false, 'auth/logout'),
+        setHydrated:()             => set({ isHydrated:true }, false, 'auth/hydrated'),
+        isAdmin:    ()             => get().user?.role === 'admin',
+        isCurator:  ()             => ['admin','curator'].includes(get().user?.role ?? ''),
       }),
-      { name: 'buni-auth', partialize: s => ({ user: s.user, tokens: s.tokens }) }
+      {
+        name: 'buni-auth',
+        partialize: s => ({ user:s.user, token:s.token }),
+        onRehydrateStorage: () => s => s?.setHydrated(),
+      }
     ),
-    { name: 'buni-auth' }
+    { name: 'Buni Auth' }
   )
 );

@@ -1,109 +1,81 @@
-# Buni
+# Buni — African Visual Ecosystem
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+**Monorepo NX** · 7 apps Next.js 14 · 9 packages partagés · Radix UI + CVA + Tailwind
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+## Applications
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+| App | Rôle | Domaine |
+|-----|------|---------|
+| `buni-avs` | Standard visuel africain, documentation | avs.buni.africa |
+| `buni-icons` | Galerie SVG + CDN | icons.buni.africa |
+| `buni-components` | Bibliothèque UI (PrimeReact-style) | ui.buni.africa |
+| `buni-templates` | Sections & pages prêtes | templates.buni.africa |
+| `buni-drop` | E-commerce artisans | drop.buni.africa |
+| `buni-behance` | Portfolio créatifs | behance.buni.africa |
+| `buni-mode` | Mode, stylistes, mannequin 3D | mode.buni.africa |
 
-## Generate a library
+## Packages partagés
 
-```sh
-npx nx g @nx/js:lib packages/pkg1 --publishable --importPath=@my-org/pkg1
+| Package | Contenu |
+|---------|---------|
+| `@buni/ui` | Composants (Button, Badge, Input, Card, Avatar, Spinner, Toggle, Separator) |
+| `@buni/tokens` | Design tokens CSS + constantes TypeScript |
+| `@buni/patterns` | 13 motifs CSS africains + SVG registry |
+| `@buni/icons` | Icônes SVG africaines |
+| `@buni/auth` | Zustand store + hooks (useAuth, useLogout) + types Zod |
+| `@buni/api` | apiClient Axios + hooks React Query (useGet, usePost, usePatch, useDelete) |
+| `@buni/config` | Tailwind preset `buniPreset` partagé |
+| `@buni/analytics` | Tracking événements |
+| `@buni/utils` | cn(), formatDate(), timeAgo(), slugify(), truncate()… |
+
+## Commandes NX
+
+```bash
+# Lancer une app
+nx dev buni-avs
+nx dev buni-components
+
+# Build
+nx build buni-avs
+nx affected:build          # Seulement les apps affectées par un changement
+nx run-many --target=build # Toutes les apps en parallèle
+
+# Graphe de dépendances
+nx graph
+
+# Typecheck global
+nx run-many --target=typecheck
+
+# Migration depuis avs-frontend
+./tools/migrate-from-avs.sh ../avs-frontend
 ```
 
-## Run tasks
+## Utilisation de @buni/ui
 
-To build the library use:
+```tsx
+import { Button, Badge, Input, Card, AvsAvatar, Spinner } from '@buni/ui';
+import { cn } from '@buni/utils';
+import { useAuth } from '@buni/auth';
 
-```sh
-npx nx build pkg1
+// Button — 7 variantes, 5 tailles, Radix Slot
+<Button variant="primary" size="lg">Explorer</Button>
+<Button variant="kente" isLoading>Chargement…</Button>
+<Button asChild><a href="/patterns">Lien</a></Button>
+
+// Badge avec dot
+<Badge variant="kente" dot>NDOP</Badge>
+
+// Input avec icône et erreur
+<Input label="Email" leftIcon={<Mail size={14} />} error="Format invalide" />
+
+// Avatar avec motif selon le rôle
+<AvsAvatar name="Njoya H." role="admin" size="lg" />
 ```
 
-To run any task with Nx use:
+## Ajouter une nouvelle app
 
-```sh
-npx nx <target> <project-name>
+```bash
+nx generate @nx/next:application --name="buni-ma-app" --directory="apps/buni-ma-app" --appDir=true --src=true --style=none --no-interactive
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
-
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Versioning and releasing
-
-To version and release the library use
-
-```
-npx nx release
-```
-
-Pass `--dry-run` to see what would happen without actually releasing the library.
-
-[Learn more about Nx release &raquo;](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Keep TypeScript project references up to date
-
-Nx automatically updates TypeScript [project references](https://www.typescriptlang.org/docs/handbook/project-references.html) in `tsconfig.json` files to ensure they remain accurate based on your project dependencies (`import` or `require` statements). This sync is automatically done when running tasks such as `build` or `typecheck`, which require updated references to function correctly.
-
-To manually trigger the process to sync the project graph dependencies information to the TypeScript project references, run the following command:
-
-```sh
-npx nx sync
-```
-
-You can enforce that the TypeScript project references are always in the correct state when running in CI by adding a step to your CI job configuration that runs the following command:
-
-```sh
-npx nx sync:check
-```
-
-[Learn more about nx sync](https://nx.dev/reference/nx-commands#sync)
-
-## Set up CI!
-
-### Step 1
-
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
-```
-
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
-
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-### Step 2
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
-```
-
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Puis copier `tailwind.config.ts`, `tsconfig.json`, `postcss.config.mjs` d'une app existante.

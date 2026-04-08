@@ -1,0 +1,9 @@
+{
+  "name": "buni-mode",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/buni-mode",
+  "projectType": "application",
+  "tags": [],
+  "// targets": "to see all targets run: nx show project buni-mode --web",
+  "targets": {}
+}

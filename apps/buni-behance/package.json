@@ -1,0 +1,22 @@
+{
+  "name": "@buni/buni-behance",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@buni/ui": "workspace:*",
+    "@buni/tokens": "workspace:*",
+    "@buni/patterns": "workspace:*",
+    "@buni/auth": "workspace:*",
+    "@buni/api": "workspace:*",
+    "@buni/analytics": "workspace:*",
+    "@buni/utils": "workspace:*",
+    "@buni/config": "workspace:*"
+  }
+}
