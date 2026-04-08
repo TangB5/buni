@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { authEvents } from '../../core/api/client';
 import { useAuthStore } from '@buni/auth';
+import { Route } from 'next';
 
 export function AuthListener() {
   const router = useRouter();
@@ -12,7 +13,8 @@ export function AuthListener() {
     authEvents.onUnauthorized = () => {
       // Clear auth state on 401
       useAuthStore.setState({ user: null });
-      router.push('/auth/login?expired=true');
+      const params = new URLSearchParams({ expired: 'true' });
+      router.push((`/auth/login?${params.toString()}`) as Route)
     };
   }, [router]);
 

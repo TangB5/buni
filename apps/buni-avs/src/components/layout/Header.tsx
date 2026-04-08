@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useLayoutEffect, useTransition } from 'react';
+import { useState, useEffect, useLayoutEffect, useTransition, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -9,73 +9,172 @@ import {
   X,
   ChevronDown,
   Layers,
-  Palette,
   Users,
   BookOpen,
   LayoutDashboard,
   Puzzle,
-  Sparkles,
   Award,
   LogOut,
   User,
-  Type,
-  BoxSelect,
   ShoppingBag,
   ImageIcon,
   Wand2,
   Box,
   Moon,
   Sun,
+  Settings,
+  ArrowRight,
+  Sparkles,
+  Zap,
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useAuth, useLogout } from '@buni/auth';
 import { useTheme } from './ThemeProvider';
+import { Route } from 'next';
 
 const cn = (...i: Parameters<typeof clsx>) => twMerge(clsx(...i));
 
-// ── Modal Composant ──────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+// TYPES
+// ══════════════════════════════════════════════════════════════════════════════
+type NavChild = { href: string; label: string; icon: typeof Layers; desc: string };
+type NavItem = {
+  label: string;
+  href?: string;
+  isMegaMenu?: boolean;
+  children?: NavChild[];
+  featured?: { title: string; buttonText: string; href: string };
+  stats?: Array<{ value: string; label: string }>;
+};
+
+// ══════════════════════════════════════════════════════════════════════════════
+// NAV DATA
+// ══════════════════════════════════════════════════════════════════════════════
+const NAV_ITEMS: NavItem[] = [
+  {
+    label: 'Produits',
+    isMegaMenu: true,
+    children: [
+      { href: '#', label: 'Components', icon: Puzzle,    desc: 'Bibliothèque UI PrimeReact' },
+      { href: '#', label: 'Drop',       icon: ShoppingBag, desc: 'E-commerce artisans' },
+      { href: '#', label: 'Behance',    icon: ImageIcon,  desc: 'Portfolios créatifs' },
+      { href: '#', label: 'Mode',       icon: Wand2,      desc: 'Configurateur 3D' },
+      { href: '#', label: 'Icons',      icon: Box,        desc: 'SVG africains' },
+    ],
+    featured: {
+      title: "Envie d'accéder à l'ensemble de nos outils de création ?",
+      buttonText: "Obtenir l'accès premium",
+      href: '#premium',
+    },
+    stats: [
+      { value: '5',    label: 'Applications puissantes' },
+      { value: '100%', label: 'Africain & libre' },
+      { value: '∞',    label: 'Possibilités créatives' },
+    ],
+  },
+  {
+    label: 'Communauté',
+    children: [
+      { href: '/artisans',    label: 'Artisans',   icon: Users, desc: 'Découvrez les créateurs' },
+      { href: '/contributors', label: 'Classement', icon: Award, desc: 'Top contributeurs AVS' },
+    ],
+  },
+  { href: '/templates',      label: 'Templates' },
+  { href: '/documentation',  label: 'Docs' },
+];
+
+// ══════════════════════════════════════════════════════════════════════════════
+// PREMIUM MODAL
+// ══════════════════════════════════════════════════════════════════════════════
 function PremiumModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  // Close on Escape
+  useEffect(() => {
+    if (!isOpen) return;
+    const handler = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [isOpen, onClose]);
+
   return (
     <AnimatePresence>
       {isOpen && (
         <>
+          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="fixed inset-0 z-50 bg-black/50"
-          />
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4"
+            onClick={onClose}
+            className="fixed inset-0 z-50"
+            style={{ background: 'rgba(10,8,6,0.60)', backdropFilter: 'blur(6px)' }}
+          />
+
+          {/* Modal */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.94, y: 24 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.94, y: 16 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
           >
-            <div className="bg-avs-secondary border-avs-accent/10 rounded-2xl border p-8 max-w-md w-full shadow-xl">
-              <div className="flex justify-between items-start mb-4">
-                <h2 className="text-avs-accent text-2xl font-bold">Accès Premium</h2>
+            <div
+              className="pointer-events-auto relative w-full max-w-sm overflow-hidden rounded-3xl shadow-2xl"
+              style={{
+                background: 'var(--hdr-surface)',
+                border: '1px solid var(--hdr-border)',
+              }}
+            >
+              {/* Pattern bg */}
+              <div className="avs-pattern-kente-royale absolute inset-0 opacity-[0.04]" aria-hidden />
+
+              {/* Top accent line */}
+              <div className="avs-pattern-ndop-sultan absolute inset-x-0 top-0 h-0.5" aria-hidden />
+
+              <div className="relative px-8 py-8">
+                {/* Close */}
                 <button
                   onClick={onClose}
-                  className="text-avs-accent/50 hover:text-avs-accent transition-colors"
+                  className="absolute right-5 top-5 flex h-8 w-8 items-center justify-center rounded-xl transition-colors"
+                  style={{ color: 'var(--hdr-muted)', border: '1px solid var(--hdr-border)' }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--hdr-text)')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--hdr-muted)')}
+                  aria-label="Fermer"
                 >
-                  <X size={24} />
+                  <X size={15} />
+                </button>
+
+                {/* Icon */}
+                <div
+                  className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-2xl"
+                  style={{ background: 'var(--hdr-primary-10)', color: 'var(--hdr-primary)' }}
+                >
+                  <Zap size={26} />
+                </div>
+
+                <h2
+                  className="mb-2 text-center text-2xl font-black leading-tight"
+                  style={{ color: 'var(--hdr-text)', fontFamily: 'var(--font-display, Georgia, serif)', letterSpacing: '-0.02em' }}
+                >
+                  Accès Premium
+                </h2>
+                <p className="mb-2 text-center text-sm leading-relaxed" style={{ color: 'var(--hdr-muted)' }}>
+                  Cette fonctionnalité n&apos;est pas disponible pour le moment.
+                </p>
+                <p className="mb-7 text-center text-xs" style={{ color: 'var(--hdr-hint)' }}>
+                  Revenez bientôt pour découvrir l&apos;accès complet à tous nos outils premium.
+                </p>
+
+                <button
+                  onClick={onClose}
+                  className="group flex w-full items-center justify-center gap-2 rounded-2xl px-6 py-3 text-sm font-bold text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+                  style={{ background: 'var(--hdr-primary)', boxShadow: '0 4px 16px var(--hdr-primary-shadow)' }}
+                >
+                  Compris
+                  <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
                 </button>
               </div>
-              <p className="text-avs-accent/70 mb-6 text-center">
-                Cette fonctionnalité n'est pas disponible pour le moment.
-              </p>
-              <p className="text-avs-accent/60 text-sm text-center mb-6">
-                Revenez bientôt pour découvrir l'accès complet à tous nos outils premium.
-              </p>
-              <button
-                onClick={onClose}
-                className="avs-btn-primary w-full justify-center py-3 text-sm font-bold shadow-md"
-              >
-                Fermer
-              </button>
             </div>
           </motion.div>
         </>
@@ -84,109 +183,56 @@ function PremiumModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
   );
 }
 
-type NavItem = {
-  label: string;
-  href?: string;
-  isMegaMenu?: boolean;
-  children?: Array<{ href: string; label: string; icon: typeof Layers; desc: string }>;
-  featured?: { title: string; buttonText: string; href: string };
-  stats?: Array<{ value: string; label: string }>;
-};
-
-// ── Données navigation restructurées ──────────────────────────────────────────
-const NAV_ITEMS: NavItem[] = [
-  {
-    label: 'Produits',
-    isMegaMenu: true,
-    children: [
-      {
-        href: '#',
-        label: 'Components',
-        icon: Puzzle,
-        desc: 'Bibliothèque UI PrimeReact',
-      },
-      { href: '#', label: 'Drop', icon: ShoppingBag, desc: 'E-commerce artisans' },
-      {
-        href: '#',
-        label: 'Behance',
-        icon: ImageIcon,
-        desc: 'Portfolios créatifs',
-      },
-      { href: '#', label: 'Mode', icon: Wand2, desc: 'Configurateur 3D' },
-      { href: '#', label: 'Icons', icon: Box, desc: 'SVG africains' },
-    ],
-    featured: {
-      title: "Envie d'accéder à l'ensemble de nos outils de création ?",
-      buttonText: "Obtenir l'accès premium",
-      href: '#premium',
-    },
-    stats: [
-      { value: '5', label: 'Applications puissantes' },
-      { value: '100%', label: 'Africain & libre' },
-      { value: '∞', label: 'Possibilités créatives' },
-    ],
-  },
-  {
-    label: 'Communauté',
-    children: [
-      { href: '/artisans', label: 'Artisans', icon: Users, desc: 'Découvrez les créateurs' },
-      { href: '/contributors', label: 'Classement', icon: Award, desc: 'Top contributeurs AVS' },
-    ],
-  },
-  { href: '/templates', label: 'Templates' },
-  { href: '/documentation', label: 'Docs' },
-] as const;
-
-// ── Dropdown Composant ────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+// NAV DROPDOWN
+// ══════════════════════════════════════════════════════════════════════════════
 function NavDropdown({ item, onPremiumClick }: { item: NavItem; onPremiumClick: () => void }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
+  const closeTimer = useRef<ReturnType<typeof setTimeout>>();
 
-  // Lien simple
+  const openMenu = () => { clearTimeout(closeTimer.current); setOpen(true); };
+  const closeMenu = () => { closeTimer.current = setTimeout(() => setOpen(false), 120); };
+
+  // Simple link
   if (!item.children) {
-    const isExternal = item.href?.startsWith('http');
-    const isActive = !isExternal && pathname.startsWith(item.href!);
-    const LinkComponent = isExternal ? 'a' : Link;
-    
+    const isActive = pathname.startsWith(item.href!);
     return (
-      <LinkComponent
-        href={item.href!}
-        target={isExternal ? '_blank' : undefined}
-        rel={isExternal ? 'noopener noreferrer' : undefined}
-        className={cn(
-          'rounded-avs px-3 py-2 text-sm font-medium transition-all duration-200',
-          isActive
-            ? 'bg-avs-primary/10 text-avs-primary'
-            : 'text-avs-accent/70 hover:bg-avs-primary/8 hover:text-avs-primary',
-        )}
+      <Link
+        href={item.href! as Route}
+        className="relative rounded-xl px-3.5 py-2 text-[13px] font-semibold transition-all duration-200"
+        style={{ color: isActive ? 'var(--hdr-primary)' : 'var(--hdr-muted)' }}
+        onMouseEnter={(e) => !isActive && (e.currentTarget.style.color = 'var(--hdr-text)')}
+        onMouseLeave={(e) => !isActive && (e.currentTarget.style.color = 'var(--hdr-muted)')}
       >
         {item.label}
-      </LinkComponent>
+        {isActive && (
+          <span
+            className="absolute inset-x-2 -bottom-[17px] h-px rounded-full"
+            style={{ background: 'var(--hdr-primary)' }}
+          />
+        )}
+      </Link>
     );
   }
 
-  const isChildActive = item.children.some((child) => pathname.startsWith(child.href));
+  const isChildActive = item.children.some((c) => pathname.startsWith(c.href));
 
   return (
-    <div
-      className="relative"
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
-    >
+    <div className="relative" onMouseEnter={openMenu} onMouseLeave={closeMenu}>
       <button
         aria-expanded={open}
         aria-haspopup="true"
-        className={cn(
-          'rounded-avs flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-all duration-200',
-          open || isChildActive
-            ? 'bg-avs-primary/10 text-avs-primary'
-            : 'text-avs-accent/70 hover:bg-avs-primary/8 hover:text-avs-primary',
-        )}
+        className="flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-[13px] font-semibold transition-all duration-200"
+        style={{ color: open || isChildActive ? 'var(--hdr-primary)' : 'var(--hdr-muted)' }}
+        onMouseEnter={(e) => { if (!open && !isChildActive) e.currentTarget.style.color = 'var(--hdr-text)'; }}
+        onMouseLeave={(e) => { if (!open && !isChildActive) e.currentTarget.style.color = 'var(--hdr-muted)'; }}
       >
         {item.label}
         <ChevronDown
-          size={14}
-          className={cn('transition-transform duration-200', open && 'rotate-180')}
+          size={13}
+          className="transition-transform duration-200"
+          style={{ transform: open ? 'rotate(180deg)' : 'none' }}
           aria-hidden
         />
       </button>
@@ -194,89 +240,109 @@ function NavDropdown({ item, onPremiumClick }: { item: NavItem; onPremiumClick: 
       <AnimatePresence>
         {open && (
           <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.98 }}
+            initial={{ opacity: 0, y: 8, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 5, scale: 0.98 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
+            exit={{ opacity: 0, y: 4, scale: 0.97 }}
+            transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
             className={cn(
-              'bg-avs-secondary border-avs-accent/10 absolute top-full z-50 mt-2 rounded-2xl border p-2 shadow-xl',
-              item.isMegaMenu
-                ? 'left-1/2 w-200 -translate-x-1/2 cursor-default p-4'
-                : 'left-0 w-64',
+              'absolute top-full z-50 mt-3 overflow-hidden rounded-2xl shadow-2xl',
+              item.isMegaMenu ? 'left-1/2 w-[640px] -translate-x-1/2 p-5' : 'left-0 w-64 p-2',
             )}
+            style={{ background: 'var(--hdr-surface)', border: '1px solid var(--hdr-border)' }}
             role="menu"
+            onMouseEnter={openMenu}
+            onMouseLeave={closeMenu}
           >
+            {/* Subtle top accent */}
+            <div className="avs-pattern-ndop-sultan absolute inset-x-0 top-0 h-px opacity-80" aria-hidden />
+
             {item.isMegaMenu ? (
-              // ── MEGA MENU (Style Infographiks) ──
               <div className="flex flex-col gap-4">
                 <div className="flex gap-4">
-                  {/* Grille gauche (3x2) */}
+                  {/* Product grid */}
                   <div className="grid flex-1 grid-cols-3 gap-2">
                     {item.children!.map((child) => {
-                      const isItemActive = pathname === child.href;
                       const Icon = child.icon;
+                      const isActive = pathname === child.href;
                       return (
                         <Link
                           key={child.href}
-                          href={child.href}
-                          className={cn(
-                            'group flex flex-col items-center justify-center rounded-xl border p-4 text-center transition-all duration-200',
-                            isItemActive
-                              ? 'bg-avs-primary/5 border-avs-primary/20'
-                              : 'bg-avs-accent/5 hover:bg-avs-accent/10 border-transparent',
-                          )}
+                          href={child.href as Route}
+                          className="group flex flex-col items-center rounded-xl p-4 text-center transition-all duration-200 hover:-translate-y-0.5"
+                          style={{
+                            background: isActive ? 'var(--hdr-primary-10)' : 'var(--hdr-subtle)',
+                            border: `1px solid ${isActive ? 'var(--hdr-primary-20)' : 'var(--hdr-border)'}`,
+                          }}
+                          onMouseEnter={(e) => {
+                            if (!isActive) {
+                              e.currentTarget.style.background = 'var(--hdr-primary-10)';
+                              e.currentTarget.style.borderColor = 'var(--hdr-primary-20)';
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (!isActive) {
+                              e.currentTarget.style.background = 'var(--hdr-subtle)';
+                              e.currentTarget.style.borderColor = 'var(--hdr-border)';
+                            }
+                          }}
                         >
-                          <Icon
-                            size={24}
-                            className={cn(
-                              'mb-2 transition-colors',
-                              isItemActive
-                                ? 'text-avs-primary'
-                                : 'text-avs-accent/70 group-hover:text-avs-primary',
-                            )}
-                          />
-                          <span
-                            className={cn(
-                              'text-sm font-semibold transition-colors',
-                              isItemActive
-                                ? 'text-avs-primary'
-                                : 'text-avs-accent group-hover:text-avs-primary',
-                            )}
+                          <div
+                            className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl transition-colors"
+                            style={{
+                              background: isActive ? 'var(--hdr-primary-20)' : 'var(--hdr-icon-bg)',
+                              color: 'var(--hdr-primary)',
+                            }}
                           >
+                            <Icon size={18} />
+                          </div>
+                          <span className="text-sm font-bold" style={{ color: 'var(--hdr-text)' }}>
                             {child.label}
+                          </span>
+                          <span className="mt-0.5 text-[11px] leading-tight" style={{ color: 'var(--hdr-hint)' }}>
+                            {child.desc}
                           </span>
                         </Link>
                       );
                     })}
                   </div>
 
-                  {/* Featured Card Droite */}
-                  <div className="bg-avs-accent/5 flex w-70 flex-col items-center justify-center rounded-xl p-6 text-center">
-                    <div className="bg-avs-primary/10 text-avs-primary mb-4 flex h-12 w-12 items-center justify-center rounded-xl">
-                      <Award size={24} />
-                    </div>
-                    <h4 className="text-avs-accent mb-4 text-sm leading-relaxed font-semibold">
+                  {/* Featured card */}
+                  <div
+                    className="flex w-56 shrink-0 flex-col items-center justify-center rounded-xl p-5 text-center"
+                    style={{ background: 'var(--hdr-subtle)', border: '1px solid var(--hdr-border)' }}
+                  >
+                    {/* Pattern bg */}
+                    <div className="avs-pattern-kente-royale mb-4 h-12 w-12 rounded-xl ring-1 ring-black/10 dark:ring-white/10" aria-hidden />
+                    <p className="mb-4 text-[12px] leading-relaxed font-semibold" style={{ color: 'var(--hdr-text)' }}>
                       {item.featured?.title}
-                    </h4>
+                    </p>
                     <button
                       onClick={onPremiumClick}
-                      className="bg-avs-primary text-avs-secondary rounded-avs w-full px-4 py-2 text-sm font-semibold shadow-md transition-transform hover:-translate-y-0.5"
+                      className="group flex w-full items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-xs font-bold text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+                      style={{ background: 'var(--hdr-primary)', boxShadow: '0 2px 12px var(--hdr-primary-shadow)' }}
                     >
+                      <Sparkles size={11} />
                       {item.featured?.buttonText}
                     </button>
                   </div>
                 </div>
 
-                {/* Footer Statistiques */}
+                {/* Stats footer */}
                 {item.stats && (
-                  <div className="border-avs-accent/10 grid grid-cols-3 gap-2 border-t pt-4">
-                    {item.stats.map((stat, idx) => (
+                  <div
+                    className="grid grid-cols-3 gap-2"
+                    style={{ borderTop: '1px solid var(--hdr-border)', paddingTop: '1rem' }}
+                  >
+                    {item.stats.map((stat, i) => (
                       <div
-                        key={idx}
-                        className="bg-avs-accent/5 hover:bg-avs-accent/10 flex items-center gap-4 rounded-xl p-4 transition-colors"
+                        key={i}
+                        className="flex items-center gap-3 rounded-xl p-3.5 transition-colors"
+                        style={{ background: 'var(--hdr-subtle)', border: '1px solid var(--hdr-border)' }}
                       >
-                        <span className="text-avs-primary text-xl font-bold">{stat.value}</span>
-                        <span className="text-avs-accent/60 text-xs leading-tight">
+                        <span className="font-display text-xl font-black" style={{ color: 'var(--hdr-primary)', fontFamily: 'var(--font-display, Georgia, serif)' }}>
+                          {stat.value}
+                        </span>
+                        <span className="text-[11px] leading-tight" style={{ color: 'var(--hdr-hint)' }}>
                           {stat.label}
                         </span>
                       </div>
@@ -285,50 +351,38 @@ function NavDropdown({ item, onPremiumClick }: { item: NavItem; onPremiumClick: 
                 )}
               </div>
             ) : (
-              // ── MENU STANDARD ──
-              item.children!.map((child) => {
-                const Icon = child.icon;
-                const isExternal = child.href.startsWith('http');
-                const isItemActive = !isExternal && pathname === child.href;
-                const LinkComponent = isExternal ? 'a' : Link;
-                
-                return (
-                  <LinkComponent
-                    key={child.href}
-                    href={child.href}
-                    target={isExternal ? '_blank' : undefined}
-                    rel={isExternal ? 'noopener noreferrer' : undefined}
-                    className={cn(
-                      'rounded-avs group flex items-start gap-3 p-3 transition-colors',
-                      isItemActive ? 'bg-avs-primary/5' : 'hover:bg-avs-primary/8',
-                    )}
-                  >
-                    <div
-                      className={cn(
-                        'rounded-avs mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center transition-colors',
-                        isItemActive
-                          ? 'bg-avs-primary/20 text-avs-primary'
-                          : 'bg-avs-primary/10 text-avs-primary group-hover:bg-avs-primary/20',
-                      )}
+              /* Standard dropdown */
+              <div className="flex flex-col gap-0.5">
+                {item.children!.map((child) => {
+                  const Icon = child.icon;
+                  const isActive = pathname === child.href;
+                  return (
+                    <Link
+                      key={child.href}
+                      href={child.href as Route}
+                      className="group flex items-start gap-3 rounded-xl p-3 transition-all duration-150"
+                      style={{ background: isActive ? 'var(--hdr-primary-10)' : 'transparent' }}
+                      onMouseEnter={(e) => { if (!isActive) e.currentTarget.style.background = 'var(--hdr-subtle)'; }}
+                      onMouseLeave={(e) => { if (!isActive) e.currentTarget.style.background = 'transparent'; }}
                     >
-                      <Icon size={16} aria-hidden />
-                    </div>
-                    <div>
-                      <p
-                        className={cn(
-                          'text-sm font-semibold transition-colors',
-                          isItemActive
-                            ? 'text-avs-primary'
-                            : 'text-avs-accent group-hover:text-avs-primary',
-                        )}
+                      <div
+                        className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl transition-colors"
+                        style={{ background: 'var(--hdr-primary-10)', color: 'var(--hdr-primary)' }}
                       >
-                        {child.label}
-                      </p>
-                      <p className="text-avs-accent/50 mt-0.5 line-clamp-1 text-xs">{child.desc}</p>
-                    </div>
-                  </LinkComponent>
-                );
-              })
+                        <Icon size={15} />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold" style={{ color: isActive ? 'var(--hdr-primary)' : 'var(--hdr-text)' }}>
+                          {child.label}
+                        </p>
+                        <p className="mt-0.5 truncate text-xs" style={{ color: 'var(--hdr-hint)' }}>
+                          {child.desc}
+                        </p>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
             )}
           </motion.div>
         )}
@@ -337,7 +391,239 @@ function NavDropdown({ item, onPremiumClick }: { item: NavItem; onPremiumClick: 
   );
 }
 
-// ── Header principal ──────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+// USER MENU
+// ══════════════════════════════════════════════════════════════════════════════
+function UserMenu({ user, onLogout }: { user: { name: string; email: string; role: string }; onLogout: () => void }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const handler = (e: MouseEvent) => !ref.current?.contains(e.target as Node) && setOpen(false);
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, [open]);
+
+  const menuItems = [
+    { href: '/dashboard',          icon: LayoutDashboard, label: 'Dashboard' },
+    { href: '/dashboard/profile',  icon: User,            label: 'Profil' },
+    { href: '/dashboard/settings', icon: Settings,        label: 'Paramètres' },
+  ];
+
+  return (
+    <div ref={ref} className="relative hidden sm:block">
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="flex items-center gap-2 rounded-xl px-2.5 py-2 text-[13px] font-semibold transition-all duration-200"
+        style={{
+          color: open ? 'var(--hdr-primary)' : 'var(--hdr-muted)',
+          background: open ? 'var(--hdr-primary-10)' : 'transparent',
+          border: '1px solid transparent',
+        }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--hdr-primary-10)'; e.currentTarget.style.color = 'var(--hdr-primary)'; }}
+        onMouseLeave={(e) => { if (!open) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--hdr-muted)'; } }}
+        aria-expanded={open}
+        aria-haspopup="true"
+      >
+        {/* Avatar pattern */}
+        <div className="avs-pattern-ndop-sultan relative h-7 w-7 shrink-0 overflow-hidden rounded-full ring-1 ring-black/10 dark:ring-white/10">
+          <div className="absolute inset-0 flex items-center justify-center bg-black/25">
+            <span className="font-display text-xs font-black text-white drop-shadow">
+              {user.name.charAt(0).toUpperCase()}
+            </span>
+          </div>
+        </div>
+        <span className="hidden max-w-[96px] truncate md:inline">{user.name}</span>
+        <ChevronDown
+          size={13}
+          className="shrink-0 transition-transform duration-200"
+          style={{ transform: open ? 'rotate(180deg)' : 'none' }}
+          aria-hidden
+        />
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: 8, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 4, scale: 0.97 }}
+            transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute right-0 top-full z-50 mt-3 w-64 overflow-hidden rounded-2xl shadow-2xl"
+            style={{ background: 'var(--hdr-surface)', border: '1px solid var(--hdr-border)' }}
+          >
+            <div className="avs-pattern-ndop-sultan absolute inset-x-0 top-0 h-px opacity-80" aria-hidden />
+
+            {/* Profile card */}
+            <div className="p-3 pb-0">
+              <div
+                className="rounded-xl p-3.5"
+                style={{ background: 'var(--hdr-primary-10)', border: '1px solid var(--hdr-primary-20)' }}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="avs-pattern-kente-royale relative h-9 w-9 shrink-0 overflow-hidden rounded-full ring-2 ring-white/20">
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/25">
+                      <span className="font-display text-sm font-black text-white drop-shadow">
+                        {user.name.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-bold" style={{ color: 'var(--hdr-text)' }}>{user.name}</p>
+                    <p className="truncate text-[11px] capitalize" style={{ color: 'var(--hdr-hint)' }}>{user.role}</p>
+                  </div>
+                  {/* Online dot */}
+                  <span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-zinc-900" aria-label="En ligne" />
+                </div>
+                <p className="mt-2 truncate font-mono text-[10px]" style={{ color: 'var(--hdr-hint)' }}>{user.email}</p>
+              </div>
+            </div>
+
+            {/* Menu items */}
+            <div className="flex flex-col gap-0.5 p-2 pt-2">
+              {menuItems.map(({ href, icon: Icon, label }) => (
+                <Link
+                  key={href}
+                  href={href as Route}
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-150"
+                  style={{ color: 'var(--hdr-muted)' }}
+                  onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--hdr-subtle)'; e.currentTarget.style.color = 'var(--hdr-primary)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--hdr-muted)'; }}
+                >
+                  <div className="flex h-7 w-7 items-center justify-center rounded-lg" style={{ background: 'var(--hdr-subtle)' }}>
+                    <Icon size={14} />
+                  </div>
+                  <span className="font-medium">{label}</span>
+                </Link>
+              ))}
+            </div>
+
+            {/* Logout */}
+            <div className="p-2 pt-0" style={{ borderTop: '1px solid var(--hdr-border)' }}>
+              <button
+                onClick={() => { setOpen(false); onLogout(); }}
+                className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-150"
+                style={{ color: 'var(--hdr-muted)' }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(239,68,68,0.08)'; e.currentTarget.style.color = 'rgb(239,68,68)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--hdr-muted)'; }}
+              >
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg" style={{ background: 'var(--hdr-subtle)' }}>
+                  <LogOut size={14} />
+                </div>
+                <span className="font-medium">Déconnexion</span>
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ICON BUTTON (shared utility)
+// ══════════════════════════════════════════════════════════════════════════════
+function IconBtn({ onClick, label, children, className }: {
+  onClick?: () => void;
+  label: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      aria-label={label}
+      title={label}
+      className={cn('flex h-9 w-9 items-center justify-center rounded-xl transition-all duration-200', className)}
+      style={{ border: '1px solid var(--hdr-border)', background: 'transparent', color: 'var(--hdr-muted)' }}
+      onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--hdr-subtle)'; e.currentTarget.style.color = 'var(--hdr-text)'; e.currentTarget.style.borderColor = 'var(--hdr-border-md)'; }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--hdr-muted)'; e.currentTarget.style.borderColor = 'var(--hdr-border)'; }}
+    >
+      {children}
+    </button>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MOBILE NAV SECTION
+// ══════════════════════════════════════════════════════════════════════════════
+function MobileSection({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-1">
+      <p className="px-3 pb-1 font-mono text-[9px] font-black tracking-[0.2em] uppercase" style={{ color: 'var(--hdr-hint)' }}>
+        {title}
+      </p>
+      {children}
+    </div>
+  );
+}
+
+function MobileLink({ href, icon: Icon, label, isActive, onClick, isExternal }: {
+  href: string; icon: typeof Layers; label: string;
+  isActive?: boolean; onClick?: () => void; isExternal?: boolean;
+}) {
+  const Tag = isExternal ? 'a' : Link;
+  return (
+    <Tag
+      href={href as Route}
+      target={isExternal ? '_blank' : undefined}
+      rel={isExternal ? 'noopener noreferrer' : undefined}
+      onClick={onClick}
+      className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-all duration-150"
+      style={{
+        background: isActive ? 'var(--hdr-primary-10)' : 'transparent',
+        color: isActive ? 'var(--hdr-primary)' : 'var(--hdr-muted)',
+      }}
+      onMouseEnter={(e) => { if (!isActive) { (e.currentTarget as HTMLElement).style.background = 'var(--hdr-subtle)'; (e.currentTarget as HTMLElement).style.color = 'var(--hdr-text)'; } }}
+      onMouseLeave={(e) => { if (!isActive) { (e.currentTarget as HTMLElement).style.background = 'transparent'; (e.currentTarget as HTMLElement).style.color = 'var(--hdr-muted)'; } }}
+    >
+      <Icon size={17} aria-hidden />
+      {label}
+    </Tag>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// GLOBAL STYLES
+// ══════════════════════════════════════════════════════════════════════════════
+const HEADER_STYLES = `
+  :root {
+    --hdr-surface:        #ffffff;
+    --hdr-bg:             #faf8f5;
+    --hdr-subtle:         rgba(29,29,27,0.04);
+    --hdr-border:         rgba(29,29,27,0.09);
+    --hdr-border-md:      rgba(29,29,27,0.16);
+    --hdr-text:           #1D1D1B;
+    --hdr-muted:          rgba(29,29,27,0.55);
+    --hdr-hint:           rgba(29,29,27,0.35);
+    --hdr-primary:        #C0573E;
+    --hdr-primary-10:     rgba(192,87,62,0.08);
+    --hdr-primary-20:     rgba(192,87,62,0.18);
+    --hdr-primary-shadow: rgba(192,87,62,0.28);
+    --hdr-icon-bg:        rgba(192,87,62,0.08);
+  }
+  .dark {
+    --hdr-surface:        #1a1917;
+    --hdr-bg:             #111110;
+    --hdr-subtle:         rgba(255,255,255,0.05);
+    --hdr-border:         rgba(255,255,255,0.08);
+    --hdr-border-md:      rgba(255,255,255,0.14);
+    --hdr-text:           #ece8e1;
+    --hdr-muted:          rgba(236,232,225,0.50);
+    --hdr-hint:           rgba(236,232,225,0.30);
+    --hdr-primary:        #d4694e;
+    --hdr-primary-10:     rgba(212,105,78,0.10);
+    --hdr-primary-20:     rgba(212,105,78,0.20);
+    --hdr-primary-shadow: rgba(212,105,78,0.30);
+    --hdr-icon-bg:        rgba(212,105,78,0.10);
+  }
+`;
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MAIN HEADER
+// ══════════════════════════════════════════════════════════════════════════════
 export function Header() {
   const pathname = usePathname();
   const { user, isAuthenticated, isHydrated } = useAuth();
@@ -353,302 +639,293 @@ export function Header() {
   }, [pathname, startTransition]);
 
   useEffect(() => {
-    const handler = () => setScrolled(window.scrollY > 10);
+    const handler = () => setScrolled(window.scrollY > 8);
     window.addEventListener('scroll', handler, { passive: true });
     return () => window.removeEventListener('scroll', handler);
+  }, []);
+
+  // Close mobile on resize to desktop
+  useEffect(() => {
+    const handler = () => window.innerWidth >= 1024 && setMobileOpen(false);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
   }, []);
 
   const isDashboard = pathname.startsWith('/dashboard');
 
   return (
-    <header
-      className={cn(
-        'sticky top-0 z-40 w-full transition-all duration-300',
-        scrolled ? 'shadow-sm' : '',
-        isDashboard
-          ? 'border-avs-accent/10 bg-avs-secondary border-b'
-          : 'border-avs-accent/8 bg-avs-secondary border-b backdrop-blur-xl',
-      )}
-    >
-      <div className="mx-auto flex h-16 max-w-350 items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
-        {/* ── Logo ─────────────────────────────────────────────────────────── */}
-        <Link
-          href="/"
-          className="group flex shrink-0 items-center gap-3"
-          aria-label="AVS — Accueil"
-        >
-          <div className="avs-pattern-kente rounded-avs border-avs-accent/10 flex h-9 w-9 items-center justify-center overflow-hidden border shadow-sm transition-transform group-hover:scale-105">
-            <span className="font-display text-avs-accent text-base font-black" aria-hidden>
-              A
-            </span>
-          </div>
-          <div className="flex flex-col leading-tight">
-            <span className="font-display text-avs-accent text-base font-bold tracking-tight">
-              AVS
-            </span>
-            <span className="text-avs-primary hidden text-[10px] font-semibold tracking-wider uppercase sm:block">
-              Standard
-            </span>
-          </div>
-        </Link>
+    <>
+      <style>{HEADER_STYLES}</style>
 
-        {/* ── Navigation desktop centrale ──────────────────────────────────── */}
-        <nav
-          aria-label="Navigation principale"
-          className="hidden flex-1 items-center justify-center gap-1 lg:flex"
-        >
-          {NAV_ITEMS.map((item) => (
-            <NavDropdown key={item.label} item={item} onPremiumClick={() => setPremiumOpen(true)} />
-          ))}
-        </nav>
+      <header
+        className="sticky top-0 z-40 w-full transition-all duration-300"
+        style={{
+          background: scrolled
+            ? 'color-mix(in srgb, var(--hdr-surface) 92%, transparent)'
+            : 'var(--hdr-surface)',
+          borderBottom: '1px solid var(--hdr-border)',
+          backdropFilter: scrolled ? 'blur(20px) saturate(180%)' : undefined,
+          boxShadow: scrolled ? '0 1px 0 var(--hdr-border), 0 8px 24px rgba(0,0,0,0.06)' : 'none',
+        }}
+      >
+        {/* Top accent stripe */}
+        <div className="avs-pattern-ndop-sultan absolute inset-x-0 top-0 h-px opacity-70" aria-hidden />
 
-        {/* ── Actions utilisateur (Droite) ─────────────────────────────────── */}
-        <div className="flex shrink-0 items-center gap-3">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
+
+          {/* ── LOGO ─────────────────────────────────────────────────────── */}
           <Link
-            href="#"
-            className={cn(
-              'rounded-avs hidden items-center gap-2 px-3 py-2 text-sm font-medium transition-colors md:flex',
-              pathname.startsWith('/dashboard')
-                ? 'bg-avs-primary/10 text-avs-primary'
-                : 'text-avs-accent/60 hover:bg-avs-accent/5 hover:text-avs-accent',
-            )}
-            title="Dashboard"
+            href="/"
+            className="group flex shrink-0 items-center gap-3"
+            aria-label="AVS — Accueil"
           >
-            <LayoutDashboard size={16} aria-hidden />
-            <span className="hidden xl:inline">Dashboard</span>
+            {/* Logo mark */}
+            <div className="avs-pattern-kente-royale relative h-9 w-9 overflow-hidden rounded-xl ring-1 ring-black/10 dark:ring-white/10 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3">
+              <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                <span
+                  className="font-display text-base font-black text-white drop-shadow-md"
+                  style={{ fontFamily: 'var(--font-display, Georgia, serif)' }}
+                  aria-hidden
+                >A</span>
+              </div>
+            </div>
+
+            <div className="flex flex-col leading-tight">
+              <span
+                className="font-display text-[15px] font-black tracking-tight"
+                style={{ color: 'var(--hdr-text)', fontFamily: 'var(--font-display, Georgia, serif)', letterSpacing: '-0.02em' }}
+              >
+                AVS
+              </span>
+              <span
+                className="hidden font-mono text-[9px] font-bold tracking-[0.18em] uppercase sm:block"
+                style={{ color: 'var(--hdr-primary)' }}
+              >
+                Standard
+              </span>
+            </div>
           </Link>
 
-          {/* Theme Toggle */}
-          <button
-            onClick={toggleTheme}
-            className="rounded-avs text-avs-accent/60 hover:bg-avs-accent/5 hover:text-avs-accent hidden items-center gap-2 px-3 py-2 text-sm font-medium transition-colors md:flex"
-            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
-            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+          {/* ── DESKTOP NAV ──────────────────────────────────────────────── */}
+          <nav
+            aria-label="Navigation principale"
+            className="hidden flex-1 items-center justify-center gap-0.5 lg:flex"
+            style={{ borderBottom: 'none' }}
           >
-            {theme === 'dark' ? <Sun size={16} aria-hidden /> : <Moon size={16} aria-hidden />}
-            <span className="hidden xl:inline">{theme === 'dark' ? 'Light' : 'Dark'}</span>
-          </button>
+            {NAV_ITEMS.map((item) => (
+              <NavDropdown key={item.label} item={item} onPremiumClick={() => setPremiumOpen(true)} />
+            ))}
+          </nav>
 
-          <div className="border-avs-accent/10 hidden items-center gap-3 border-l pl-4 sm:flex">
+          {/* ── RIGHT ACTIONS ─────────────────────────────────────────────── */}
+          <div className="flex shrink-0 items-center gap-2">
+
+            {/* Theme toggle */}
+            <div className="hidden md:block">
+              <IconBtn
+                onClick={toggleTheme}
+                label={`Passer en mode ${theme === 'dark' ? 'clair' : 'sombre'}`}
+              >
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.span
+                    key={theme}
+                    initial={{ rotate: -30, opacity: 0, scale: 0.7 }}
+                    animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                    exit={{ rotate: 30, opacity: 0, scale: 0.7 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {theme === 'dark' ? <Sun size={15} /> : <Moon size={15} />}
+                  </motion.span>
+                </AnimatePresence>
+              </IconBtn>
+            </div>
+
+            {/* Auth area */}
             {!isHydrated ? (
-              <div className="bg-avs-accent/10 rounded-avs h-9 w-24 animate-pulse" />
+              <div
+                className="h-9 w-28 animate-pulse rounded-xl"
+                style={{ background: 'var(--hdr-subtle)' }}
+              />
             ) : isAuthenticated && user ? (
-              <>
-                <div className="hidden text-right md:block">
-                  <p className="text-avs-accent text-sm font-semibold">{user.name}</p>
-                  <p className="text-avs-accent/50 text-xs capitalize">{user.role}</p>
-                </div>
-                <div className="bg-avs-primary/10 flex h-9 w-9 items-center justify-center rounded-full">
-                  <User size={16} className="text-avs-primary" />
-                </div>
-                <div className="bg-avs-accent/10 h-6 w-px" />
-                <button
-                  // onClick={logout}
-                  className="rounded-avs text-avs-accent p-2 transition-colors hover:bg-red-50 hover:text-red-600"
-                  title="Déconnexion"
-                >
-                  <LogOut size={16} />
-                </button>
-              </>
+              <UserMenu user={user} onLogout={() => void logout()} />
             ) : (
-              <>
+              <div className="hidden items-center gap-2 sm:flex">
                 <Link
-                  href="#"
-                  className="rounded-avs text-avs-accent hover:bg-avs-accent/5 px-4 py-2 text-sm font-semibold transition-colors"
+                  href={"/auth/login" as Route}
+                  className="rounded-xl px-4 py-2 text-[13px] font-semibold transition-all duration-200"
+                  style={{ color: 'var(--hdr-muted)' }}
+                  onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--hdr-text)'; e.currentTarget.style.background = 'var(--hdr-subtle)'; }}
+                  onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--hdr-muted)'; e.currentTarget.style.background = 'transparent'; }}
                 >
                   Connexion
                 </Link>
-                <Link href="#" className="avs-btn-primary px-5 py-2 text-sm shadow-sm">
+                <Link
+                  href={"/auth/register" as Route}
+                  className="group flex items-center gap-2 rounded-xl px-5 py-2 text-[13px] font-bold text-white transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+                  style={{ background: 'var(--hdr-primary)', boxShadow: '0 2px 8px var(--hdr-primary-shadow)' }}
+                >
                   S&apos;inscrire
+                  <ArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" />
                 </Link>
-              </>
+              </div>
             )}
+
+            {/* Mobile burger */}
+            <IconBtn
+              onClick={() => setMobileOpen((v) => !v)}
+              label={mobileOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+              className="lg:hidden"
+            >
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.span
+                  key={mobileOpen ? 'close' : 'open'}
+                  initial={{ rotate: -90, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: 90, opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                >
+                  {mobileOpen ? <X size={18} /> : <Menu size={18} />}
+                </motion.span>
+              </AnimatePresence>
+            </IconBtn>
           </div>
-
-          {/* Burger mobile */}
-          <button
-            aria-label={mobileOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
-            aria-expanded={mobileOpen}
-            aria-controls="mobile-nav"
-            onClick={() => setMobileOpen((v) => !v)}
-            className="rounded-avs text-avs-accent hover:bg-avs-accent/5 flex h-10 w-10 items-center justify-center transition-colors lg:hidden"
-          >
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.span
-                key={mobileOpen ? 'close' : 'open'}
-                initial={{ rotate: -90, opacity: 0 }}
-                animate={{ rotate: 0, opacity: 1 }}
-                exit={{ rotate: 90, opacity: 0 }}
-                transition={{ duration: 0.15 }}
-              >
-                {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-              </motion.span>
-            </AnimatePresence>
-          </button>
         </div>
-      </div>
 
-      {/* ── Navigation mobile structurée ─────────────────────────────────────── */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <motion.nav
-            id="mobile-nav"
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.25, ease: 'easeInOut' }}
-            className="border-avs-accent/10 bg-avs-secondary absolute w-full overflow-hidden border-t shadow-lg lg:hidden"
-            aria-label="Navigation mobile"
-          >
-            <div className="flex max-h-[80vh] flex-col space-y-6 overflow-y-auto px-4 py-6">
-              {/* Section Produits */}
-              <div className="space-y-2">
-                <p className="text-avs-accent/40 px-3 text-xs font-bold tracking-wider uppercase">
-                  Produits
-                </p>
-                <div className="grid grid-cols-1 gap-1">
-                  {[
-                    { href: 'http://localhost:3001', label: 'Components', icon: Puzzle, desc: 'Bibliothèque UI' },
-                    { href: 'http://localhost:3002', label: 'Drop', icon: ShoppingBag, desc: 'E-commerce' },
-                    { href: 'http://localhost:3003', label: 'Behance', icon: ImageIcon, desc: 'Portfolios' },
-                    { href: 'http://localhost:3004', label: 'Mode', icon: Wand2, desc: 'Configurateur 3D' },
-                    { href: 'http://localhost:3005', label: 'Icons', icon: Box, desc: 'SVG africains' },
-                  ].map(({ href, label, icon: Icon }) => (
-                    <a
-                      key={href}
-                      href={href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className={cn(
-                        'rounded-avs flex items-center gap-3 px-3 py-3 text-sm font-semibold transition-colors',
-                        'text-avs-accent hover:bg-avs-accent/5',
-                      )}
-                    >
-                      <Icon size={18} className="text-avs-accent/50" aria-hidden />
-                      {label}
-                    </a>
-                  ))}
-                </div>
-              </div>
+        {/* ── MOBILE NAV ──────────────────────────────────────────────────── */}
+        <AnimatePresence>
+          {mobileOpen && (
+            <>
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 top-16 z-30 lg:hidden"
+                style={{ background: 'rgba(10,8,6,0.40)', backdropFilter: 'blur(4px)' }}
+                onClick={() => setMobileOpen(false)}
+              />
 
-              {/* Section Communauté */}
-              <div className="space-y-2">
-                <p className="text-avs-accent/40 px-3 text-xs font-bold tracking-wider uppercase">
-                  Communauté
-                </p>
-                <div className="grid grid-cols-1 gap-1">
-                  {[
-                    { href: '#', label: 'Artisans', icon: Users },
-                    { href: '#', label: 'Classement', icon: Award },
-                  ].map(({ href, label, icon: Icon }) => (
-                    <Link
-                      key={href}
-                      href={href}
-                      className={cn(
-                        'rounded-avs flex items-center gap-3 px-3 py-3 text-sm font-semibold transition-colors',
-                        pathname === href
-                          ? 'bg-avs-primary/10 text-avs-primary'
-                          : 'text-avs-accent hover:bg-avs-accent/5',
-                      )}
-                    >
-                      <Icon size={18} className={pathname === href ? 'text-avs-primary' : 'text-avs-accent/50'} aria-hidden />
-                      {label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
+              <motion.nav
+                id="mobile-nav"
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute z-40 w-full shadow-2xl lg:hidden"
+                style={{
+                  background: 'var(--hdr-surface)',
+                  borderBottom: '1px solid var(--hdr-border)',
+                }}
+                aria-label="Navigation mobile"
+              >
+                <div className="max-h-[80vh] overflow-y-auto px-4 py-5 space-y-5">
 
-              {/* Section Outils & Utils */}
-              <div className="space-y-2">
-                <p className="text-avs-accent/40 px-3 text-xs font-bold tracking-wider uppercase">
-                  Outils
-                </p>
-                <div className="grid grid-cols-1 gap-1">
-                  {[
-                    { href: '#', label: 'Documentation', icon: BookOpen },
-                    { href: '#', label: 'Tableau de bord', icon: LayoutDashboard },
-                  ].map(({ href, label, icon: Icon }) => (
-                    <Link
-                      key={href}
-                      href={href}
-                      className={cn(
-                        'rounded-avs flex items-center gap-3 px-3 py-3 text-sm font-semibold transition-colors',
-                        pathname.startsWith(href)
-                          ? 'bg-avs-primary/10 text-avs-primary'
-                          : 'text-avs-accent hover:bg-avs-accent/5',
-                      )}
-                    >
-                      <Icon
-                        size={18}
-                        className={
-                          pathname.startsWith(href) ? 'text-avs-primary' : 'text-avs-accent/50'
-                        }
-                        aria-hidden
-                      />
-                      {label}
-                    </Link>
-                  ))}
-                  <button
-                    onClick={toggleTheme}
-                    className={cn(
-                      'rounded-avs flex items-center gap-3 px-3 py-3 text-sm font-semibold transition-colors',
-                      'text-avs-accent hover:bg-avs-accent/5',
+                  <MobileSection title="Produits">
+                    {[
+                      { href: '#', label: 'Components', icon: Puzzle,     desc: 'Bibliothèque UI' },
+                      { href: '#', label: 'Drop',       icon: ShoppingBag, desc: 'E-commerce' },
+                      { href: '#', label: 'Behance',    icon: ImageIcon,  desc: 'Portfolios' },
+                      { href: '#', label: 'Mode',       icon: Wand2,      desc: 'Configurateur 3D' },
+                      { href: '#', label: 'Icons',      icon: Box,        desc: 'SVG africains' },
+                    ].map((item) => (
+                      <MobileLink key={item.href + item.label} {...item} onClick={() => setMobileOpen(false)} />
+                    ))}
+                  </MobileSection>
+
+                  <MobileSection title="Communauté">
+                    {[
+                      { href: '/artisans',     icon: Users, label: 'Artisans',   isActive: pathname === '/artisans' },
+                      { href: '/contributors', icon: Award, label: 'Classement', isActive: pathname === '/contributors' },
+                    ].map((item) => (
+                      <MobileLink key={item.href} {...item} onClick={() => setMobileOpen(false)} />
+                    ))}
+                  </MobileSection>
+
+                  <MobileSection title="Outils">
+                    {isAuthenticated && user && (
+                      <MobileLink href="/dashboard" icon={LayoutDashboard} label="Dashboard"
+                        isActive={pathname.startsWith('/dashboard')} onClick={() => setMobileOpen(false)} />
                     )}
-                  >
-                    {theme === 'dark' ? <Sun size={18} className="text-avs-accent/50" /> : <Moon size={18} className="text-avs-accent/50" />}
-                    {theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
-                  </button>
-                </div>
-              </div>
+                    <MobileLink href="/documentation" icon={BookOpen} label="Documentation"
+                      isActive={pathname.startsWith('/documentation')} onClick={() => setMobileOpen(false)} />
 
-              {/* Actions Auth */}
-              <div className="border-avs-accent/10 flex flex-col gap-3 border-t pt-6">
-                {!isHydrated ? (
-                  <div className="bg-avs-accent/10 rounded-avs h-10 animate-pulse" />
-                ) : isAuthenticated && user ? (
-                  <>
-                    <div className="rounded-avs border-avs-primary/20 bg-avs-primary/5 border p-3">
-                      <p className="text-avs-accent text-sm font-semibold">{user.name}</p>
-                      <p className="text-avs-accent/50 mt-0.5 text-xs capitalize">{user.role}</p>
-                    </div>
-                    <Link
-                      href="#"
-                      className="avs-btn-secondary w-full justify-center py-3 text-sm font-bold"
-                    >
-                      Mon Dashboard
-                    </Link>
+                    {/* Theme toggle in mobile */}
                     <button
-                      // onClick={logout}
-                      className="avs-btn-primary flex w-full items-center justify-center gap-2 py-3 text-sm font-bold shadow-md"
+                      onClick={toggleTheme}
+                      className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-all duration-150"
+                      style={{ color: 'var(--hdr-muted)' }}
+                      onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--hdr-subtle)'; e.currentTarget.style.color = 'var(--hdr-text)'; }}
+                      onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--hdr-muted)'; }}
                     >
-                      <LogOut size={16} />
-                      Déconnexion
+                      {theme === 'dark'
+                        ? <Sun size={17} aria-hidden />
+                        : <Moon size={17} aria-hidden />}
+                      {theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
                     </button>
-                  </>
-                ) : (
-                  <>
-                    <Link
-                      href="#"
-                      className="avs-btn-secondary w-full justify-center py-3 text-sm font-bold"
-                    >
-                      Se connecter
-                    </Link>
-                    <Link
-                      href="#"
-                      className="avs-btn-primary w-full justify-center py-3 text-sm font-bold shadow-md"
-                    >
-                      Créer un compte
-                    </Link>
-                  </>
-                )}
-              </div>
-            </div>
-          </motion.nav>
-        )}
-      </AnimatePresence>
+                  </MobileSection>
+
+                  {/* Auth */}
+                  <div className="pt-1 space-y-2" style={{ borderTop: '1px solid var(--hdr-border)' }}>
+                    {!isHydrated ? (
+                      <div className="h-10 animate-pulse rounded-xl" style={{ background: 'var(--hdr-subtle)' }} />
+                    ) : isAuthenticated && user ? (
+                      <>
+                        {/* User card */}
+                        <div
+                          className="flex items-center gap-3 rounded-xl p-3.5"
+                          style={{ background: 'var(--hdr-primary-10)', border: '1px solid var(--hdr-primary-20)' }}
+                        >
+                          <div className="avs-pattern-kente-royale relative h-9 w-9 shrink-0 overflow-hidden rounded-full">
+                            <div className="absolute inset-0 flex items-center justify-center bg-black/25">
+                              <span className="font-display text-sm font-black text-white">
+                                {user.name.charAt(0).toUpperCase()}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="min-w-0">
+                            <p className="truncate text-sm font-bold" style={{ color: 'var(--hdr-text)' }}>{user.name}</p>
+                            <p className="truncate text-xs capitalize" style={{ color: 'var(--hdr-hint)' }}>{user.role}</p>
+                          </div>
+                          <span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-emerald-500" />
+                        </div>
+                        <button
+                          onClick={() => { setMobileOpen(false); void logout(); }}
+                          className="flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold text-white transition-all duration-200 hover:opacity-90"
+                          style={{ background: 'var(--hdr-primary)' }}
+                        >
+                          <LogOut size={15} /> Déconnexion
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <Link
+                          href={"/auth/login" as Route}
+                          onClick={() => setMobileOpen(false)}
+                          className="flex w-full items-center justify-center rounded-xl py-3 text-sm font-bold transition-all duration-200"
+                          style={{ border: '1px solid var(--hdr-border-md)', color: 'var(--hdr-text)' }}
+                        >
+                          Se connecter
+                        </Link>
+                        <Link
+                          href={"/auth/register" as Route}
+                          onClick={() => setMobileOpen(false)}
+                          className="flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold text-white transition-all duration-200 hover:opacity-90"
+                          style={{ background: 'var(--hdr-primary)' }}
+                        >
+                          Créer un compte <ArrowRight size={14} />
+                        </Link>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </motion.nav>
+            </>
+          )}
+        </AnimatePresence>
+      </header>
 
       <PremiumModal isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} />
-    </header>
+    </>
   );
 }
 

@@ -14,6 +14,7 @@ import {
   Star,
 } from 'lucide-react';
 import { cn } from '@buni/ui';
+import { Route } from 'next';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DATA
@@ -116,8 +117,7 @@ const FEATURES = [
     title: 'Bibliothèque de motifs',
     desc: '+1 200 motifs par région, époque et symbolisme. SVG, PNG, JSON, CSS.',
     descColor: 'rgba(245,235,224,.6)',
-    // href: '/patterns',
-    href:'#',
+    href: '/patterns',
     color: '#C0573E',
   },
   {
@@ -126,8 +126,7 @@ const FEATURES = [
     title: 'Design tokens culturels',
     desc: 'Palettes de pigments naturels africains. Tailwind, Figma, CSS Variables.',
     descColor: 'rgba(245,235,224,.6)',
-    // href: '/colors',
-    href:'#',
+    href: '/colors',
     color: '#D4A017',
   },
   {
@@ -136,8 +135,7 @@ const FEATURES = [
     title: "Communauté d'artisans",
     desc: '312 artisans vérifiés valident chaque entrée. La source primaire, toujours.',
     descColor: 'rgba(245,235,224,.6)',
-    // href: '/artisans',
-    href:'#',
+    href: '/artisans',
     color: '#4A6741',
   },
   {
@@ -146,8 +144,7 @@ const FEATURES = [
     title: 'Composants & Documentation',
     desc: 'Bibliothèque UI React, templates, icônes SVG. Copy & Paste. Sans compte.',
     descColor: 'rgba(245,235,224,.6)',
-    // href: '/documentation',
-    href:'#',
+    href: '/documentation',
     color: '#2A4A6B',
   },
 ] as const;
@@ -436,7 +433,7 @@ export default function HomePage() {
               {/* CTAs */}
               <motion.div {...fadeUp(0.3)} className="mt-9 flex flex-wrap gap-3">
                 <Link
-                  href="#"
+                  href={"/patterns" as Route}
                   className="group rounded-avs bg-avs-primary text-avs-secondary relative inline-flex items-center gap-2 overflow-hidden px-7 py-3.5 text-sm font-bold shadow-[3px_3px_0_rgba(192,87,62,.4)] transition-all hover:-translate-y-px hover:shadow-[5px_5px_0_rgba(192,87,62,.4)]"
                 >
                   Explorer les motifs
@@ -446,7 +443,7 @@ export default function HomePage() {
                   />
                 </Link>
                 <Link
-                  href="#"
+                  href={"/components" as Route}
                   className="rounded-avs border-avs-secondary/12 text-avs-secondary hover:border-avs-secondary/28 hover:text-avs-secondary inline-flex items-center gap-2 border px-7 py-3.5 text-sm font-semibold transition-all"
                 >
                   <Star size={13} className="text-avs-primary" aria-hidden />
@@ -550,7 +547,7 @@ export default function HomePage() {
           <div className="mb-8 flex items-center justify-between">
             <SectionLabel label="Patrimoine · Motifs en vedette" light />
             <Link
-              href="#"
+              href={"/patterns" as Route}
               className="text-avs-secondary hover:text-avs-primary flex items-center gap-1.5 text-xs font-semibold transition-colors"
             >
               Tout voir <ArrowRight size={12} />
@@ -707,7 +704,7 @@ export default function HomePage() {
             {FEATURES.map(({ num, Icon, title, desc, href, color }) => (
               <motion.div key={title} variants={itemFade}>
                 <Link
-                  href={href}
+                  href={href as Route}
                   className="group flex items-center gap-6 py-7 transition-all hover:pl-3 lg:gap-8 lg:py-8"
                 >
                   {/* Numéro éditorial */}
@@ -981,14 +978,14 @@ export default function HomePage() {
             className="mt-10 flex flex-wrap items-center justify-center gap-4"
           >
             <Link
-              href="#"
+              href={"/auth/register" as Route}
               className="group rounded-avs bg-avs-primary text-avs-secondary relative inline-flex items-center gap-2 overflow-hidden px-9 py-4 text-sm font-bold shadow-[3px_3px_0_rgba(192,87,62,.35)] transition-all hover:-translate-y-px hover:shadow-[5px_5px_0_rgba(192,87,62,.35)]"
             >
               Rejoindre gratuitement
               <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
             </Link>
             <Link
-              href="#"
+              href={"/patterns" as Route}
               className="rounded-avs border-avs-secondary/15 text-avs-secondary hover:border-avs-secondary/28 hover:text-avs-secondary inline-flex items-center gap-2 border px-9 py-4 text-sm font-semibold transition-all"
             >
               Explorer d&apos;abord

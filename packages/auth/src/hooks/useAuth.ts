@@ -2,7 +2,16 @@
 import { useCallback } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 
-export const useAuth = () => {
+interface UseAuthReturn {
+  user: any | null;
+  token: string | null;
+  isHydrated: boolean;
+  isAuthenticated: boolean;
+  isAdmin: boolean;
+  isCurator: boolean;
+}
+
+export const useAuth = (): UseAuthReturn => {
   const { user, isHydrated, token, isAdmin, isCurator } = useAuthStore();
   return {
     user, token, isHydrated,

@@ -8,27 +8,27 @@ import type { Pattern, PatternFilters, PatternListResponse } from '../types';
 export const patternService = {
 
   list: (filters: PatternFilters = {}) =>
-    get<PatternListResponse>('/api/avs/patterns', filters as Record<string, unknown>),
+    get<PatternListResponse>('/api/v1/patterns', filters as Record<string, unknown>),
 
   bySlug: (slug: string) =>
-    get<Pattern>(`/api/avs/patterns/${slug}`),
+    get<Pattern>(`/api/v1/patterns/${slug}`),
 
   featured: () =>
-    get<Pattern[]>('/api/avs/patterns?featured=true&perPage=6'),
+    get<Pattern[]>('/api/v1/patterns?featured=true&perPage=6'),
 
   create: (data: Partial<Pattern>) =>
-    post<Pattern>('/api/avs/patterns', data),
+    post<Pattern>('/api/v1/patterns', data),
 
   update: (id: string, data: Partial<Pattern>) =>
-    put<Pattern>(`/api/avs/patterns/${id}`, data),
+    put<Pattern>(`/api/v1/patterns/${id}`, data),
 
   remove: (id: string) =>
-    del<void>(`/api/avs/patterns/${id}`),
+    del<void>(`/api/v1/patterns/${id}`),
 
   publish: (id: string) =>
-    post<Pattern>(`/api/avs/patterns/${id}/publish`),
+    post<Pattern>(`/api/v1/patterns/${id}/publish`),
 
   trackView: (id: string): void => {
-    void post(`/api/avs/patterns/${id}/view`).catch(() => {/* silencieux */});
+    void post(`/api/v1/patterns/${id}/view`).catch(() => {/* silencieux */});
   },
 };

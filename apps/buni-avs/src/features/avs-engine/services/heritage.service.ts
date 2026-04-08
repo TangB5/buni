@@ -41,38 +41,38 @@ export const heritageService = {
 
   // Lister avec filtres
   list: (query: HeritageQuery = {}) =>
-    get<HeritageListResponse>('/heritage', query as Record<string, unknown>),
+    get<HeritageListResponse>('/api/v1/patterns', query as Record<string, unknown>),
 
   // Récupérer par slug
   bySlug: (slug: string) =>
-    get<HeritagePiece>(`/heritage/${slug}`),
+    get<HeritagePiece>(`/api/v1/patterns/${slug}`),
 
   // Récupérer par ID
   byId: (id: string) =>
-    get<HeritagePiece>(`/heritage/id/${id}`),
+    get<HeritagePiece>(`/api/v1/patterns/id/${id}`),
 
   // Pièces en vedette
   featured: () =>
-    get<HeritagePiece[]>('/heritage/featured'),
+    get<HeritagePiece[]>('/api/v1/patterns?featured=true&perPage=6'),
 
   // Patrimoine camerounais spécifiquement
   cameroon: () =>
-    get<HeritagePiece[]>('/heritage?country=CM&perPage=12'),
+    get<HeritagePiece[]>('/api/v1/patterns?country=CM&perPage=12'),
 
   // Créer une pièce
   create: (data: Omit<HeritagePiece, 'id' | 'createdAt'>) =>
-    post<HeritagePiece>('/heritage', data),
+    post<HeritagePiece>('/api/v1/patterns', data),
 
   // Mettre à jour
   update: (id: string, data: Partial<HeritagePiece>) =>
-    put<HeritagePiece>(`/heritage/${id}`, data),
+    put<HeritagePiece>(`/api/v1/patterns/${id}`, data),
 
   // Supprimer
   remove: (id: string) =>
-    del<void>(`/heritage/${id}`),
+    del<void>(`/api/v1/patterns/${id}`),
 
   // Incrémenter les vues (fire-and-forget)
   trackView: (id: string): void => {
-    void post(`/heritage/${id}/view`).catch(() => {/* silencieux */});
+    void post(`/api/v1/patterns/${id}/view`).catch(() => {/* silencieux */});
   },
 };

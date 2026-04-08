@@ -1,7 +1,8 @@
-import type { Metadata } from 'next';
+import type { Metadata, Route } from 'next';
 import Link from 'next/link';
 import { ArrowLeft, Download, Share2, MapPin, Eye, Globe, Tag } from 'lucide-react';
-import { fetchPatternBySlug } from '@/lib/api';
+import { fetchPatternBySlug } from 'apps/buni-avs/src/lib/api';
+
 
 // ── Metadata dynamique ────────────────────────────────────────────────────────
 export async function generateMetadata({
@@ -34,7 +35,7 @@ export default async function PatternDetailPage({ params }: { params: Promise<{ 
       <div className="border-avs-accent/10 bg-avs-secondary border-b px-4 py-4 sm:px-6 lg:px-8">
         <div className="text-avs-accent/50 mx-auto flex max-w-7xl items-center gap-2 text-sm">
           <Link
-            href="/patterns"
+            href={"/patterns" as Route}
             className="text-avs-primary flex items-center gap-1.5 font-medium hover:underline"
           >
             <ArrowLeft size={14} aria-hidden />

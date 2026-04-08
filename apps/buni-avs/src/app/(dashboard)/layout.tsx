@@ -1,6 +1,7 @@
 'use client';
 
-import { useAuth } from '@buni/auth/hooks';
+import { useAuth } from '@buni/auth';
+import { Route } from 'next';
 import { useRouter } from 'next/navigation';
 import { ReactNode, useEffect } from 'react';
 
@@ -14,7 +15,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   useEffect(() => {
     if (isHydrated && !isAuthenticated) {
-      router.push('/auth/login');
+      const params = new URLSearchParams({ expired: 'true' });
+      router.push('/auth/login?' + params.toString() as Route);
     }
   }, [isHydrated, isAuthenticated, router]);
 

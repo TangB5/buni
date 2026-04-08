@@ -4,10 +4,12 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Mail, AlertCircle } from 'lucide-react';
-import { useLogin } from '@buni/auth/hooks';
-import { BuniLoader } from '@/components/ui/BuniLoader';
+
+import { BuniLoader } from '@buni/ui';
 import { z } from 'zod';
 import 'primeicons/primeicons.css';
+import { useLogin } from 'apps/buni-avs/src/features/auth/hooks/useAuth';
+import { Route } from 'next';
 
 // ── Validation ─────────────────────────────────────────────────────────────────
 
@@ -100,7 +102,7 @@ export default function LoginPage() {
           <h1 className="font-display text-avs-accent text-3xl font-bold">Connexion</h1>
           <p className="text-avs-accent/55 mt-1 text-sm">
             Pas encore de compte ?{' '}
-            <Link href="/auth/register" className="text-avs-primary font-semibold hover:underline">
+            <Link href={"/auth/register" as Route} className="text-avs-primary font-semibold hover:underline">
               S&apos;inscrire
             </Link>
           </p>
@@ -168,7 +170,7 @@ export default function LoginPage() {
                 >
                   Mot de passe
                 </label>
-                <Link href="/auth/forgot" className="text-avs-primary text-xs hover:underline">
+                <Link href={"/auth/forgot" as Route} className="text-avs-primary text-xs hover:underline">
                   Oublié ?
                 </Link>
               </div>
@@ -249,11 +251,11 @@ export default function LoginPage() {
 
           <p className="text-avs-accent/35 mt-8 text-center text-xs leading-relaxed">
             En vous connectant, vous acceptez nos{' '}
-            <Link href="/terms" className="hover:text-avs-primary underline">
+            <Link href={"/terms" as Route} className="hover:text-avs-primary underline">
               conditions d&apos;utilisation
             </Link>{' '}
             et notre{' '}
-            <Link href="/privacy" className="hover:text-avs-primary underline">
+            <Link href={"/privacy" as Route} className="hover:text-avs-primary underline">
               politique de confidentialit&eacute;
             </Link>
             .

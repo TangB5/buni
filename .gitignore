@@ -12,3 +12,5 @@ out
 *.tsbuildinfo
 coverage
 .storybook-out
+FINAL_STATUS.md
+documentation.md

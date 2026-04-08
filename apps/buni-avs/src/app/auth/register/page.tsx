@@ -4,10 +4,12 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, AlertCircle, Check } from 'lucide-react';
-import { useRegister } from '@buni/auth';
-import  BuniLoader  from '@buni/ui';
+
+import { BuniLoader } from '@buni/ui';
 import 'primeicons/primeicons.css';
 import { z } from 'zod';
+import { Route } from 'next';
+import { useRegister } from 'apps/buni-avs/src/features/auth/hooks/useAuth';
 
 // ── ROLES CORRECTS ─────────────────────────────
 const roles = ['viewer', 'contributor', 'curator', 'admin'] as const;
@@ -121,6 +123,11 @@ export default function RegisterPage() {
 
   return (
     <div className="flex min-h-[calc(100vh-4rem)] items-stretch">
+      {isPending && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <BuniLoader />
+        </div>
+      )}
       {/* ── LEFT PANEL ───────────────────────────── */}
       <div className="avs-pattern-kente relative hidden w-[45%] overflow-hidden lg:block">
         <div className="from-avs-accent/85 to-avs-accent/97 absolute inset-0 bg-gradient-to-br" />
@@ -163,7 +170,7 @@ export default function RegisterPage() {
 
           <p className="text-avs-accent/55 mt-1 text-sm">
             Vous avez déjà un compte ?{' '}
-            <Link href="/auth/login" className="text-avs-primary font-semibold">
+            <Link href={"/auth/login" as Route} className="text-avs-primary font-semibold">
               Se connecter
             </Link>
           </p>
@@ -246,13 +253,7 @@ export default function RegisterPage() {
               disabled={isPending}
               className="rounded-avs bg-avs-primary text-avs-secondary w-full py-3 font-bold"
             >
-              {isPending ? (
-                <span className="flex items-center justify-center gap-2">
-                  BuniLoader  Création...
-                </span>
-              ) : (
-                'Créer un compte'
-              )}
+              {isPending ? 'Création...' : 'Créer un compte'}
             </button>
           </form>
         </motion.div>

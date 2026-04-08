@@ -1,5 +1,6 @@
 'use client';
 
+import * as React from 'react';
 import { motion } from 'framer-motion';
 
 interface BuniLoaderProps {
@@ -7,7 +8,7 @@ interface BuniLoaderProps {
   showText?: boolean;
 }
 
-export function BuniLoader({ size = 80, showText = true }: BuniLoaderProps) {
+export const BuniLoader: React.FC<BuniLoaderProps> = ({ size = 80, showText = true }) => {
   // Couleurs AVS
   const primary = '#C0573E';   // Terre rouge
   const accent = '#1D1D1B';    // Ébène
@@ -113,4 +114,4 @@ export function BuniLoader({ size = 80, showText = true }: BuniLoaderProps) {
       )}
     </div>
   );
-}
+};
