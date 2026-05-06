@@ -1,720 +1,217 @@
+/* ============================================================
+   AVS - African Visual Standard
+   Tailwind CSS 4 — version FIXED
+   ============================================================ */
+
 @import "tailwindcss";
 @import 'primeicons/primeicons.css';
-/* AVS - African Visual Standard - Global Styles */
 
-/* Imports theme */
-@import '../theme/tokens/avs-tokens.css';
-@import '../theme/patterns/patterns.css';
+/* ── 1. DESIGN TOKENS ─────────────────────────────────────── */
 
-/* Reset & Base */
+@theme {
+  --color-avs-primary:        #C0573E;
+  --color-avs-primary-light:  #D4755F;
+  --color-avs-primary-dark:   #9E3D27;
+
+  --color-avs-secondary:      #F5EBE0;
+  --color-avs-secondary-dark: #E8D5C0;
+
+  --color-avs-accent:         #1D1D1B;
+  --color-avs-accent-muted:   #3A3A38;
+
+  --color-avs-kente:  #D4A017;
+  --color-avs-indigo: #2A4A6B;
+  --color-avs-earth:  #8B4513;
+  --color-avs-ndop:   #4A6741;
+  --color-avs-raffia: #C8A96E;
+
+  --font-display: Georgia, serif;
+  --font-body:    system-ui, sans-serif;
+  --font-mono:    monospace;
+
+  --radius-avs-sm: 0.375rem;
+  --radius-avs-lg: 1.5rem;
+  --radius-avs-xl: 3rem;
+
+  --ease-avs: 0.2s ease-in-out;
+  
+}
+
+/* ── 2. VARIABLES ─────────────────────────────────────────── */
+
+:root {
+  --avs-shadow-sm: 3px 3px 0px 0px var(--color-avs-accent);
+  --avs-shadow-md: 5px 5px 0px 0px var(--color-avs-primary);
+  --avs-shadow-lg: 8px 8px 0px 0px var(--color-avs-accent);
+}
+
+/* ── 3. BASE ──────────────────────────────────────────────── */
+
 @layer base {
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
-  }
-
-  html {
-    scroll-behavior: smooth;
-    -webkit-text-size-adjust: 100%;
-    text-size-adjust: 100%;
-  }
+  *, *::before, *::after { box-sizing: border-box; }
 
   body {
-    font-family: var(--font-body), system-ui, sans-serif;
-    background-color: var(--avs-secondary);
-    color: var(--avs-accent);
+    font-family: var(--font-body);
+    background-color: var(--color-avs-secondary);
+    color: var(--color-avs-accent);
     line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Headings - display font */
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-display), Georgia, serif;
-    line-height: 1.2;
-    letter-spacing: -0.01em;
+  h1,h2,h3,h4,h5,h6 {
+    font-family: var(--font-display);
   }
 
-  /* Code - mono font */
-  code, kbd, pre, samp {
-    font-family: var(--font-mono), monospace;
-    font-size: 0.875em;
-  }
-
-  /* Focus visible global */
   :focus-visible {
-    outline: 2px solid var(--avs-primary);
+    outline: 2px solid var(--color-avs-primary);
     outline-offset: 2px;
-    border-radius: 0.375rem;
-  }
-
-  /* Text selection */
-  ::selection {
-    background-color: rgba(192, 87, 62, 0.2);
-    color: var(--avs-primary);
-  }
-
-  /* Responsive media by default */
-  img, svg, video {
-    max-width: 100%;
-    height: auto;
   }
 }
 
-/* Scrollbar utilities */
-@layer utilities {
-  .scrollbar-none {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  .scrollbar-none::-webkit-scrollbar {
-    display: none;
-  }
+/* ── 4. COMPOSANTS ───────────────────────────────────────── */
 
-  .scrollbar-thin {
-    scrollbar-width: thin;
-    scrollbar-color: var(--avs-primary) transparent;
-  }
-  .scrollbar-thin::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
-  }
-  .scrollbar-thin::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  .scrollbar-thin::-webkit-scrollbar-thumb {
-    background-color: var(--avs-primary);
-    border-radius: 9999px;
-  }
-
-  /* Pattern overlay helper */
-  .avs-pattern-overlay {
-    position: relative;
-    isolation: isolate;
-  }
-  .avs-pattern-overlay::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: inherit;
-    opacity: 0.6;
-    z-index: -1;
-  }
-
-  /* Text gradient AVS */
-  .text-gradient-avs {
-    background: linear-gradient(135deg, var(--avs-primary) 0%, var(--avs-kente) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  /* Line clamping */
-  .line-clamp-1 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 1; }
-  .line-clamp-2 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
-  .line-clamp-3 { overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
-
-  /* Standardized transition */
-  .transition-avs {
-    transition: all var(--transition-fast);
-  }
-
-  /* Text color utilities */
-  .text-avs-primary {
-    color: #C0573E;
-  }
-
-  .text-avs-secondary {
-    color: #F5EBE0;
-  }
-
-  .text-avs-accent {
-    color: #1D1D1B;
-  }
-
-  .text-avs-muted {
-    color: #3A3A38;
-  }
-
-  .text-avs-kente {
-    color: #D4A017;
-  }
-
-  .text-avs-indigo {
-    color: #2A4A6B;
-  }
-
-  .text-avs-earth {
-    color: #8B4513;
-  }
-
-  .text-avs-ndop {
-    color: #4A6741;
-  }
-
-  .text-avs-raffia {
-    color: #C8A96E;
-  }
-
-  /* Background color utilities */
-  .bg-avs-primary {
-    background-color: #C0573E;
-  }
-
-  .bg-avs-primary-light {
-    background-color: #D4755F;
-  }
-
-  .bg-avs-primary-dark {
-    background-color: #9E3D27;
-  }
-
-  .bg-avs-secondary {
-    background-color: #F5EBE0;
-  }
-
-  .bg-avs-secondary-dark {
-    background-color: #E8D5C0;
-  }
-
-  .bg-avs-accent {
-    background-color: #1D1D1B;
-  }
-
-  .bg-avs-accent-muted {
-    background-color: #3A3A38;
-  }
-
-  .bg-avs-kente {
-    background-color: #D4A017;
-  }
-
-  .bg-avs-indigo {
-    background-color: #2A4A6B;
-  }
-
-  .bg-avs-earth {
-    background-color: #8B4513;
-  }
-
-  .bg-avs-ndop {
-    background-color: #4A6741;
-  }
-
-  .bg-avs-raffia {
-    background-color: #C8A96E;
-  }
-
-  /* Border color utilities */
-  .border-avs-primary {
-    border-color: #C0573E;
-  }
-
-  .border-avs-secondary {
-    border-color: #F5EBE0;
-  }
-
-  .border-avs-accent {
-    border-color: #1D1D1B;
-  }
-
-  .border-avs-accent-muted {
-    border-color: #3A3A38;
-  }
-
-  .border-avs-kente {
-    border-color: #D4A017;
-  }
-
-  .border-avs-indigo {
-    border-color: #2A4A6B;
-  }
-
-  .border-avs-earth {
-    border-color: #8B4513;
-  }
-
-  .border-avs-ndop {
-    border-color: #4A6741;
-  }
-
-  .border-avs-raffia {
-    border-color: #C8A96E;
-  }
-
-  /* Shadow utilities */
-  .shadow-avs {
-    box-shadow: 3px 3px 0px 0px #1D1D1B;
-  }
-
-  .shadow-avs-md {
-    box-shadow: 5px 5px 0px 0px #C0573E;
-  }
-
-  .shadow-avs-lg {
-    box-shadow: 8px 8px 0px 0px #1D1D1B;
-  }
-
-  .shadow-avs-primary {
-    box-shadow: 3px 3px 0px 0px #C0573E;
-  }
-
-  .shadow-avs-kente {
-    box-shadow: 3px 3px 0px 0px #D4A017;
-  }
-
-  .shadow-avs-indigo {
-    box-shadow: 3px 3px 0px 0px #2A4A6B;
-  }
-
-  /* Rounded radius utilities */
-  .rounded-avs {
-    border-radius: 0.375rem;
-  }
-
-  .rounded-avs-lg {
-    border-radius: 1.5rem;
-  }
-
-  .rounded-avs-xl {
-    border-radius: 3rem;
-  }
-
-  .rounded-t-avs {
-    border-top-left-radius: 0.375rem;
-    border-top-right-radius: 0.375rem;
-  }
-
-  /* Animation utilities */
-  .avs-spin {
-    animation: avs-spin 1s linear infinite;
-  }
-
-  .avs-pulse {
-    animation: avs-pulse 2s ease-in-out infinite;
-  }
-
-  .avs-engine {
-    animation: avs-spin 0.8s linear infinite;
-  }
-}
-
-/* Global components */
 @layer components {
 
-  /* Centered container */
   .avs-container {
     @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
   }
 
-  /* Section padding */
   .avs-section {
     @apply px-4 py-16 sm:px-6 sm:py-20 lg:px-8 lg:py-24;
   }
 
-  /* Badge */
   .avs-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.125rem 0.625rem;
-    font-size: 10px;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 0.3em;
-    border-radius: 0.375rem;
+    @apply inline-flex items-center px-2.5 py-0.5
+           text-[10px] font-bold uppercase tracking-[0.3em];
+    border-radius: var(--radius-avs-sm);
   }
 
-  /* Primary button */
+  /* ✅ BASE BUTTON (plus utilisé dans @apply !) */
+  .avs-btn {
+    @apply inline-flex items-center justify-center gap-2
+           px-5 py-2.5 text-sm font-bold
+           transition-all duration-200 cursor-pointer border-0
+           disabled:pointer-events-none disabled:opacity-50;
+    border-radius: var(--radius-avs-sm);
+  }
+
+  /* ✅ PRIMARY (SANS @apply avs-btn) */
   .avs-btn-primary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    background-color: #C0573E;
-    color: #F5EBE0;
-    padding: 0.625rem 1.25rem;
-    font-size: 0.875rem;
-    font-weight: bold;
-    border-radius: 0.375rem;
-    box-shadow: 3px 3px 0px 0px #1D1D1B;
-    transition: all 0.2s ease;
-    border: none;
-    cursor: pointer;
+    @apply inline-flex items-center justify-center gap-2
+           px-5 py-2.5 text-sm font-bold
+           transition-all duration-200 cursor-pointer border-0;
+
+    background-color: var(--color-avs-primary);
+    color: var(--color-avs-secondary);
+    border-radius: var(--radius-avs-sm);
+    box-shadow: var(--avs-shadow-sm);
   }
 
   .avs-btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 5px 5px 0px 0px #C0573E;
+    box-shadow: var(--avs-shadow-md);
   }
 
-  .avs-btn-primary:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 2px #F5EBE0, 0 0 0 4px #C0573E;
-  }
-
-  .avs-btn-primary:disabled {
-    pointer-events: none;
-    opacity: 0.5;
-  }
-
-  /* Secondary button */
+  /* SECONDARY */
   .avs-btn-secondary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    border: 2px solid rgba(29, 29, 27, 0.2);
-    color: #1D1D1B;
-    padding: 0.625rem 1.25rem;
-    font-size: 0.875rem;
-    font-weight: 600;
-    border-radius: 0.375rem;
-    transition: all 0.2s ease;
+    @apply inline-flex items-center justify-center gap-2
+           px-5 py-2.5 text-sm font-bold
+           transition-all duration-200 cursor-pointer
+           border-2;
+
     background: transparent;
-    cursor: pointer;
+    color: var(--color-avs-accent);
+    border-color: rgba(29,29,27,0.2);
+    border-radius: var(--radius-avs-sm);
   }
 
   .avs-btn-secondary:hover {
-    border-color: #C0573E;
-    color: #C0573E;
+    border-color: var(--color-avs-primary);
+    color: var(--color-avs-primary);
   }
 
-  .avs-btn-secondary:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 2px #F5EBE0, 0 0 0 4px #C0573E;
-  }
-
-  .avs-btn-secondary:disabled {
-    pointer-events: none;
-    opacity: 0.5;
-  }
-
-  /* Input field */
+  /* INPUT */
   .avs-input {
-    width: 100%;
-    border: 2px solid rgba(29, 29, 27, 0.15);
-    background-color: white;
-    padding: 0.625rem 1rem;
-    font-size: 0.875rem;
-    color: #1D1D1B;
-    border-radius: 0.375rem;
-    transition: border-color 0.2s ease;
-  }
+    @apply w-full px-4 py-2.5 text-sm bg-white
+           border-2 transition-colors duration-200;
 
-  .avs-input::placeholder {
-    color: rgba(29, 29, 27, 0.35);
+    border-color: rgba(29,29,27,0.15);
+    color: var(--color-avs-accent);
+    border-radius: var(--radius-avs-sm);
   }
 
   .avs-input:focus {
-    border-color: #C0573E;
+    border-color: var(--color-avs-primary);
     outline: none;
   }
 
-  .avs-input-error {
-    border-color: #f87171;
-  }
-
-  .avs-input-error:focus {
-    border-color: #f87171;
-  }
-
-  /* Card */
+  /* CARD */
   .avs-card {
-    border: 1px solid rgba(29, 29, 27, 0.1);
-    background-color: #F5EBE0;
-    border-radius: 1.5rem;
-    box-shadow: 3px 3px 0px 0px #1D1D1B;
+    @apply border;
+
+    background-color: var(--color-avs-secondary);
+    border-color: rgba(29,29,27,0.1);
+    border-radius: var(--radius-avs-lg);
+    box-shadow: var(--avs-shadow-sm);
   }
 
-  /* Form label */
   .avs-label {
-    display: block;
-    font-size: 12px;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: rgba(29, 29, 27, 0.5);
-    margin-bottom: 0.375rem;
+    @apply block text-[12px] font-bold uppercase tracking-wide mb-1.5;
+    color: rgba(29,29,27,0.5);
   }
 
-  /* Divider */
   .avs-divider {
-    height: 1px;
-    width: 100%;
-    background-color: rgba(29, 29, 27, 0.1);
+    @apply h-px w-full;
+    background: rgba(29,29,27,0.1);
   }
 }
 
-/* Animations */
+/* ── 5. UTILITIES ─────────────────────────────────────────── */
+
+@layer utilities {
+
+  .shadow-avs    { box-shadow: var(--avs-shadow-sm); }
+  .shadow-avs-md { box-shadow: var(--avs-shadow-md); }
+  .shadow-avs-lg { box-shadow: var(--avs-shadow-lg); }
+
+  .text-gradient-avs {
+    background: linear-gradient(
+      135deg,
+      var(--color-avs-primary),
+      var(--color-avs-kente)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .animate-avs-spin   { animation: avs-spin 1s linear infinite; }
+}
+
+/* ── 6. ANIMATIONS ───────────────────────────────────────── */
+
 @keyframes avs-spin {
   to { transform: rotate(360deg); }
 }
 
-@keyframes avs-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+/* ── 7. DARK MODE ───────────────────────────────────────── */
+
+.dark body {
+  background-color: #111110;
+  color: #ece8e1;
 }
 
-@keyframes avs-bounce-subtle {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
+.dark .avs-card {
+  background: #1a1917;
+  border-color: rgba(255,255,255,0.1);
 }
 
-.animate-avs-spin   { animation: avs-spin 1s linear infinite; }
-.animate-avs-pulse  { animation: avs-pulse 2s ease-in-out infinite; }
-.animate-avs-bounce { animation: avs-bounce-subtle 2s ease-in-out infinite; }
-
-/* Radix UI overrides */
-[data-radix-popper-content-wrapper] {
-  z-index: 50 !important;
+.dark .avs-input {
+  background: #1a1917;
+  color: white;
+  border-color: rgba(255,255,255,0.15);
 }
 
-/* Accordion animation */
-@keyframes accordion-down {
-  from { height: 0; opacity: 0; }
-  to { height: var(--radix-accordion-content-height); opacity: 1; }
-}
-@keyframes accordion-up {
-  from { height: var(--radix-accordion-content-height); opacity: 1; }
-  to { height: 0; opacity: 0; }
-}
+/* ── 8. MISC ───────────────────────────────────────────── */
 
-[data-state='open'] .accordion-content  { animation: accordion-down 0.25s ease-out; }
-[data-state='closed'] .accordion-content{ animation: accordion-up 0.2s ease-in; }
-
-/* Toast / Feedback */
 .avs-toast {
-  position: fixed;
-  bottom: 1.5rem;
-  right: 1.5rem;
-  z-index: 9999;
+  @apply fixed bottom-6 right-6 z-[9999];
 }
-
-/* Print */
-@media print {
-  .no-print { display: none !important; }
-  body { background: white; color: black; }
-}
-
-/* Light Mode Overrides */
-html.light {
-  /* Utility classes light mode adjustments */
-  .bg-avs-secondary {
-    @apply bg-white;
-  }
-  
-  .border-avs-secondary {
-    @apply border-gray-100;
-  }
-  
-  .text-avs-secondary {
-    @apply text-gray-50;
-  }
-  
-  /* Light mode specific utilities */
-  .bg-avs-accent\/5 {
-    @apply bg-gray-100;
-  }
-  
-  .bg-avs-accent\/10 {
-    @apply bg-gray-200;
-  }
-  
-  .bg-avs-primary\/5 {
-    @apply bg-orange-50;
-  }
-  
-  .bg-avs-primary\/8 {
-    @apply bg-orange-100;
-  }
-  
-  .border-avs-accent\/10 {
-    @apply border-gray-200;
-  }
-  
-  .border-avs-accent\/8 {
-    @apply border-gray-100;
-  }
-}
-
-html.light body {
-  background-color: #FFFFFF;
-  color: var(--avs-accent);
-}
-
-html.light .bg-avs-secondary {
-  background-color: #FFFFFF;
-}
-
-html.light .avs-pattern-kente {
-  background-color: var(--avs-accent);
-}
-
-html.light .avs-card {
-  background-color: #FFFFFF;
-  border-color: rgba(29, 29, 27, 0.1);
-}
-
-html.light .avs-btn-secondary {
-  border-color: rgba(29, 29, 27, 0.15);
-  color: var(--avs-accent);
-}
-
-html.light .avs-btn-secondary:hover {
-  border-color: var(--avs-primary);
-  background-color: rgba(192, 87, 62, 0.05);
-}
-
-html.light .avs-input {
-  background-color: #FFFFFF;
-  border-color: rgba(29, 29, 27, 0.15);
-  color: var(--avs-accent);
-}
-
-html.light .shadow-sm {
-  box-shadow: 0 1px 2px 0 rgba(29, 29, 27, 0.1) !important;
-}
-
-/* ════════════════════════════════════════════════════════════════════════════
-   LIGHT MODE - HOMEPAGE SPECIFIC STYLES
-   ════════════════════════════════════════════════════════════════════════════ */
-
-/* Dark section backgrounds converted to light */
-html.light [class*="bg-[#0A0806]"],
-html.light [class*="bg-[#0C0906]"] {
-  background-color: #F9F9F9 !important;
-}
-
-/* Gradient overlays in light mode */
-html.light [style*="from-\[#0A0806\]"] {
-  background: linear-gradient(to top, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.5), transparent) !important;
-}
-
-/* Features section */
-html.light section {
-  background-color: inherit;
-}
-
-/* Pattern cards styling */
-html.light .rounded-avs-xl {
-  border-color: rgba(29, 29, 27, 0.1) !important;
-  box-shadow: 0 24px 64px rgba(29, 29, 27, 0.08) !important;
-}
-
-html.light .rounded-avs-xl:hover {
-  box-shadow: 0 32px 96px rgba(29, 29, 27, 0.12) !important;
-}
-
-/* Text visibility in light mode */
-html.light [class*="text-avs-secondary"] {
-  color: var(--avs-accent) !important;
-}
-
-html.light [class*="text-avs-accent"] {
-  color: var(--avs-accent);
-}
-
-html.light [class*="text-avs-primary"] {
-  color: var(--avs-primary);
-}
-
-/* Opacity adjustments for light mode */
-html.light [class*="text-avs-accent\/50"] {
-  color: rgba(29, 29, 27, 0.65) !important;
-}
-
-html.light [class*="text-avs-accent\/60"] {
-  color: rgba(29, 29, 27, 0.75) !important;
-}
-
-html.light [class*="text-avs-accent\/70"] {
-  color: rgba(29, 29, 27, 0.8) !important;
-}
-
-/* Background opacity adjustments */
-html.light [class*="bg-avs-accent\/5"] {
-  background-color: rgba(29, 29, 27, 0.05) !important;
-}
-
-html.light [class*="bg-avs-accent\/10"] {
-  background-color: rgba(29, 29, 27, 0.08) !important;
-}
-
-html.light [class*="bg-avs-accent\/20"] {
-  background-color: rgba(29, 29, 27, 0.12) !important;
-}
-
-html.light [class*="bg-avs-secondary\/8"] {
-  background-color: rgba(29, 29, 27, 0.06) !important;
-}
-
-html.light [class*="bg-avs-secondary\/10"] {
-  background-color: rgba(29, 29, 27, 0.08) !important;
-}
-
-html.light [class*="bg-avs-secondary\/12"] {
-  background-color: rgba(29, 29, 27, 0.1) !important;
-}
-
-/* Border opacity adjustments */
-html.light [class*="border-avs-secondary\/8"] {
-  border-color: rgba(29, 29, 27, 0.1) !important;
-}
-
-html.light [class*="border-avs-secondary\/12"] {
-  border-color: rgba(29, 29, 27, 0.12) !important;
-}
-
-html.light [class*="border-avs-secondary\/28"] {
-  border-color: rgba(29, 29, 27, 0.15) !important;
-}
-
-html.light [class*="border-avs-primary\/30"] {
-  border-color: rgba(192, 87, 62, 0.3) !important;
-}
-
-/* Primary button shadows */
-html.light .bg-avs-primary {
-  box-shadow: 3px 3px 0px rgba(192, 87, 62, 0.25) !important;
-}
-
-html.light .bg-avs-primary:hover {
-  box-shadow: 5px 5px 0px rgba(192, 87, 62, 0.3) !important;
-}
-
-/* Pattern filters */
-html.light [class*="avs-pattern-"] {
-  filter: brightness(0.95) contrast(1.05);
-  border-color: rgba(29, 29, 27, 0.15) !important;
-}
-
-/* Backdrop elements */
-html.light [class*="backdrop-blur"] {
-  background-color: rgba(255, 255, 255, 0.8) !important;
-}
-
-/* Inline elements */
-html.light .inline-flex {
-  color: var(--avs-accent);
-}
-
-/* Font rendering */
-html.light .font-mono {
-  color: var(--avs-accent);
-}
-
-html.light .font-display {
-  color: var(--avs-accent);
-}
-
-/* Focus states */
-html.light :focus-visible {
-  outline-color: var(--avs-primary);
-}
-
-/* Hover backgrounds */
-html.light .hover\:bg-avs-accent\/5:hover {
-  background-color: rgba(29, 29, 27, 0.06) !important;
-}
-

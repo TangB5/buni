@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useRef, useEffect, useState } from 'react';
+import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import {
   ArrowRight,
   ArrowUpRight,
@@ -12,21 +12,24 @@ import {
   BookOpen,
   Check,
   Star,
+  Sparkles,
+  Download,
 } from 'lucide-react';
 import { cn } from '@buni/ui';
 import { Route } from 'next';
+import { HeroSection } from '../components/layout/HeroSection';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DATA
 // ─────────────────────────────────────────────────────────────────────────────
 const STATS = [
-  { value: '1 248', label: 'Motifs', sub: 'vectorisés' },
-  { value: '54', label: 'Pays', sub: 'représentés' },
-  { value: '312', label: 'Artisans', sub: 'vérifiés' },
-  { value: '98k', label: 'DL', sub: 'ce mois' },
+  { value: 1248, display: '1 248', label: 'Motifs', sub: 'vectorisés' },
+  { value: 54, display: '54', label: 'Pays', sub: 'représentés' },
+  { value: 312, display: '312', label: 'Artisans', sub: 'vérifiés' },
+  { value: 98, display: '98k', label: 'DL', sub: 'ce mois' },
 ] as const;
 
-const MARQUEE = [
+const MARQUEE_ITEMS = [
   'KENTE',
   'NDOP',
   'BOGOLAN',
@@ -57,7 +60,7 @@ const COLLAGE = [
     style: { right: '0', top: '8%', width: '40%', height: '36%', rotate: '1.5deg' },
   },
   {
-    css: 'avs-pattern-wax-lagos',
+    css: 'avs-pattern-wax-dakar',
     type: 'WAX',
     name: 'Wax Lagos',
     origin: 'Lagos · NG',
@@ -116,45 +119,45 @@ const FEATURES = [
     Icon: Layers,
     title: 'Bibliothèque de motifs',
     desc: '+1 200 motifs par région, époque et symbolisme. SVG, PNG, JSON, CSS.',
-    descColor: 'rgba(245,235,224,.6)',
     href: '/patterns',
     color: '#C0573E',
+    accent: 'rgba(192,87,62,.08)',
   },
   {
     num: '02',
     Icon: Palette,
     title: 'Design tokens culturels',
     desc: 'Palettes de pigments naturels africains. Tailwind, Figma, CSS Variables.',
-    descColor: 'rgba(245,235,224,.6)',
     href: '/colors',
     color: '#D4A017',
+    accent: 'rgba(212,160,23,.08)',
   },
   {
     num: '03',
     Icon: Users,
     title: "Communauté d'artisans",
     desc: '312 artisans vérifiés valident chaque entrée. La source primaire, toujours.',
-    descColor: 'rgba(245,235,224,.6)',
     href: '/artisans',
     color: '#4A6741',
+    accent: 'rgba(74,103,65,.08)',
   },
   {
     num: '04',
     Icon: BookOpen,
     title: 'Composants & Documentation',
     desc: 'Bibliothèque UI React, templates, icônes SVG. Copy & Paste. Sans compte.',
-    descColor: 'rgba(245,235,224,.6)',
     href: '/documentation',
     color: '#2A4A6B',
+    accent: 'rgba(42,74,107,.08)',
   },
 ] as const;
 
 const BENTO = [
   {
     css: 'avs-pattern-ndop-sultan',
-    overlay: 'from-[#060F1A]/92 to-[#060F1A]/70',
+    overlay: 'from-[#060F1A]/94 to-[#060F1A]/72',
     span: 'lg:col-span-2',
-    minH: '200px',
+    minH: '220px',
     eyebrow: 'Copy & Paste · Shadcn style',
     eyeColor: '#C8A96E',
     title: 'Vous possédez\nvotre code',
@@ -167,9 +170,9 @@ const BENTO = [
   {
     solid: '#C0573E',
     span: '',
-    minH: '200px',
+    minH: '220px',
     eyebrow: 'Formats · Licences',
-    eyeColor: 'rgba(245,235,224,.6)',
+    eyeColor: 'rgba(245,235,224,.65)',
     title: 'SVG · PNG\nJSON · CSS',
     titleColor: '#F5EBE0',
     desc: 'Chaque motif dans 4 formats. CC BY 4.0 — usage libre.',
@@ -177,28 +180,27 @@ const BENTO = [
     bigNum: '4×',
   },
   {
-    solid: '#FFFFFF',
+    solid: 'var(--hp-bento-check-bg)',
     span: '',
-    minH: '180px',
+    minH: '200px',
     eyebrow: 'Accès public',
-    eyeColor: 'rgba(29,29,27,.4)',
+    eyeColor: 'var(--hp-bento-check-eye)',
     title: 'Aucun compte\nrequis',
-    titleColor: '#1D1D1B',
+    titleColor: 'var(--hp-bento-check-title)',
     desc: "Comme PrimeReact. Tout est public. L'auth est optionnelle — seulement pour contribuer.",
-    descColor: 'rgba(29,29,27,.45)',
+    descColor: 'var(--hp-bento-check-desc)',
     checkmark: true,
   },
   {
-    solid: '#111009',
+    solid: 'var(--hp-surface)',
     span: 'lg:col-span-2',
-    minH: '160px',
-    border: 'rgba(245,235,224,.05)',
+    minH: '170px',
     eyebrow: 'Design tokens',
-    eyeColor: 'rgba(245,235,224,.3)',
+    eyeColor: 'var(--hp-muted)',
     title: 'Intégrez en 30s dans\nFigma, Tailwind, React Native',
-    titleColor: '#F5EBE0',
+    titleColor: 'var(--hp-text)',
     desc: 'Téléchargez les tokens de couleurs, typographie et spacing pour vos outils',
-    descColor: 'rgba(245,235,224,.3)',
+    descColor: 'var(--hp-muted)',
     palette: [
       '#C0573E',
       '#F5EBE0',
@@ -222,7 +224,7 @@ const TESTIMONIALS = [
     role: 'Tisserande Kente · Kumasi',
   },
   {
-    css: 'avs-pattern-ndop-ceremoniel',
+    css: 'avs-pattern-adinkra-sankofa',
     quote:
       "Le Ndop de mon sultanat enfin standardisé. AVS préserve ce que le temps risquait d'effacer.",
     name: 'Njoya Hamidou',
@@ -248,34 +250,146 @@ const COMMUNITY_AVATARS = [
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ANIMATION VARIANTS
+// GLOBAL STYLES — single source of truth for both modes
 // ─────────────────────────────────────────────────────────────────────────────
+const STYLES = `
+  :root {
+    /* Page backgrounds */
+    --hp-bg:              #FAFAF8;
+    --hp-surface:         #F5EBE0;
+    --hp-gallery-bg:      #F0EBE4;
+    --hp-bento-bg:        #FAFAF8;
+    --hp-testimonial-bg:  #EDE8E1;
+
+    /* Text */
+    --hp-text:            #1D1D1B;
+    --hp-muted:           rgba(29,29,27,0.62);
+    --hp-hint:            rgba(29,29,27,0.45);
+    --hp-faint:           rgba(29,29,27,0.08);
+
+    /* Borders / grid */
+    --hp-grid:            rgba(29,29,27,0.04);
+    --hp-border:          rgba(29,29,27,0.08);
+    --hp-border-md:       rgba(29,29,27,0.14);
+    --hp-stat-border:     rgba(29,29,27,0.08);
+
+    /* Ghost CTA */
+    --hp-ghost-border:    rgba(29,29,27,0.14);
+    --hp-ghost-text:      rgba(29,29,27,0.70);
+    --hp-ghost-hover-b:   rgba(29,29,27,0.28);
+    --hp-ghost-hover-t:   #1D1D1B;
+
+    /* Testimonials hover */
+    --hp-card-bg:         rgba(29,29,27,0.03);
+    --hp-card-border:     rgba(29,29,27,0.08);
+    --hp-card-hover-bg:   rgba(255,255,255,0.70);
+    --hp-card-hover-b:    rgba(192,87,62,0.22);
+    --hp-quote-text:      rgba(29,29,27,0.72);
+    --hp-author-text:     #1D1D1B;
+    --hp-role-text:       rgba(29,29,27,0.45);
+
+    /* Bento "checkmark" card */
+    --hp-bento-check-bg:    #1D1D1B;
+    --hp-bento-check-eye:   rgba(245,235,224,0.6);
+    --hp-bento-check-title: #F5EBE0;
+    --hp-bento-check-desc:  rgba(245,235,224,0.5);
+
+    /* Avatar ring */
+    --hp-avatar-ring:     #0A0806;
+
+    /* Collage shadow */
+    --hp-collage-shadow:  rgba(0,0,0,0.18);
+  }
+
+  .dark {
+    --hp-bg:              #0A0806;
+    --hp-surface:         #121008;
+    --hp-gallery-bg:      #0A0806;
+    --hp-bento-bg:        #0A0806;
+    --hp-testimonial-bg:  #0C0906;
+
+    --hp-text:            #F5EBE0;
+    --hp-muted:           rgba(245,235,224,0.62);
+    --hp-hint:            rgba(245,235,224,0.45);
+    --hp-faint:           rgba(245,235,224,0.06);
+
+    --hp-grid:            rgba(245,235,224,0.04);
+    --hp-border:          rgba(245,235,224,0.06);
+    --hp-border-md:       rgba(245,235,224,0.10);
+    --hp-stat-border:     rgba(245,235,224,0.08);
+
+    --hp-ghost-border:    rgba(245,235,224,0.14);
+    --hp-ghost-text:      rgba(245,235,224,0.80);
+    --hp-ghost-hover-b:   rgba(245,235,224,0.28);
+    --hp-ghost-hover-t:   #F5EBE0;
+
+    --hp-card-bg:         rgba(245,235,224,0.03);
+    --hp-card-border:     rgba(245,235,224,0.07);
+    --hp-card-hover-bg:   rgba(245,235,224,0.05);
+    --hp-card-hover-b:    rgba(192,87,62,0.22);
+    --hp-quote-text:      rgba(245,235,224,0.72);
+    --hp-author-text:     #F5EBE0;
+    --hp-role-text:       rgba(245,235,224,0.45);
+
+    --hp-bento-check-bg:    #F5EBE0;
+    --hp-bento-check-eye:   rgba(29,29,27,0.45);
+    --hp-bento-check-title: #1D1D1B;
+    --hp-bento-check-desc:  rgba(29,29,27,0.50);
+
+    --hp-avatar-ring:     #0A0806;
+    --hp-collage-shadow:  rgba(0,0,0,0.65);
+  }
+
+  @keyframes avs-marquee { from { transform:translateX(0) } to { transform:translateX(-50%) } }
+`;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HOOKS
+// ─────────────────────────────────────────────────────────────────────────────
+function useCounter(target: number, duration = 1400) {
+  const [val, setVal] = useState(0);
+  const [started, setStarted] = useState(false);
+  useEffect(() => {
+    if (!started) return;
+    let start = 0;
+    const step = target / (duration / 16);
+    const id = setInterval(() => {
+      start += step;
+      if (start >= target) {
+        setVal(target);
+        clearInterval(id);
+      } else setVal(Math.floor(start));
+    }, 16);
+    return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [started]);
+  return { val, trigger: () => setStarted(true) };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ANIMATION
+// ─────────────────────────────────────────────────────────────────────────────
+const ease = [0.22, 1, 0.36, 1] as const;
 const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 40 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.8, delay } },
+  initial: { opacity: 0, y: 32 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.75, delay, ease } },
 });
-
-const stagger = {
-  animate: { transition: { staggerChildren: 0.12 } },
-};
-
+const stagger = { animate: { transition: { staggerChildren: 0.1 } } };
 const itemFade = {
-  initial: { opacity: 0, y: 24 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  initial: { opacity: 0, y: 20 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.55, ease } },
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SUB-COMPONENTS
 // ─────────────────────────────────────────────────────────────────────────────
-function SectionLabel({ label, light = false }: { label: string; light?: boolean }) {
+function SectionLabel({ label }: { label: string }) {
   return (
     <div className="mb-8 flex items-center gap-3">
-      <div
-        className={`h-px w-8 ${light ? 'bg-avs-primary/40' : 'bg-avs-primary/60'}`}
-        aria-hidden
-      />
+      <div className="h-px w-10" style={{ background: '#C0573E', opacity: 0.6 }} aria-hidden />
       <span
-        className={`font-mono text-[10px] tracking-[.25em] uppercase ${light ? 'text-avs-primary' : 'text-avs-primary'}`}
+        className="font-mono text-[9px] tracking-[.28em] uppercase"
+        style={{ color: '#C0573E' }}
       >
         {label}
       </span>
@@ -283,356 +397,648 @@ function SectionLabel({ label, light = false }: { label: string; light?: boolean
   );
 }
 
-function CollageCard({ card, floatDelay }: { card: (typeof COLLAGE)[number]; floatDelay: number }) {
-  return (
-    <motion.div
-      className="rounded-avs-xl border-avs-secondary/8 group absolute cursor-pointer overflow-hidden border shadow-[0_24px_64px_rgba(0,0,0,.6)]"
-      style={{
-        ...card.style,
-        rotate: card.style.rotate,
-      }}
-      animate={{
-        y: [0, -10, 0],
-        rotate: [
-          parseFloat(card.style.rotate),
-          parseFloat(card.style.rotate) + 0.8,
-          parseFloat(card.style.rotate),
-        ],
-      }}
-      transition={{
-        duration: 6 + floatDelay,
-        repeat: Infinity,
-        ease: 'easeInOut',
-        delay: floatDelay,
-      }}
-      whileHover={{ scale: 1.04, zIndex: 10 }}
-    >
-      <div className={`${card.css} h-full w-full`} />
-      <div className="absolute inset-0 bg-linear-to-t from-[#0A0806]/95 via-[#0A0806]/10 to-transparent" />
-      <div className="absolute right-0 bottom-0 left-0 translate-y-1 p-3 transition-transform duration-300 group-hover:translate-y-0">
-        <p className="text-avs-primary font-mono text-[8px] tracking-[.18em] uppercase">
-          {card.type}
-        </p>
-        <p className="font-display text-avs-secondary text-sm leading-tight font-bold">
-          {card.name}
-        </p>
-        <p className="text-avs-secondary text-[10px]">{card.origin}</p>
-      </div>
-      <div className="absolute top-3 right-3 opacity-0 transition-opacity group-hover:opacity-100">
-        <div className="bg-avs-secondary/10 rounded-full p-1.5 backdrop-blur-sm">
-          <ArrowUpRight size={11} className="text-avs-secondary" />
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
 // ─────────────────────────────────────────────────────────────────────────────
 // PAGE
 // ─────────────────────────────────────────────────────────────────────────────
 export default function HomePage() {
-  const heroRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
-  const heroTranslate = useTransform(scrollYProgress, [0, 0.6], [0, -60]);
+  
+
+  const cursorX = useMotionValue(-100);
+  const cursorY = useMotionValue(-100);
+ 
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      cursorX.set(e.clientX);
+      cursorY.set(e.clientY);
+    };
+    window.addEventListener('mousemove', handler);
+    return () => window.removeEventListener('mousemove', handler);
+  }, [cursorX, cursorY]);
 
   return (
-    <div className="overflow-x-hidden bg-[#0A0806]">
-      {/* ══════════════════════════════════════════════════════
-          § 1 — HERO
-      ══════════════════════════════════════════════════════ */}
-      <section
-        ref={heroRef}
-        aria-labelledby="hero-title"
-        className="relative min-h-screen overflow-hidden"
-      >
-        {/* Fond grille fine */}
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            backgroundImage: `
-      linear-gradient(rgba(245, 235, 224, 0.12) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(245, 235, 224, 0.12) 1px, transparent 1px)
-    `,
-            backgroundSize: '60px 60px',
-          }}
-          aria-hidden
-        />
-        {/* Halo radial */}
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              'radial-gradient(ellipse 70% 80% at 60% 50%, rgba(192, 87, 62, 0.25) 0%, transparent 75%)',
-          }}
-          aria-hidden
-        />
-        {/* Lignes verticales */}
-        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-          {/* Ligne gauche avec opacité augmentée */}
-          <div className="via-avs-primary/40 absolute top-0 left-[8%] h-full w-px bg-linear-to-b from-transparent to-transparent" />
+    <>
+      <style>{STYLES}</style>
 
-          {/* Ligne droite avec opacité augmentée */}
-          <div className="via-avs-primary/40 absolute top-0 right-[8%] h-full w-px bg-linear-to-b from-transparent to-transparent" />
+      <div className="overflow-x-hidden" style={{ background: 'var(--hp-bg)' }}>
+        {/* ══════════════════════════════════════════════════════
+            § 1 — HERO
+        ══════════════════════════════════════════════════════ */}
+        <HeroSection />
+
+        {/* ══════════════════════════════════════════════════════
+            § 2 — MARQUEE
+        ══════════════════════════════════════════════════════ */}
+        <div
+          className="overflow-hidden py-3"
+          aria-hidden
+          style={{
+            background: 'rgba(192,87,62,.05)',
+            borderTop: '1px solid var(--hp-border)',
+            borderBottom: '1px solid var(--hp-border)',
+          }}
+        >
+          <div className="flex w-max" style={{ animation: 'avs-marquee 30s linear infinite' }}>
+            {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
+              <div
+                key={i}
+                className="flex items-center gap-8 px-8 font-mono text-[9px] tracking-[.28em] whitespace-nowrap uppercase"
+                style={{ color: '#C0573E' }}
+              >
+                {item}
+                <span
+                  className="h-1 w-1 rounded-full"
+                  style={{ background: 'rgba(192,87,62,.40)' }}
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
-        <motion.div
-          style={{ opacity: heroOpacity, y: heroTranslate }}
-          className="relative mx-auto max-w-7xl px-6 pt-36 pb-28 lg:px-8"
+        {/* ══════════════════════════════════════════════════════
+            § 3 — GALLERY
+        ══════════════════════════════════════════════════════ */}
+        <section
+          aria-labelledby="gallery-title"
+          className="px-6 py-20 lg:px-8"
+          style={{ background: 'var(--hp-gallery-bg)' }}
         >
-          <div className="grid items-center gap-16 lg:grid-cols-2">
-            {/* Texte gauche */}
-            <div>
-              {/* Eyebrow pill */}
-              <motion.div {...fadeUp(0)} className="mb-10">
-                <div className="rounded-avs border-avs-primary/30 bg-avs-primary/8 inline-flex items-center gap-2.5 border px-4 py-2 backdrop-blur-sm">
-                  <span
-                    className="bg-avs-primary h-1.5 w-1.5 animate-pulse rounded-full"
-                    aria-hidden
-                  />
-                  <span className="text-avs-primary font-mono text-[10px] tracking-[.22em] uppercase">
-                    African Visual Standard · v1.0
-                  </span>
-                </div>
-              </motion.div>
-
-              {/* Headline */}
-              <motion.h1
-                id="hero-title"
-                {...fadeUp(0.1)}
-                className="font-display text-avs-secondary leading-[.9] font-black tracking-[-0.03em]"
-                style={{ fontSize: 'clamp(3.5rem,8vw,7rem)' }}
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-8 flex items-center justify-between">
+              <SectionLabel label="Patrimoine · Motifs en vedette" />
+              <Link
+                href={'/patterns' as Route}
+                className="flex items-center gap-1.5 text-xs font-semibold transition-colors"
+                style={{ color: 'var(--hp-hint)' }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = '#C0573E')}
+                onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--hp-hint)')}
               >
-                <span className="block">Le</span>
-                <span className="text-avs-primary relative block">
-                  langage
-                  <span
-                    className="bg-avs-primary absolute -bottom-1 left-0 h-0.75"
-                    style={{ width: '55%' }}
-                    aria-hidden
+                Tout voir <ArrowRight size={12} />
+              </Link>
+            </div>
+
+            <motion.div
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true, margin: '-80px' }}
+              variants={stagger}
+              className="grid grid-cols-2 gap-2 lg:grid-cols-6 lg:grid-rows-2"
+            >
+              {GALLERY.map(({ css, type, name, origin, cls }, i) => (
+                <motion.div
+                  key={name}
+                  variants={itemFade}
+                  className={`group relative cursor-pointer overflow-hidden rounded-2xl ${cls}`}
+                  style={{ minHeight: i === 0 ? '380px' : '165px' }}
+                  whileHover={{ scale: 1.014 }}
+                  transition={{ type: 'spring', stiffness: 320, damping: 26 }}
+                >
+                  <div
+                    className={`${css} absolute inset-0 transition-transform duration-700 group-hover:scale-[1.06]`}
                   />
-                </span>
-                <span className="block">visuel de</span>
-                <span
-                  className="text-avs-secondary block"
-                  style={{ WebkitTextStroke: '1px rgba(245,235,224,.2)', color: 'transparent' }}
-                >
-                  l&apos;Afrique
-                </span>
-              </motion.h1>
-
-              {/* Sous-titre */}
-              <motion.p
-                {...fadeUp(0.2)}
-                className="text-avs-secondary mt-8 max-w-md text-lg leading-relaxed"
-              >
-                Nous préservons, documentons et standardisons le patrimoine visuel africain —
-                motifs, couleurs et géométrie — pour designers, artisans et développeurs.
-              </motion.p>
-
-              {/* CTAs */}
-              <motion.div {...fadeUp(0.3)} className="mt-9 flex flex-wrap gap-3">
-                <Link
-                  href={"/patterns" as Route}
-                  className="group rounded-avs bg-avs-primary text-avs-secondary relative inline-flex items-center gap-2 overflow-hidden px-7 py-3.5 text-sm font-bold shadow-[3px_3px_0_rgba(192,87,62,.4)] transition-all hover:-translate-y-px hover:shadow-[5px_5px_0_rgba(192,87,62,.4)]"
-                >
-                  Explorer les motifs
-                  <ArrowRight
-                    size={14}
-                    className="transition-transform group-hover:translate-x-1"
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      background:
+                        'linear-gradient(to top,rgba(10,8,6,.92) 0%,rgba(10,8,6,.08) 55%,transparent 100%)',
+                    }}
                   />
-                </Link>
-                <Link
-                  href={"/components" as Route}
-                  className="rounded-avs border-avs-secondary/12 text-avs-secondary hover:border-avs-secondary/28 hover:text-avs-secondary inline-flex items-center gap-2 border px-7 py-3.5 text-sm font-semibold transition-all"
-                >
-                  <Star size={13} className="text-avs-primary" aria-hidden />
-                  Composants UI
-                </Link>
-              </motion.div>
+                  <div className="absolute top-3 left-3">
+                    <span
+                      className="rounded-md px-2 py-0.5 font-mono text-[8px] font-bold tracking-[.2em] uppercase backdrop-blur-sm"
+                      style={{ background: 'rgba(192,87,62,.85)', color: '#F5EBE0' }}
+                    >
+                      {type}
+                    </span>
+                  </div>
+                  <div className="absolute right-0 bottom-0 left-0 translate-y-1.5 p-4 opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100">
+                    <p className="font-display text-sm font-bold" style={{ color: '#F5EBE0' }}>
+                      {name}
+                    </p>
+                    <p className="text-[10px]" style={{ color: 'rgba(245,235,224,.6)' }}>
+                      {origin}
+                    </p>
+                  </div>
+                  <div
+                    className="absolute top-3 right-3 flex h-7 w-7 items-center justify-center rounded-full opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100"
+                    style={{ background: 'rgba(245,235,224,.10)' }}
+                  >
+                    <ArrowUpRight size={11} style={{ color: '#F5EBE0' }} aria-hidden />
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
 
-              {/* Stats */}
+        {/* ══════════════════════════════════════════════════════
+            § 4 — PIVOT STAT (always dark — pattern-imposed)
+        ══════════════════════════════════════════════════════ */}
+        <section
+          className="avs-pattern-kente-royale relative overflow-hidden py-28"
+          aria-label="Impact AVS"
+        >
+          <div
+            className="absolute inset-0"
+            style={{ background: 'rgba(10,8,6,.89)' }}
+            aria-hidden
+          />
+          <div
+            className="font-display pointer-events-none absolute right-[-2%] bottom-[-14%] leading-none font-black select-none"
+            style={{ fontSize: 'clamp(8rem,22vw,20rem)', color: 'rgba(245,235,224,.03)' }}
+            aria-hidden
+          >
+            1248
+          </div>
+          <div className="relative mx-auto max-w-6xl px-6 lg:px-8">
+            <div className="grid items-center gap-12 lg:grid-cols-2">
+              <div>
+                <SectionLabel label="Héritage · Documentation · Standard" />
+                <motion.h2
+                  initial={{ opacity: 0, y: 28 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.8, ease }}
+                  className="font-display leading-[.9] font-black"
+                  style={{
+                    fontSize: 'clamp(2.5rem,5vw,4.25rem)',
+                    color: '#F5EBE0',
+                    letterSpacing: '-0.025em',
+                  }}
+                >
+                  Chaque motif
+                  <br />
+                  porte une
+                  <br />
+                  <span style={{ color: '#C0573E' }}>histoire</span>
+                </motion.h2>
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2, duration: 0.6 }}
+                  className="mt-6 max-w-md leading-relaxed"
+                  style={{ color: 'rgba(245,235,224,.55)' }}
+                >
+                  Région d&apos;origine, peuple, époque, symbolisme cérémoniel. Une archive vivante,
+                  ouverte, vérifiée par des artisans réels.
+                </motion.p>
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.35, duration: 0.6 }}
+                  className="mt-8 flex flex-wrap gap-2"
+                >
+                  {[
+                    'CC BY 4.0',
+                    'Open Source',
+                    'Aucun compte requis',
+                    'SVG · PNG · JSON · CSS',
+                  ].map((tag) => (
+                    <span
+                      key={tag}
+                      className="rounded-xl px-4 py-1.5 text-xs font-medium"
+                      style={
+                        tag === 'CC BY 4.0'
+                          ? {
+                              background: 'rgba(192,87,62,.12)',
+                              border: '1px solid rgba(192,87,62,.28)',
+                              color: '#C0573E',
+                            }
+                          : {
+                              border: '1px solid rgba(245,235,224,.10)',
+                              color: 'rgba(245,235,224,.7)',
+                            }
+                      }
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </motion.div>
+              </div>
               <motion.div
-                {...fadeUp(0.4)}
-                className="bg-avs-secondary/10 border-avs-secondary/10 relative mt-14 grid grid-cols-2 gap-px border-y md:grid-cols-4"
+                initial={{ opacity: 0, x: 24 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: 0.15, ease }}
+                className="grid grid-cols-2 gap-3"
               >
-                {/* Optionnel : Un léger halo global derrière les stats */}
-                <div
-                  className="via-avs-primary/5 pointer-events-none absolute inset-0 bg-linear-to-r from-transparent to-transparent"
-                  aria-hidden
-                />
-
-                {STATS.map(({ value, label, sub }, i) => (
+                {[
+                  { num: '1 248', label: 'Motifs documentés', color: '#C0573E' },
+                  { num: '54', label: 'Pays représentés', color: '#D4A017' },
+                  { num: '312', label: 'Artisans vérifiés', color: '#4A6741' },
+                  { num: '98k', label: 'Téléchargements/mois', color: '#2A4A6B' },
+                ].map(({ num, label, color }) => (
                   <div
                     key={label}
-                    className={cn(
-                      'group hover:bg-avs-secondary/[0.02] relative overflow-hidden bg-transparent px-6 py-8 transition-all duration-300',
-                      // Bordures intelligentes : on évite les doubles bordures
-                      i % 2 !== 0 ? 'border-avs-secondary/10 border-l' : '', // Mobile (2 cols)
-                      'border-avs-secondary/10 md:border-l md:first:border-l-0', // Desktop (4 cols)
-                    )}
+                    className="rounded-2xl p-5"
+                    style={{
+                      background: 'rgba(245,235,224,.04)',
+                      border: '1px solid rgba(245,235,224,.06)',
+                    }}
                   >
-                    {/* Effet de lueur au survol (Spotlight) */}
-                    <div className="pointer-events-none absolute -inset-px bg-[radial-gradient(400px_circle_at_center,rgba(192,87,62,0.08),transparent)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-
-                    <div className="relative z-10">
-                      <p className="font-display text-avs-secondary text-[2rem] leading-none font-black tracking-tight transition-transform duration-300 group-hover:-translate-y-1">
-                        {value}
-                      </p>
-
-                      <div className="mt-3 flex items-center gap-2">
-                        {/* Petite barre décorative style "identitaire" */}
-                        <div className="bg-avs-primary h-px w-3" />
-                        <p className="text-avs-primary text-[10px] font-bold tracking-[0.15em] uppercase">
-                          {label}
-                        </p>
-                      </div>
-
-                      <p className="text-avs-secondary/60 mt-2 text-[11px] leading-relaxed font-medium">
-                        {sub}
-                      </p>
-                    </div>
-
-                    {/* Décoration d'angle subtile au survol */}
-                    <div className="absolute top-0 right-0 h-8 w-8 opacity-0 transition-opacity group-hover:opacity-100">
-                      <div className="bg-avs-primary/40 absolute top-2 right-2 h-px w-2" />
-                      <div className="bg-avs-primary/40 absolute top-2 right-2 h-2 w-px" />
-                    </div>
+                    <p
+                      className="font-display text-3xl leading-none font-black"
+                      style={{ color, letterSpacing: '-0.02em' }}
+                    >
+                      {num}
+                    </p>
+                    <p
+                      className="mt-2 text-xs leading-snug"
+                      style={{ color: 'rgba(245,235,224,.45)' }}
+                    >
+                      {label}
+                    </p>
                   </div>
                 ))}
               </motion.div>
             </div>
+          </div>
+        </section>
 
-            {/* Collage motifs droite */}
+        {/* ══════════════════════════════════════════════════════
+            § 5 — FEATURES
+        ══════════════════════════════════════════════════════ */}
+        <section
+          aria-labelledby="features-title"
+          className="px-6 py-24 lg:px-8"
+          style={{ background: 'var(--hp-surface)' }}
+        >
+          <div className="mx-auto max-w-6xl">
+            <div className="mb-16 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <SectionLabel label="Ce que nous offrons" />
+                <h2
+                  id="features-title"
+                  className="font-display leading-[.92] font-black"
+                  style={{
+                    fontSize: 'clamp(2rem,4vw,3.5rem)',
+                    color: 'var(--hp-text)',
+                    letterSpacing: '-0.025em',
+                  }}
+                >
+                  Un standard
+                  <br />
+                  <span style={{ color: '#C0573E' }}>ouvert</span> &amp; rigoureux
+                </h2>
+              </div>
+              <p
+                className="max-w-xs text-sm leading-relaxed lg:text-right"
+                style={{ color: 'var(--hp-hint)' }}
+              >
+                Tout est accessible sans compte, comme PrimeReact. La connaissance africaine
+                appartient à l&apos;humanité.
+              </p>
+            </div>
+
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1, delay: 0.3 }}
-              className="relative hidden h-145 lg:block"
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true, margin: '-60px' }}
+              variants={stagger}
+              className="divide-y"
+              style={{ borderColor: 'var(--hp-border)' }}
             >
-              {COLLAGE.map((card, i) => (
-                <CollageCard key={card.name} card={card} floatDelay={i * 1.5} />
+              {FEATURES.map(({ num, Icon, title, desc, href, color, accent }) => (
+                <motion.div key={title} variants={itemFade}>
+                  <Link
+                    href={href as Route}
+                    className="group flex items-center gap-6 py-7 transition-all duration-300 lg:gap-8 lg:py-8"
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.paddingLeft = '12px';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.paddingLeft = '0px';
+                    }}
+                    style={{ transitionProperty: 'padding-left' }}
+                  >
+                    <span
+                      className="font-display shrink-0 leading-none font-black tabular-nums"
+                      style={{ fontSize: 'clamp(2.5rem,5vw,3.75rem)', color, opacity: 0.08 }}
+                      aria-hidden
+                    >
+                      {num}
+                    </span>
+                    <div
+                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl transition-transform duration-300 group-hover:scale-105"
+                      style={{ background: accent, color }}
+                    >
+                      <Icon size={20} aria-hidden />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p
+                        className="font-display text-xl font-bold transition-colors duration-200"
+                        style={{ color: 'var(--hp-text)' }}
+                        onMouseEnter={(e) => (e.currentTarget.style.color = color)}
+                        onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--hp-text)')}
+                      >
+                        {title}
+                      </p>
+                      <p
+                        className="mt-1 text-sm leading-relaxed"
+                        style={{ color: 'var(--hp-hint)' }}
+                      >
+                        {desc}
+                      </p>
+                    </div>
+                    <div
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-all duration-300 group-hover:scale-110"
+                      style={{ background: 'var(--hp-faint)', opacity: 0.45 }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.opacity = '1';
+                        e.currentTarget.style.background = color;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.opacity = '0.45';
+                        e.currentTarget.style.background = 'var(--hp-faint)';
+                      }}
+                    >
+                      <ArrowUpRight size={15} style={{ color: 'var(--hp-text)' }} aria-hidden />
+                    </div>
+                  </Link>
+                </motion.div>
               ))}
             </motion.div>
           </div>
-        </motion.div>
-      </section>
+        </section>
 
-      {/* ══════════════════════════════════════════════════════
-          § 2 — MARQUEE
-      ══════════════════════════════════════════════════════ */}
-      <div
-        className="border-avs-secondary/6 bg-avs-primary/6 overflow-hidden border-y py-3"
-        aria-hidden
-      >
-        <div className="flex w-max gap-0" style={{ animation: 'avs-marquee 28s linear infinite' }}>
-          {[...MARQUEE, ...MARQUEE].map((item, i) => (
+        {/* ══════════════════════════════════════════════════════
+            § 6 — BENTO
+        ══════════════════════════════════════════════════════ */}
+        <section
+          aria-labelledby="bento-title"
+          className="px-6 pt-20 pb-24 lg:px-8"
+          style={{ background: 'var(--hp-bento-bg)' }}
+        >
+          <div className="mx-auto max-w-6xl">
+            <SectionLabel label="Pourquoi AVS" />
+            <motion.div
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true, margin: '-60px' }}
+              variants={stagger}
+              className="grid gap-3 lg:grid-cols-3"
+            >
+              {BENTO.map((card, i) => (
+                <motion.div
+                  key={i}
+                  variants={itemFade}
+                  whileHover={{ y: -4 }}
+                  transition={{ type: 'spring', stiffness: 300, damping: 26 }}
+                  className={`relative overflow-hidden rounded-2xl ${card.span || ''}`}
+                  style={{
+                    minHeight: card.minH,
+                    ...('solid' in card && card.solid ? { background: card.solid } : {}),
+                    ...('border' in card && card.border
+                      ? { border: `1px solid ${card.border}` }
+                      : { border: '1px solid var(--hp-border)' }),
+                  }}
+                >
+                  {'css' in card && (
+                    <>
+                      <div className={`${card.css} absolute inset-0`} />
+                      <div className={`absolute inset-0 bg-gradient-to-br ${card.overlay}`} />
+                    </>
+                  )}
+                  <div className="relative flex h-full flex-col justify-between p-7">
+                    <div>
+                      <p
+                        className="mb-3 font-mono text-[8px] tracking-[.22em] uppercase"
+                        style={{ color: card.eyeColor, opacity: 0.85 }}
+                      >
+                        {card.eyebrow}
+                      </p>
+                      <h3
+                        className="font-display text-xl leading-tight font-bold"
+                        style={{ color: card.titleColor, letterSpacing: '-0.015em' }}
+                      >
+                        {card.title.split('\n').map((line, j) => (
+                          <span key={j} className="block">
+                            {line}
+                          </span>
+                        ))}
+                      </h3>
+                      <p
+                        className="mt-2.5 text-sm leading-relaxed"
+                        style={{ color: card.descColor }}
+                      >
+                        {card.desc}
+                      </p>
+                    </div>
+                    <div className="mt-6">
+                      {'chips' in card && (
+                        <div className="flex flex-wrap gap-1.5">
+                          {card.chips.map((c) => (
+                            <span
+                              key={c}
+                              className="rounded-lg border px-2.5 py-1 font-mono text-[9px] font-medium"
+                              style={{
+                                color: card.chipColor,
+                                borderColor: `${card.chipColor}30`,
+                                background: `${card.chipColor}08`,
+                              }}
+                            >
+                              {c}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                      {'bigNum' in card && (
+                        <p
+                          className="font-display text-right leading-none font-black"
+                          style={{
+                            fontSize: '5rem',
+                            color: card.titleColor,
+                            opacity: 0.12,
+                            letterSpacing: '-0.04em',
+                          }}
+                          aria-hidden
+                        >
+                          {card.bigNum}
+                        </p>
+                      )}
+                      {'checkmark' in card && (
+                        <div
+                          className="flex h-9 w-9 items-center justify-center rounded-xl"
+                          style={{ background: 'rgba(74,103,65,.18)' }}
+                        >
+                          <Check size={17} style={{ color: '#4A6741' }} aria-hidden />
+                        </div>
+                      )}
+                      {'palette' in card && (
+                        <div className="mt-5 flex gap-1.5">
+                          {card.palette.map((hex) => (
+                            <div
+                              key={hex}
+                              className="h-7 flex-1 rounded-lg shadow-sm first:rounded-l-xl last:rounded-r-xl"
+                              style={{ background: hex }}
+                              title={hex}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════════════════════
+            § 7 — TESTIMONIALS
+        ══════════════════════════════════════════════════════ */}
+        <section
+          aria-labelledby="testimonials-title"
+          className="px-6 py-24 lg:px-8"
+          style={{ background: 'var(--hp-testimonial-bg)' }}
+        >
+          <div className="mx-auto max-w-6xl">
+            <SectionLabel label="Ils utilisent AVS" />
+            <motion.div
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true }}
+              variants={stagger}
+              className="grid gap-5 md:grid-cols-3"
+            >
+              {TESTIMONIALS.map(({ css, quote, name, flag, role }) => (
+                <motion.figure
+                  key={name}
+                  variants={itemFade}
+                  className="group flex flex-col gap-5 rounded-2xl p-7 backdrop-blur-sm transition-all duration-300"
+                  style={{
+                    background: 'var(--hp-card-bg)',
+                    border: '1px solid var(--hp-card-border)',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--hp-card-hover-b)';
+                    e.currentTarget.style.background = 'var(--hp-card-hover-bg)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'var(--hp-card-border)';
+                    e.currentTarget.style.background = 'var(--hp-card-bg)';
+                  }}
+                >
+                  <span
+                    className="font-display text-5xl leading-[.8] select-none"
+                    style={{ color: '#C0573E', fontFamily: 'Georgia,serif' }}
+                    aria-hidden
+                  >
+                    &quot;
+                  </span>
+                  <blockquote
+                    className="-mt-3 flex-1 text-sm leading-[1.8]"
+                    style={{ color: 'var(--hp-quote-text)' }}
+                  >
+                    {quote}
+                  </blockquote>
+                  <figcaption className="flex items-center gap-3">
+                    <div
+                      className={`${css} relative h-10 w-10 shrink-0 overflow-hidden rounded-full`}
+                      style={{ border: '1.5px solid var(--hp-border-md)' }}
+                    >
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                        <span className="font-display text-sm font-black text-white drop-shadow">
+                          {name.charAt(0)}
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <p
+                        className="text-xs font-semibold"
+                        style={{ color: 'var(--hp-author-text)' }}
+                      >
+                        {flag} {name}
+                      </p>
+                      <p className="text-[10px]" style={{ color: 'var(--hp-role-text)' }}>
+                        {role}
+                      </p>
+                    </div>
+                  </figcaption>
+                </motion.figure>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+
+        {/* ══════════════════════════════════════════════════════
+            § 8 — CTA (always dark — kente-imposed)
+        ══════════════════════════════════════════════════════ */}
+        <section
+          aria-labelledby="cta-title"
+          className="avs-pattern-kente-royale relative overflow-hidden"
+        >
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(135deg,rgba(10,8,6,.97) 0%,rgba(26,18,8,.90) 60%,rgba(50,25,10,.84) 100%)',
+            }}
+            aria-hidden
+          />
+          <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
             <div
-              key={i}
-              className="text-avs-primary flex items-center gap-8 px-8 font-mono text-[10px] tracking-[.25em] whitespace-nowrap uppercase"
-            >
-              {item}
-              <span className="bg-avs-primary/28 h-0.75 w-0.75 rounded-full" />
-            </div>
-          ))}
-        </div>
-        <style>{`@keyframes avs-marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}`}</style>
-      </div>
-
-      {/* ══════════════════════════════════════════════════════
-          § 3 — GALERIE BRISÉE
-      ══════════════════════════════════════════════════════ */}
-      <section aria-labelledby="gallery-title" className="bg-[#0A0806] px-6 py-20 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-8 flex items-center justify-between">
-            <SectionLabel label="Patrimoine · Motifs en vedette" light />
-            <Link
-              href={"/patterns" as Route}
-              className="text-avs-secondary hover:text-avs-primary flex items-center gap-1.5 text-xs font-semibold transition-colors"
-            >
-              Tout voir <ArrowRight size={12} />
-            </Link>
+              className="absolute -top-24 -right-24 h-96 w-96 rounded-full"
+              style={{ border: '1px solid rgba(192,87,62,.09)' }}
+            />
+            <div
+              className="absolute -top-10 -right-10 h-60 w-60 rounded-full"
+              style={{ border: '1px solid rgba(192,87,62,.14)' }}
+            />
+            <div
+              className="absolute top-12 right-20 h-20 w-20 rounded-full"
+              style={{ border: '1px solid rgba(255,255,255,.04)' }}
+            />
+            <div
+              className="absolute -bottom-12 -left-16 h-56 w-56 rotate-45"
+              style={{ border: '1px solid rgba(212,160,23,.08)' }}
+            />
+          </div>
+          <div
+            className="pointer-events-none absolute right-0 bottom-0 h-48 w-48 opacity-[.03]"
+            aria-hidden
+          >
+            <div className="avs-pattern-adinkra-sankofa h-full w-full" />
           </div>
 
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true, margin: '-80px' }}
-            variants={stagger}
-            className="grid grid-cols-2 gap-2 lg:grid-cols-6 lg:grid-rows-2"
-          >
-            {GALLERY.map(({ css, type, name, origin, cls }, i) => (
-              <motion.div
-                key={name}
-                variants={itemFade}
-                className={`group rounded-avs-xl relative cursor-pointer overflow-hidden ${cls}`}
-                style={{ minHeight: i === 0 ? '360px' : '160px' }}
-                whileHover={{ scale: 1.015 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
+          <div className="relative mx-auto max-w-3xl px-6 py-32 text-center lg:px-8">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.94 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease }}
+              className="mb-8 inline-flex items-center gap-2.5 rounded-full border px-5 py-2"
+              style={{ background: 'rgba(192,87,62,.10)', borderColor: 'rgba(192,87,62,.28)' }}
+            >
+              <span
+                className="h-1.5 w-1.5 animate-pulse rounded-full"
+                style={{ background: '#C0573E' }}
+                aria-hidden
+              />
+              <span
+                className="font-mono text-[9px] tracking-[.24em] uppercase"
+                style={{ color: '#C0573E' }}
               >
-                <div
-                  className={`${css} absolute inset-0 transition-transform duration-700 group-hover:scale-105`}
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-[#0A0806]/90 via-[#0A0806]/10 to-transparent" />
-
-                {/* Badge */}
-                <div className="absolute top-3 left-3">
-                  <span className="bg-avs-primary/90 text-avs-secondary rounded-sm px-2 py-0.5 font-mono text-[8px] font-bold tracking-[.18em] uppercase backdrop-blur-sm">
-                    {type}
-                  </span>
-                </div>
-
-                {/* Info bas */}
-                <div className="absolute right-0 bottom-0 left-0 translate-y-1 p-4 opacity-0 transition-all duration-250 group-hover:translate-y-0 group-hover:opacity-100">
-                  <p className="font-display text-avs-secondary text-sm font-bold">{name}</p>
-                  <p className="text-avs-secondary text-[10px]">{origin}</p>
-                </div>
-
-                {/* Arrow */}
-                <div className="bg-avs-secondary/10 absolute top-3 right-3 rounded-full p-1.5 opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100">
-                  <ArrowUpRight size={11} className="text-avs-secondary" aria-hidden />
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════
-          § 4 — PIVOT STAT
-      ══════════════════════════════════════════════════════ */}
-      <section
-        className="avs-pattern-kente-royale relative overflow-hidden py-24"
-        aria-label="Impact du standard AVS"
-      >
-        <div className="absolute inset-0 bg-[#0A0806]/88" aria-hidden />
-
-        {/* Numéro géant en filigrane */}
-        <div
-          className="font-display text-avs-secondary pointer-events-none absolute right-[-2%] bottom-[-12%] leading-none font-black opacity-[.04] select-none"
-          style={{ fontSize: 'clamp(8rem,22vw,18rem)' }}
-          aria-hidden
-        >
-          1248
-        </div>
-
-        <div className="relative mx-auto max-w-6xl px-6 lg:px-8">
-          <div className="max-w-2xl">
-            <SectionLabel label="Héritage · Documentation · Standard" light />
+                Open Source · CC BY 4.0 · Gratuit
+              </span>
+            </motion.div>
 
             <motion.h2
+              id="cta-title"
               initial={{ opacity: 0, y: 32 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="font-display text-avs-secondary leading-[.9] font-black"
-              style={{ fontSize: 'clamp(2.5rem,5vw,4rem)' }}
+              transition={{ duration: 0.85, ease }}
+              className="font-display leading-[.9] font-black tracking-[-0.025em]"
+              style={{ fontSize: 'clamp(2.75rem,7vw,5.75rem)', color: '#F5EBE0' }}
             >
-              Chaque motif
+              Construisons
               <br />
-              porte une
+              <span style={{ color: '#C0573E' }}>le standard</span>
               <br />
-              <span className="text-avs-primary">histoire</span>
+              africain
             </motion.h2>
 
             <motion.p
@@ -640,383 +1046,104 @@ export default function HomePage() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="text-avs-secondary mt-6 max-w-md leading-relaxed"
+              className="mx-auto mt-8 max-w-md leading-relaxed"
+              style={{ color: 'rgba(245,235,224,.52)' }}
             >
-              Région d&apos;origine, peuple, époque, symbolisme cérémoniel. Une archive vivante,
-              ouverte, vérifiée par des artisans réels.
+              Artisan, designer, chercheur ou développeur — votre savoir enrichit la plus grande
+              archive visuelle africaine open-source du monde.
             </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.32, duration: 0.6, ease }}
+              className="mt-10 flex flex-wrap items-center justify-center gap-4"
+            >
+              <Link
+                href={'/auth/register' as Route}
+                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl px-9 py-4 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5"
+                style={{
+                  background: '#C0573E',
+                  boxShadow: '4px 4px 0 rgba(192,87,62,.35),0 8px 24px rgba(192,87,62,.22)',
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.boxShadow =
+                    '6px 6px 0 rgba(192,87,62,.35),0 12px 32px rgba(192,87,62,.28)')
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.boxShadow =
+                    '4px 4px 0 rgba(192,87,62,.35),0 8px 24px rgba(192,87,62,.22)')
+                }
+              >
+                <span
+                  className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full"
+                  aria-hidden
+                />
+                Rejoindre gratuitement{' '}
+                <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
+              </Link>
+              <Link
+                href={'/patterns' as Route}
+                className="inline-flex items-center gap-2 rounded-xl px-9 py-4 text-sm font-semibold transition-all duration-200"
+                style={{
+                  border: '1px solid rgba(245,235,224,.14)',
+                  color: 'rgba(245,235,224,.75)',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(245,235,224,.28)';
+                  e.currentTarget.style.color = '#F5EBE0';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.borderColor = 'rgba(245,235,224,.14)';
+                  e.currentTarget.style.color = 'rgba(245,235,224,.75)';
+                }}
+              >
+                Explorer d&apos;abord
+              </Link>
+            </motion.div>
 
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: 0.35, duration: 0.6 }}
-              className="mt-8 flex flex-wrap gap-2"
+              transition={{ delay: 0.5, duration: 0.7 }}
+              className="mt-14 flex items-center justify-center gap-4"
             >
-              {['CC BY 4.0', 'Open Source', 'Aucun compte requis', 'SVG · PNG · JSON · CSS'].map(
-                (tag) => (
-                  <span
-                    key={tag}
-                    className={`rounded-avs border px-4 py-1.5 text-xs ${tag === 'CC BY 4.0' ? 'border-avs-primary/30 bg-avs-primary/10 text-avs-primary' : 'border-avs-secondary/10 text-avs-secondary'}`}
+              <div className="flex">
+                {COMMUNITY_AVATARS.map((css, i) => (
+                  <div
+                    key={i}
+                    className={`${css} relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full ${i > 0 ? '-ml-2.5' : ''}`}
+                    style={{ zIndex: 5 - i, border: '2px solid var(--hp-avatar-ring)' }}
                   >
-                    {tag}
-                  </span>
-                ),
-              )}
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                      <span className="font-display text-xs font-black text-white drop-shadow">
+                        {['N', 'A', 'F', 'K', 'S'][i]}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-sm" style={{ color: 'rgba(245,235,224,.60)' }}>
+                +312 artisans nous ont déjà rejoints
+              </p>
             </motion.div>
-          </div>
-        </div>
-      </section>
 
-      {/* ══════════════════════════════════════════════════════
-          § 5 — FEATURES LISTE ÉDITORIALE
-      ══════════════════════════════════════════════════════ */}
-      <section aria-labelledby="features-title" className="bg-avs-secondary px-6 py-24 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          {/* Header */}
-          <div className="mb-16 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <SectionLabel label="Ce que nous offrons" />
-              <h2
-                id="features-title"
-                className="font-display text-avs-accent leading-[.95] font-black"
-                style={{ fontSize: 'clamp(2rem,4vw,3.5rem)' }}
-              >
-                Un standard
-                <br />
-                <span className="text-avs-primary">ouvert</span> & rigoureux
-              </h2>
-            </div>
-            <p className="text-avs-accent/40 max-w-xs text-sm leading-relaxed lg:text-right">
-              Tout est accessible sans compte, comme PrimeReact. La connaissance africaine
-              appartient à l&apos;humanité.
-            </p>
-          </div>
-
-          {/* Liste */}
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true, margin: '-60px' }}
-            variants={stagger}
-            className="divide-avs-accent/7 divide-y"
-          >
-            {FEATURES.map(({ num, Icon, title, desc, href, color }) => (
-              <motion.div key={title} variants={itemFade}>
-                <Link
-                  href={href as Route}
-                  className="group flex items-center gap-6 py-7 transition-all hover:pl-3 lg:gap-8 lg:py-8"
-                >
-                  {/* Numéro éditorial */}
-                  <span
-                    className="font-display text-5xl leading-none font-black tabular-nums opacity-[.07] transition-opacity duration-300 group-hover:opacity-[.14] lg:text-6xl"
-                    style={{ color }}
-                    aria-hidden
-                  >
-                    {num}
-                  </span>
-
-                  {/* Icône */}
-                  <div
-                    className="rounded-avs flex h-12 w-12 shrink-0 items-center justify-center transition-transform duration-300 group-hover:scale-105"
-                    style={{ background: `${color}12`, color }}
-                  >
-                    <Icon size={20} aria-hidden />
-                  </div>
-
-                  {/* Texte */}
-                  <div className="min-w-0 flex-1">
-                    <p className="font-display text-avs-accent group-hover:text-avs-primary text-xl font-bold transition-colors">
-                      {title}
-                    </p>
-                    <p className="text-avs-accent/45 mt-1 text-sm leading-relaxed">{desc}</p>
-                  </div>
-
-                  {/* Arrow */}
-                  <div className="bg-avs-accent/6 group-hover:bg-avs-primary flex h-9 w-9 shrink-0 items-center justify-center rounded-full opacity-40 transition-all duration-300 group-hover:scale-110 group-hover:opacity-100">
-                    <ArrowUpRight
-                      size={15}
-                      className="text-avs-accent group-hover:text-avs-secondary"
-                      aria-hidden
-                    />
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════
-          § 6 — BENTO GRID
-      ══════════════════════════════════════════════════════ */}
-      <section aria-labelledby="bento-title" className="bg-[#0A0806] px-6 pt-20 pb-24 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <SectionLabel label="Pourquoi AVS" light />
-
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true, margin: '-60px' }}
-            variants={stagger}
-            className="grid gap-3 lg:grid-cols-3"
-          >
-            {BENTO.map((card, i) => (
-              <motion.div
-                key={i}
-                variants={itemFade}
-                whileHover={{ y: -3 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                className={`rounded-avs-xl relative overflow-hidden ${card.span || ''}`}
-                style={{
-                  minHeight: card.minH,
-                  ...('border' in card && card.border
-                    ? { border: `1px solid ${card.border}` }
-                    : {}),
-                  ...('solid' in card && card.solid ? { background: card.solid } : {}),
-                }}
-              >
-                {/* Pattern bg */}
-                {'css' in card && (
-                  <>
-                    <div className={`${card.css} absolute inset-0`} />
-                    <div className={`absolute inset-0 bg-linear-to-br ${card.overlay}`} />
-                  </>
-                )}
-
-                <div className="relative flex h-full flex-col justify-between p-7">
-                  <div>
-                    <p
-                      className="mb-3 font-mono text-[9px] tracking-[.2em] uppercase"
-                      style={{ color: card.eyeColor, opacity: 0.8 }}
-                    >
-                      {card.eyebrow}
-                    </p>
-                    <h3
-                      className="font-display text-xl leading-tight font-bold"
-                      style={{ color: card.titleColor }}
-                    >
-                      {card.title.split('\n').map((line, j) => (
-                        <span key={j} className="block">
-                          {line}
-                        </span>
-                      ))}
-                    </h3>
-                    <p className="mt-2 text-sm leading-relaxed" style={{ color: card.descColor }}>
-                      {card.desc}
-                    </p>
-                  </div>
-
-                  <div className="mt-5">
-                    {'chips' in card && (
-                      <div className="flex flex-wrap gap-1.5">
-                        {card.chips.map((c) => (
-                          <span
-                            key={c}
-                            className="rounded-avs border px-2.5 py-1 font-mono text-[9px]"
-                            style={{ color: card.chipColor, borderColor: `${card.chipColor}35` }}
-                          >
-                            {c}
-                          </span>
-                        ))}
-                      </div>
-                    )}
-                    {'bigNum' in card && (
-                      <p
-                        className="font-display text-right text-5xl leading-none font-black"
-                        style={{ color: card.titleColor, opacity: 0.15 }}
-                        aria-hidden
-                      >
-                        {card.bigNum}
-                      </p>
-                    )}
-                    {'checkmark' in card && (
-                      <div className="bg-avs-ndop/15 flex h-8 w-8 items-center justify-center rounded-full">
-                        <Check size={16} className="text-avs-ndop" aria-hidden />
-                      </div>
-                    )}
-                    {'palette' in card && (
-                      <div className="mt-4 flex gap-1.5">
-                        {card.palette.map((hex) => (
-                          <div
-                            key={hex}
-                            className="rounded-avs first:rounded-l-avs-lg last:rounded-r-avs-lg h-7 flex-1"
-                            style={{ background: hex }}
-                            title={hex}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════
-          § 7 — TÉMOIGNAGES
-      ══════════════════════════════════════════════════════ */}
-      <section aria-labelledby="testimonials-title" className="bg-[#0C0906] px-6 py-24 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <SectionLabel label="Ils utilisent AVS" light />
-
-          <motion.div
-            initial="initial"
-            whileInView="animate"
-            viewport={{ once: true }}
-            variants={stagger}
-            className="grid gap-5 md:grid-cols-3"
-          >
-            {TESTIMONIALS.map(({ css, quote, name, flag, role }) => (
-              <motion.figure
-                key={name}
-                variants={itemFade}
-                className="group rounded-avs-xl border-avs-secondary/7 bg-avs-secondary/3 hover:border-avs-primary/25 hover:bg-avs-secondary/5 flex flex-col gap-5 border p-7 backdrop-blur-sm transition-all"
-              >
-                <span
-                  className="font-display text-avs-primary text-5xl leading-[.8] select-none"
-                  aria-hidden
-                >
-                  &quot;
-                </span>
-                <blockquote className="text-avs-secondary -mt-3 flex-1 text-sm leading-[1.75]">
-                  {quote}
-                </blockquote>
-                <figcaption className="flex items-center gap-3">
-                  <div
-                    className={`${css} border-avs-secondary/12 flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border`}
-                  >
-                    <span className="font-display text-avs-secondary text-sm font-black drop-shadow">
-                      {name.charAt(0)}
-                    </span>
-                  </div>
-                  <div>
-                    <p className="text-avs-secondary text-xs font-semibold">
-                      {flag} {name}
-                    </p>
-                    <p className="text-avs-secondary text-[10px]">{role}</p>
-                  </div>
-                </figcaption>
-              </motion.figure>
-            ))}
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════════════════
-          § 8 — CTA FINAL
-      ══════════════════════════════════════════════════════ */}
-      <section
-        aria-labelledby="cta-title"
-        className="avs-pattern-kente-royale relative overflow-hidden"
-      >
-        <div
-          className="absolute inset-0"
-          style={{
-            background: 'linear-gradient(135deg,rgba(10,8,6,.96) 0%,rgba(26,18,8,.88) 100%)',
-          }}
-          aria-hidden
-        />
-
-        {/* Cercles déco */}
-        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-          <div className="border-avs-primary/10 absolute -top-20 -right-20 h-80 w-80 rounded-full border" />
-          <div className="border-avs-primary/16 absolute -top-8 -right-8 h-52 w-52 rounded-full border" />
-          <div className="border-avs-kente/10 absolute bottom-0 -left-16 h-48 w-48 rotate-45 border" />
-        </div>
-
-        <div className="relative mx-auto max-w-3xl px-6 py-32 text-center lg:px-8">
-          {/* Badge live */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="border-avs-primary/30 bg-avs-primary/10 mb-8 inline-flex items-center gap-2.5 rounded-full border px-5 py-2"
-          >
-            <span className="bg-avs-primary h-1.5 w-1.5 animate-pulse rounded-full" aria-hidden />
-            <span className="text-avs-primary font-mono text-[10px] tracking-[.22em] uppercase">
-              Open Source · CC BY 4.0 · Gratuit
-            </span>
-          </motion.div>
-
-          {/* Headline */}
-          <motion.h2
-            id="cta-title"
-            initial={{ opacity: 0, y: 32 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="font-display text-avs-secondary leading-[.9] font-black tracking-[-0.02em]"
-            style={{ fontSize: 'clamp(2.5rem,7vw,5.5rem)' }}
-          >
-            Construisons
-            <br />
-            <span className="text-avs-primary">le standard</span>
-            <br />
-            africain
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2, duration: 0.6 }}
-            className="text-avs-secondary mx-auto mt-8 max-w-md leading-relaxed"
-          >
-            Artisan, designer, chercheur ou développeur — votre savoir enrichit la plus grande
-            archive visuelle africaine open-source du monde.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.35, duration: 0.6 }}
-            className="mt-10 flex flex-wrap items-center justify-center gap-4"
-          >
-            <Link
-              href={"/auth/register" as Route}
-              className="group rounded-avs bg-avs-primary text-avs-secondary relative inline-flex items-center gap-2 overflow-hidden px-9 py-4 text-sm font-bold shadow-[3px_3px_0_rgba(192,87,62,.35)] transition-all hover:-translate-y-px hover:shadow-[5px_5px_0_rgba(192,87,62,.35)]"
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.65, duration: 0.6 }}
+              className="mt-6 flex items-center justify-center gap-2 font-mono text-[10px] tracking-[.16em] uppercase"
+              style={{ color: 'rgba(245,235,224,.25)' }}
             >
-              Rejoindre gratuitement
-              <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
-            </Link>
-            <Link
-              href={"/patterns" as Route}
-              className="rounded-avs border-avs-secondary/15 text-avs-secondary hover:border-avs-secondary/28 hover:text-avs-secondary inline-flex items-center gap-2 border px-9 py-4 text-sm font-semibold transition-all"
-            >
-              Explorer d&apos;abord
-            </Link>
-          </motion.div>
-
-          {/* Avatars communauté */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.5, duration: 0.6 }}
-            className="mt-14 flex items-center justify-center gap-4"
-          >
-            <div className="flex">
-              {COMMUNITY_AVATARS.map((css, i) => (
-                <div
-                  key={i}
-                  className={`${css} flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border-2 border-[#0A0806] ${i > 0 ? '-ml-2.5' : ''}`}
-                  style={{ zIndex: 5 - i }}
-                >
-                  <span className="font-display text-avs-secondary text-xs font-black drop-shadow">
-                    {['N', 'A', 'F', 'K', 'S'][i]}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <p className="text-avs-secondary text-sm">+312 artisans nous ont déjà rejoints</p>
-          </motion.div>
-        </div>
-      </section>
-    </div>
+              <Download size={10} />
+              98k téléchargements ce mois — aucun compte requis
+            </motion.p>
+          </div>
+        </section>
+      </div>
+    </>
   );
 }

@@ -42,7 +42,7 @@ export default async function PatternDetailPage({ params }: { params: Promise<{ 
             Motifs
           </Link>
           <span>/</span>
-          <span className="text-avs-accent">{pattern.nameFr}</span>
+          <span className="text-avs-accent">{pattern?.nameFr}</span>
         </div>
       </div>
 
@@ -54,16 +54,16 @@ export default async function PatternDetailPage({ params }: { params: Promise<{ 
             <div
               className="rounded-avs-lg border-avs-accent/10 relative h-72 overflow-hidden border bg-gradient-to-br sm:h-96"
               style={{
-                backgroundImage: `linear-gradient(to bottom right, ${pattern.colors.primary}, ${pattern.colors.secondary})`,
+                backgroundImage: `linear-gradient(to bottom right, ${pattern?.colors?.primary}, ${pattern?.colors?.secondary})`,
               }}
             >
               <div className="from-avs-accent/80 absolute inset-0 bg-gradient-to-t via-transparent to-transparent" />
               <div className="absolute bottom-6 left-6">
                 <p className="text-avs-primary text-xs font-bold tracking-widest uppercase">
-                  {pattern.patternType.toUpperCase()}
+                  {pattern?.patternType?.toUpperCase()}
                 </p>
                 <h1 className="font-display text-avs-secondary text-3xl font-bold">
-                  {pattern.nameFr}
+                  {pattern?.nameFr}
                 </h1>
               </div>
               <div className="absolute top-6 right-6 flex gap-2">
@@ -88,7 +88,7 @@ export default async function PatternDetailPage({ params }: { params: Promise<{ 
               <h2 id="desc-title" className="font-display text-avs-accent mb-3 text-xl font-bold">
                 Description
               </h2>
-              <p className="text-avs-accent/70 leading-relaxed">{pattern.descFr}</p>
+              <p className="text-avs-accent/70 leading-relaxed">{pattern?.descFr}</p>
             </section>
 
             {/* Histoire */}

@@ -8,6 +8,7 @@ import {
   Eye, EyeOff, Star, Download, ArrowUpDown, CheckCircle2,
   Clock, AlertCircle, Layers,
 } from 'lucide-react';
+import { Route } from 'next';
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 type Status   = 'published' | 'draft' | 'review' | 'rejected';
@@ -71,7 +72,7 @@ function ActionMenu({ pattern, onDelete }: { pattern: MyPattern; onDelete: (id: 
               className="absolute right-0 z-20 mt-1 w-44 overflow-hidden rounded-avs-lg border border-avs-accent/10 bg-white shadow-avs-lg"
             >
               <Link
-                href={`/dashboard/patterns/${pattern.slug}/edit`}
+                href={`/dashboard/patterns/${pattern.slug}/edit` as Route}
                 className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-avs-accent hover:bg-avs-primary/8 hover:text-avs-primary"
                 onClick={() => setOpen(false)}
               >
@@ -173,7 +174,7 @@ export default function MyPatternsPage() {
             <h1 className="font-display text-2xl font-bold text-avs-accent">Mes Motifs</h1>
             <p className="text-sm text-avs-accent/50">{patterns.length} motif{patterns.length > 1 ? 's' : ''} au total</p>
           </div>
-          <Link href="/dashboard/patterns/new" className="avs-btn-primary gap-1.5 text-xs py-2 px-4">
+        <Link href={"patterns/new" as Route} className="avs-btn-primary gap-1.5 text-xs py-2 px-4">
             <Plus size={14} /> Nouveau motif
           </Link>
         </div>
@@ -198,7 +199,7 @@ export default function MyPatternsPage() {
 
         {/* ── Filtres & Recherche ──────────────────────────────────────────── */}
         <div className="flex flex-wrap items-center gap-3">
-          <div className="relative flex-1 min-w-[200px]">
+          <div className="relative flex-1 min-w-50">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-avs-accent/35" />
             <input
               type="search"

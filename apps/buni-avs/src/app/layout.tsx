@@ -74,7 +74,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="fr"
-      className={`${playfair.variable} ${dmSans.variable} ${jetbrains.variable}`}
+      className={`${playfair.variable} ${dmSans.variable} ${jetbrains.variable} dark`}
       suppressHydrationWarning
     >
       <body className="bg-avs-secondary font-body text-avs-accent selection:bg-avs-primary/20 selection:text-avs-primary min-h-screen antialiased">

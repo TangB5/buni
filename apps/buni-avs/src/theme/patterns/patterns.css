@@ -835,6 +835,53 @@
 }
 
 /* ══════════════════════════════════════════════════════════════════════════════
+   SVG PATTERNS — Like PrimeReact Icons
+   Usage: <div class="avs-svg-pattern-ndop6"></div>
+   ══════════════════════════════════════════════════════════════════════════════ */
+
+[class*="avs-svg-pattern-"] {
+  background-repeat: repeat;
+  background-size: auto;
+  background-position: 0 0;
+}
+
+.avs-svg-pattern-ndop6 {
+  background-image: url('/patterns/ndop6.svg');
+}
+
+.avs-svg-pattern-ndop-bamoum {
+  background-image: url('/patterns/ndop-bamoum.svg');
+}
+
+.avs-svg-pattern-ndop-symbol-1 {
+  background-image: url('/patterns/ndopSymbol1.svg');
+}
+
+.avs-svg-pattern-ndop-symbol-2 {
+  background-image: url('/patterns/ndopSymbol2.svg');
+}
+
+.avs-svg-pattern-ndop-symbol-3 {
+  background-image: url('/patterns/ndopSymbol3.svg');
+}
+
+.avs-svg-pattern-ndop-symbol-4 {
+  background-image: url('/patterns/ndopSymbol4.svg');
+}
+
+.avs-svg-pattern-ndop-symbol-5 {
+  background-image: url('/patterns/ndopSymbol5.svg');
+}
+
+.avs-svg-pattern-toghu-bamenda {
+  background-image: url('/patterns/toghu-bamenda.svg');
+}
+
+.avs-svg-pattern-toghu-bamileke {
+  background-image: url('/patterns/toghu-bamileke.svg');
+}
+
+/* ══════════════════════════════════════════════════════════════════════════════
    UTILITAIRES
    ══════════════════════════════════════════════════════════════════════════════ */
 

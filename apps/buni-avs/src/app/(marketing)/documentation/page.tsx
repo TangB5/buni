@@ -973,7 +973,7 @@ export default function DocumentationPage() {
                                       href={`#${t.id}`}
                                       className="block rounded-lg px-2 py-1 text-[11px] transition-all duration-150"
                                       style={{
-                                        color: activeHeading === t.id ? 'var(--doc-primary)' : 'rgba(255,255,255,0.5)',
+                                        color: activeHeading === t.id ? 'var(--doc-primary)' : 'var(--doc-muted)',
                                         background: activeHeading === t.id ? 'var(--doc-primary-10)' : 'transparent',
                                         fontWeight: activeHeading === t.id ? 600 : 400,
                                       }}

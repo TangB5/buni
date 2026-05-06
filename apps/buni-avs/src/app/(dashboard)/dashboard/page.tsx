@@ -81,14 +81,15 @@ const CSS_PATTERN_MAP: Record<string, string> = {
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 16 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] },
+  transition: { duration: 0.6, delay }
 });
 
 const stagger = { animate: { transition: { staggerChildren: 0.06 } } };
 
 const itemFade = {
   initial: { opacity: 0, y: 10 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.4 }
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -177,6 +178,7 @@ function StatCard({
       ref={ref}
       {...fadeUp(delay)}
       onMouseMove={handleMouse}
+      // @ts-ignore
       onMouseLeave={() => { x.set(0); y.set(0); }}
       style={{ rotateX, rotateY, transformPerspective: 800 }}
       className="group relative overflow-hidden rounded-2xl border border-white/10 dark:border-white/5 bg-white dark:bg-zinc-900 shadow-sm hover:shadow-lg transition-shadow duration-500 cursor-default"
@@ -219,7 +221,7 @@ function StatCard({
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: '68%' }}
-            transition={{ duration: 1.2, delay: delay + 0.3, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 1.2, delay: delay + 0.3, ease: 'easeInOut' }}
             className="h-full rounded-full"
             style={{ background: accentColor }}
           />
@@ -558,7 +560,7 @@ export default function DashboardPage() {
                   initial="initial"
                   animate="animate"
                   variants={stagger}
-                  className="divide-y divide-zinc-100 dark:divide-zinc-800/60 max-h-[400px] overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-800"
+                  className="divide-y divide-zinc-100 dark:divide-zinc-800/60 max-h-100 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-200 dark:scrollbar-thumb-zinc-800"
                 >
                   {activity.map((item) => {
                     const conf = ACTIVITY_CONFIG[item.type] ?? ACTIVITY_CONFIG.comment!;

@@ -1,383 +1,503 @@
 'use client';
 
-import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import * as Tabs from '@radix-ui/react-tabs';
-import { Copy, Check, Download } from 'lucide-react';
+import { Copy, Check, Download, ArrowUpRight } from 'lucide-react';
 
-// ── Types ──────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// TYPES
+// ─────────────────────────────────────────────────────────────────────────────
 interface ColorToken {
-  name: string;
-  hex: string;
+  name:    string;
+  hex:     string;
   meaning: string;
-  origin: string;
-  css: string;
+  origin:  string;
+  css:     string;
 }
-
 interface Palette {
-  id: string;
-  name: string;
-  origin: string;
+  id:          string;
+  name:        string;
+  origin:      string;
   description: string;
-  tokens: ColorToken[];
-  patternCSS: string;
+  tokens:      ColorToken[];
+  patternCSS:  string;
+  accentColor: string;
 }
+type ExportFormat = 'css' | 'json' | 'tailwind';
 
-// ── Données ────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────────────────────────────────────
 const PALETTES: Palette[] = [
   {
-    id: 'avs-core',
-    name: 'AVS Core',
-    origin: 'Standard AVS',
-    description:
-      'La palette officielle du standard African Visual Standard — terracotta, lin naturel et obsidienne.',
-    patternCSS: 'avs-pattern-wax',
+    id: 'avs-core', name: 'AVS Core', origin: 'Standard AVS', accentColor: '#C0573E',
+    description: 'La palette officielle du standard African Visual Standard — terracotta, lin naturel et obsidienne.',
+    patternCSS: 'avs-pattern-wax-dakar',
     tokens: [
-      {
-        name: 'avs-primary',
-        hex: '#C0573E',
-        meaning: 'Terre brûlée — chaleur, énergie, identité',
-        origin: 'Poterie Yoruba',
-        css: '--avs-primary',
-      },
-      {
-        name: 'avs-secondary',
-        hex: '#F5EBE0',
-        meaning: 'Lin naturel — repos, clarté, neutralité',
-        origin: 'Tissu Fulani',
-        css: '--avs-secondary',
-      },
-      {
-        name: 'avs-accent',
-        hex: '#1D1D1B',
-        meaning: 'Obsidienne — profondeur, autorité, nuit',
-        origin: 'Basalte Kenya',
-        css: '--avs-accent',
-      },
+      { name: 'avs-primary',   hex: '#C0573E', meaning: 'Terre brûlée — chaleur, énergie, identité', origin: 'Poterie Yoruba',  css: '--avs-primary'   },
+      { name: 'avs-secondary', hex: '#F5EBE0', meaning: 'Lin naturel — repos, clarté, neutralité',   origin: 'Tissu Fulani',   css: '--avs-secondary' },
+      { name: 'avs-accent',    hex: '#1D1D1B', meaning: 'Obsidienne — profondeur, autorité, nuit',   origin: 'Basalte Kenya',  css: '--avs-accent'    },
     ],
   },
   {
-    id: 'kente',
-    name: 'Kente Asante',
-    origin: 'Ghana',
+    id: 'kente', name: 'Kente Asante', origin: 'Ghana', accentColor: '#D4A017',
     description: 'Palette extraite du tissu royal Akan — or royal, noir sacré, rouge du sacrifice.',
-    patternCSS: 'avs-pattern-kente',
+    patternCSS: 'avs-pattern-kente-royale',
     tokens: [
-      {
-        name: 'kente-gold',
-        hex: '#D4A017',
-        meaning: 'Or royal — richesse, royauté, soleil',
-        origin: 'Fil de soie Asante',
-        css: '--avs-kente',
-      },
-      {
-        name: 'kente-black',
-        hex: '#1D1D1B',
-        meaning: 'Noir maturité — sagesse, énergie cosmique',
-        origin: 'Encre de charbon',
-        css: '--avs-accent',
-      },
-      {
-        name: 'kente-red',
-        hex: '#C0573E',
-        meaning: 'Rouge sang — sacrifice, courage, ancêtres',
-        origin: 'Ocre ferrugineux',
-        css: '--avs-primary',
-      },
-      {
-        name: 'kente-green',
-        hex: '#4A6741',
-        meaning: 'Vert forêt — croissance, vie, renouveau',
-        origin: 'Plantes indigo',
-        css: '--avs-ndop',
-      },
+      { name: 'kente-gold',  hex: '#D4A017', meaning: 'Or royal — richesse, royauté, soleil',        origin: 'Fil de soie Asante', css: '--avs-kente'   },
+      { name: 'kente-black', hex: '#1D1D1B', meaning: 'Noir maturité — sagesse, énergie cosmique',   origin: 'Encre de charbon',   css: '--avs-accent'  },
+      { name: 'kente-red',   hex: '#C0573E', meaning: 'Rouge sang — sacrifice, courage, ancêtres',   origin: 'Ocre ferrugineux',   css: '--avs-primary' },
+      { name: 'kente-green', hex: '#4A6741', meaning: 'Vert forêt — croissance, vie, renouveau',     origin: 'Plantes indigo',     css: '--avs-ndop'    },
     ],
   },
   {
-    id: 'ndop',
-    name: 'Ndop Bamoum',
-    origin: 'Cameroun',
-    description:
-      'Teintes profondes du tissu sacré Bamoum — indigo cosmos, or raphia, ivoire rituel.',
-    patternCSS: 'avs-pattern-ndop-royal',
+    id: 'ndop', name: 'Ndop Bamoum', origin: 'Cameroun', accentColor: '#2A4A6B',
+    description: 'Teintes profondes du tissu sacré Bamoum — indigo cosmos, or raphia, ivoire rituel.',
+    patternCSS: 'avs-pattern-ndop-sultan',
     tokens: [
-      {
-        name: 'ndop-indigo',
-        hex: '#0D2340',
-        meaning: 'Indigo cosmos — eaux primordiales, infini',
-        origin: 'Indigo de Foumban',
-        css: '--ndop-indigo',
-      },
-      {
-        name: 'ndop-raffia',
-        hex: '#C8A96E',
-        meaning: 'Or raphia — richesse naturelle, soleil',
-        origin: 'Fibre de palmier',
-        css: '--avs-raffia',
-      },
-      {
-        name: 'ndop-ivory',
-        hex: '#F5EBE0',
-        meaning: 'Ivoire — pureté, paix, ancêtres',
-        origin: 'Ivoire végétal',
-        css: '--avs-secondary',
-      },
-      {
-        name: 'ndop-royal',
-        hex: '#2A4A6B',
-        meaning: 'Bleu royal — autorité, ciel, puissance',
-        origin: 'Teinture naturelle',
-        css: '--avs-indigo',
-      },
+      { name: 'ndop-indigo',  hex: '#0D2340', meaning: 'Indigo cosmos — eaux primordiales, infini', origin: 'Indigo de Foumban',  css: '--ndop-indigo' },
+      { name: 'ndop-raffia',  hex: '#C8A96E', meaning: 'Or raphia — richesse naturelle, soleil',    origin: 'Fibre de palmier',  css: '--avs-raffia'  },
+      { name: 'ndop-ivory',   hex: '#F5EBE0', meaning: 'Ivoire — pureté, paix, ancêtres',           origin: 'Ivoire végétal',    css: '--avs-secondary'},
+      { name: 'ndop-royal',   hex: '#2A4A6B', meaning: 'Bleu royal — autorité, ciel, puissance',    origin: 'Teinture naturelle',css: '--avs-indigo'  },
     ],
   },
   {
-    id: 'earth',
-    name: "Terres d'Afrique",
-    origin: 'Pan-Africain',
+    id: 'earth', name: "Terres d'Afrique", origin: 'Pan-Africain', accentColor: '#8B4513',
     description: 'Ocres, siennas et terres minérales extraits des pigments naturels du continent.',
-    patternCSS: 'avs-pattern-wax-bold',
+    patternCSS: 'avs-pattern-bogolan-fanga',
     tokens: [
-      {
-        name: 'earth-sienna',
-        hex: '#8B4513',
-        meaning: 'Sienna brûlée — sol fertile, ancrage',
-        origin: 'Argile du Sahel',
-        css: '--avs-earth',
-      },
-      {
-        name: 'earth-ochre',
-        hex: '#C8821A',
-        meaning: 'Ocre chaude — lumière rasante, crépuscule',
-        origin: 'Oxyde de fer',
-        css: '--earth-ochre',
-      },
-      {
-        name: 'earth-sand',
-        hex: '#E8C99A',
-        meaning: 'Sable doré — Sahara, voyage, ouverture',
-        origin: 'Dunes sahariennes',
-        css: '--earth-sand',
-      },
-      {
-        name: 'earth-baobab',
-        hex: '#5C3317',
-        meaning: 'Écorce de baobab — durée, mémoire',
-        origin: 'Bois de baobab',
-        css: '--earth-baobab',
-      },
+      { name: 'earth-sienna', hex: '#8B4513', meaning: 'Sienna brûlée — sol fertile, ancrage',     origin: 'Argile du Sahel',    css: '--avs-earth'    },
+      { name: 'earth-ochre',  hex: '#C8821A', meaning: 'Ocre chaude — lumière rasante, crépuscule', origin: 'Oxyde de fer',       css: '--earth-ochre'  },
+      { name: 'earth-sand',   hex: '#E8C99A', meaning: 'Sable doré — Sahara, voyage, ouverture',   origin: 'Dunes sahariennes',  css: '--earth-sand'   },
+      { name: 'earth-baobab', hex: '#5C3317', meaning: 'Écorce de baobab — durée, mémoire',        origin: 'Bois de baobab',     css: '--earth-baobab' },
     ],
   },
 ];
 
-type ExportFormat = 'css' | 'json' | 'tailwind';
-
-// ── Composant ColorSwatch ──────────────────────────────────────────────────────
-function ColorSwatch({ token }: { token: ColorToken }) {
-  const [copied, setCopied] = useState(false);
-
-  const copy = async (text: string) => {
-    await navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1800);
-  };
-
-  const isLight = parseInt(token.hex.slice(1), 16) > 0xaaaaaa;
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="group rounded-avs-lg border-avs-accent/10 shadow-avs overflow-hidden border"
-    >
-      {/* Swatch couleur */}
-      <div
-        className="relative h-28 cursor-pointer"
-        style={{ backgroundColor: token.hex }}
-        onClick={() => void copy(token.hex)}
-        role="button"
-        tabIndex={0}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') void copy(token.hex);
-        }}
-        aria-label={`Copier ${token.hex}`}
-      >
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
-          <span
-            className={`rounded-avs flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold backdrop-blur-sm ${isLight ? 'bg-avs-accent/20 text-avs-accent' : 'bg-white/20 text-white'}`}
-          >
-            {copied ? <Check size={12} /> : <Copy size={12} />}
-            {copied ? 'Copié !' : token.hex}
-          </span>
-        </div>
-      </div>
-
-      {/* Infos */}
-      <div className="bg-white p-4">
-        <div className="mb-1 flex items-center justify-between gap-2">
-          <p className="text-avs-accent font-mono text-xs font-semibold">{token.name}</p>
-          <button
-            onClick={() => void copy(`var(${token.css})`)}
-            className="text-avs-accent/30 hover:text-avs-primary font-mono text-[10px]"
-            title={`Copier var(${token.css})`}
-          >
-            {token.css}
-          </button>
-        </div>
-        <p className="text-avs-accent/55 text-xs leading-snug">{token.meaning}</p>
-        <p className="text-avs-accent/35 mt-1.5 text-[10px] italic">Source : {token.origin}</p>
-      </div>
-    </motion.div>
-  );
+// ─────────────────────────────────────────────────────────────────────────────
+// HELPERS
+// ─────────────────────────────────────────────────────────────────────────────
+function isLightColor(hex: string) {
+  const n = parseInt(hex.slice(1), 16);
+  const r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  return (r * 299 + g * 587 + b * 114) / 1000 > 155;
 }
 
-// ── Générateurs d'export ──────────────────────────────────────────────────────
 function generateExport(palette: Palette, format: ExportFormat): string {
   switch (format) {
     case 'css':
       return `:root {\n${palette.tokens.map((t) => `  ${t.css}: ${t.hex}; /* ${t.name} */`).join('\n')}\n}`;
     case 'json':
-      return JSON.stringify(
-        Object.fromEntries(palette.tokens.map((t) => [t.name, { hex: t.hex, css: t.css }])),
-        null,
-        2,
-      );
+      return JSON.stringify(Object.fromEntries(palette.tokens.map((t) => [t.name, { hex: t.hex, css: t.css }])), null, 2);
     case 'tailwind':
       return `// tailwind.config.ts\ncolors: {\n${palette.tokens.map((t) => `  '${t.name}': '${t.hex}',`).join('\n')}\n}`;
   }
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
-export default function ColorsPage() {
-  const [activePalette, setActivePalette] = useState(PALETTES[0]!.id);
-  const [exportFormat, setExportFormat] = useState<ExportFormat>('css');
-  const [copied, setCopied] = useState(false);
+// ─────────────────────────────────────────────────────────────────────────────
+// COLOR SWATCH
+// ─────────────────────────────────────────────────────────────────────────────
+function ColorSwatch({ token, index }: { token: ColorToken; index: number }) {
+  const [copied, setCopied] = useState<'hex' | 'css' | null>(null);
 
-  const palette = PALETTES.find((p) => p.id === activePalette) ?? PALETTES[0]!;
-  const exportCode = generateExport(palette, exportFormat);
+  const copy = useCallback(async (text: string, type: 'hex' | 'css') => {
+    await navigator.clipboard.writeText(text);
+    setCopied(type);
+    setTimeout(() => setCopied(null), 1800);
+  }, []);
 
-  const copyExport = async () => {
-    await navigator.clipboard.writeText(exportCode);
+  const light = isLightColor(token.hex);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.45, delay: index * 0.06, ease: [0.22, 1, 0.36, 1] }}
+      className="group overflow-hidden rounded-2xl transition-all duration-300"
+      style={{ border: '1px solid var(--clr-border)', background: 'var(--clr-surface)' }}
+      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-3px)'; (e.currentTarget as HTMLElement).style.boxShadow = `0 12px 40px ${token.hex}22`; }}
+      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.transform = 'none'; (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}
+    >
+      {/* Swatch */}
+      <button
+        className="relative h-28 w-full cursor-pointer overflow-hidden"
+        style={{ background: token.hex }}
+        onClick={() => void copy(token.hex, 'hex')}
+        aria-label={`Copier ${token.hex}`}
+      >
+        {/* Hover overlay */}
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-200 group-hover:opacity-100"
+          style={{ background: light ? 'rgba(0,0,0,0.12)' : 'rgba(255,255,255,0.10)' }}>
+          <AnimatePresence mode="wait">
+            <motion.span
+              key={copied === 'hex' ? 'done' : 'copy'}
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.85 }}
+              transition={{ duration: 0.15 }}
+              className="flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold backdrop-blur-sm"
+              style={{ background: light ? 'rgba(0,0,0,0.22)' : 'rgba(255,255,255,0.18)', color: light ? '#fff' : '#fff' }}
+            >
+              {copied === 'hex' ? <Check size={11} /> : <Copy size={11} />}
+              {copied === 'hex' ? 'Copié !' : token.hex}
+            </motion.span>
+          </AnimatePresence>
+        </div>
+
+        {/* Color value — always visible, bottom-right */}
+        <span
+          className="absolute bottom-2.5 right-3 font-mono text-[10px] font-bold opacity-60"
+          style={{ color: light ? '#000' : '#fff' }}
+        >{token.hex}</span>
+      </button>
+
+      {/* Info */}
+      <div className="p-4">
+        <div className="mb-1.5 flex items-center justify-between gap-2">
+          <p className="font-mono text-xs font-bold" style={{ color: 'var(--clr-text)' }}>{token.name}</p>
+          <button
+            onClick={() => void copy(`var(${token.css})`, 'css')}
+            className="flex items-center gap-1 font-mono text-[9px] transition-colors"
+            style={{ color: copied === 'css' ? '#22c55e' : 'var(--clr-hint)' }}
+            title={`Copier var(${token.css})`}
+          >
+            {copied === 'css' ? <Check size={9} /> : null}
+            {token.css}
+          </button>
+        </div>
+        <p className="text-xs leading-snug" style={{ color: 'var(--clr-muted)' }}>{token.meaning}</p>
+        <p className="mt-1.5 text-[10px] italic" style={{ color: 'var(--clr-hint)' }}>Source : {token.origin}</p>
+      </div>
+    </motion.div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// EXPORT PANEL
+// ─────────────────────────────────────────────────────────────────────────────
+function ExportPanel({ palette }: { palette: Palette }) {
+  const [format, setFormat]   = useState<ExportFormat>('css');
+  const [copied, setCopied]   = useState(false);
+  const code = generateExport(palette, format);
+
+  const copyCode = async () => {
+    await navigator.clipboard.writeText(code);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const download = () => {
+    const ext  = format === 'json' ? 'json' : format === 'tailwind' ? 'ts' : 'css';
+    const blob = new Blob([code], { type: 'text/plain' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = `avs-palette-${palette.id}.${ext}`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
-    <div className="bg-avs-secondary min-h-screen">
-      {/* ── Hero ───────────────────────────────────────────────────────────── */}
-      <div className="avs-pattern-wax border-avs-accent/10 border-b px-4 py-14 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <span className="text-avs-primary text-xs font-bold tracking-[0.2em] uppercase">
-            Design Tokens
-          </span>
-          <h1 className="font-display text-avs-accent mt-1 text-4xl font-bold sm:text-5xl">
-            Palettes & Couleurs
-          </h1>
-          <p className="text-avs-accent/60 mt-3 max-w-lg leading-relaxed">
-            Chaque couleur extrait de pigments naturels africains, documentée avec sa signification
-            culturelle. Exportez en CSS, JSON ou Tailwind.
-          </p>
+    <div className="space-y-4">
+      {/* Export card */}
+      <div className="overflow-hidden rounded-2xl" style={{ border: '1px solid var(--clr-border)', background: 'var(--clr-surface)' }}>
+        {/* Card header */}
+        <div className="flex items-center justify-between px-5 py-4" style={{ borderBottom: '1px solid var(--clr-border)' }}>
+          <h3 className="font-display text-sm font-bold" style={{ color: 'var(--clr-text)', letterSpacing: '-0.01em' }}>Exporter</h3>
+          {/* Format tabs */}
+          <div className="flex items-center gap-0.5 rounded-xl p-0.5" style={{ background: 'var(--clr-subtle)', border: '1px solid var(--clr-border)' }}>
+            {(['css', 'json', 'tailwind'] as ExportFormat[]).map((fmt) => (
+              <button
+                key={fmt}
+                onClick={() => setFormat(fmt)}
+                className="rounded-lg px-3 py-1.5 font-mono text-[9px] font-bold tracking-[0.14em] uppercase transition-all duration-150"
+                style={format === fmt
+                  ? { background: 'var(--clr-primary)', color: '#fff' }
+                  : { color: 'var(--clr-hint)' }
+                }
+              >{fmt}</button>
+            ))}
+          </div>
+        </div>
+
+        {/* Code block */}
+        <div className="relative">
+          <pre
+            className="overflow-x-auto p-5 font-mono text-[11px] leading-[1.8]"
+            style={{ background: '#141412', color: '#d4d0c8' }}
+          >{code}</pre>
+          {/* Traffic lights + copy */}
+          <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-4 py-2.5" style={{ background: '#1a1a18' }}>
+            <div className="flex gap-1.5" aria-hidden>
+              <span className="h-2.5 w-2.5 rounded-full bg-red-500/65" />
+              <span className="h-2.5 w-2.5 rounded-full bg-amber-400/65" />
+              <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/65" />
+            </div>
+            <button
+              onClick={() => void copyCode()}
+              className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 font-mono text-[9px] font-semibold text-white/40 transition-all hover:bg-white/10 hover:text-white/75"
+            >
+              {copied ? <><Check size={9} className="text-emerald-400" /> Copié</> : <><Copy size={9} /> Copier</>}
+            </button>
+          </div>
+          {/* Pad top for header */}
+          <div className="h-9" style={{ background: '#141412' }} />
         </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        {/* ── Onglets palettes ────────────────────────────────────────────────── */}
-        <Tabs.Root value={activePalette} onValueChange={setActivePalette}>
-          <Tabs.List
-            aria-label="Palettes culturelles"
-            className="mb-8 flex gap-2 overflow-x-auto pb-1"
-          >
-            {PALETTES.map((p) => (
-              <Tabs.Trigger
-                key={p.id}
-                value={p.id}
-                className="rounded-avs text-avs-accent/60 hover:text-avs-accent data-[state=active]:bg-avs-primary data-[state=active]:text-avs-secondary data-[state=active]:shadow-avs shrink-0 px-5 py-2.5 text-sm font-semibold transition-all"
-              >
-                {p.name}
-              </Tabs.Trigger>
-            ))}
-          </Tabs.List>
+      {/* Download button */}
+      <button
+        onClick={download}
+        className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl py-3.5 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5"
+        style={{ background: palette.accentColor, boxShadow: `0 4px 16px ${palette.accentColor}30` }}
+      >
+        <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" aria-hidden />
+        <Download size={14} aria-hidden />
+        Télécharger la palette
+        <ArrowUpRight size={12} className="opacity-60" aria-hidden />
+      </button>
 
-          {PALETTES.map((p) => (
-            <Tabs.Content key={p.id} value={p.id}>
-              <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
-                {/* Swatches */}
-                <div>
-                  {/* En-tête palette */}
-                  <div
-                    className={`${p.patternCSS} rounded-avs-lg relative mb-6 overflow-hidden p-6`}
-                  >
-                    <div className="bg-avs-accent/60 absolute inset-0" />
-                    <div className="relative">
-                      <p className="text-avs-primary text-xs font-bold tracking-widest uppercase">
-                        {p.origin}
-                      </p>
-                      <h2 className="font-display text-avs-secondary text-2xl font-bold">
-                        {p.name}
-                      </h2>
-                      <p className="text-avs-secondary mt-1 text-sm">{p.description}</p>
-                    </div>
-                  </div>
+      {/* Cultural note */}
+      <div
+        className="rounded-xl p-4 text-xs leading-relaxed"
+        style={{ background: `${palette.accentColor}09`, borderLeft: `3px solid ${palette.accentColor}40`, border: `1px solid ${palette.accentColor}20`, borderLeftWidth: 3 }}
+      >
+        <p className="mb-1 font-mono text-[9px] font-black tracking-[0.18em] uppercase" style={{ color: palette.accentColor }}>Note culturelle</p>
+        <p style={{ color: 'var(--clr-muted)' }}>
+          Chaque couleur est documentée avec sa source primaire — artisan, région, matière. Cliquez sur un swatch pour copier le HEX.
+        </p>
+      </div>
 
-                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                    {p.tokens.map((token) => (
-                      <ColorSwatch key={token.name} token={token} />
-                    ))}
-                  </div>
-                </div>
-
-                {/* Export panel */}
-                <div className="space-y-4">
-                  <div className="rounded-avs-lg border-avs-accent/10 shadow-avs border bg-white p-5">
-                    <h3 className="font-display text-avs-accent mb-4 font-bold">Exporter</h3>
-
-                    {/* Format selector */}
-                    <div className="mb-4 flex gap-2">
-                      {(['css', 'json', 'tailwind'] as ExportFormat[]).map((fmt) => (
-                        <button
-                          key={fmt}
-                          onClick={() => setExportFormat(fmt)}
-                          className={`rounded-avs px-3 py-1.5 text-xs font-bold tracking-wider uppercase transition-colors ${exportFormat === fmt ? 'bg-avs-primary text-avs-secondary shadow-avs' : 'border-avs-accent/15 text-avs-accent/60 hover:text-avs-accent border'}`}
-                        >
-                          {fmt}
-                        </button>
-                      ))}
-                    </div>
-
-                    {/* Code block */}
-                    <div className="relative">
-                      <pre className="rounded-avs bg-avs-accent text-avs-secondary overflow-x-auto p-4 font-mono text-[11px] leading-relaxed">
-                        {exportCode}
-                      </pre>
-                      <button
-                        onClick={() => void copyExport()}
-                        className="rounded-avs bg-avs-secondary/10 text-avs-secondary/60 hover:text-avs-secondary absolute top-3 right-3 flex items-center gap-1 px-2 py-1 text-[10px] font-semibold"
-                        aria-label="Copier le code"
-                      >
-                        {copied ? <Check size={11} /> : <Copy size={11} />}
-                        {copied ? 'Copié' : 'Copier'}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Télécharger */}
-                  <button className="rounded-avs-lg bg-avs-primary text-avs-secondary shadow-avs hover:shadow-avs-md flex w-full items-center justify-center gap-2 py-3.5 text-sm font-bold transition-all hover:-translate-y-0.5">
-                    <Download size={15} aria-hidden />
-                    Télécharger la palette complète
-                  </button>
-
-                  {/* Note culturelle */}
-                  <div className="rounded-avs border-avs-kente bg-avs-kente/5 text-avs-accent/70 border-l-4 p-4 text-xs leading-relaxed">
-                    <strong className="text-avs-accent">Note culturelle :</strong> Chaque couleur
-                    est documentée avec sa source primaire. Cliquez sur un swatch pour copier le
-                    HEX.
-                  </div>
-                </div>
-              </div>
-            </Tabs.Content>
+      {/* Color grid preview (mini) */}
+      <div className="overflow-hidden rounded-xl" style={{ border: '1px solid var(--clr-border)' }}>
+        <div className="flex h-10">
+          {PALETTES.find((p) => p.id === palette.id)?.tokens.map((t) => (
+            <div key={t.hex} className="flex-1" style={{ background: t.hex }} title={t.name} />
           ))}
-        </Tabs.Root>
+        </div>
+        <div className="flex px-3 py-2.5" style={{ background: 'var(--clr-surface)', borderTop: '1px solid var(--clr-border)' }}>
+          {PALETTES.find((p) => p.id === palette.id)?.tokens.map((t) => (
+            <div key={t.hex} className="flex-1 text-center">
+              <p className="font-mono text-[8px]" style={{ color: 'var(--clr-hint)' }}>{t.hex}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PAGE
+// ─────────────────────────────────────────────────────────────────────────────
+export default function ColorsPage() {
+  const [activePalette, setActivePalette] = useState(PALETTES[0]!.id);
+  const palette = PALETTES.find((p) => p.id === activePalette) ?? PALETTES[0]!;
+
+  return (
+    <>
+      <style>{`
+        :root {
+          --clr-bg:        #faf8f5;
+          --clr-surface:   #ffffff;
+          --clr-subtle:    rgba(29,29,27,0.04);
+          --clr-border:    rgba(29,29,27,0.09);
+          --clr-border-md: rgba(29,29,27,0.15);
+          --clr-text:      #1D1D1B;
+          --clr-muted:     rgba(29,29,27,0.55);
+          --clr-hint:      rgba(29,29,27,0.35);
+          --clr-primary:   #C0573E;
+          --clr-primary-10:rgba(192,87,62,0.08);
+        }
+        .dark {
+          --clr-bg:        #111110;
+          --clr-surface:   #1a1917;
+          --clr-subtle:    rgba(255,255,255,0.05);
+          --clr-border:    rgba(255,255,255,0.07);
+          --clr-border-md: rgba(255,255,255,0.13);
+          --clr-text:      #ece8e1;
+          --clr-muted:     rgba(236,232,225,0.50);
+          --clr-hint:      rgba(236,232,225,0.30);
+          --clr-primary:   #d4694e;
+          --clr-primary-10:rgba(212,105,78,0.10);
+        }
+
+        .palette-tab {
+          padding: 0.625rem 1.25rem;
+          border-radius: 0.75rem;
+          font-size: 0.8125rem;
+          font-weight: 600;
+          white-space: nowrap;
+          transition: all 0.18s;
+          border: 1px solid transparent;
+          color: var(--clr-muted);
+          background: transparent;
+        }
+        .palette-tab:hover:not([data-state="active"]) {
+          color: var(--clr-text);
+          background: var(--clr-subtle);
+          border-color: var(--clr-border);
+        }
+        .palette-tab[data-state="active"] {
+          color: #ffffff;
+          border-color: transparent;
+        }
+      `}</style>
+
+      <div style={{ background: 'var(--clr-bg)', minHeight: '100vh' }}>
+
+        {/* ══════════════════════════════════════════════════════
+            HERO
+        ══════════════════════════════════════════════════════ */}
+        <div className="relative overflow-hidden px-4 py-16 sm:px-6 lg:px-8" style={{ borderBottom: '1px solid var(--clr-border)' }}>
+          {/* Pattern bg */}
+          <div className="avs-pattern-wax-dakar absolute inset-0 opacity-[0.04] dark:opacity-[0.06]" aria-hidden />
+          {/* Warm halo */}
+          <div className="pointer-events-none absolute inset-0" style={{ background: 'radial-gradient(ellipse 55% 80% at 5% 50%, rgba(192,87,62,0.06) 0%, transparent 65%)' }} aria-hidden />
+
+          <div className="relative mx-auto max-w-7xl">
+            <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+              <div>
+                <div className="mb-4 flex items-center gap-3">
+                  <div className="h-px w-8" style={{ background: '#C0573E' }} aria-hidden />
+                  <span className="font-mono text-[9px] font-bold tracking-[0.26em] uppercase" style={{ color: '#C0573E' }}>Design Tokens</span>
+                </div>
+                <h1
+                  className="font-display font-black leading-none"
+                  style={{ fontSize: 'clamp(2rem,5vw,3.5rem)', color: 'var(--clr-text)', letterSpacing: '-0.03em' }}
+                >
+                  Palettes &amp; Couleurs
+                </h1>
+                <p className="mt-4 max-w-lg text-sm leading-relaxed" style={{ color: 'var(--clr-muted)' }}>
+                  Chaque couleur extraite de pigments naturels africains, documentée avec sa signification
+                  culturelle. Exportez en CSS, JSON ou Tailwind.
+                </p>
+              </div>
+
+              {/* Quick stats */}
+              <div className="flex shrink-0 gap-3">
+                {[
+                  { v: `${PALETTES.length}`,                                     l: 'palettes'   },
+                  { v: `${PALETTES.reduce((a, p) => a + p.tokens.length, 0)}`,   l: 'couleurs'   },
+                  { v: '3',                                                       l: 'formats'    },
+                ].map(({ v, l }) => (
+                  <div key={l} className="rounded-xl px-4 py-3 text-center" style={{ background: 'var(--clr-surface)', border: '1px solid var(--clr-border)' }}>
+                    <p className="font-display text-2xl font-black leading-none" style={{ color: 'var(--clr-text)', letterSpacing: '-0.02em' }}>{v}</p>
+                    <p className="mt-1 font-mono text-[9px] tracking-wide uppercase" style={{ color: 'var(--clr-hint)' }}>{l}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ══════════════════════════════════════════════════════
+            MAIN CONTENT
+        ══════════════════════════════════════════════════════ */}
+        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+          <Tabs.Root value={activePalette} onValueChange={setActivePalette}>
+
+            {/* ── Palette tabs ─────────────────────────────────────────────── */}
+            <Tabs.List
+              aria-label="Palettes culturelles"
+              className="mb-8 flex gap-2 overflow-x-auto pb-2"
+            >
+              {PALETTES.map((p) => (
+                <Tabs.Trigger
+                  key={p.id}
+                  value={p.id}
+                  className="palette-tab"
+                  style={activePalette === p.id
+                    ? { background: p.accentColor, boxShadow: `0 4px 16px ${p.accentColor}30` }
+                    : {}
+                  }
+                >
+                  {/* Color dot */}
+                  <span className="mr-2 inline-block h-2 w-2 rounded-full" style={{ background: p.accentColor }} aria-hidden />
+                  {p.name}
+                </Tabs.Trigger>
+              ))}
+            </Tabs.List>
+
+            {/* ── Palette content ──────────────────────────────────────────── */}
+            {PALETTES.map((p) => (
+              <Tabs.Content key={p.id} value={p.id} forceMount>
+                <AnimatePresence mode="wait">
+                  {activePalette === p.id && (
+                    <motion.div
+                      key={p.id}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -4 }}
+                      transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                      className="grid gap-8 lg:grid-cols-[1fr_300px]"
+                    >
+                      {/* Left — swatches */}
+                      <div>
+                        {/* Palette hero banner */}
+                        <div className={`${p.patternCSS} relative mb-6 overflow-hidden rounded-2xl`}>
+                          <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(10,8,6,0.93) 0%, rgba(26,18,8,0.82) 100%)' }} />
+                          {/* Warm halo */}
+                          <div className="pointer-events-none absolute inset-0" style={{ background: `radial-gradient(ellipse 55% 80% at 0% 50%, ${p.accentColor}22 0%, transparent 65%)` }} aria-hidden />
+                          <div className="relative px-7 py-6">
+                            <div className="mb-1 flex items-center gap-2">
+                              <div className="h-px w-6" style={{ background: p.accentColor }} aria-hidden />
+                              <p className="font-mono text-[9px] font-bold tracking-[0.22em] uppercase" style={{ color: p.accentColor }}>{p.origin}</p>
+                            </div>
+                            <h2 className="font-display text-2xl font-black leading-tight text-white" style={{ letterSpacing: '-0.02em' }}>{p.name}</h2>
+                            <p className="mt-1.5 max-w-md text-sm leading-relaxed" style={{ color: 'rgba(245,235,224,0.60)' }}>{p.description}</p>
+
+                            {/* Token count badge */}
+                            <div className="mt-4 inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5"
+                              style={{ background: `${p.accentColor}18`, border: `1px solid ${p.accentColor}30` }}>
+                              <span className="font-mono text-[9px] font-bold tracking-wide uppercase" style={{ color: p.accentColor }}>
+                                {p.tokens.length} couleurs
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Swatch grid */}
+                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                          {p.tokens.map((token, i) => (
+                            <ColorSwatch key={token.name} token={token} index={i} />
+                          ))}
+                        </div>
+
+                        {/* All-in-one color strip */}
+                        <div className="mt-6 overflow-hidden rounded-xl" style={{ border: '1px solid var(--clr-border)' }}>
+                          <div className="flex h-12">
+                            {p.tokens.map((t, i) => (
+                              <motion.div
+                                key={t.hex}
+                                className="group relative flex-1 cursor-pointer overflow-hidden"
+                                style={{ background: t.hex }}
+                                whileHover={{ flex: 2 }}
+                                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                                title={`${t.name} · ${t.hex}`}
+                              >
+                                <div className="absolute inset-0 flex items-end justify-center pb-1.5 opacity-0 transition-opacity group-hover:opacity-100">
+                                  <span className="font-mono text-[8px] font-bold" style={{ color: isLightColor(t.hex) ? 'rgba(0,0,0,0.65)' : 'rgba(255,255,255,0.75)' }}>
+                                    {t.hex}
+                                  </span>
+                                </div>
+                              </motion.div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Right — export panel */}
+                      <ExportPanel palette={p} />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </Tabs.Content>
+            ))}
+          </Tabs.Root>
+        </div>
+      </div>
+    </>
   );
 }

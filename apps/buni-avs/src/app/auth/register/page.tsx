@@ -2,23 +2,22 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { Eye, EyeOff, AlertCircle, Check } from 'lucide-react';
-
+import { motion, AnimatePresence } from 'framer-motion';
+import { Eye, EyeOff, AlertCircle, Check, ArrowRight, User, Mail, Lock, ChevronDown } from 'lucide-react';
 import { BuniLoader } from '@buni/ui';
-import 'primeicons/primeicons.css';
 import { z } from 'zod';
 import { Route } from 'next';
 import { useRegister } from 'apps/buni-avs/src/features/auth/hooks/useAuth';
 
-// ── ROLES CORRECTS ─────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// VALIDATION
+// ─────────────────────────────────────────────────────────────────────────────
 const roles = ['viewer', 'contributor', 'curator', 'admin'] as const;
 
 const RegisterSchema = z.object({
-  name: z.string().min(2, 'Minimum 2 caractères'),
-  email: z.string().email('Email invalide'),
-  password: z
-    .string()
+  name:     z.string().min(2, 'Minimum 2 caractères'),
+  email:    z.string().email('Email invalide'),
+  password: z.string()
     .min(8, 'Minimum 8 caractères')
     .regex(/[A-Z]/, 'Une majuscule requise')
     .regex(/[0-9]/, 'Un chiffre requis'),
@@ -26,238 +25,613 @@ const RegisterSchema = z.object({
 });
 
 type RegisterForm = z.infer<typeof RegisterSchema>;
-type FieldErrors = Partial<Record<keyof RegisterForm, string>>;
+type FieldErrors  = Partial<Record<keyof RegisterForm, string>>;
 
-// ── PASSWORD STRENGTH ─────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// DATA
+// ─────────────────────────────────────────────────────────────────────────────
+const ROLE_CONFIG: Record<typeof roles[number], { label: string; desc: string; color: string }> = {
+  viewer:      { label: 'Visiteur',    desc: 'Accès lecture & téléchargement',          color: '#2A4A6B' },
+  contributor: { label: 'Contributeur',desc: 'Soumission de motifs',                    color: '#4A6741' },
+  curator:     { label: 'Curateur',    desc: 'Validation & curation éditoriale',        color: '#D4A017' },
+  admin:       { label: 'Admin',       desc: 'Accès complet & gestion des membres',     color: '#C0573E' },
+};
+
+const PERKS = [
+  'Accès à 1 248 motifs haute résolution',
+  "Palette de design tokens prêts à l'emploi",
+  'Communauté de 312 artisans vérifiés',
+  'Téléchargement SVG, PNG et JSON illimité',
+] as const;
+
+const PATTERN_CARDS = [
+  { css: 'avs-pattern-kente-royale',    rotate: '-2.5deg', style: { top: '7%',    left: '5%',   width: '54%', height: '42%' } },
+  { css: 'avs-pattern-adinkra-sankofa', rotate: '2deg',    style: { top: '5%',    right: '3%',  width: '38%', height: '34%' } },
+  { css: 'avs-pattern-wax-dakar',       rotate: '-1deg',   style: { bottom: '20%',left: '3%',   width: '46%', height: '26%' } },
+  { css: 'avs-pattern-kuba-kasai',      rotate: '1.5deg',  style: { bottom: '7%', right: '4%',  width: '42%', height: '30%' } },
+] as const;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ANIMATION
+// ─────────────────────────────────────────────────────────────────────────────
+const ease = [0.22, 1, 0.36, 1] as const;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PASSWORD STRENGTH
+// ─────────────────────────────────────────────────────────────────────────────
 function PasswordStrength({ pwd }: { pwd: string }) {
   const checks = [
     { label: '8 caractères', ok: pwd.length >= 8 },
-    { label: 'Majuscule', ok: /[A-Z]/.test(pwd) },
-    { label: 'Chiffre', ok: /[0-9]/.test(pwd) },
+    { label: 'Majuscule',    ok: /[A-Z]/.test(pwd) },
+    { label: 'Chiffre',      ok: /[0-9]/.test(pwd) },
   ];
-
   const score = checks.filter((c) => c.ok).length;
 
-  const colors = ['bg-red-400', 'bg-yellow-400', 'bg-green-500'];
-  const labels = ['Faible', 'Moyen', 'Fort'];
+  const barColors  = ['#ef4444', '#f59e0b', '#22c55e'];
+  const scoreLabel = score === 0 ? 'Trop court' : score === 1 ? 'Faible' : score === 2 ? 'Moyen' : 'Fort';
 
   if (!pwd) return null;
 
   return (
-    <div className="mt-2 space-y-2">
-      <div className="flex gap-1.5">
-        {[0, 1, 2].map((i) => (
-          <div
-            key={i}
-            className={`h-1 flex-1 rounded-full transition-colors ${
-              i < score ? colors[Math.max(score - 1, 0)] : 'bg-avs-accent/10'
-            }`}
-          />
-        ))}
-      </div>
-
-      <div className="flex items-center justify-between">
-        <p className="text-avs-accent/50 text-[10px]">
-          {labels[Math.max(score - 1, 0)] ?? 'Trop court'}
-        </p>
-
-        <div className="flex gap-3">
-          {checks.map(({ label, ok }) => (
-            <span
-              key={label}
-              className={`flex items-center gap-0.5 text-[10px] ${
-                ok ? 'text-green-600' : 'text-avs-accent/35'
-              }`}
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0, height: 0 }}
+        animate={{ opacity: 1, height: 'auto' }}
+        exit={{ opacity: 0, height: 0 }}
+        className="mt-2.5 space-y-2 overflow-hidden"
+      >
+        {/* Bar track */}
+        <div className="flex gap-1.5">
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className="h-1 flex-1 overflow-hidden rounded-full"
+              style={{ background: 'var(--reg-border-md)' }}
             >
-              <Check size={9} strokeWidth={ok ? 3 : 1.5} />
-              {label}
-            </span>
+              <motion.div
+                className="h-full rounded-full"
+                initial={{ width: 0 }}
+                animate={{ width: i < score ? '100%' : '0%' }}
+                transition={{ duration: 0.3, delay: i * 0.06, ease }}
+                style={{ background: barColors[Math.max(score - 1, 0)] }}
+              />
+            </div>
           ))}
         </div>
-      </div>
+
+        {/* Checks row */}
+        <div className="flex items-center justify-between">
+          <p className="font-mono text-[9px] tracking-wide" style={{ color: barColors[Math.max(score - 1, 0)], opacity: score === 0 ? 0.5 : 1 }}>
+            {scoreLabel}
+          </p>
+          <div className="flex gap-3">
+            {checks.map(({ label, ok }) => (
+              <span
+                key={label}
+                className="flex items-center gap-1 font-mono text-[9px] transition-colors duration-200"
+                style={{ color: ok ? '#22c55e' : 'var(--reg-hint)' }}
+              >
+                <Check size={9} strokeWidth={ok ? 3 : 1.5} />
+                {label}
+              </span>
+            ))}
+          </div>
+        </div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FIELD WRAPPER
+// ─────────────────────────────────────────────────────────────────────────────
+function Field({
+  id, label, error, children,
+}: {
+  id: string; label: string; error?: string; children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <label
+        htmlFor={id}
+        className="mb-2 block font-mono text-[9px] font-bold tracking-[0.2em] uppercase"
+        style={{ color: 'var(--reg-hint)' }}
+      >{label}</label>
+      {children}
+      <AnimatePresence>
+        {error && (
+          <motion.p
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            id={`${id}-error`}
+            role="alert"
+            className="mt-1.5 flex items-center gap-1.5 overflow-hidden text-xs"
+            style={{ color: '#ef4444' }}
+          >
+            <AlertCircle size={11} />
+            {error}
+          </motion.p>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
 
-// ── PAGE REGISTER ─────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// PAGE
+// ─────────────────────────────────────────────────────────────────────────────
 export default function RegisterPage() {
   const { mutate, isPending, error } = useRegister();
 
-  const [form, setForm] = useState<RegisterForm>({
-    name: '',
-    email: '',
-    password: '',
-    role: 'viewer',
-  });
-
-  const [errors, setErrors] = useState<FieldErrors>({});
+  const [form, setForm] = useState<RegisterForm>({ name: '', email: '', password: '', role: 'contributor' });
+  const [errors,  setErrors]  = useState<FieldErrors>({});
   const [showPwd, setShowPwd] = useState(false);
+  const [focused, setFocused] = useState<string | null>(null);
 
-  // ── VALIDATION ─────────────────────────────
-  const validate = () => {
+  const validate = (): boolean => {
     const result = RegisterSchema.safeParse(form);
-
     if (!result.success) {
-      const fieldErrors: FieldErrors = {};
-
+      const fe: FieldErrors = {};
       result.error.issues.forEach((e) => {
-        const key = e.path[0] as keyof RegisterForm | undefined;
-        if (key) fieldErrors[key] = e.message;
+        const k = e.path[0] as keyof RegisterForm;
+        if (k) fe[k] = e.message;
       });
-
-      setErrors(fieldErrors);
+      setErrors(fe);
       return false;
     }
-
     setErrors({});
     return true;
   };
 
-  console.log('Render RegisterPage with form state:', form, 'and errors:', errors);
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-
     mutate(form);
   };
 
+  // Shared input style (same system as login)
+  const inputStyle = (field: keyof RegisterForm) => ({
+    background:   'var(--reg-surface)',
+    color:        'var(--reg-text)',
+    border:       `1.5px solid ${
+      errors[field]    ? '#ef4444'
+      : focused === field ? 'var(--reg-primary)'
+      : 'var(--reg-border-md)'
+    }`,
+    outline:      'none',
+    borderRadius: '0.75rem',
+    boxShadow:    focused === field && !errors[field]
+      ? '0 0 0 3px var(--reg-primary-10)'
+      : errors[field]
+        ? '0 0 0 3px rgba(239,68,68,0.10)'
+        : 'none',
+    transition:   'border-color 0.18s, box-shadow 0.18s',
+  });
+
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] items-stretch">
-      {isPending && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <BuniLoader />
-        </div>
-      )}
-      {/* ── LEFT PANEL ───────────────────────────── */}
-      <div className="avs-pattern-kente relative hidden w-[45%] overflow-hidden lg:block">
-        <div className="from-avs-accent/85 to-avs-accent/97 absolute inset-0 bg-gradient-to-br" />
+    <>
+      <style>{`
+        :root {
+          --reg-bg:          #faf8f5;
+          --reg-surface:     #ffffff;
+          --reg-border:      rgba(29,29,27,0.09);
+          --reg-border-md:   rgba(29,29,27,0.16);
+          --reg-text:        #1D1D1B;
+          --reg-muted:       rgba(29,29,27,0.55);
+          --reg-hint:        rgba(29,29,27,0.38);
+          --reg-primary:     #C0573E;
+          --reg-primary-10:  rgba(192,87,62,0.10);
+          --reg-primary-20:  rgba(192,87,62,0.20);
+          --reg-icon:        rgba(29,29,27,0.32);
+        }
+        .dark {
+          --reg-bg:          #111110;
+          --reg-surface:     #1a1917;
+          --reg-border:      rgba(255,255,255,0.07);
+          --reg-border-md:   rgba(255,255,255,0.13);
+          --reg-text:        #ece8e1;
+          --reg-muted:       rgba(236,232,225,0.50);
+          --reg-hint:        rgba(236,232,225,0.32);
+          --reg-primary:     #d4694e;
+          --reg-primary-10:  rgba(212,105,78,0.11);
+          --reg-primary-20:  rgba(212,105,78,0.22);
+          --reg-icon:        rgba(236,232,225,0.30);
+        }
 
-        <div className="relative flex h-full flex-col justify-between p-12">
-          <Link href="/" className="font-display text-avs-secondary text-2xl font-bold">
-            AVS <span className="text-avs-primary">·</span>
-          </Link>
+        ::placeholder { color: var(--reg-hint) !important; opacity: 1; }
 
-          <div>
-            <p className="text-avs-primary mb-3 text-xs font-bold tracking-[0.2em] uppercase">
-              Pourquoi rejoindre ?
-            </p>
+        .role-select {
+          appearance: none;
+          -webkit-appearance: none;
+          background: var(--reg-surface);
+          color: var(--reg-text);
+          border: 1.5px solid var(--reg-border-md);
+          border-radius: 0.75rem;
+          width: 100%;
+          padding: 0.75rem 2.5rem 0.75rem 1rem;
+          font-size: 0.875rem;
+          outline: none;
+          transition: border-color 0.18s, box-shadow 0.18s;
+          cursor: pointer;
+        }
+        .role-select:focus {
+          border-color: var(--reg-primary);
+          box-shadow: 0 0 0 3px var(--reg-primary-10);
+        }
+        .role-select option {
+          background: var(--reg-surface);
+          color: var(--reg-text);
+        }
 
-            {[
-              'Accès à 1 248 motifs haute résolution',
-              "Palette de design tokens prêts à l'emploi",
-              'Communauté de 312 artisans vérifiés',
-              'Téléchargement SVG, PNG et JSON illimité',
-            ].map((item) => (
-              <div key={item} className="mb-3 flex items-start gap-2.5">
-                <Check size={14} className="text-avs-primary mt-0.5" />
-                <span className="text-avs-secondary/70 text-sm">{item}</span>
-              </div>
+        .oauth-btn {
+          background: var(--reg-surface);
+          border: 1.5px solid var(--reg-border-md);
+          color: var(--reg-muted);
+          border-radius: 0.75rem;
+          transition: border-color 0.18s, color 0.18s, background 0.18s;
+        }
+        .oauth-btn:hover:not(:disabled) {
+          border-color: var(--reg-primary-20);
+          color: var(--reg-primary);
+          background: var(--reg-primary-10);
+        }
+      `}</style>
+
+      {/* Loading overlay */}
+      <AnimatePresence>
+        {isPending && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center"
+            style={{ background: 'rgba(10,8,6,0.55)', backdropFilter: 'blur(6px)' }}
+          >
+            <div
+              className="flex flex-col items-center gap-4 rounded-2xl p-8"
+              style={{ background: 'var(--reg-surface)', border: '1px solid var(--reg-border)' }}
+            >
+              <BuniLoader size={36} showText={false} />
+              <p className="font-mono text-[10px] tracking-[0.2em] uppercase animate-pulse" style={{ color: 'var(--reg-hint)' }}>
+                Création du compte…
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="flex min-h-[calc(100vh-4rem)] items-stretch" style={{ background: 'var(--reg-bg)' }}>
+
+        {/* ══════════════════════════════════════════════════════
+            LEFT — Décor
+        ══════════════════════════════════════════════════════ */}
+        <div className="relative hidden w-[45%] overflow-hidden lg:block">
+          {/* Base pattern */}
+          <div className="avs-pattern-kente-royale absolute inset-0" />
+          {/* Dark overlay */}
+          <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(10,8,6,0.94) 0%, rgba(26,18,8,0.88) 100%)' }} />
+          {/* Warm halo */}
+          <div className="pointer-events-none absolute inset-0" style={{ background: 'radial-gradient(ellipse 60% 65% at 38% 48%, rgba(192,87,62,0.18) 0%, transparent 68%)' }} aria-hidden />
+          {/* Fine grid */}
+          <div className="pointer-events-none absolute inset-0" style={{ backgroundImage: 'linear-gradient(rgba(245,235,224,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(245,235,224,.04) 1px, transparent 1px)', backgroundSize: '48px 48px' }} aria-hidden />
+
+          {/* Floating collage */}
+          <div className="absolute inset-0">
+            {PATTERN_CARDS.map((card, i) => (
+              <motion.div
+                key={card.css}
+                className="absolute overflow-hidden rounded-2xl"
+                style={{ ...card.style, rotate: card.rotate, border: '1px solid rgba(245,235,224,0.07)', boxShadow: '0 24px 64px rgba(0,0,0,0.65)' }}
+                animate={{ y: [0, -8, 0], rotate: [parseFloat(card.rotate), parseFloat(card.rotate) + 0.6, parseFloat(card.rotate)] }}
+                transition={{ duration: 5.5 + i * 1.1, repeat: Infinity, ease: 'easeInOut', delay: i * 1.0 }}
+              >
+                <div className={`${card.css} h-full w-full`} />
+                <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,8,6,0.85) 0%, transparent 55%)' }} />
+              </motion.div>
             ))}
           </div>
 
-          <p className="text-avs-secondary/30 text-xs">Gratuit · Open Source · CC BY 4.0</p>
-        </div>
-      </div>
+          {/* Content */}
+          <div className="relative flex h-full flex-col justify-between p-12">
+            {/* Logo */}
+            <motion.div initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, ease }}>
+              <Link href="/" className="inline-flex items-center gap-2.5">
+                <div className="avs-pattern-kente-royale relative h-9 w-9 overflow-hidden rounded-xl ring-1 ring-white/10">
+                  <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                    <span className="font-display text-base font-black text-white drop-shadow">A</span>
+                  </div>
+                </div>
+                <div className="flex flex-col leading-tight">
+                  <span className="font-display text-[15px] font-black text-white" style={{ letterSpacing: '-0.02em' }}>AVS</span>
+                  <span className="font-mono text-[9px] font-bold tracking-[0.18em] uppercase" style={{ color: '#C0573E' }}>Standard</span>
+                </div>
+              </Link>
+            </motion.div>
 
-      {/* ── FORM ───────────────────────────── */}
-      <div className="bg-avs-secondary flex flex-1 items-center justify-center px-4 py-12 sm:px-6 lg:px-12">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md"
-        >
-          <h1 className="font-display text-avs-accent text-3xl font-bold">Créer un compte</h1>
-
-          <p className="text-avs-accent/55 mt-1 text-sm">
-            Vous avez déjà un compte ?{' '}
-            <Link href={"/auth/login" as Route} className="text-avs-primary font-semibold">
-              Se connecter
-            </Link>
-          </p>
-
-          {/* ERROR BACKEND */}
-          {error instanceof Error && (
-            <div className="rounded-avs mt-5 flex items-center gap-2 border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-              <AlertCircle size={15} />
-              {error.message}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="mt-8 space-y-5">
-            {/* NAME */}
-            <div>
-              <input
-                placeholder="Nom complet"
-                value={form.name}
-                onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
-                className="rounded-avs w-full border px-4 py-3"
-              />
-              {errors.name && <p className="text-xs text-red-600">{errors.name}</p>}
-            </div>
-
-            {/* EMAIL */}
-            <div>
-              <input
-                placeholder="Email"
-                value={form.email}
-                onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
-                className="rounded-avs w-full border px-4 py-3"
-              />
-              {errors.email && <p className="text-xs text-red-600">{errors.email}</p>}
-            </div>
-
-            {/* PASSWORD */}
-            <div>
-              <div className="relative">
-                <input
-                  type={showPwd ? 'text' : 'password'}
-                  placeholder="Mot de passe"
-                  value={form.password}
-                  onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
-                  className="rounded-avs w-full border px-4 py-3 pr-10"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPwd((v) => !v)}
-                  className="absolute top-1/2 right-3 -translate-y-1/2"
-                >
-                  {showPwd ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
+            {/* Perks */}
+            <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.18, ease }}>
+              <p className="mb-5 font-mono text-[9px] font-bold tracking-[0.22em] uppercase" style={{ color: '#C0573E' }}>
+                Pourquoi rejoindre ?
+              </p>
+              <div className="space-y-3.5">
+                {PERKS.map((item, i) => (
+                  <motion.div
+                    key={item}
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.3 + i * 0.08, ease }}
+                    className="flex items-start gap-3"
+                  >
+                    <div className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full" style={{ background: 'rgba(192,87,62,0.18)' }}>
+                      <Check size={10} style={{ color: '#C0573E' }} strokeWidth={3} />
+                    </div>
+                    <span className="text-sm leading-snug" style={{ color: 'rgba(245,235,224,0.68)' }}>{item}</span>
+                  </motion.div>
+                ))}
               </div>
 
-              {errors.password && <p className="text-xs text-red-600">{errors.password}</p>}
-
-              <PasswordStrength pwd={form.password} />
-            </div>
-
-            {/* ROLE */}
-            <div>
-              <select
-                value={form.role}
-                onChange={(e) =>
-                  setForm((f) => ({ ...f, role: e.target.value as RegisterForm['role'] }))
-                }
-                className="rounded-avs w-full border px-4 py-3"
-              >
-                {roles.map((r) => (
-                  <option key={r} value={r}>
-                    {r}
-                  </option>
+              {/* Stats pills */}
+              <div className="mt-8 flex flex-wrap gap-2">
+                {[
+                  { v: '1 248', l: 'motifs' },
+                  { v: '312',   l: 'artisans' },
+                  { v: '54',    l: 'pays' },
+                ].map(({ v, l }) => (
+                  <div key={l} className="rounded-xl px-3.5 py-2" style={{ background: 'rgba(245,235,224,0.06)', border: '1px solid rgba(245,235,224,0.09)' }}>
+                    <span className="font-display text-lg font-black text-white" style={{ letterSpacing: '-0.02em' }}>{v}</span>
+                    <span className="ml-1.5 font-mono text-[9px]" style={{ color: 'rgba(245,235,224,0.40)' }}>{l}</span>
+                  </div>
                 ))}
-              </select>
+              </div>
+            </motion.div>
+
+            {/* Footer */}
+            <motion.p
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.5 }}
+              className="font-mono text-[9px] tracking-[0.16em] uppercase"
+              style={{ color: 'rgba(245,235,224,0.22)' }}
+            >
+              Gratuit · Open Source · CC BY 4.0
+            </motion.p>
+          </div>
+        </div>
+
+        {/* ══════════════════════════════════════════════════════
+            RIGHT — Form
+        ══════════════════════════════════════════════════════ */}
+        <div
+          className="flex flex-1 items-center justify-center px-4 py-12 sm:px-8 lg:px-14"
+          style={{ background: 'var(--reg-bg)' }}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease }}
+            className="w-full max-w-md"
+          >
+            {/* Mobile logo */}
+            <Link href="/" className="mb-8 flex items-center gap-2.5 lg:hidden">
+              <div className="avs-pattern-kente-royale relative h-8 w-8 overflow-hidden rounded-xl">
+                <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                  <span className="font-display text-sm font-black text-white">A</span>
+                </div>
+              </div>
+              <span className="font-display text-lg font-black" style={{ color: 'var(--reg-text)', letterSpacing: '-0.02em' }}>AVS</span>
+            </Link>
+
+            {/* Heading */}
+            <div className="mb-8">
+              <div className="mb-3 flex items-center gap-2">
+                <div className="h-px w-6" style={{ background: '#C0573E' }} aria-hidden />
+                <span className="font-mono text-[9px] tracking-[0.24em] uppercase" style={{ color: '#C0573E' }}>Créer un compte</span>
+              </div>
+              <h1
+                className="font-display font-black leading-none"
+                style={{ fontSize: 'clamp(1.75rem,4vw,2.5rem)', color: 'var(--reg-text)', letterSpacing: '-0.025em' }}
+              >
+                Rejoindre AVS
+              </h1>
+              <p className="mt-2 text-sm" style={{ color: 'var(--reg-muted)' }}>
+                Vous avez déjà un compte ?{' '}
+                <Link href={"/auth/login" as Route} className="font-semibold underline-offset-3 hover:underline" style={{ color: 'var(--reg-primary)' }}>
+                  Se connecter
+                </Link>
+              </p>
             </div>
 
-            {/* SUBMIT */}
-            <button
-              type="submit"
-              disabled={isPending}
-              className="rounded-avs bg-avs-primary text-avs-secondary w-full py-3 font-bold"
-            >
-              {isPending ? 'Création...' : 'Créer un compte'}
-            </button>
-          </form>
-        </motion.div>
+            {/* API error */}
+            <AnimatePresence>
+              {error instanceof Error && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+                  animate={{ opacity: 1, height: 'auto', marginBottom: '1.25rem' }}
+                  exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                  role="alert"
+                  className="flex items-center gap-2.5 overflow-hidden rounded-xl px-4 py-3 text-sm"
+                  style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.22)', color: '#ef4444' }}
+                >
+                  <AlertCircle size={14} />
+                  {error.message}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <form onSubmit={handleSubmit} className="space-y-5" noValidate>
+
+              {/* Name */}
+              <Field id="name" label="Nom complet" error={errors.name}>
+                <div className="relative">
+                  <User size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2" style={{ color: 'var(--reg-icon)' }} aria-hidden />
+                  <input
+                    id="name"
+                    type="text"
+                    autoComplete="name"
+                    value={form.name}
+                    onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
+                    onFocus={() => setFocused('name')}
+                    onBlur={() => { setFocused(null); validate(); }}
+                    placeholder="Amara Diop"
+                    disabled={isPending}
+                    style={{ ...inputStyle('name'), paddingLeft: '2.5rem', paddingRight: '1rem', paddingTop: '0.75rem', paddingBottom: '0.75rem', fontSize: '0.875rem', width: '100%' }}
+                    aria-describedby={errors.name ? 'name-error' : undefined}
+                    aria-invalid={!!errors.name}
+                  />
+                </div>
+              </Field>
+
+              {/* Email */}
+              <Field id="email" label="Email" error={errors.email}>
+                <div className="relative">
+                  <Mail size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2" style={{ color: 'var(--reg-icon)' }} aria-hidden />
+                  <input
+                    id="email"
+                    type="email"
+                    autoComplete="email"
+                    value={form.email}
+                    onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                    onFocus={() => setFocused('email')}
+                    onBlur={() => { setFocused(null); validate(); }}
+                    placeholder="vous@exemple.com"
+                    disabled={isPending}
+                    style={{ ...inputStyle('email'), paddingLeft: '2.5rem', paddingRight: '1rem', paddingTop: '0.75rem', paddingBottom: '0.75rem', fontSize: '0.875rem', width: '100%' }}
+                    aria-describedby={errors.email ? 'email-error' : undefined}
+                    aria-invalid={!!errors.email}
+                  />
+                </div>
+              </Field>
+
+              {/* Password */}
+              <Field id="password" label="Mot de passe" error={errors.password}>
+                <div className="relative">
+                  <Lock size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2" style={{ color: 'var(--reg-icon)' }} aria-hidden />
+                  <input
+                    id="password"
+                    type={showPwd ? 'text' : 'password'}
+                    autoComplete="new-password"
+                    value={form.password}
+                    onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
+                    onFocus={() => setFocused('password')}
+                    onBlur={() => { setFocused(null); validate(); }}
+                    placeholder="••••••••"
+                    disabled={isPending}
+                    style={{ ...inputStyle('password'), paddingLeft: '2.5rem', paddingRight: '3rem', paddingTop: '0.75rem', paddingBottom: '0.75rem', fontSize: '0.875rem', width: '100%' }}
+                    aria-describedby={errors.password ? 'password-error' : undefined}
+                    aria-invalid={!!errors.password}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPwd((v) => !v)}
+                    disabled={isPending}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 transition-colors"
+                    style={{ color: 'var(--reg-icon)' }}
+                    onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--reg-text)')}
+                    onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--reg-icon)')}
+                    aria-label={showPwd ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                  >
+                    {showPwd ? <EyeOff size={14} /> : <Eye size={14} />}
+                  </button>
+                </div>
+                <PasswordStrength pwd={form.password} />
+              </Field>
+
+              {/* Role selector */}
+              <Field id="role" label="Rôle" error={errors.role}>
+                <div className="relative">
+                  <select
+                    id="role"
+                    value={form.role}
+                    onChange={(e) => setForm((f) => ({ ...f, role: e.target.value as RegisterForm['role'] }))}
+                    disabled={isPending}
+                    className="role-select"
+                    aria-describedby={errors.role ? 'role-error' : undefined}
+                  >
+                    {roles.map((r) => (
+                      <option key={r} value={r}>{ROLE_CONFIG[r].label} — {ROLE_CONFIG[r].desc}</option>
+                    ))}
+                  </select>
+                  <ChevronDown size={14} className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2" style={{ color: 'var(--reg-icon)' }} aria-hidden />
+                </div>
+
+                {/* Role badge */}
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={form.role}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.18, ease }}
+                    className="mt-2 inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5"
+                    style={{
+                      background: `${ROLE_CONFIG[form.role].color}12`,
+                      border:     `1px solid ${ROLE_CONFIG[form.role].color}28`,
+                    }}
+                  >
+                    <span className="h-1.5 w-1.5 rounded-full" style={{ background: ROLE_CONFIG[form.role].color }} aria-hidden />
+                    <span className="font-mono text-[9px] font-bold tracking-[0.16em] uppercase" style={{ color: ROLE_CONFIG[form.role].color }}>
+                      {ROLE_CONFIG[form.role].label}
+                    </span>
+                    <span className="text-[10px]" style={{ color: 'var(--reg-hint)' }}>
+                      — {ROLE_CONFIG[form.role].desc}
+                    </span>
+                  </motion.div>
+                </AnimatePresence>
+              </Field>
+
+              {/* Submit */}
+              <button
+                type="submit"
+                disabled={isPending}
+                className="group relative w-full overflow-hidden rounded-xl py-3.5 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
+                style={{ background: 'var(--reg-primary)', boxShadow: isPending ? 'none' : '0 4px 16px var(--reg-primary-20)' }}
+                aria-busy={isPending}
+              >
+                {/* Shimmer */}
+                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" aria-hidden />
+                <span className="relative flex items-center justify-center gap-2">
+                  {isPending
+                    ? <><BuniLoader size={18} showText={false} /> Création…</>
+                    : <>Créer mon compte <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" /></>
+                  }
+                </span>
+              </button>
+
+              {/* Divider */}
+              <div className="flex items-center gap-3">
+                <div className="h-px flex-1" style={{ background: 'var(--reg-border)' }} />
+                <span className="font-mono text-[9px] tracking-[0.18em] uppercase" style={{ color: 'var(--reg-hint)' }}>ou continuer avec</span>
+                <div className="h-px flex-1" style={{ background: 'var(--reg-border)' }} />
+              </div>
+
+              {/* OAuth */}
+              <div className="grid grid-cols-2 gap-3">
+                <button type="button" disabled={isPending} className="oauth-btn flex items-center justify-center gap-2 py-3 text-sm font-semibold disabled:opacity-50">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                  GitHub
+                </button>
+                <button type="button" disabled={isPending} className="oauth-btn flex items-center justify-center gap-2 py-3 text-sm font-semibold disabled:opacity-50">
+                  <svg width="15" height="15" viewBox="0 0 24 24" aria-hidden><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                  Google
+                </button>
+              </div>
+            </form>
+
+            {/* Trust footer */}
+            <div className="mt-8 flex items-center justify-between">
+              <p className="text-[11px] leading-relaxed" style={{ color: 'var(--reg-hint)' }}>
+                En vous inscrivant, vous acceptez nos{' '}
+                <Link href={"/terms" as Route} className="underline underline-offset-3" style={{ color: 'var(--reg-hint)' }}>conditions</Link>
+                {' '}et notre{' '}
+                <Link href={"/privacy" as Route} className="underline underline-offset-3" style={{ color: 'var(--reg-hint)' }}>confidentialité</Link>.
+              </p>
+              <span
+                className="shrink-0 rounded-lg px-2.5 py-1 font-mono text-[9px] font-bold tracking-wide uppercase"
+                style={{ background: 'var(--reg-primary-10)', color: 'var(--reg-primary)', border: '1px solid var(--reg-primary-20)' }}
+              >
+                CC BY 4.0
+              </span>
+            </div>
+          </motion.div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

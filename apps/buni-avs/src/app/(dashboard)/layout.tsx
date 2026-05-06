@@ -22,7 +22,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   if (!isHydrated) {
     return (
-      <div className="bg-avs-secondary flex min-h-screen items-center justify-center">
+      <div className="bg-avs-secondary flex min-h-screen items-center justify-center dark">
         <div className="text-center">
           <div className="border-avs-primary inline-block h-12 w-12 animate-spin rounded-full border-b-2"></div>
           <p className="text-avs-accent/60 mt-4">Chargement...</p>

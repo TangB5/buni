@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useLayoutEffect, useTransition, useRef } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Menu,
@@ -30,8 +30,10 @@ import {
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useAuth, useLogout } from '@buni/auth';
+
 import { useTheme } from './ThemeProvider';
 import { Route } from 'next';
+import { authService } from '../../features/auth/services/auth.service';
 
 const cn = (...i: Parameters<typeof clsx>) => twMerge(clsx(...i));
 
@@ -76,12 +78,15 @@ const NAV_ITEMS: NavItem[] = [
   {
     label: 'Communauté',
     children: [
-      { href: '/artisans',    label: 'Artisans',   icon: Users, desc: 'Découvrez les créateurs' },
+      { href: '/patterns',    label: 'Motif culturel',   icon: Users, desc: 'Découvrez des motfif riche et decumenter' },
+      { href: '/colors',    label: 'Palletes & Token',   icon: Users, desc: 'Découvrez les créateurs' },
       { href: '/contributors', label: 'Classement', icon: Award, desc: 'Top contributeurs AVS' },
+      
     ],
   },
   { href: '/templates',      label: 'Templates' },
   { href: '/documentation',  label: 'Docs' },
+  { href: '/about',  label: 'A propo' },
 ];
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -208,7 +213,7 @@ function NavDropdown({ item, onPremiumClick }: { item: NavItem; onPremiumClick: 
         {item.label}
         {isActive && (
           <span
-            className="absolute inset-x-2 -bottom-[17px] h-px rounded-full"
+            className="absolute inset-x-2 -bottom-4.25 h-px rounded-full"
             style={{ background: 'var(--hdr-primary)' }}
           />
         )}
@@ -246,7 +251,7 @@ function NavDropdown({ item, onPremiumClick }: { item: NavItem; onPremiumClick: 
             transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
             className={cn(
               'absolute top-full z-50 mt-3 overflow-hidden rounded-2xl shadow-2xl',
-              item.isMegaMenu ? 'left-1/2 w-[640px] -translate-x-1/2 p-5' : 'left-0 w-64 p-2',
+              item.isMegaMenu ? 'left-1/2 w-160 -translate-x-1/2 p-5' : 'left-0 w-64 p-2',
             )}
             style={{ background: 'var(--hdr-surface)', border: '1px solid var(--hdr-border)' }}
             role="menu"
@@ -394,9 +399,10 @@ function NavDropdown({ item, onPremiumClick }: { item: NavItem; onPremiumClick: 
 // ══════════════════════════════════════════════════════════════════════════════
 // USER MENU
 // ══════════════════════════════════════════════════════════════════════════════
-function UserMenu({ user, onLogout }: { user: { name: string; email: string; role: string }; onLogout: () => void }) {
+function UserMenu({ user, onLogout }: { user: { name: string; email: string; role: string }; onLogout: () => Promise<void> }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -407,8 +413,8 @@ function UserMenu({ user, onLogout }: { user: { name: string; email: string; rol
 
   const menuItems = [
     { href: '/dashboard',          icon: LayoutDashboard, label: 'Dashboard' },
-    { href: '/dashboard/profile',  icon: User,            label: 'Profil' },
-    { href: '/dashboard/settings', icon: Settings,        label: 'Paramètres' },
+    { href: '/profile',  icon: User,            label: 'Profil' },
+    { href: '/settings', icon: Settings,        label: 'Paramètres' },
   ];
 
   return (
@@ -434,7 +440,7 @@ function UserMenu({ user, onLogout }: { user: { name: string; email: string; rol
             </span>
           </div>
         </div>
-        <span className="hidden max-w-[96px] truncate md:inline">{user.name}</span>
+        <span className="hidden max-w-24 truncate md:inline">{user.name}</span>
         <ChevronDown
           size={13}
           className="shrink-0 transition-transform duration-200"
@@ -503,16 +509,21 @@ function UserMenu({ user, onLogout }: { user: { name: string; email: string; rol
             {/* Logout */}
             <div className="p-2 pt-0" style={{ borderTop: '1px solid var(--hdr-border)' }}>
               <button
-                onClick={() => { setOpen(false); onLogout(); }}
-                className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-150"
-                style={{ color: 'var(--hdr-muted)' }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(239,68,68,0.08)'; e.currentTarget.style.color = 'rgb(239,68,68)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--hdr-muted)'; }}
+                onClick={async () => { 
+                  setOpen(false); 
+                  setIsLoggingOut(true);
+                  await onLogout();
+                }}
+                disabled={isLoggingOut}
+                className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all duration-150 disabled:opacity-50"
+                style={{ color: isLoggingOut ? 'var(--hdr-hint)' : 'var(--hdr-muted)' }}
+                onMouseEnter={(e) => { if (!isLoggingOut) { e.currentTarget.style.background = 'rgba(239,68,68,0.08)'; e.currentTarget.style.color = 'rgb(239,68,68)'; } }}
+                onMouseLeave={(e) => { if (!isLoggingOut) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--hdr-muted)'; } }}
               >
                 <div className="flex h-7 w-7 items-center justify-center rounded-lg" style={{ background: 'var(--hdr-subtle)' }}>
                   <LogOut size={14} />
                 </div>
-                <span className="font-medium">Déconnexion</span>
+                <span className="font-medium">{isLoggingOut ? 'Déconnexion...' : 'Déconnexion'}</span>
               </button>
             </div>
           </motion.div>
@@ -626,13 +637,25 @@ const HEADER_STYLES = `
 // ══════════════════════════════════════════════════════════════════════════════
 export function Header() {
   const pathname = usePathname();
+  const router = useRouter();
   const { user, isAuthenticated, isHydrated } = useAuth();
-  const logout = useLogout();
+  const storeLogout = useLogout();
   const { theme, toggleTheme } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [premiumOpen, setPremiumOpen] = useState(false);
   const [, startTransition] = useTransition();
+
+  const handleLogout = async () => {
+    try {
+      await authService.logout();
+    } catch (err) {
+      console.error('Logout error:', err);
+    } finally {
+      storeLogout();
+      router.push('/');
+    }
+  };
 
   useLayoutEffect(() => {
     startTransition(() => setMobileOpen(false));
@@ -747,7 +770,7 @@ export function Header() {
                 style={{ background: 'var(--hdr-subtle)' }}
               />
             ) : isAuthenticated && user ? (
-              <UserMenu user={user} onLogout={() => void logout()} />
+              <UserMenu user={user} onLogout={handleLogout} />
             ) : (
               <div className="hidden items-center gap-2 sm:flex">
                 <Link
@@ -834,8 +857,11 @@ export function Header() {
 
                   <MobileSection title="Communauté">
                     {[
-                      { href: '/artisans',     icon: Users, label: 'Artisans',   isActive: pathname === '/artisans' },
+                      
                       { href: '/contributors', icon: Award, label: 'Classement', isActive: pathname === '/contributors' },
+                      { href: '/colors',     icon: Users, label: 'palletes & token',   isActive: pathname === '/colors' },
+
+                      { href: '/patterns',     icon: Users, label: 'Motif culturel',   isActive: pathname === '/patterns' },
                     ].map((item) => (
                       <MobileLink key={item.href} {...item} onClick={() => setMobileOpen(false)} />
                     ))}
@@ -889,7 +915,10 @@ export function Header() {
                           <span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-emerald-500" />
                         </div>
                         <button
-                          onClick={() => { setMobileOpen(false); void logout(); }}
+                          onClick={async () => { 
+                            setMobileOpen(false); 
+                            await handleLogout();
+                          }}
                           className="flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold text-white transition-all duration-200 hover:opacity-90"
                           style={{ background: 'var(--hdr-primary)' }}
                         >

@@ -1,14 +1,11 @@
 import { type NextRequest, NextResponse } from 'next/server';
 
-interface RouteParams {
-  params: {
-    id: string;
-  };
-}
-
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
   try {
-    const { id } = params;
+    const { id } = await params;
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
     const backendRes = await fetch(`${apiUrl}/api/v1/patterns/${id}`, {
