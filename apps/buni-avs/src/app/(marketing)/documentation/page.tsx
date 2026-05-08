@@ -28,13 +28,15 @@ import {
 // ══════════════════════════════════════════════════════════════════════════════
 // TYPES
 // ══════════════════════════════════════════════════════════════════════════════
-interface TocEntry { id: string; label: string; level: 1 | 2 | 3 }
-interface DocPage { id: string; title: string; content: React.FC; toc: TocEntry[] }
-interface DocSection { id: string; title: string; icon: React.ReactNode; pages: DocPage[] }
+
+interface TocEntry  { id: string; label: string; level: 1 | 2 | 3 }
+interface DocPage   { id: string; title: string; content: React.FC; toc: TocEntry[] }
+interface DocSection{ id: string; title: string; icon: React.ReactNode; pages: DocPage[] }
 
 // ══════════════════════════════════════════════════════════════════════════════
 // HOOKS
 // ══════════════════════════════════════════════════════════════════════════════
+
 function useCopy() {
   const [copied, setCopied] = useState<string | null>(null);
   const copy = useCallback(async (text: string, id: string) => {
@@ -66,74 +68,51 @@ function useActiveHeading(toc: TocEntry[]) {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// DESIGN TOKENS (replicated as CSS vars so dark mode works)
+// MINIMAL KEYFRAMES — only what Tailwind can't express
 // ══════════════════════════════════════════════════════════════════════════════
-const GLOBAL_STYLES = `
-  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+const KEYFRAMES = `
   @keyframes fadeSlideUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
 
-  :root {
-    --doc-bg:          #f8f6f2;
-    --doc-surface:     #ffffff;
-    --doc-sidebar:     #faf8f5;
-    --doc-border:      rgba(29,29,27,0.09);
-    --doc-border-md:   rgba(29,29,27,0.14);
-    --doc-text:        #1D1D1B;
-    --doc-muted:       rgba(29,29,27,0.52);
-    --doc-hint:        rgba(29,29,27,0.32);
-    --doc-primary:     #C0573E;
-    --doc-primary-10:  rgba(192,87,62,0.10);
-    --doc-primary-20:  rgba(192,87,62,0.20);
-    --doc-code-bg:     #141412;
-    --doc-code-header: #1a1a18;
-    --doc-code-text:   #d4d0c8;
-    --doc-indigo:      #2A4A6B;
-    --doc-ndop:        #4A6741;
-    --doc-kente:       #D4A017;
-    --skeleton-from:   rgb(235 232 228);
-    --skeleton-mid:    rgb(244 242 238);
-  }
-  .dark {
-    --doc-bg:          #111110;
-    --doc-surface:     #1a1917;
-    --doc-sidebar:     #141412;
-    --doc-border:      rgba(255,255,255,0.07);
-    --doc-border-md:   rgba(255,255,255,0.12);
-    --doc-text:        #ece8e1;
-    --doc-muted:       rgba(236,232,225,0.50);
-    --doc-hint:        rgba(236,232,225,0.30);
-    --doc-primary:     #d4694e;
-    --doc-primary-10:  rgba(212,105,78,0.12);
-    --doc-primary-20:  rgba(212,105,78,0.22);
-    --doc-code-bg:     #0d0c0b;
-    --doc-code-header: #161513;
-    --doc-code-text:   #c9c5bc;
-    --doc-indigo:      #5b82a8;
-    --doc-ndop:        #7aa66e;
-    --doc-kente:       #ddb030;
-    --skeleton-from:   rgb(30 28 26);
-    --skeleton-mid:    rgb(42 40 37);
-  }
-
-  /* Prose */
-  .avs-prose h1 { font-family:var(--font-display,Georgia,serif); font-size:1.875rem; font-weight:800; color:var(--doc-text); margin-bottom:0.5rem; line-height:1.15; letter-spacing:-0.02em; }
-  .avs-prose h2 { font-family:var(--font-display,Georgia,serif); font-size:1.2rem; font-weight:700; color:var(--doc-text); margin:2.25rem 0 0.65rem; padding-bottom:0.45rem; border-bottom:1px solid var(--doc-border); letter-spacing:-0.01em; }
-  .avs-prose h3 { font-family:var(--font-display,Georgia,serif); font-size:1rem; font-weight:700; color:var(--doc-text); margin:1.5rem 0 0.4rem; }
-  .avs-prose p  { color:var(--doc-muted); line-height:1.8; margin-bottom:0.9rem; font-size:0.9375rem; }
-  .avs-prose ul { list-style:disc; padding-left:1.5rem; color:var(--doc-muted); margin-bottom:0.875rem; }
-  .avs-prose ol { list-style:decimal; padding-left:1.5rem; color:var(--doc-muted); margin-bottom:0.875rem; }
+  /* Prose typography using AVS tokens */
+  .avs-prose h1 { font-family:var(--font-display,Georgia,serif); font-size:1.875rem; font-weight:800; color:var(--avs-accent); margin-bottom:0.5rem; line-height:1.15; letter-spacing:-0.02em; }
+  .avs-prose h2 { font-family:var(--font-display,Georgia,serif); font-size:1.2rem; font-weight:700; color:var(--avs-accent); margin:2.25rem 0 0.65rem; padding-bottom:0.45rem; border-bottom:1px solid rgba(29,29,27,0.09); letter-spacing:-0.01em; }
+  .avs-prose h3 { font-family:var(--font-display,Georgia,serif); font-size:1rem; font-weight:700; color:var(--avs-accent); margin:1.5rem 0 0.4rem; }
+  .avs-prose p  { color:rgba(29,29,27,0.52); line-height:1.8; margin-bottom:0.9rem; font-size:0.9375rem; }
+  .avs-prose ul { list-style:disc; padding-left:1.5rem; color:rgba(29,29,27,0.52); margin-bottom:0.875rem; }
+  .avs-prose ol { list-style:decimal; padding-left:1.5rem; color:rgba(29,29,27,0.52); margin-bottom:0.875rem; }
   .avs-prose li { margin-bottom:0.35rem; font-size:0.9375rem; line-height:1.7; }
-  .avs-prose a  { color:var(--doc-primary); text-decoration:underline; text-underline-offset:3px; }
+  .avs-prose a  { color:var(--avs-primary); text-decoration:underline; text-underline-offset:3px; }
   .avs-prose a:hover { opacity:0.75; }
-  .avs-prose code { font-family:var(--font-mono,monospace); font-size:0.8em; background:var(--doc-primary-10); padding:0.15em 0.45em; border-radius:0.3rem; color:var(--doc-primary); border:1px solid var(--doc-primary-20); }
-  .avs-prose strong { font-weight:700; color:var(--doc-text); }
-  .avs-prose hr { border:none; border-top:1px solid var(--doc-border); margin:2.25rem 0; }
+  .avs-prose code { font-family:var(--font-mono,monospace); font-size:0.8em; background:rgba(192,87,62,0.10); padding:0.15em 0.45em; border-radius:0.3rem; color:var(--avs-primary); border:1px solid rgba(192,87,62,0.20); }
+  .avs-prose strong { font-weight:700; color:var(--avs-accent); }
+  .avs-prose hr { border:none; border-top:1px solid rgba(29,29,27,0.09); margin:2.25rem 0; }
 
-  /* Scrollbar */
+  /* Dark mode prose overrides */
+  .dark .avs-prose h1,.dark .avs-prose h2,.dark .avs-prose h3 { color:#ece8e1; }
+  .dark .avs-prose h2 { border-bottom-color:rgba(255,255,255,0.07); }
+  .dark .avs-prose p,.dark .avs-prose ul,.dark .avs-prose ol { color:rgba(236,232,225,0.50); }
+  .dark .avs-prose strong { color:#ece8e1; }
+  .dark .avs-prose hr { border-top-color:rgba(255,255,255,0.07); }
+  .dark .avs-prose code { background:rgba(212,105,78,0.12); color:#d4694e; border-color:rgba(212,105,78,0.22); }
+
+  /* Thin scrollbar */
   .doc-scroll::-webkit-scrollbar { width:4px; height:4px; }
   .doc-scroll::-webkit-scrollbar-track { background:transparent; }
-  .doc-scroll::-webkit-scrollbar-thumb { background:var(--doc-border-md); border-radius:2px; }
+  .doc-scroll::-webkit-scrollbar-thumb { background:rgba(29,29,27,0.14); border-radius:2px; }
+  .dark .doc-scroll::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.12); }
 `;
+
+// ══════════════════════════════════════════════════════════════════════════════
+// CALLOUT CONFIG — token classes only
+// ══════════════════════════════════════════════════════════════════════════════
+
+const CALLOUT_CONF = {
+  info:    { bg: 'bg-avs-indigo/8',   border: 'border-avs-indigo',   icon: Info,        textClass: 'text-avs-indigo',   label: 'Info'       },
+  tip:     { bg: 'bg-avs-ndop/8',     border: 'border-avs-ndop',     icon: Lightbulb,   textClass: 'text-avs-ndop',     label: 'Astuce'     },
+  warning: { bg: 'bg-avs-kente/8',    border: 'border-avs-kente',    icon: AlertCircle, textClass: 'text-avs-kente',    label: 'Attention'  },
+  danger:  { bg: 'bg-avs-primary/9',  border: 'border-avs-primary',  icon: AlertCircle, textClass: 'text-avs-primary',  label: 'Important'  },
+} as const;
 
 // ══════════════════════════════════════════════════════════════════════════════
 // SHARED MICRO-COMPONENTS
@@ -142,58 +121,48 @@ const GLOBAL_STYLES = `
 function CodeBlock({ code, lang = 'tsx', id, title }: { code: string; lang?: string; id: string; title?: string }) {
   const { copied, copy } = useCopy();
   return (
-    <div className="group my-5 overflow-hidden rounded-xl" style={{ border: '1px solid rgba(255,255,255,0.06)', boxShadow: '0 8px 32px rgba(0,0,0,0.18)' }}>
-      {/* Header bar */}
-      <div className="flex items-center justify-between px-4 py-2.5" style={{ background: 'var(--doc-code-header)' }}>
+    <div className="group my-5 overflow-hidden rounded-xl border border-avs-secondary/6 shadow-avs-md">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 py-2.5 bg-avs-accent/90">
         <div className="flex items-center gap-3">
-          {/* Traffic lights */}
           <div className="flex gap-1.5" aria-hidden>
             <span className="h-2.5 w-2.5 rounded-full bg-red-500/70" />
             <span className="h-2.5 w-2.5 rounded-full bg-amber-400/70" />
             <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/70" />
           </div>
-          <span className="font-mono text-[10px] text-white/30 tracking-widest">
+          <span className="font-mono text-[10px] text-avs-secondary/30 tracking-widest">
             {title ?? lang.toUpperCase()}
           </span>
         </div>
         <button
           onClick={() => void copy(code, id)}
-          className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 font-mono text-[10px] font-semibold text-white/35 opacity-0 transition-all duration-200 group-hover:opacity-100 hover:bg-white/10 hover:text-white/70"
+          className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 font-mono text-[10px] font-semibold text-avs-secondary/35 opacity-0 transition-all duration-200 group-hover:opacity-100 hover:bg-avs-secondary/10 hover:text-avs-secondary/70"
         >
           {copied === id
             ? <><Check size={10} className="text-emerald-400" /> Copié</>
             : <><Copy size={10} /> Copier</>}
         </button>
       </div>
-
-      {/* Code body */}
-      <pre
-        className="doc-scroll overflow-x-auto px-5 py-5 font-mono text-[12.5px] leading-[1.8]"
-        style={{ background: 'var(--doc-code-bg)', color: 'var(--doc-code-text)' }}
-      >
+      {/* Body */}
+      <pre className="doc-scroll overflow-x-auto px-5 py-5 font-mono text-[12.5px] leading-[1.8] bg-avs-accent text-avs-secondary/80">
         <code>{code}</code>
       </pre>
     </div>
   );
 }
 
-function Callout({ type = 'info', title, children }: { type?: 'info' | 'tip' | 'warning' | 'danger'; title?: string; children: React.ReactNode }) {
-  const conf = {
-    info:    { bg: 'rgba(42,74,107,0.08)', border: 'var(--doc-indigo)', icon: Info,         tc: 'var(--doc-indigo)',  label: title ?? 'Info' },
-    tip:     { bg: 'rgba(74,103,65,0.08)', border: 'var(--doc-ndop)',   icon: Lightbulb,    tc: 'var(--doc-ndop)',   label: title ?? 'Astuce' },
-    warning: { bg: 'rgba(212,160,23,0.08)', border: 'var(--doc-kente)', icon: AlertCircle,  tc: 'var(--doc-kente)',  label: title ?? 'Attention' },
-    danger:  { bg: 'rgba(192,87,62,0.09)', border: 'var(--doc-primary)', icon: AlertCircle, tc: 'var(--doc-primary)', label: title ?? 'Important' },
-  }[type];
-  const Icon = conf.icon;
+function Callout({ type = 'info', title, children }: { type?: keyof typeof CALLOUT_CONF; title?: string; children: React.ReactNode }) {
+  const { bg, border, icon: Icon, textClass, label } = CALLOUT_CONF[type];
   return (
-    <div
-      className="my-5 flex gap-3.5 rounded-r-xl px-4 py-4"
-      style={{ background: conf.bg, borderLeft: `3px solid ${conf.border}`, border: `1px solid ${conf.border}33`, borderLeftWidth: 3 }}
-    >
-      <Icon size={15} className="mt-0.5 shrink-0" style={{ color: conf.tc }} aria-hidden />
+    <div className={`my-5 flex gap-3.5 rounded-r-xl px-4 py-4 ${bg} border border-l-[3px] ${border}`}>
+      <Icon size={15} className={`mt-0.5 shrink-0 ${textClass}`} aria-hidden />
       <div>
-        <p className="mb-1.5 text-[9px] font-bold tracking-[0.18em] uppercase" style={{ color: conf.tc }}>{conf.label}</p>
-        <div className="text-sm leading-relaxed" style={{ color: 'var(--doc-muted)' }}>{children}</div>
+        <p className={`mb-1.5 text-[9px] font-bold tracking-[0.18em] uppercase ${textClass}`}>
+          {title ?? label}
+        </p>
+        <div className="text-sm leading-relaxed text-avs-accent/52 dark:text-avs-secondary/50">
+          {children}
+        </div>
       </div>
     </div>
   );
@@ -201,23 +170,25 @@ function Callout({ type = 'info', title, children }: { type?: 'info' | 'tip' | '
 
 function PropTable({ rows }: { rows: [string, string, string, string][] }) {
   return (
-    <div className="my-5 overflow-x-auto rounded-xl" style={{ border: '1px solid var(--doc-border)' }}>
+    <div className="my-5 overflow-x-auto rounded-xl border border-avs-accent/9">
       <table className="w-full min-w-[560px] text-xs">
         <thead>
-          <tr style={{ borderBottom: '1px solid var(--doc-border)', background: 'var(--doc-primary-10)' }}>
+          <tr className="border-b border-avs-accent/9 bg-avs-primary/10">
             {['Prop', 'Type', 'Défaut', 'Description'].map((h) => (
-              <th key={h} className="px-4 py-2.5 text-left font-bold tracking-wider uppercase" style={{ color: 'var(--doc-hint)', fontSize: '9px' }}>{h}</th>
+              <th key={h} className="px-4 py-2.5 text-left font-bold tracking-wider uppercase text-avs-accent/32 text-[9px]">{h}</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {rows.map(([prop, type, def, desc], i) => (
-            <tr key={prop} style={{ borderBottom: i < rows.length - 1 ? '1px solid var(--doc-border)' : 'none' }}
-              className="transition-colors hover:bg-[var(--doc-primary-10)]">
-              <td className="px-4 py-3 font-mono font-bold" style={{ color: 'var(--doc-primary)' }}>{prop}</td>
-              <td className="px-4 py-3 font-mono text-[11px]" style={{ color: 'var(--doc-indigo)' }}>{type}</td>
-              <td className="px-4 py-3 font-mono text-[11px]" style={{ color: 'var(--doc-hint)' }}>{def}</td>
-              <td className="px-4 py-3 text-[12px] leading-snug" style={{ color: 'var(--doc-muted)' }}>{desc}</td>
+            <tr
+              key={prop}
+              className={`transition-colors hover:bg-avs-primary/10 ${i < rows.length - 1 ? 'border-b border-avs-accent/9' : ''}`}
+            >
+              <td className="px-4 py-3 font-mono font-bold text-avs-primary">{prop}</td>
+              <td className="px-4 py-3 font-mono text-[11px] text-avs-indigo">{type}</td>
+              <td className="px-4 py-3 font-mono text-[11px] text-avs-accent/32">{def}</td>
+              <td className="px-4 py-3 text-[12px] leading-snug text-avs-accent/52">{desc}</td>
             </tr>
           ))}
         </tbody>
@@ -228,16 +199,15 @@ function PropTable({ rows }: { rows: [string, string, string, string][] }) {
 
 function LiveDemo({ children, label = 'Démonstration live' }: { children: React.ReactNode; label?: string }) {
   return (
-    <div className="my-5 overflow-hidden rounded-xl" style={{ border: '1px solid var(--doc-border)' }}>
-      <div className="flex items-center gap-2 px-4 py-2.5" style={{ background: 'var(--doc-primary-10)', borderBottom: '1px solid var(--doc-border)' }}>
-        <span className="h-2 w-2 rounded-full bg-avs-primary" style={{ background: 'var(--doc-primary)' }} aria-hidden />
-        <span className="font-mono text-[9px] font-bold tracking-[0.18em] uppercase" style={{ color: 'var(--doc-hint)' }}>{label}</span>
+    <div className="my-5 overflow-hidden rounded-xl border border-avs-accent/9">
+      <div className="flex items-center gap-2 px-4 py-2.5 bg-avs-primary/10 border-b border-avs-accent/9">
+        <span className="h-2 w-2 rounded-full bg-avs-primary" aria-hidden />
+        <span className="font-mono text-[9px] font-bold tracking-[0.18em] uppercase text-avs-accent/32">{label}</span>
       </div>
       <div
-        className="p-8"
+        className="p-8 bg-avs-secondary"
         style={{
-          background: 'var(--doc-surface)',
-          backgroundImage: 'radial-gradient(circle, var(--doc-border) 1px, transparent 1px)',
+          backgroundImage: 'radial-gradient(circle, rgba(29,29,27,0.09) 1px, transparent 1px)',
           backgroundSize: '16px 16px',
         }}
       >
@@ -253,8 +223,7 @@ function SectionAnchor({ id, children }: { id: string; children: React.ReactNode
       {children}
       <a
         href={`#${id}`}
-        className="opacity-0 transition-opacity group-hover:opacity-100"
-        style={{ color: 'var(--doc-hint)' }}
+        className="opacity-0 transition-opacity group-hover:opacity-100 text-avs-accent/32"
         aria-label={`Lien vers ${id}`}
       >
         <Hash size={13} />
@@ -271,23 +240,24 @@ const IntroductionPage: React.FC = () => (
   <div className="avs-prose">
     {/* Hero banner */}
     <div className="avs-pattern-ndop-royal relative mb-8 overflow-hidden rounded-2xl">
+      {/* Multi-stop dark gradient — justified inline */}
       <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(10,8,6,0.96) 0%, rgba(29,20,8,0.88) 100%)' }} />
       <div className="relative px-8 py-10">
         <div className="mb-3 flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[9px] tracking-[0.18em] uppercase font-bold" style={{ background: 'rgba(192,87,62,0.2)', color: '#C0573E', border: '1px solid rgba(192,87,62,0.3)' }}>
+          <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[9px] tracking-[0.18em] uppercase font-bold bg-avs-primary/20 text-avs-primary border border-avs-primary/30">
             <Sparkles size={8} /> v1.0 · Open Standard
           </span>
         </div>
-        <h1 className="font-display text-3xl font-black leading-tight" style={{ color: '#f5ebe0', letterSpacing: '-0.02em' }}>
+        <h1 className="font-display text-3xl font-black leading-tight text-avs-secondary" style={{ letterSpacing: '-0.02em' }}>
           AVS — African Visual Standard
         </h1>
-        <p className="mt-3 max-w-lg text-sm leading-relaxed" style={{ color: 'rgba(245,235,224,0.60)' }}>
+        <p className="mt-3 max-w-lg text-sm leading-relaxed text-avs-secondary/60">
           Bibliothèque de composants UI open-source construite avec React, Radix UI et Tailwind CSS.
           Inspirée du patrimoine visuel africain. Aucun compte requis.
         </p>
         <div className="mt-5 flex flex-wrap gap-2">
           {['React 18+', 'Next.js 14+', 'TypeScript', 'Tailwind CSS', 'Radix UI', 'Framer Motion'].map((t) => (
-            <span key={t} className="rounded-lg px-2.5 py-1 font-mono text-[10px] font-semibold" style={{ background: 'rgba(245,235,224,0.08)', color: 'rgba(245,235,224,0.55)', border: '1px solid rgba(245,235,224,0.10)' }}>{t}</span>
+            <span key={t} className="rounded-lg px-2.5 py-1 font-mono text-[10px] font-semibold bg-avs-secondary/8 text-avs-secondary/55 border border-avs-secondary/10">{t}</span>
           ))}
         </div>
       </div>
@@ -299,40 +269,40 @@ const IntroductionPage: React.FC = () => (
     <div className="my-6 grid gap-3 sm:grid-cols-2">
       {[
         { icon: '🌍', title: 'Culturellement ancré', desc: 'Chaque token de couleur, motif et composant est documenté avec sa source primaire africaine.' },
-        { icon: '🔓', title: 'Public par défaut', desc: 'Composants, motifs, templates — tout est accessible sans authentification.' },
-        { icon: '⚡', title: 'Copy & Paste', desc: 'Vous possédez votre code. Aucune dépendance lourde. Adaptez, étendez, supprimez.' },
+        { icon: '🔓', title: 'Public par défaut',    desc: 'Composants, motifs, templates — tout est accessible sans authentification.' },
+        { icon: '⚡', title: 'Copy & Paste',         desc: 'Vous possédez votre code. Aucune dépendance lourde. Adaptez, étendez, supprimez.' },
         { icon: '🎨', title: 'Design System cohérent', desc: 'Palette extraite de pigments naturels africains, tokens CSS, motifs CSS pur.' },
       ].map(({ icon, title, desc }) => (
-        <div key={title} className="rounded-xl p-5 transition-colors" style={{ border: '1px solid var(--doc-border)', background: 'var(--doc-surface)' }}>
+        <div key={title} className="rounded-xl p-5 transition-colors border border-avs-accent/9 bg-avs-secondary">
           <div className="mb-2 text-2xl">{icon}</div>
-          <h3 className="mb-1 text-sm font-bold" style={{ color: 'var(--doc-text)', fontFamily: 'var(--font-display, Georgia, serif)' }}>{title}</h3>
-          <p className="text-xs leading-relaxed" style={{ color: 'var(--doc-hint)', marginBottom: 0 }}>{desc}</p>
+          <h3 className="mb-1 text-sm font-bold text-avs-accent font-display">{title}</h3>
+          <p className="text-xs leading-relaxed text-avs-accent/32 mb-0">{desc}</p>
         </div>
       ))}
     </div>
 
     <SectionAnchor id="comparaison"><h2>Comparaison avec PrimeReact</h2></SectionAnchor>
-    <div className="my-4 overflow-x-auto rounded-xl" style={{ border: '1px solid var(--doc-border)' }}>
+    <div className="my-4 overflow-x-auto rounded-xl border border-avs-accent/9">
       <table className="w-full text-xs">
         <thead>
-          <tr style={{ borderBottom: '1px solid var(--doc-border)', background: 'var(--doc-primary-10)' }}>
+          <tr className="border-b border-avs-accent/9 bg-avs-primary/10">
             {['Fonctionnalité', 'AVS', 'PrimeReact', 'Shadcn'].map((h) => (
-              <th key={h} className="px-4 py-2.5 text-left font-bold tracking-wider uppercase" style={{ color: 'var(--doc-hint)', fontSize: '9px' }}>{h}</th>
+              <th key={h} className="px-4 py-2.5 text-left font-bold tracking-wider uppercase text-avs-accent/32 text-[9px]">{h}</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {[
-            ['Accès sans compte', '✅', '✅', '✅'],
-            ['Copy & Paste', '✅', '❌', '✅'],
-            ['Design africain', '✅', '❌', '❌'],
-            ['SVG natifs', '✅', '⚠️', '❌'],
-            ['Motifs CSS', '✅', '❌', '❌'],
-            ['Radix UI', '✅', '❌', '✅'],
-            ['TypeScript strict', '✅', '✅', '✅'],
+            ['Accès sans compte',   '✅','✅','✅'],
+            ['Copy & Paste',        '✅','❌','✅'],
+            ['Design africain',     '✅','❌','❌'],
+            ['SVG natifs',          '✅','⚠️','❌'],
+            ['Motifs CSS',          '✅','❌','❌'],
+            ['Radix UI',            '✅','❌','✅'],
+            ['TypeScript strict',   '✅','✅','✅'],
           ].map(([feat, ...vals], i, arr) => (
-            <tr key={feat} className="transition-colors hover:bg-[var(--doc-primary-10)]" style={{ borderBottom: i < arr.length - 1 ? '1px solid var(--doc-border)' : 'none' }}>
-              <td className="px-4 py-2.5 font-semibold" style={{ color: 'var(--doc-text)' }}>{feat}</td>
+            <tr key={feat} className={`transition-colors hover:bg-avs-primary/10 ${i < arr.length - 1 ? 'border-b border-avs-accent/9' : ''}`}>
+              <td className="px-4 py-2.5 font-semibold text-avs-accent">{feat}</td>
               {vals.map((v, vi) => <td key={vi} className="px-4 py-2.5 text-center">{v}</td>)}
             </tr>
           ))}
@@ -374,15 +344,12 @@ npx @avs/cli add pattern-card
 npx @avs/cli list`} />
 
       <SectionAnchor id="methode-npm"><h2>Méthode 2 — Package npm</h2></SectionAnchor>
-      {/* Package manager selector */}
-      <div className="mb-2 flex w-fit items-center gap-0.5 rounded-xl p-1" style={{ border: '1px solid var(--doc-border)', background: 'var(--doc-surface)' }}>
+      <div className="mb-2 flex w-fit items-center gap-0.5 rounded-xl p-1 border border-avs-accent/9 bg-avs-secondary">
         {(['npm', 'pnpm', 'yarn'] as const).map((m) => (
-          <button key={m} onClick={() => setPkgMgr(m)}
-            className="rounded-lg px-3.5 py-1.5 font-mono text-xs font-bold transition-all duration-200"
-            style={pkgMgr === m
-              ? { background: 'var(--doc-primary)', color: '#fff' }
-              : { color: 'var(--doc-hint)' }
-            }
+          <button
+            key={m}
+            onClick={() => setPkgMgr(m)}
+            className={`rounded-lg px-3.5 py-1.5 font-mono text-xs font-bold transition-all duration-200 ${pkgMgr === m ? 'bg-avs-primary text-avs-secondary' : 'text-avs-accent/32'}`}
           >{m}</button>
         ))}
       </div>
@@ -419,10 +386,6 @@ const config: Config = {
         'avs-ndop':      '#4A6741',   // Vert Bamiléké
         'avs-indigo':    '#2A4A6B',   // Bleu bogolan
       },
-      fontFamily: {
-        display: ['var(--font-display)', 'Georgia', 'serif'],
-        mono:    ['var(--font-mono)', 'monospace'],
-      },
     },
   },
 };
@@ -450,14 +413,14 @@ export default config;`} />
 const DesignTokensPage: React.FC = () => {
   const { copied, copy } = useCopy();
   const palette = [
-    { name: 'avs-primary', hex: '#C0573E', label: 'Terre brûlée', origin: 'Poterie Yoruba', dark: false },
-    { name: 'avs-secondary', hex: '#F5EBE0', label: 'Lin naturel', origin: 'Tissu Fulani', dark: false },
-    { name: 'avs-accent', hex: '#1D1D1B', label: 'Obsidienne', origin: 'Basalte Kenya', dark: true },
-    { name: 'avs-kente', hex: '#D4A017', label: 'Or kente', origin: 'Fil soie Asante', dark: false },
-    { name: 'avs-ndop', hex: '#4A6741', label: 'Vert Bamiléké', origin: 'Plantes indigo', dark: true },
-    { name: 'avs-indigo', hex: '#2A4A6B', label: 'Bleu bogolan', origin: 'Teinture Bambara', dark: true },
-    { name: 'avs-earth', hex: '#8B4513', label: 'Ocre savane', origin: 'Argile du Sahel', dark: true },
-    { name: 'avs-raffia', hex: '#C8A96E', label: 'Raphia naturel', origin: 'Fibre de palmier', dark: false },
+    { name: 'avs-primary',   hex: '#C0573E', label: 'Terre brûlée',   origin: 'Poterie Yoruba',    dark: false },
+    { name: 'avs-secondary', hex: '#F5EBE0', label: 'Lin naturel',     origin: 'Tissu Fulani',      dark: false },
+    { name: 'avs-accent',    hex: '#1D1D1B', label: 'Obsidienne',      origin: 'Basalte Kenya',     dark: true  },
+    { name: 'avs-kente',     hex: '#D4A017', label: 'Or kente',        origin: 'Fil soie Asante',   dark: false },
+    { name: 'avs-ndop',      hex: '#4A6741', label: 'Vert Bamiléké',   origin: 'Plantes indigo',    dark: true  },
+    { name: 'avs-indigo',    hex: '#2A4A6B', label: 'Bleu bogolan',    origin: 'Teinture Bambara',  dark: true  },
+    { name: 'avs-earth',     hex: '#8B4513', label: 'Ocre savane',     origin: 'Argile du Sahel',   dark: true  },
+    { name: 'avs-raffia',    hex: '#C8A96E', label: 'Raphia naturel',  origin: 'Fibre de palmier',  dark: false },
   ];
 
   return (
@@ -467,23 +430,24 @@ const DesignTokensPage: React.FC = () => {
 
       <SectionAnchor id="palette"><h2>Palette principale</h2></SectionAnchor>
       <div className="my-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {palette.map(({ name, hex, label, origin, dark }) => (
-          <button key={name} onClick={() => void copy(hex, name)}
-            className="group overflow-hidden rounded-xl text-left transition-all duration-300 hover:-translate-y-1"
-            style={{ border: '1px solid var(--doc-border)', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
+        {palette.map(({ name, hex, label, origin }) => (
+          <button
+            key={name}
+            onClick={() => void copy(hex, name)}
+            className="group overflow-hidden rounded-xl text-left transition-all duration-300 hover:-translate-y-1 border border-avs-accent/9 shadow-avs"
           >
             <div className="relative h-16" style={{ background: hex }}>
               <div className="absolute inset-0 flex items-center justify-center bg-black/25 opacity-0 transition-opacity group-hover:opacity-100">
-                <span className="text-[10px] font-bold text-white drop-shadow">
+                <span className="text-[10px] font-bold text-avs-secondary drop-shadow">
                   {copied === name ? '✓ Copié !' : 'Copier HEX'}
                 </span>
               </div>
             </div>
-            <div className="p-2.5" style={{ background: 'var(--doc-surface)' }}>
-              <p className="font-mono text-[9px]" style={{ color: 'var(--doc-hint)' }}>{hex}</p>
-              <p className="mt-0.5 text-[11px] font-bold" style={{ color: 'var(--doc-text)' }}>{label}</p>
-              <p className="mt-0.5 font-mono text-[8px]" style={{ color: 'var(--doc-hint)' }}>{name}</p>
-              <p className="mt-0.5 text-[8px] italic" style={{ color: 'var(--doc-hint)', opacity: 0.7 }}>{origin}</p>
+            <div className="p-2.5 bg-avs-secondary">
+              <p className="font-mono text-[9px] text-avs-accent/32">{hex}</p>
+              <p className="mt-0.5 text-[11px] font-bold text-avs-accent">{label}</p>
+              <p className="mt-0.5 font-mono text-[8px] text-avs-accent/32">{name}</p>
+              <p className="mt-0.5 text-[8px] italic text-avs-accent/25">{origin}</p>
             </div>
           </button>
         ))}
@@ -510,9 +474,9 @@ const DesignTokensPage: React.FC = () => {
       <SectionAnchor id="typography"><h2>Typographie</h2></SectionAnchor>
       <LiveDemo label="Échelle typographique">
         <div className="space-y-4">
-          <p className="font-display text-4xl font-black leading-none" style={{ color: 'var(--doc-text)', letterSpacing: '-0.02em', fontFamily: 'var(--font-display, Georgia, serif)' }}>Display — Playfair Display</p>
-          <p className="text-base leading-relaxed" style={{ color: 'var(--doc-muted)' }}>Body — DM Sans · Texte courant et interfaces</p>
-          <p className="font-mono text-sm" style={{ color: 'var(--doc-hint)' }}>Mono — JetBrains Mono · Code et tokens</p>
+          <p className="font-display text-4xl font-black leading-none text-avs-accent" style={{ letterSpacing: '-0.02em' }}>Display — Playfair Display</p>
+          <p className="text-base leading-relaxed text-avs-accent/52">Body — DM Sans · Texte courant et interfaces</p>
+          <p className="font-mono text-sm text-avs-accent/32">Mono — JetBrains Mono · Code et tokens</p>
         </div>
       </LiveDemo>
     </div>
@@ -527,20 +491,20 @@ const CssPatternsPage: React.FC = () => (
     <SectionAnchor id="patterns-list"><h2>Catalogue</h2></SectionAnchor>
     <div className="my-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {[
-        { cls: 'avs-pattern-kente-royale', label: 'Kente', origin: 'Akan, Ghana', desc: 'Bandelettes entrelacées' },
-        { cls: 'avs-pattern-ndop-sultan', label: 'Ndop', origin: 'Bamoum, Cameroun', desc: 'Grille et cercles rituels' },
-        { cls: 'avs-pattern-bogolan-fanga', label: 'Bogolan', origin: 'Bambara, Mali', desc: 'Teintures à la boue' },
-        { cls: 'avs-pattern-wax-dakar', label: 'Wax', origin: 'Pan-africain', desc: 'Losanges et points' },
-        { cls: 'avs-pattern-adinkra-sankofa', label: 'Adinkra', origin: 'Asante, Ghana', desc: 'Symboles philosophiques' },
-        { cls: 'avs-pattern-kuba-kasai', label: 'Kuba', origin: 'Kasaï, Congo', desc: 'Géométrie entrelacée' },
+        { cls: 'avs-pattern-kente-royale',    label: 'Kente',   origin: 'Akan, Ghana',           desc: 'Bandelettes entrelacées'    },
+        { cls: 'avs-pattern-ndop-sultan',     label: 'Ndop',    origin: 'Bamoum, Cameroun',      desc: 'Grille et cercles rituels'  },
+        { cls: 'avs-pattern-bogolan-fanga',   label: 'Bogolan', origin: 'Bambara, Mali',          desc: 'Teintures à la boue'        },
+        { cls: 'avs-pattern-wax-dakar',       label: 'Wax',     origin: 'Pan-africain',           desc: 'Losanges et points'         },
+        { cls: 'avs-pattern-adinkra-sankofa', label: 'Adinkra', origin: 'Asante, Ghana',          desc: 'Symboles philosophiques'    },
+        { cls: 'avs-pattern-kuba-kasai',      label: 'Kuba',    origin: 'Kasaï, Congo',           desc: 'Géométrie entrelacée'       },
       ].map(({ cls, label, origin, desc }) => (
-        <div key={cls} className="overflow-hidden rounded-xl transition-all duration-300 hover:-translate-y-1" style={{ border: '1px solid var(--doc-border)', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+        <div key={cls} className="overflow-hidden rounded-xl transition-all duration-300 hover:-translate-y-1 border border-avs-accent/9 shadow-avs">
           <div className={`${cls} h-20`} />
-          <div className="p-3" style={{ background: 'var(--doc-surface)' }}>
-            <p className="text-sm font-bold" style={{ color: 'var(--doc-text)', fontFamily: 'var(--font-display, Georgia, serif)' }}>{label}</p>
-            <p className="mt-0.5 text-[10px] font-semibold" style={{ color: 'var(--doc-primary)' }}>{origin}</p>
-            <p className="mt-0.5 text-[10px]" style={{ color: 'var(--doc-hint)' }}>{desc}</p>
-            <p className="mt-1 font-mono text-[9px]" style={{ color: 'var(--doc-hint)', opacity: 0.6 }}>.{cls}</p>
+          <div className="p-3 bg-avs-secondary">
+            <p className="text-sm font-bold text-avs-accent font-display">{label}</p>
+            <p className="mt-0.5 text-[10px] font-semibold text-avs-primary">{origin}</p>
+            <p className="mt-0.5 text-[10px] text-avs-accent/32">{desc}</p>
+            <p className="mt-1 font-mono text-[9px] text-avs-accent/25">.{cls}</p>
           </div>
         </div>
       ))}
@@ -550,21 +514,21 @@ const CssPatternsPage: React.FC = () => (
     <LiveDemo label="Applications des motifs">
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="avs-pattern-ndop-sultan relative overflow-hidden rounded-xl">
-          <div className="absolute inset-0" style={{ background: 'rgba(10,8,6,0.78)' }} />
+          <div className="absolute inset-0 bg-avs-accent/78" />
           <div className="relative p-4 text-center">
-            <p className="text-xs font-bold" style={{ color: 'rgba(245,235,224,0.85)' }}>Section Hero</p>
+            <p className="text-xs font-bold text-avs-secondary/85">Section Hero</p>
           </div>
         </div>
         <div className="flex items-center justify-center gap-3">
-          <div className="avs-pattern-kente-royale relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full ring-2 ring-white dark:ring-zinc-800">
-            <span className="font-display text-lg font-black text-white drop-shadow-md relative z-10">A</span>
+          <div className="avs-pattern-kente-royale relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-full ring-2 ring-avs-secondary dark:ring-avs-accent">
+            <span className="font-display text-lg font-black text-avs-secondary drop-shadow-md relative z-10">A</span>
             <div className="absolute inset-0 bg-black/25" />
           </div>
-          <span className="text-xs" style={{ color: 'var(--doc-muted)' }}>Avatar</span>
+          <span className="text-xs text-avs-accent/52">Avatar</span>
         </div>
         <div className="flex items-center justify-center gap-3">
           <div className="avs-pattern-kente-royale h-10 w-10 animate-spin rounded-full opacity-75" style={{ animationDuration: '2s' }} />
-          <span className="text-xs" style={{ color: 'var(--doc-muted)' }}>Spinner</span>
+          <span className="text-xs text-avs-accent/52">Spinner</span>
         </div>
       </div>
     </LiveDemo>
@@ -612,11 +576,11 @@ import { Button } from '@avs/ui';`} />
       <LiveDemo>
         <div className="flex flex-wrap items-center gap-3">
           {[
-            { v: 'Primaire',   cls: 'bg-avs-primary text-white shadow-sm hover:-translate-y-0.5 hover:shadow-md' },
+            { v: 'Primaire',   cls: 'bg-avs-primary text-avs-secondary shadow-avs hover:-translate-y-0.5 hover:shadow-avs-md' },
             { v: 'Secondaire', cls: 'border-2 border-avs-accent/20 text-avs-accent hover:border-avs-primary hover:text-avs-primary' },
             { v: 'Ghost',      cls: 'text-avs-primary hover:bg-avs-primary/10' },
-            { v: 'Kente',      cls: 'bg-avs-kente text-avs-accent font-black shadow-sm hover:-translate-y-0.5' },
-            { v: 'Danger',     cls: 'bg-red-600 text-white shadow-sm hover:-translate-y-0.5' },
+            { v: 'Kente',      cls: 'bg-avs-kente text-avs-accent font-black shadow-avs hover:-translate-y-0.5' },
+            { v: 'Danger',     cls: 'bg-red-600 text-white shadow-avs hover:-translate-y-0.5' },
           ].map(({ v, cls }) => (
             <button key={v} className={`rounded-xl px-4 py-2 text-xs font-bold transition-all duration-200 ${cls}`}>{v}</button>
           ))}
@@ -634,26 +598,28 @@ import { Button } from '@avs/ui';`} />
           <button
             onClick={() => { setLoading(true); setTimeout(() => setLoading(false), 2000); }}
             disabled={loading}
-            className="flex items-center gap-2 rounded-xl bg-avs-primary px-4 py-2 text-xs font-bold text-white shadow-sm transition-all disabled:cursor-not-allowed disabled:opacity-60"
+            className="flex items-center gap-2 rounded-xl bg-avs-primary px-4 py-2 text-xs font-bold text-avs-secondary shadow-avs transition-all disabled:cursor-not-allowed disabled:opacity-60"
           >
             {loading ? (
-              <><span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-white/30 border-t-white" /> Chargement…</>
+              <><span className="inline-block h-3 w-3 animate-spin rounded-full border-2 border-avs-secondary/30 border-t-avs-secondary" /> Chargement…</>
             ) : 'Cliquer pour charger'}
           </button>
-          <button disabled className="cursor-not-allowed rounded-xl border border-avs-accent/20 px-4 py-2 text-xs font-bold text-avs-accent/40">Désactivé</button>
+          <button disabled className="cursor-not-allowed rounded-xl border border-avs-accent/20 px-4 py-2 text-xs font-bold text-avs-accent/40">
+            Désactivé
+          </button>
         </div>
       </LiveDemo>
 
       <SectionAnchor id="btn-api"><h2>API de référence</h2></SectionAnchor>
       <PropTable rows={[
-        ['variant', 'primary | secondary | ghost | kente | danger', 'primary', 'Style visuel du bouton'],
-        ['size', 'xs | sm | md | lg | icon', 'md', 'Taille du bouton'],
-        ['isLoading', 'boolean', 'false', 'Affiche un spinner à la place du contenu'],
-        ['disabled', 'boolean', 'false', 'Désactive toutes les interactions'],
-        ['asChild', 'boolean', 'false', "Délègue le rendu à l'enfant (Radix Slot)"],
-        ['leftIcon', 'ReactNode', '—', 'Icône affichée à gauche du texte'],
-        ['rightIcon', 'ReactNode', '—', 'Icône affichée à droite du texte'],
-        ['className', 'string', '—', 'Classes CSS additionnelles'],
+        ['variant',   'primary | secondary | ghost | kente | danger', 'primary', 'Style visuel du bouton'],
+        ['size',      'xs | sm | md | lg | icon',                     'md',      'Taille du bouton'],
+        ['isLoading', 'boolean',                                       'false',   'Affiche un spinner à la place du contenu'],
+        ['disabled',  'boolean',                                       'false',   'Désactive toutes les interactions'],
+        ['asChild',   'boolean',                                       'false',   "Délègue le rendu à l'enfant (Radix Slot)"],
+        ['leftIcon',  'ReactNode',                                     '—',       'Icône affichée à gauche du texte'],
+        ['rightIcon', 'ReactNode',                                     '—',       'Icône affichée à droite du texte'],
+        ['className', 'string',                                        '—',       'Classes CSS additionnelles'],
       ]} />
 
       <Callout type="tip">
@@ -670,7 +636,7 @@ const SvgPatternPage: React.FC = () => (
     <p>Composant unifié pour afficher, animer et télécharger vos fichiers SVG depuis <code>public/patterns/</code>.</p>
 
     <Callout type="info">
-      Vos 3 SVG existants (<code>ndop-bamoum.svg</code>, <code>toghu-bamileke.svg</code>, <code>toghu-bamenda.svg</code>) sont déjà dans <code>public/patterns/</code>. Déclarez-les dans <code>svg-patterns.ts</code> pour les utiliser.
+      Vos 3 SVG existants (<code>ndop-bamoum.svg</code>, <code>toghu-bamileke.svg</code>, <code>toghu-bamenda.svg</code>) sont déjà dans <code>public/patterns/</code>.
     </Callout>
 
     <SectionAnchor id="svg-registry-config"><h2>1 — Déclarer dans le registre</h2></SectionAnchor>
@@ -685,7 +651,6 @@ const SvgPatternPage: React.FC = () => (
     description: 'Tissu sacré du Sultanat Bamoum',
     license:     'cc-by',
   },
-  // … autres motifs
 };`} />
 
     <SectionAnchor id="svg-usage-modes"><h2>2 — Usages</h2></SectionAnchor>
@@ -712,13 +677,13 @@ const SvgPatternPage: React.FC = () => (
 
     <SectionAnchor id="svg-api"><h2>API SvgPattern</h2></SectionAnchor>
     <PropTable rows={[
-      ['name', 'SvgPatternKey', '—', 'Clé du motif dans SVG_REGISTRY (requis)'],
-      ['size', 'number', '256', 'Taille en px (largeur = hauteur)'],
-      ['animated', 'boolean', 'false', "Active l'animation Framer Motion au survol"],
-      ['showDownload', 'boolean', 'false', 'Affiche le bouton de téléchargement SVG'],
-      ['showInfo', 'boolean', 'false', "Overlay d'infos culturelles au survol"],
-      ['opacity', 'number', '1', 'Opacité du motif (0 à 1)'],
-      ['onClick', '() => void', '—', 'Callback au clic'],
+      ['name',         'SvgPatternKey', '—',     'Clé du motif dans SVG_REGISTRY (requis)'],
+      ['size',         'number',        '256',   'Taille en px (largeur = hauteur)'],
+      ['animated',     'boolean',       'false', "Active l'animation Framer Motion au survol"],
+      ['showDownload', 'boolean',       'false', 'Affiche le bouton de téléchargement SVG'],
+      ['showInfo',     'boolean',       'false', "Overlay d'infos culturelles au survol"],
+      ['opacity',      'number',        '1',     'Opacité du motif (0 à 1)'],
+      ['onClick',      '() => void',    '—',     'Callback au clic'],
     ]} />
   </div>
 );
@@ -730,15 +695,15 @@ const AddSvgPage: React.FC = () => (
 
     <div className="my-6 flex flex-col gap-3">
       {[
-        { step: '1', title: 'Placer le fichier', desc: 'Déposez votre SVG dans public/patterns/' },
-        { step: '2', title: 'Déclarer dans le registre', desc: 'Ajoutez une entrée dans svg-patterns.ts' },
-        { step: '3', title: 'Utiliser partout', desc: '<SvgPattern name="votre-motif" />' },
+        { step: '1', title: 'Placer le fichier',          desc: 'Déposez votre SVG dans public/patterns/'  },
+        { step: '2', title: 'Déclarer dans le registre',  desc: 'Ajoutez une entrée dans svg-patterns.ts'  },
+        { step: '3', title: 'Utiliser partout',           desc: '<SvgPattern name="votre-motif" />'        },
       ].map(({ step, title, desc }) => (
-        <div key={step} className="flex items-center gap-4 rounded-xl p-4 transition-colors" style={{ border: '1px solid var(--doc-border)', background: 'var(--doc-surface)' }}>
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-display text-sm font-black text-white shadow-sm" style={{ background: 'var(--doc-primary)' }}>{step}</div>
+        <div key={step} className="flex items-center gap-4 rounded-xl p-4 transition-colors border border-avs-accent/9 bg-avs-secondary">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full font-display text-sm font-black text-avs-secondary shadow-avs bg-avs-primary">{step}</div>
           <div>
-            <p className="text-sm font-semibold" style={{ color: 'var(--doc-text)' }}>{title}</p>
-            <p className="mt-0.5 font-mono text-[10px]" style={{ color: 'var(--doc-hint)' }}>{desc}</p>
+            <p className="text-sm font-semibold text-avs-accent">{title}</p>
+            <p className="mt-0.5 font-mono text-[10px] text-avs-accent/32">{desc}</p>
           </div>
         </div>
       ))}
@@ -765,10 +730,10 @@ const AddSvgPage: React.FC = () => (
 },`} />
 
     <Callout type="tip">
-      Les SVG dans <code>public/</code> sont des ressources statiques — Next.js les sert directement sans transformation. Idéal pour les SVG complexes de motifs culturels.
+      Les SVG dans <code>public/</code> sont des ressources statiques — Next.js les sert directement sans transformation.
     </Callout>
     <Callout type="warning">
-      Pour des raisons de sécurité, les SVG sont chargés via <code>&lt;img&gt;</code> et non injectés inline. Les styles CSS internes au SVG fonctionneront, mais pas le ciblage via CSS externe.
+      Pour des raisons de sécurité, les SVG sont chargés via <code>&lt;img&gt;</code> et non injectés inline.
     </Callout>
   </div>
 );
@@ -776,36 +741,33 @@ const AddSvgPage: React.FC = () => (
 // ══════════════════════════════════════════════════════════════════════════════
 // DOC SECTIONS REGISTRY
 // ══════════════════════════════════════════════════════════════════════════════
+
 const DOC_SECTIONS: DocSection[] = [
   {
-    id: 'getting-started', title: 'Démarrage',
-    icon: <Sparkles size={13} />,
+    id: 'getting-started', title: 'Démarrage', icon: <Sparkles size={13} />,
     pages: [
       { id: 'introduction', title: 'Introduction', content: IntroductionPage, toc: [{ id: 'philosophie', level: 2, label: 'Philosophie' }, { id: 'comparaison', level: 2, label: 'Comparaison' }] },
       { id: 'installation', title: 'Installation', content: InstallationPage, toc: [{ id: 'methode-cli', level: 2, label: 'CLI' }, { id: 'methode-npm', level: 2, label: 'npm' }, { id: 'methode-cdn', level: 2, label: 'CDN' }, { id: 'configuration', level: 2, label: 'Tailwind config' }, { id: 'globals', level: 2, label: 'globals.css' }] },
     ],
   },
   {
-    id: 'design-system', title: 'Design System',
-    icon: <Layers size={13} />,
+    id: 'design-system', title: 'Design System', icon: <Layers size={13} />,
     pages: [
       { id: 'design-tokens', title: 'Tokens & Couleurs', content: DesignTokensPage, toc: [{ id: 'palette', level: 2, label: 'Palette' }, { id: 'css-variables', level: 2, label: 'CSS Variables' }, { id: 'typography', level: 2, label: 'Typographie' }] },
-      { id: 'css-patterns', title: 'Motifs CSS', content: CssPatternsPage, toc: [{ id: 'patterns-list', level: 2, label: 'Catalogue' }, { id: 'patterns-usage', level: 2, label: 'Usages typiques' }] },
+      { id: 'css-patterns',  title: 'Motifs CSS',        content: CssPatternsPage,  toc: [{ id: 'patterns-list', level: 2, label: 'Catalogue' }, { id: 'patterns-usage', level: 2, label: 'Usages typiques' }] },
     ],
   },
   {
-    id: 'composants', title: 'Composants',
-    icon: <FileCode2 size={13} />,
+    id: 'composants', title: 'Composants', icon: <FileCode2 size={13} />,
     pages: [
-      { id: 'button', title: 'Button', content: ButtonPage, toc: [{ id: 'btn-variantes', level: 2, label: 'Variantes' }, { id: 'btn-etats', level: 2, label: 'États' }, { id: 'btn-api', level: 2, label: 'API' }] },
+      { id: 'button',      title: 'Button',     content: ButtonPage,     toc: [{ id: 'btn-variantes', level: 2, label: 'Variantes' }, { id: 'btn-etats', level: 2, label: 'États' }, { id: 'btn-api', level: 2, label: 'API' }] },
       { id: 'svg-pattern', title: 'SvgPattern', content: SvgPatternPage, toc: [{ id: 'svg-registry-config', level: 2, label: 'Registre' }, { id: 'svg-usage-modes', level: 2, label: 'Usages' }, { id: 'svg-api', level: 2, label: 'API' }] },
     ],
   },
   {
-    id: 'svg-integration', title: 'Motifs SVG',
-    icon: <Sun size={13} />,
+    id: 'svg-integration', title: 'Motifs SVG', icon: <Sun size={13} />,
     pages: [
-      { id: 'add-svg', title: 'Ajouter vos SVG', content: AddSvgPage, toc: [{ id: 'step1-place', level: 2, label: 'Étape 1 — Placer' }, { id: 'step2-register', level: 2, label: 'Étape 2 — Registre' }, { id: 'step3-use', level: 2, label: 'Étape 3 — Utiliser' }] },
+      { id: 'add-svg', title: 'Ajouter vos SVG', content: AddSvgPage, toc: [{ id: 'step1-place', level: 2, label: 'Étape 1 — Placer' }, { id: 'step2-register', level: 2, label: 'Étape 2 — Registre' }] },
     ],
   },
 ];
@@ -815,30 +777,27 @@ const ALL_PAGES = DOC_SECTIONS.flatMap((s) => s.pages);
 // ══════════════════════════════════════════════════════════════════════════════
 // MAIN PAGE
 // ══════════════════════════════════════════════════════════════════════════════
+
 export default function DocumentationPage() {
-  const [activeId, setActiveId] = useState('introduction');
-  const [search, setSearch] = useState('');
+  const [activeId, setActiveId]       = useState('introduction');
+  const [search, setSearch]           = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [expandedSec, setExpandedSec] = useState<string[]>(['getting-started', 'composants']);
-  const [isDesktop, setIsDesktop] = useState(true);
+  const [isDesktop, setIsDesktop]     = useState(true);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  // Detect screen size
   useEffect(() => {
     const checkDesktop = () => setIsDesktop(window.innerWidth >= 1024);
     checkDesktop();
     const timer = setTimeout(checkDesktop, 100);
     window.addEventListener('resize', checkDesktop);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('resize', checkDesktop);
-    };
+    return () => { clearTimeout(timer); window.removeEventListener('resize', checkDesktop); };
   }, []);
 
-  const activePage = ALL_PAGES.find((p) => p.id === activeId)!;
-  const activeIndex = ALL_PAGES.findIndex((p) => p.id === activeId);
-  const prevPage = ALL_PAGES[activeIndex - 1];
-  const nextPage = ALL_PAGES[activeIndex + 1];
+  const activePage    = ALL_PAGES.find((p) => p.id === activeId)!;
+  const activeIndex   = ALL_PAGES.findIndex((p) => p.id === activeId);
+  const prevPage      = ALL_PAGES[activeIndex - 1];
+  const nextPage      = ALL_PAGES[activeIndex + 1];
   const activeHeading = useActiveHeading(activePage?.toc ?? []);
 
   const navigate = (id: string) => {
@@ -859,60 +818,46 @@ export default function DocumentationPage() {
       })).filter((s) => s.pages.length > 0)
     : DOC_SECTIONS;
 
-  const toggleSection = (id: string) =>
-    setExpandedSec((e) => (e.includes(id) ? e.filter((x) => x !== id) : [...e, id]));
-
+  const toggleSection    = (id: string) => setExpandedSec((e) => e.includes(id) ? e.filter((x) => x !== id) : [...e, id]);
   const ContentComponent = activePage?.content;
 
   return (
     <>
-      <style>{GLOBAL_STYLES}</style>
+      <style>{KEYFRAMES}</style>
 
-      <div
-        className="flex h-[calc(100vh-4rem)] overflow-hidden"
-        style={{ background: 'var(--doc-bg)' }}
-      >
-        {/* ── Mobile overlay ──────────────────────────────────────────── */}
+      <div className="flex h-[calc(100vh-4rem)] overflow-hidden bg-avs-secondary">
+
+        {/* Mobile overlay */}
         <AnimatePresence>
           {sidebarOpen && (
             <motion.div
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="fixed inset-0 z-30 lg:hidden"
-              style={{ background: 'rgba(10,8,6,0.55)', backdropFilter: 'blur(4px)' }}
+              className="fixed inset-0 z-30 lg:hidden bg-avs-accent/55 backdrop-blur-sm"
               onClick={() => setSidebarOpen(false)}
             />
           )}
         </AnimatePresence>
 
-        {/* ══════════════════════════════════════════════════════════════
-            SIDEBAR
-        ══════════════════════════════════════════════════════════════ */}
+        {/* ══ SIDEBAR ════════════════════════════════════════════════════ */}
         <motion.aside
           initial={false}
           animate={{ x: isDesktop ? 0 : (sidebarOpen ? 0 : '-100%') }}
           transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-          className="fixed top-16 left-0 z-40 flex h-[calc(100vh-4rem)] w-64 flex-col lg:static lg:translate-x-0"
-          style={{ background: 'var(--doc-sidebar)', borderRight: '1px solid var(--doc-border)' }}
+          className="fixed top-16 left-0 z-40 flex h-[calc(100vh-4rem)] w-64 flex-col bg-avs-secondary border-r border-avs-accent/9 lg:static lg:translate-x-0"
         >
           {/* Search */}
-          <div className="p-3" style={{ borderBottom: '1px solid var(--doc-border)' }}>
+          <div className="p-3 border-b border-avs-accent/9">
             <div className="relative">
-              <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--doc-hint)' }} />
+              <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-avs-accent/32" />
               <input
                 type="search"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Rechercher…"
-                className="w-full rounded-xl py-2 pl-8 pr-8 text-xs outline-none transition-all"
-                style={{
-                  background: 'var(--doc-surface)',
-                  border: '1px solid var(--doc-border)',
-                  color: 'var(--doc-text)',
-                  fontFamily: 'inherit',
-                }}
+                className="w-full rounded-xl py-2 pl-8 pr-8 text-xs outline-none transition-all bg-avs-secondary-dark border border-avs-accent/9 text-avs-accent focus:border-avs-primary"
               />
               {search && (
-                <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2" style={{ color: 'var(--doc-hint)' }}>
+                <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-avs-accent/32">
                   <X size={11} />
                 </button>
               )}
@@ -923,17 +868,15 @@ export default function DocumentationPage() {
           <nav className="doc-scroll flex-1 overflow-y-auto py-3" aria-label="Documentation">
             {filteredSections.map((section) => {
               const isExpanded = expandedSec.includes(section.id) || !!search;
-              const hasActive = section.pages.some((p) => p.id === activeId);
+              const hasActive  = section.pages.some((p) => p.id === activeId);
               return (
                 <div key={section.id} className="mb-0.5">
                   <button
                     onClick={() => toggleSection(section.id)}
-                    className="flex w-full items-center justify-between px-4 py-2 text-left transition-colors"
-                    style={{ color: hasActive ? 'var(--doc-primary)' : 'var(--doc-hint)' }}
+                    className={`flex w-full items-center justify-between px-4 py-2 text-left transition-colors ${hasActive ? 'text-avs-primary' : 'text-avs-accent/32'}`}
                   >
                     <span className="flex items-center gap-2 text-[9px] font-black tracking-[0.18em] uppercase">
-                      {section.icon}
-                      {section.title}
+                      {section.icon} {section.title}
                     </span>
                     <ChevronDown size={11} className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
                   </button>
@@ -953,14 +896,10 @@ export default function DocumentationPage() {
                             <div key={page.id}>
                               <button
                                 onClick={() => navigate(page.id)}
-                                className="mx-2 flex w-[calc(100%-1rem)] items-center gap-2 rounded-xl px-3 py-2 text-left text-sm font-medium transition-all duration-150"
-                                style={isActive
-                                  ? { background: 'var(--doc-primary)', color: '#fff', fontWeight: 600 }
-                                  : { color: 'var(--doc-muted)' }
-                                }
+                                className={`mx-2 flex w-[calc(100%-1rem)] items-center gap-2 rounded-xl px-3 py-2 text-left text-sm font-medium transition-all duration-150 ${isActive ? 'bg-avs-primary text-avs-secondary font-semibold' : 'text-avs-accent/52'}`}
                                 aria-current={isActive ? 'page' : undefined}
                               >
-                                <ChevronRight size={10} className="shrink-0" style={{ opacity: isActive ? 0.5 : 0.3 }} />
+                                <ChevronRight size={10} className={`shrink-0 ${isActive ? 'opacity-50' : 'opacity-30'}`} />
                                 {page.title}
                               </button>
 
@@ -971,12 +910,11 @@ export default function DocumentationPage() {
                                     <a
                                       key={t.id}
                                       href={`#${t.id}`}
-                                      className="block rounded-lg px-2 py-1 text-[11px] transition-all duration-150"
-                                      style={{
-                                        color: activeHeading === t.id ? 'var(--doc-primary)' : 'var(--doc-muted)',
-                                        background: activeHeading === t.id ? 'var(--doc-primary-10)' : 'transparent',
-                                        fontWeight: activeHeading === t.id ? 600 : 400,
-                                      }}
+                                      className={`block rounded-lg px-2 py-1 text-[11px] transition-all duration-150 ${
+                                        activeHeading === t.id
+                                          ? 'text-avs-primary bg-avs-primary/10 font-semibold'
+                                          : 'text-avs-accent/52'
+                                      }`}
                                     >{t.label}</a>
                                   ))}
                                 </div>
@@ -993,21 +931,18 @@ export default function DocumentationPage() {
           </nav>
 
           {/* Footer */}
-          <div className="space-y-0.5 p-3" style={{ borderTop: '1px solid var(--doc-border)' }}>
+          <div className="space-y-0.5 p-3 border-t border-avs-accent/9">
             {[
-              { href: 'https://github.com/avs-standard', label: 'GitHub', icon: ExternalLink },
-              { href: '/components', label: 'Composants', icon: Layers },
-              { href: '/icons', label: 'Icônes SVG', icon: Sun },
+              { href: 'https://github.com/avs-standard', label: 'GitHub',    icon: ExternalLink },
+              { href: '/components',                     label: 'Composants',icon: Layers       },
+              { href: '/icons',                          label: 'Icônes SVG',icon: Sun          },
             ].map(({ href, label, icon: Icon }) => (
               <a
                 key={href}
                 href={href}
                 target={href.startsWith('http') ? '_blank' : undefined}
                 rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium transition-colors"
-                style={{ color: 'var(--doc-hint)' }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--doc-primary)')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--doc-hint)')}
+                className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium transition-colors text-avs-accent/32 hover:text-avs-primary"
               >
                 <Icon size={12} />
                 {label}
@@ -1017,44 +952,33 @@ export default function DocumentationPage() {
           </div>
         </motion.aside>
 
-        {/* ══════════════════════════════════════════════════════════════
-            MAIN CONTENT
-        ══════════════════════════════════════════════════════════════ */}
+        {/* ══ MAIN CONTENT ═══════════════════════════════════════════════ */}
         <div ref={contentRef} className="doc-scroll flex flex-1 flex-col overflow-y-auto">
 
           {/* Mobile topbar */}
-          <div
-            className="flex h-11 shrink-0 items-center gap-3 px-4 lg:hidden"
-            style={{ borderBottom: '1px solid var(--doc-border)', background: 'var(--doc-sidebar)' }}
-          >
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="rounded-xl p-1.5 transition-colors"
-              style={{ color: 'var(--doc-muted)' }}
-            >
+          <div className="flex h-11 shrink-0 items-center gap-3 px-4 lg:hidden border-b border-avs-accent/9 bg-avs-secondary">
+            <button onClick={() => setSidebarOpen(true)} className="rounded-xl p-1.5 transition-colors text-avs-accent/52">
               <Menu size={17} />
             </button>
-            <div className="flex items-center gap-1.5 overflow-hidden text-xs" style={{ color: 'var(--doc-hint)' }}>
+            <div className="flex items-center gap-1.5 overflow-hidden text-xs text-avs-accent/32">
               <BookOpen size={11} />
               <span className="shrink-0">Docs</span>
               <ChevronRight size={9} />
-              <span className="truncate font-semibold" style={{ color: 'var(--doc-text)' }}>{activePage?.title}</span>
+              <span className="truncate font-semibold text-avs-accent">{activePage?.title}</span>
             </div>
           </div>
 
           {/* Desktop breadcrumb */}
-          <div
-            className="hidden h-10 shrink-0 items-center gap-1.5 px-8 text-[11px] lg:flex"
-            style={{ borderBottom: '1px solid var(--doc-border)', color: 'var(--doc-hint)', background: 'var(--doc-sidebar)' }}
-          >
+          <div className="hidden h-10 shrink-0 items-center gap-1.5 px-8 text-[11px] lg:flex border-b border-avs-accent/9 bg-avs-secondary text-avs-accent/32">
             <Terminal size={11} />
             <span>Docs</span>
             <ChevronRight size={9} />
-            <span className="font-semibold" style={{ color: 'var(--doc-text)' }}>{activePage?.title}</span>
+            <span className="font-semibold text-avs-accent">{activePage?.title}</span>
           </div>
 
           {/* Article + right TOC */}
           <div className="flex flex-1 gap-0 min-h-0">
+
             {/* Article */}
             <AnimatePresence mode="wait">
               <motion.article
@@ -1073,15 +997,12 @@ export default function DocumentationPage() {
                   {ContentComponent && <ContentComponent />}
                 </Suspense>
 
-                {/* Prev / Next navigation */}
-                <div className="mt-14 flex items-center justify-between gap-4" style={{ borderTop: '1px solid var(--doc-border)', paddingTop: '2rem' }}>
+                {/* Prev / Next */}
+                <div className="mt-14 flex items-center justify-between gap-4 border-t border-avs-accent/9 pt-8">
                   {prevPage ? (
                     <button
                       onClick={() => navigate(prevPage.id)}
-                      className="group flex max-w-[45%] items-center gap-2.5 rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200"
-                      style={{ border: '1px solid var(--doc-border)', color: 'var(--doc-muted)' }}
-                      onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--doc-primary)'; e.currentTarget.style.color = 'var(--doc-primary)'; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--doc-border)'; e.currentTarget.style.color = 'var(--doc-muted)'; }}
+                      className="group flex max-w-[45%] items-center gap-2.5 rounded-xl px-4 py-3 text-sm font-semibold border border-avs-accent/9 text-avs-accent/52 hover:border-avs-primary hover:text-avs-primary transition-all duration-200"
                     >
                       <ArrowLeft size={13} className="shrink-0" />
                       <span className="truncate">{prevPage.title}</span>
@@ -1091,10 +1012,7 @@ export default function DocumentationPage() {
                   {nextPage && (
                     <button
                       onClick={() => navigate(nextPage.id)}
-                      className="ml-auto flex max-w-[45%] items-center gap-2.5 rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200"
-                      style={{ border: '1px solid var(--doc-border)', color: 'var(--doc-muted)' }}
-                      onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--doc-primary)'; e.currentTarget.style.color = 'var(--doc-primary)'; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--doc-border)'; e.currentTarget.style.color = 'var(--doc-muted)'; }}
+                      className="ml-auto flex max-w-[45%] items-center gap-2.5 rounded-xl px-4 py-3 text-sm font-semibold border border-avs-accent/9 text-avs-accent/52 hover:border-avs-primary hover:text-avs-primary transition-all duration-200"
                     >
                       <span className="truncate">{nextPage.title}</span>
                       <ArrowRight size={13} className="shrink-0" />
@@ -1102,7 +1020,7 @@ export default function DocumentationPage() {
                   )}
                 </div>
 
-                <p className="mt-8 text-center font-mono text-[10px]" style={{ color: 'var(--doc-hint)', opacity: 0.6 }}>
+                <p className="mt-8 text-center font-mono text-[10px] text-avs-accent/25">
                   AVS Documentation · v1.0.0 · Mis à jour avril 2026
                 </p>
               </motion.article>
@@ -1112,7 +1030,7 @@ export default function DocumentationPage() {
             {activePage?.toc && activePage.toc.length > 0 && (
               <aside className="hidden w-52 shrink-0 xl:block">
                 <div className="sticky top-4 pt-10 pr-6">
-                  <p className="mb-3 font-mono text-[9px] font-black tracking-[0.2em] uppercase" style={{ color: 'var(--doc-hint)' }}>
+                  <p className="mb-3 font-mono text-[9px] font-black tracking-[0.2em] uppercase text-avs-accent/32">
                     Sur cette page
                   </p>
                   <nav aria-label="Table des matières" className="space-y-0.5">
@@ -1120,14 +1038,12 @@ export default function DocumentationPage() {
                       <a
                         key={id}
                         href={`#${id}`}
-                        className="block rounded-lg px-2 py-1.5 text-[12px] leading-snug transition-all duration-150"
-                        style={{
-                          paddingLeft: level === 3 ? '1rem' : '0.5rem',
-                          color: activeHeading === id ? 'var(--doc-primary)' : 'var(--doc-hint)',
-                          fontWeight: activeHeading === id ? 600 : 400,
-                          background: activeHeading === id ? 'var(--doc-primary-10)' : 'transparent',
-                          borderLeft: activeHeading === id ? '2px solid var(--doc-primary)' : '2px solid transparent',
-                        }}
+                        className={`block rounded-lg py-1.5 text-[12px] leading-snug transition-all duration-150 border-l-2 ${
+                          activeHeading === id
+                            ? 'text-avs-primary font-semibold bg-avs-primary/10 border-avs-primary'
+                            : 'text-avs-accent/32 border-transparent'
+                        }`}
+                        style={{ paddingLeft: level === 3 ? '1rem' : '0.5rem' }}
                       >{label}</a>
                     ))}
                   </nav>

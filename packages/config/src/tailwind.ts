@@ -1,6 +1,7 @@
 import type { Config } from 'tailwindcss';
 
 export const buniPreset: Partial<Config> = {
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {

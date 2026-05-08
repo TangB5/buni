@@ -34,17 +34,20 @@
   --radius-avs-xl: 3rem;
 
   --ease-avs: 0.2s ease-in-out;
+
+  
   
 }
+
+
 
 /* ── 2. VARIABLES ─────────────────────────────────────────── */
 
 :root {
-  --avs-shadow-sm: 3px 3px 0px 0px var(--color-avs-accent);
-  --avs-shadow-md: 5px 5px 0px 0px var(--color-avs-primary);
-  --avs-shadow-lg: 8px 8px 0px 0px var(--color-avs-accent);
+  --avs-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --avs-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --avs-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
 }
-
 /* ── 3. BASE ──────────────────────────────────────────────── */
 
 @layer base {
@@ -85,7 +88,7 @@
     border-radius: var(--radius-avs-sm);
   }
 
-  /* ✅ BASE BUTTON (plus utilisé dans @apply !) */
+ 
   .avs-btn {
     @apply inline-flex items-center justify-center gap-2
            px-5 py-2.5 text-sm font-bold
@@ -94,7 +97,7 @@
     border-radius: var(--radius-avs-sm);
   }
 
-  /* ✅ PRIMARY (SANS @apply avs-btn) */
+  
   .avs-btn-primary {
     @apply inline-flex items-center justify-center gap-2
            px-5 py-2.5 text-sm font-bold
@@ -194,20 +197,22 @@
 
 /* ── 7. DARK MODE ───────────────────────────────────────── */
 
+
+
 .dark body {
-  background-color: #111110;
-  color: #ece8e1;
+  background-color: var(--avs-bg);
+  color: var(--avs-text);
 }
 
 .dark .avs-card {
-  background: #1a1917;
-  border-color: rgba(255,255,255,0.1);
+  background: var(--avs-card-bg);
+  border-color: var(--avs-card-border);
 }
 
 .dark .avs-input {
-  background: #1a1917;
-  color: white;
-  border-color: rgba(255,255,255,0.15);
+  background: var(--avs-card-bg);
+  color: var(--avs-text);
+  border-color: var(--avs-border-md);
 }
 
 /* ── 8. MISC ───────────────────────────────────────────── */

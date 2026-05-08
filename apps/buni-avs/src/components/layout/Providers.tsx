@@ -3,14 +3,13 @@
 import { useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { ThemeProvider } from './ThemeProvider';
+import ThemeProvider from './ThemeProvider';
 
 interface ProvidersProps {
   children: React.ReactNode;
 }
 
 export function Providers({ children }: ProvidersProps) {
-  // QueryClient isolé par instance (OK SSR)
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -28,7 +27,6 @@ export function Providers({ children }: ProvidersProps) {
       })
   );
 
-  // ✅ Fix hydration: render devtools only after mount
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -36,7 +34,7 @@ export function Providers({ children }: ProvidersProps) {
   }, []);
 
   return (
-    <ThemeProvider>
+    <ThemeProvider attribute="class">
       <QueryClientProvider client={queryClient}>
         {children}
 

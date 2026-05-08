@@ -22,222 +22,139 @@ import { HeroSection } from '../components/layout/HeroSection';
 // ─────────────────────────────────────────────────────────────────────────────
 // DATA
 // ─────────────────────────────────────────────────────────────────────────────
+
 const STATS = [
-  { value: 1248, display: '1 248', label: 'Motifs', sub: 'vectorisés' },
-  { value: 54, display: '54', label: 'Pays', sub: 'représentés' },
-  { value: 312, display: '312', label: 'Artisans', sub: 'vérifiés' },
-  { value: 98, display: '98k', label: 'DL', sub: 'ce mois' },
+  { value: 1248, display: '1 248', label: 'Motifs',   sub: 'vectorisés'  },
+  { value: 54,   display: '54',    label: 'Pays',     sub: 'représentés' },
+  { value: 312,  display: '312',   label: 'Artisans', sub: 'vérifiés'    },
+  { value: 98,   display: '98k',   label: 'DL',       sub: 'ce mois'     },
 ] as const;
 
 const MARQUEE_ITEMS = [
-  'KENTE',
-  'NDOP',
-  'BOGOLAN',
-  'ADINKRA',
-  'WAX',
-  'KUBA',
-  'NDEBELE',
-  'BERBER',
-  'TOGHU',
-  'RAPHIA',
-  'MAASAI',
-  'ANKARA',
+  'KENTE','NDOP','BOGOLAN','ADINKRA','WAX','KUBA',
+  'NDEBELE','BERBER','TOGHU','RAPHIA','MAASAI','ANKARA',
 ];
 
 const COLLAGE = [
-  {
-    css: 'avs-pattern-ndop-sultan',
-    type: 'NDOP',
-    name: 'Ndop Sultan',
-    origin: 'Foumban · CM',
-    style: { left: '5%', top: '5%', width: '56%', height: '52%', rotate: '-2deg' },
-  },
-  {
-    css: 'avs-pattern-kente-royale',
-    type: 'KENTE',
-    name: 'Kente Royale',
-    origin: 'Kumasi · GH',
-    style: { right: '0', top: '8%', width: '40%', height: '36%', rotate: '1.5deg' },
-  },
-  {
-    css: 'avs-pattern-wax-dakar',
-    type: 'WAX',
-    name: 'Wax Lagos',
-    origin: 'Lagos · NG',
-    style: { right: '4%', top: '48%', width: '42%', height: '30%', rotate: '-1deg' },
-  },
-  {
-    css: 'avs-pattern-bogolan-fanga',
-    type: 'BOGOLAN',
-    name: 'Bogolan Fanga',
-    origin: 'Ségou · ML',
-    style: { left: '0', bottom: '5%', width: '50%', height: '28%', rotate: '2deg' },
-  },
+  { css: 'avs-pattern-ndop-sultan',    type: 'NDOP',    name: 'Ndop Sultan',    origin: 'Foumban · CM', style: { left:'5%',    top:'5%',    width:'56%', height:'52%', rotate:'-2deg'  } },
+  { css: 'avs-pattern-kente-royale',   type: 'KENTE',   name: 'Kente Royale',   origin: 'Kumasi · GH',  style: { right:'0',    top:'8%',    width:'40%', height:'36%', rotate:'1.5deg' } },
+  { css: 'avs-pattern-wax-dakar',      type: 'WAX',     name: 'Wax Lagos',      origin: 'Lagos · NG',   style: { right:'4%',   top:'48%',   width:'42%', height:'30%', rotate:'-1deg'  } },
+  { css: 'avs-pattern-bogolan-fanga',  type: 'BOGOLAN', name: 'Bogolan Fanga',  origin: 'Ségou · ML',   style: { left:'0',     bottom:'5%', width:'50%', height:'28%', rotate:'2deg'   } },
 ] as const;
 
 const GALLERY = [
+  { css: 'avs-pattern-ndop-sultan',       type: 'NDOP',    name: 'Ndop Sultan',    origin: 'Foumban · CM', cls: 'lg:col-span-3 lg:row-span-2' },
+  { css: 'avs-pattern-kente-royale',      type: 'KENTE',   name: 'Kente Royale',   origin: 'Kumasi · GH',  cls: 'lg:col-span-2'               },
+  { css: 'avs-pattern-adinkra-sankofa',   type: 'ADINKRA', name: 'Adinkra Sankofa',origin: 'Akan · GH',    cls: ''                            },
+  { css: 'avs-pattern-kuba-kasai',        type: 'KUBA',    name: 'Kuba Kasai',     origin: 'Kasai · CD',   cls: ''                            },
+  { css: 'avs-pattern-bogolan-fanga',     type: 'BOGOLAN', name: 'Bogolan Fanga',  origin: 'Ségou · ML',   cls: 'lg:col-span-2'               },
+] as const;
+
+// Features use AVS tokens via inline accentClass/bgClass to avoid hardcoded hex
+const FEATURES = [
   {
-    css: 'avs-pattern-ndop-sultan',
-    type: 'NDOP',
-    name: 'Ndop Sultan',
-    origin: 'Foumban · CM',
-    cls: 'lg:col-span-3 lg:row-span-2',
+    num: '01', Icon: Layers,   title: 'Bibliothèque de motifs',
+    desc: '+1 200 motifs par région, époque et symbolisme. SVG, PNG, JSON, CSS.',
+    href: '/patterns',
+    accentClass: 'text-avs-primary',  bgClass: 'bg-avs-primary/8',
   },
   {
-    css: 'avs-pattern-kente-royale',
-    type: 'KENTE',
-    name: 'Kente Royale',
-    origin: 'Kumasi · GH',
-    cls: 'lg:col-span-2',
+    num: '02', Icon: Palette,  title: 'Design tokens culturels',
+    desc: 'Palettes de pigments naturels africains. Tailwind, Figma, CSS Variables.',
+    href: '/colors',
+    accentClass: 'text-avs-kente',    bgClass: 'bg-avs-kente/8',
   },
   {
-    css: 'avs-pattern-adinkra-sankofa',
-    type: 'ADINKRA',
-    name: 'Adinkra Sankofa',
-    origin: 'Akan · GH',
-    cls: '',
+    num: '03', Icon: Users,    title: "Communauté d'artisans",
+    desc: '312 artisans vérifiés valident chaque entrée. La source primaire, toujours.',
+    href: '/artisans',
+    accentClass: 'text-avs-ndop',     bgClass: 'bg-avs-ndop/8',
   },
   {
-    css: 'avs-pattern-kuba-kasai',
-    type: 'KUBA',
-    name: 'Kuba Kasai',
-    origin: 'Kasai · CD',
-    cls: '',
-  },
-  {
-    css: 'avs-pattern-bogolan-fanga',
-    type: 'BOGOLAN',
-    name: 'Bogolan Fanga',
-    origin: 'Ségou · ML',
-    cls: 'lg:col-span-2',
+    num: '04', Icon: BookOpen, title: 'Composants & Documentation',
+    desc: 'Bibliothèque UI React, templates, icônes SVG. Copy & Paste. Sans compte.',
+    href: '/documentation',
+    accentClass: 'text-avs-indigo',   bgClass: 'bg-avs-indigo/8',
   },
 ] as const;
 
-const FEATURES = [
-  {
-    num: '01',
-    Icon: Layers,
-    title: 'Bibliothèque de motifs',
-    desc: '+1 200 motifs par région, époque et symbolisme. SVG, PNG, JSON, CSS.',
-    href: '/patterns',
-    color: '#C0573E',
-    accent: 'rgba(192,87,62,.08)',
-  },
-  {
-    num: '02',
-    Icon: Palette,
-    title: 'Design tokens culturels',
-    desc: 'Palettes de pigments naturels africains. Tailwind, Figma, CSS Variables.',
-    href: '/colors',
-    color: '#D4A017',
-    accent: 'rgba(212,160,23,.08)',
-  },
-  {
-    num: '03',
-    Icon: Users,
-    title: "Communauté d'artisans",
-    desc: '312 artisans vérifiés valident chaque entrée. La source primaire, toujours.',
-    href: '/artisans',
-    color: '#4A6741',
-    accent: 'rgba(74,103,65,.08)',
-  },
-  {
-    num: '04',
-    Icon: BookOpen,
-    title: 'Composants & Documentation',
-    desc: 'Bibliothèque UI React, templates, icônes SVG. Copy & Paste. Sans compte.',
-    href: '/documentation',
-    color: '#2A4A6B',
-    accent: 'rgba(42,74,107,.08)',
-  },
+// Stat numbers for the dark pivot section — use token classes
+const PIVOT_STATS = [
+  { num: '1 248', label: 'Motifs documentés',    accentClass: 'text-avs-primary' },
+  { num: '54',    label: 'Pays représentés',     accentClass: 'text-avs-kente'   },
+  { num: '312',   label: 'Artisans vérifiés',    accentClass: 'text-avs-ndop'    },
+  { num: '98k',   label: 'Téléchargements/mois', accentClass: 'text-avs-indigo'  },
 ] as const;
 
 const BENTO = [
   {
     css: 'avs-pattern-ndop-sultan',
-    overlay: 'from-[#060F1A]/94 to-[#060F1A]/72',
+    overlay: 'from-avs-accent/94 to-avs-accent/72',
     span: 'lg:col-span-2',
     minH: '220px',
     eyebrow: 'Copy & Paste · Shadcn style',
-    eyeColor: '#C8A96E',
+    eyeClass: 'text-avs-raffia',
+    titleClass: 'text-avs-secondary',
     title: 'Vous possédez\nvotre code',
-    titleColor: '#F5EBE0',
     desc: 'Copiez les composants, motifs et tokens. Aucune dépendance opaque. Adaptez sans permission.',
-    descColor: 'rgba(245,235,224,.5)',
+    descClass: 'text-avs-secondary/50',
     chips: ['Button', 'PatternCard', 'SvgPattern', 'Toast'],
-    chipColor: '#C8A96E',
+    chipClass: 'text-avs-raffia border-avs-raffia/30 bg-avs-raffia/8',
   },
   {
-    solid: '#C0573E',
+    solidClass: 'bg-avs-primary',
     span: '',
     minH: '220px',
     eyebrow: 'Formats · Licences',
-    eyeColor: 'rgba(245,235,224,.65)',
+    eyeClass: 'text-avs-secondary/65',
+    titleClass: 'text-avs-secondary',
     title: 'SVG · PNG\nJSON · CSS',
-    titleColor: '#F5EBE0',
     desc: 'Chaque motif dans 4 formats. CC BY 4.0 — usage libre.',
-    descColor: 'rgba(245,235,224,.55)',
+    descClass: 'text-avs-secondary/55',
     bigNum: '4×',
   },
   {
-    solid: 'var(--hp-bento-check-bg)',
+    solidClass: 'bg-avs-accent',
     span: '',
     minH: '200px',
     eyebrow: 'Accès public',
-    eyeColor: 'var(--hp-bento-check-eye)',
+    eyeClass: 'text-avs-secondary/60',
+    titleClass: 'text-avs-secondary',
     title: 'Aucun compte\nrequis',
-    titleColor: 'var(--hp-bento-check-title)',
     desc: "Comme PrimeReact. Tout est public. L'auth est optionnelle — seulement pour contribuer.",
-    descColor: 'var(--hp-bento-check-desc)',
+    descClass: 'text-avs-secondary/50',
     checkmark: true,
   },
   {
-    solid: 'var(--hp-surface)',
+    solidClass: 'bg-avs-secondary',
+    borderClass: 'border border-avs-accent/10',
     span: 'lg:col-span-2',
     minH: '170px',
     eyebrow: 'Design tokens',
-    eyeColor: 'var(--hp-muted)',
+    eyeClass: 'text-avs-accent/45',
+    titleClass: 'text-avs-accent',
     title: 'Intégrez en 30s dans\nFigma, Tailwind, React Native',
-    titleColor: 'var(--hp-text)',
     desc: 'Téléchargez les tokens de couleurs, typographie et spacing pour vos outils',
-    descColor: 'var(--hp-muted)',
-    palette: [
-      '#C0573E',
-      '#F5EBE0',
-      '#1D1D1B',
-      '#D4A017',
-      '#4A6741',
-      '#2A4A6B',
-      '#8B4513',
-      '#C8A96E',
-    ],
+    descClass: 'text-avs-accent/45',
+    palette: ['#C0573E','#F5EBE0','#1D1D1B','#D4A017','#4A6741','#2A4A6B','#8B4513','#C8A96E'],
   },
 ] as const;
 
 const TESTIMONIALS = [
   {
     css: 'avs-pattern-kente-royale',
-    quote:
-      "AVS est la référence que j'attendais depuis 10 ans. Chaque pixel est documenté avec sa source culturelle.",
-    name: 'Ama Asantewaa',
-    flag: '🇬🇭',
-    role: 'Tisserande Kente · Kumasi',
+    quote: "AVS est la référence que j'attendais depuis 10 ans. Chaque pixel est documenté avec sa source culturelle.",
+    name: 'Ama Asantewaa', flag: '🇬🇭', role: 'Tisserande Kente · Kumasi',
   },
   {
     css: 'avs-pattern-adinkra-sankofa',
-    quote:
-      "Le Ndop de mon sultanat enfin standardisé. AVS préserve ce que le temps risquait d'effacer.",
-    name: 'Njoya Hamidou',
-    flag: '🇨🇲',
-    role: 'Tisserand Ndop · Foumban',
+    quote: "Le Ndop de mon sultanat enfin standardisé. AVS préserve ce que le temps risquait d'effacer.",
+    name: 'Njoya Hamidou', flag: '🇨🇲', role: 'Tisserand Ndop · Foumban',
   },
   {
     css: 'avs-pattern-wax-dakar',
-    quote:
-      "En tant que designer, c'est ma première source. Des tokens prêts pour Figma en deux clics.",
-    name: 'Dr. Amara Diop',
-    flag: '🇸🇳',
-    role: 'Directeur Design · Dakar',
+    quote: "En tant que designer, c'est ma première source. Des tokens prêts pour Figma en deux clics.",
+    name: 'Dr. Amara Diop', flag: '🇸🇳', role: 'Directeur Design · Dakar',
   },
 ] as const;
 
@@ -250,104 +167,31 @@ const COMMUNITY_AVATARS = [
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
-// GLOBAL STYLES — single source of truth for both modes
+// MARQUEE KEYFRAME — minimal, no custom CSS vars needed
 // ─────────────────────────────────────────────────────────────────────────────
-const STYLES = `
-  :root {
-    /* Page backgrounds */
-    --hp-bg:              #FAFAF8;
-    --hp-surface:         #F5EBE0;
-    --hp-gallery-bg:      #F0EBE4;
-    --hp-bento-bg:        #FAFAF8;
-    --hp-testimonial-bg:  #EDE8E1;
+const MARQUEE_STYLE = `@keyframes avs-marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }`;
 
-    /* Text */
-    --hp-text:            #1D1D1B;
-    --hp-muted:           rgba(29,29,27,0.62);
-    --hp-hint:            rgba(29,29,27,0.45);
-    --hp-faint:           rgba(29,29,27,0.08);
+// ─────────────────────────────────────────────────────────────────────────────
+// ANIMATION VARIANTS
+// ─────────────────────────────────────────────────────────────────────────────
 
-    /* Borders / grid */
-    --hp-grid:            rgba(29,29,27,0.04);
-    --hp-border:          rgba(29,29,27,0.08);
-    --hp-border-md:       rgba(29,29,27,0.14);
-    --hp-stat-border:     rgba(29,29,27,0.08);
-
-    /* Ghost CTA */
-    --hp-ghost-border:    rgba(29,29,27,0.14);
-    --hp-ghost-text:      rgba(29,29,27,0.70);
-    --hp-ghost-hover-b:   rgba(29,29,27,0.28);
-    --hp-ghost-hover-t:   #1D1D1B;
-
-    /* Testimonials hover */
-    --hp-card-bg:         rgba(29,29,27,0.03);
-    --hp-card-border:     rgba(29,29,27,0.08);
-    --hp-card-hover-bg:   rgba(255,255,255,0.70);
-    --hp-card-hover-b:    rgba(192,87,62,0.22);
-    --hp-quote-text:      rgba(29,29,27,0.72);
-    --hp-author-text:     #1D1D1B;
-    --hp-role-text:       rgba(29,29,27,0.45);
-
-    /* Bento "checkmark" card */
-    --hp-bento-check-bg:    #1D1D1B;
-    --hp-bento-check-eye:   rgba(245,235,224,0.6);
-    --hp-bento-check-title: #F5EBE0;
-    --hp-bento-check-desc:  rgba(245,235,224,0.5);
-
-    /* Avatar ring */
-    --hp-avatar-ring:     #0A0806;
-
-    /* Collage shadow */
-    --hp-collage-shadow:  rgba(0,0,0,0.18);
-  }
-
-  .dark {
-    --hp-bg:              #0A0806;
-    --hp-surface:         #121008;
-    --hp-gallery-bg:      #0A0806;
-    --hp-bento-bg:        #0A0806;
-    --hp-testimonial-bg:  #0C0906;
-
-    --hp-text:            #F5EBE0;
-    --hp-muted:           rgba(245,235,224,0.62);
-    --hp-hint:            rgba(245,235,224,0.45);
-    --hp-faint:           rgba(245,235,224,0.06);
-
-    --hp-grid:            rgba(245,235,224,0.04);
-    --hp-border:          rgba(245,235,224,0.06);
-    --hp-border-md:       rgba(245,235,224,0.10);
-    --hp-stat-border:     rgba(245,235,224,0.08);
-
-    --hp-ghost-border:    rgba(245,235,224,0.14);
-    --hp-ghost-text:      rgba(245,235,224,0.80);
-    --hp-ghost-hover-b:   rgba(245,235,224,0.28);
-    --hp-ghost-hover-t:   #F5EBE0;
-
-    --hp-card-bg:         rgba(245,235,224,0.03);
-    --hp-card-border:     rgba(245,235,224,0.07);
-    --hp-card-hover-bg:   rgba(245,235,224,0.05);
-    --hp-card-hover-b:    rgba(192,87,62,0.22);
-    --hp-quote-text:      rgba(245,235,224,0.72);
-    --hp-author-text:     #F5EBE0;
-    --hp-role-text:       rgba(245,235,224,0.45);
-
-    --hp-bento-check-bg:    #F5EBE0;
-    --hp-bento-check-eye:   rgba(29,29,27,0.45);
-    --hp-bento-check-title: #1D1D1B;
-    --hp-bento-check-desc:  rgba(29,29,27,0.50);
-
-    --hp-avatar-ring:     #0A0806;
-    --hp-collage-shadow:  rgba(0,0,0,0.65);
-  }
-
-  @keyframes avs-marquee { from { transform:translateX(0) } to { transform:translateX(-50%) } }
-`;
+const ease = [0.22, 1, 0.36, 1] as const;
+const fadeUp = (delay = 0) => ({
+  initial: { opacity: 0, y: 32 },
+  animate: { opacity: 1, y: 0, transition: { duration: 0.75, delay, ease } },
+});
+const stagger  = { animate: { transition: { staggerChildren: 0.1 } } };
+const itemFade = {
+  initial:  { opacity: 0, y: 20 },
+  animate:  { opacity: 1, y: 0, transition: { duration: 0.55, ease } },
+};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // HOOKS
 // ─────────────────────────────────────────────────────────────────────────────
+
 function useCounter(target: number, duration = 1400) {
-  const [val, setVal] = useState(0);
+  const [val, setVal]         = useState(0);
   const [started, setStarted] = useState(false);
   useEffect(() => {
     if (!started) return;
@@ -355,10 +199,8 @@ function useCounter(target: number, duration = 1400) {
     const step = target / (duration / 16);
     const id = setInterval(() => {
       start += step;
-      if (start >= target) {
-        setVal(target);
-        clearInterval(id);
-      } else setVal(Math.floor(start));
+      if (start >= target) { setVal(target); clearInterval(id); }
+      else setVal(Math.floor(start));
     }, 16);
     return () => clearInterval(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -367,30 +209,14 @@ function useCounter(target: number, duration = 1400) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// ANIMATION
-// ─────────────────────────────────────────────────────────────────────────────
-const ease = [0.22, 1, 0.36, 1] as const;
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 32 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.75, delay, ease } },
-});
-const stagger = { animate: { transition: { staggerChildren: 0.1 } } };
-const itemFade = {
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0, transition: { duration: 0.55, ease } },
-};
-
-// ─────────────────────────────────────────────────────────────────────────────
 // SUB-COMPONENTS
 // ─────────────────────────────────────────────────────────────────────────────
+
 function SectionLabel({ label }: { label: string }) {
   return (
     <div className="mb-8 flex items-center gap-3">
-      <div className="h-px w-10" style={{ background: '#C0573E', opacity: 0.6 }} aria-hidden />
-      <span
-        className="font-mono text-[9px] tracking-[.28em] uppercase"
-        style={{ color: '#C0573E' }}
-      >
+      <div className="h-px w-10 bg-avs-primary/60" aria-hidden />
+      <span className="font-mono text-[9px] tracking-[.28em] uppercase text-avs-primary">
         {label}
       </span>
     </div>
@@ -400,78 +226,52 @@ function SectionLabel({ label }: { label: string }) {
 // ─────────────────────────────────────────────────────────────────────────────
 // PAGE
 // ─────────────────────────────────────────────────────────────────────────────
-export default function HomePage() {
-  
 
+export default function HomePage() {
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
- 
 
   useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      cursorX.set(e.clientX);
-      cursorY.set(e.clientY);
-    };
+    const handler = (e: MouseEvent) => { cursorX.set(e.clientX); cursorY.set(e.clientY); };
     window.addEventListener('mousemove', handler);
     return () => window.removeEventListener('mousemove', handler);
   }, [cursorX, cursorY]);
 
   return (
     <>
-      <style>{STYLES}</style>
+      <style>{MARQUEE_STYLE}</style>
 
-      <div className="overflow-x-hidden" style={{ background: 'var(--hp-bg)' }}>
-        {/* ══════════════════════════════════════════════════════
-            § 1 — HERO
-        ══════════════════════════════════════════════════════ */}
+      <div className="overflow-x-hidden bg-avs-secondary ">
+
+        {/* ══ § 1 — HERO ══════════════════════════════════════════════════ */}
         <HeroSection />
 
-        {/* ══════════════════════════════════════════════════════
-            § 2 — MARQUEE
-        ══════════════════════════════════════════════════════ */}
+        {/* ══ § 2 — MARQUEE ═══════════════════════════════════════════════ */}
         <div
-          className="overflow-hidden py-3"
+          className="overflow-hidden py-3 bg-avs-primary/5 border-y border-avs-accent/8"
           aria-hidden
-          style={{
-            background: 'rgba(192,87,62,.05)',
-            borderTop: '1px solid var(--hp-border)',
-            borderBottom: '1px solid var(--hp-border)',
-          }}
         >
           <div className="flex w-max" style={{ animation: 'avs-marquee 30s linear infinite' }}>
             {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, i) => (
               <div
                 key={i}
-                className="flex items-center gap-8 px-8 font-mono text-[9px] tracking-[.28em] whitespace-nowrap uppercase"
-                style={{ color: '#C0573E' }}
+                className="flex items-center gap-8 px-8 font-mono text-[9px] tracking-[.28em] whitespace-nowrap uppercase text-avs-primary"
               >
                 {item}
-                <span
-                  className="h-1 w-1 rounded-full"
-                  style={{ background: 'rgba(192,87,62,.40)' }}
-                />
+                <span className="h-1 w-1 rounded-full bg-avs-primary/40" />
               </div>
             ))}
           </div>
         </div>
 
-        {/* ══════════════════════════════════════════════════════
-            § 3 — GALLERY
-        ══════════════════════════════════════════════════════ */}
-        <section
-          aria-labelledby="gallery-title"
-          className="px-6 py-20 lg:px-8"
-          style={{ background: 'var(--hp-gallery-bg)' }}
-        >
+        {/* ══ § 3 — GALLERY ═══════════════════════════════════════════════ */}
+        <section aria-labelledby="gallery-title" className="px-6 py-20 lg:px-8 bg-avs-secondary-dark">
           <div className="mx-auto max-w-7xl">
             <div className="mb-8 flex items-center justify-between">
               <SectionLabel label="Patrimoine · Motifs en vedette" />
               <Link
                 href={'/patterns' as Route}
-                className="flex items-center gap-1.5 text-xs font-semibold transition-colors"
-                style={{ color: 'var(--hp-hint)' }}
-                onMouseEnter={(e) => (e.currentTarget.style.color = '#C0573E')}
-                onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--hp-hint)')}
+                className="flex items-center gap-1.5 text-xs font-semibold text-avs-accent/45 hover:text-avs-primary transition-colors"
               >
                 Tout voir <ArrowRight size={12} />
               </Link>
@@ -493,37 +293,23 @@ export default function HomePage() {
                   whileHover={{ scale: 1.014 }}
                   transition={{ type: 'spring', stiffness: 320, damping: 26 }}
                 >
-                  <div
-                    className={`${css} absolute inset-0 transition-transform duration-700 group-hover:scale-[1.06]`}
-                  />
+                  <div className={`${css} absolute inset-0 transition-transform duration-700 group-hover:scale-[1.06]`} />
+                  {/* Dark-to-transparent gradient — justified inline: complex multi-stop positional gradient */}
                   <div
                     className="absolute inset-0"
-                    style={{
-                      background:
-                        'linear-gradient(to top,rgba(10,8,6,.92) 0%,rgba(10,8,6,.08) 55%,transparent 100%)',
-                    }}
+                    style={{ background: 'linear-gradient(to top,rgba(10,8,6,.92) 0%,rgba(10,8,6,.08) 55%,transparent 100%)' }}
                   />
                   <div className="absolute top-3 left-3">
-                    <span
-                      className="rounded-md px-2 py-0.5 font-mono text-[8px] font-bold tracking-[.2em] uppercase backdrop-blur-sm"
-                      style={{ background: 'rgba(192,87,62,.85)', color: '#F5EBE0' }}
-                    >
+                    <span className="rounded-md px-2 py-0.5 font-mono text-[8px] font-bold tracking-[.2em] uppercase backdrop-blur-sm bg-avs-primary/85 text-avs-secondary">
                       {type}
                     </span>
                   </div>
                   <div className="absolute right-0 bottom-0 left-0 translate-y-1.5 p-4 opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100">
-                    <p className="font-display text-sm font-bold" style={{ color: '#F5EBE0' }}>
-                      {name}
-                    </p>
-                    <p className="text-[10px]" style={{ color: 'rgba(245,235,224,.6)' }}>
-                      {origin}
-                    </p>
+                    <p className="font-display text-sm font-bold text-avs-secondary">{name}</p>
+                    <p className="text-[10px] text-avs-secondary/60">{origin}</p>
                   </div>
-                  <div
-                    className="absolute top-3 right-3 flex h-7 w-7 items-center justify-center rounded-full opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100"
-                    style={{ background: 'rgba(245,235,224,.10)' }}
-                  >
-                    <ArrowUpRight size={11} style={{ color: '#F5EBE0' }} aria-hidden />
+                  <div className="absolute top-3 right-3 flex h-7 w-7 items-center justify-center rounded-full opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 bg-avs-secondary/10">
+                    <ArrowUpRight size={11} className="text-avs-secondary" aria-hidden />
                   </div>
                 </motion.div>
               ))}
@@ -531,25 +317,20 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ══════════════════════════════════════════════════════
-            § 4 — PIVOT STAT (always dark — pattern-imposed)
-        ══════════════════════════════════════════════════════ */}
-        <section
-          className="avs-pattern-kente-royale relative overflow-hidden py-28"
-          aria-label="Impact AVS"
-        >
+        {/* ══ § 4 — PIVOT STAT (always dark — pattern-imposed) ════════════ */}
+        <section className="avs-pattern-kente-royale relative overflow-hidden py-28" aria-label="Impact AVS">
+          {/* Semi-opaque dark overlay — justified inline: opacity not tokenisable */}
+          <div className="absolute inset-0 bg-avs-accent/89" aria-hidden />
+
+          {/* Watermark number */}
           <div
-            className="absolute inset-0"
-            style={{ background: 'rgba(10,8,6,.89)' }}
-            aria-hidden
-          />
-          <div
-            className="font-display pointer-events-none absolute right-[-2%] bottom-[-14%] leading-none font-black select-none"
-            style={{ fontSize: 'clamp(8rem,22vw,20rem)', color: 'rgba(245,235,224,.03)' }}
+            className="font-display pointer-events-none absolute right-[-2%] bottom-[-14%] leading-none font-black select-none text-avs-secondary/3"
+            style={{ fontSize: 'clamp(8rem,22vw,20rem)' }}
             aria-hidden
           >
             1248
           </div>
+
           <div className="relative mx-auto max-w-6xl px-6 lg:px-8">
             <div className="grid items-center gap-12 lg:grid-cols-2">
               <div>
@@ -559,30 +340,24 @@ export default function HomePage() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.8, ease }}
-                  className="font-display leading-[.9] font-black"
-                  style={{
-                    fontSize: 'clamp(2.5rem,5vw,4.25rem)',
-                    color: '#F5EBE0',
-                    letterSpacing: '-0.025em',
-                  }}
+                  className="font-display leading-[.9] font-black text-avs-secondary"
+                  style={{ fontSize: 'clamp(2.5rem,5vw,4.25rem)', letterSpacing: '-0.025em' }}
                 >
-                  Chaque motif
-                  <br />
-                  porte une
-                  <br />
-                  <span style={{ color: '#C0573E' }}>histoire</span>
+                  Chaque motif<br />porte une<br />
+                  <span className="text-avs-primary">histoire</span>
                 </motion.h2>
+
                 <motion.p
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.2, duration: 0.6 }}
-                  className="mt-6 max-w-md leading-relaxed"
-                  style={{ color: 'rgba(245,235,224,.55)' }}
+                  className="mt-6 max-w-md leading-relaxed text-avs-secondary/55"
                 >
                   Région d&apos;origine, peuple, époque, symbolisme cérémoniel. Une archive vivante,
                   ouverte, vérifiée par des artisans réels.
                 </motion.p>
+
                 <motion.div
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
@@ -590,33 +365,21 @@ export default function HomePage() {
                   transition={{ delay: 0.35, duration: 0.6 }}
                   className="mt-8 flex flex-wrap gap-2"
                 >
-                  {[
-                    'CC BY 4.0',
-                    'Open Source',
-                    'Aucun compte requis',
-                    'SVG · PNG · JSON · CSS',
-                  ].map((tag) => (
+                  {['CC BY 4.0', 'Open Source', 'Aucun compte requis', 'SVG · PNG · JSON · CSS'].map((tag) => (
                     <span
                       key={tag}
-                      className="rounded-xl px-4 py-1.5 text-xs font-medium"
-                      style={
+                      className={`rounded-xl px-4 py-1.5 text-xs font-medium ${
                         tag === 'CC BY 4.0'
-                          ? {
-                              background: 'rgba(192,87,62,.12)',
-                              border: '1px solid rgba(192,87,62,.28)',
-                              color: '#C0573E',
-                            }
-                          : {
-                              border: '1px solid rgba(245,235,224,.10)',
-                              color: 'rgba(245,235,224,.7)',
-                            }
-                      }
+                          ? 'bg-avs-primary/12 border border-avs-primary/28 text-avs-primary'
+                          : 'border border-avs-secondary/10 text-avs-secondary/70'
+                      }`}
                     >
                       {tag}
                     </span>
                   ))}
                 </motion.div>
               </div>
+
               <motion.div
                 initial={{ opacity: 0, x: 24 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -624,32 +387,12 @@ export default function HomePage() {
                 transition={{ duration: 0.8, delay: 0.15, ease }}
                 className="grid grid-cols-2 gap-3"
               >
-                {[
-                  { num: '1 248', label: 'Motifs documentés', color: '#C0573E' },
-                  { num: '54', label: 'Pays représentés', color: '#D4A017' },
-                  { num: '312', label: 'Artisans vérifiés', color: '#4A6741' },
-                  { num: '98k', label: 'Téléchargements/mois', color: '#2A4A6B' },
-                ].map(({ num, label, color }) => (
-                  <div
-                    key={label}
-                    className="rounded-2xl p-5"
-                    style={{
-                      background: 'rgba(245,235,224,.04)',
-                      border: '1px solid rgba(245,235,224,.06)',
-                    }}
-                  >
-                    <p
-                      className="font-display text-3xl leading-none font-black"
-                      style={{ color, letterSpacing: '-0.02em' }}
-                    >
+                {PIVOT_STATS.map(({ num, label, accentClass }) => (
+                  <div key={label} className="rounded-2xl p-5 bg-avs-secondary/4 border border-avs-secondary/6">
+                    <p className={`font-display text-3xl leading-none font-black ${accentClass}`} style={{ letterSpacing: '-0.02em' }}>
                       {num}
                     </p>
-                    <p
-                      className="mt-2 text-xs leading-snug"
-                      style={{ color: 'rgba(245,235,224,.45)' }}
-                    >
-                      {label}
-                    </p>
+                    <p className="mt-2 text-xs leading-snug text-avs-secondary/45">{label}</p>
                   </div>
                 ))}
               </motion.div>
@@ -657,36 +400,22 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ══════════════════════════════════════════════════════
-            § 5 — FEATURES
-        ══════════════════════════════════════════════════════ */}
-        <section
-          aria-labelledby="features-title"
-          className="px-6 py-24 lg:px-8"
-          style={{ background: 'var(--hp-surface)' }}
-        >
+        {/* ══ § 5 — FEATURES ══════════════════════════════════════════════ */}
+        <section aria-labelledby="features-title" className="px-6 py-24 lg:px-8 bg-avs-secondary">
           <div className="mx-auto max-w-6xl">
             <div className="mb-16 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
               <div>
                 <SectionLabel label="Ce que nous offrons" />
                 <h2
                   id="features-title"
-                  className="font-display leading-[.92] font-black"
-                  style={{
-                    fontSize: 'clamp(2rem,4vw,3.5rem)',
-                    color: 'var(--hp-text)',
-                    letterSpacing: '-0.025em',
-                  }}
+                  className="font-display leading-[.92] font-black text-avs-accent"
+                  style={{ fontSize: 'clamp(2rem,4vw,3.5rem)', letterSpacing: '-0.025em' }}
                 >
-                  Un standard
-                  <br />
-                  <span style={{ color: '#C0573E' }}>ouvert</span> &amp; rigoureux
+                  Un standard<br />
+                  <span className="text-avs-primary">ouvert</span> &amp; rigoureux
                 </h2>
               </div>
-              <p
-                className="max-w-xs text-sm leading-relaxed lg:text-right"
-                style={{ color: 'var(--hp-hint)' }}
-              >
+              <p className="max-w-xs text-sm leading-relaxed lg:text-right text-avs-accent/45">
                 Tout est accessible sans compte, comme PrimeReact. La connaissance africaine
                 appartient à l&apos;humanité.
               </p>
@@ -697,64 +426,32 @@ export default function HomePage() {
               whileInView="animate"
               viewport={{ once: true, margin: '-60px' }}
               variants={stagger}
-              className="divide-y"
-              style={{ borderColor: 'var(--hp-border)' }}
+              className="divide-y divide-avs-accent/8"
             >
-              {FEATURES.map(({ num, Icon, title, desc, href, color, accent }) => (
+              {FEATURES.map(({ num, Icon, title, desc, href, accentClass, bgClass }) => (
                 <motion.div key={title} variants={itemFade}>
                   <Link
                     href={href as Route}
-                    className="group flex items-center gap-6 py-7 transition-all duration-300 lg:gap-8 lg:py-8"
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.paddingLeft = '12px';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.paddingLeft = '0px';
-                    }}
-                    style={{ transitionProperty: 'padding-left' }}
+                    className="group flex items-center gap-6 py-7 transition-all duration-300 lg:gap-8 lg:py-8 hover:pl-3"
                   >
                     <span
-                      className="font-display shrink-0 leading-none font-black tabular-nums"
-                      style={{ fontSize: 'clamp(2.5rem,5vw,3.75rem)', color, opacity: 0.08 }}
+                      className={`font-display shrink-0 leading-none font-black tabular-nums ${accentClass} opacity-[0.08]`}
+                      style={{ fontSize: 'clamp(2.5rem,5vw,3.75rem)' }}
                       aria-hidden
                     >
                       {num}
                     </span>
-                    <div
-                      className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl transition-transform duration-300 group-hover:scale-105"
-                      style={{ background: accent, color }}
-                    >
+                    <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl transition-transform duration-300 group-hover:scale-105 ${bgClass} ${accentClass}`}>
                       <Icon size={20} aria-hidden />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p
-                        className="font-display text-xl font-bold transition-colors duration-200"
-                        style={{ color: 'var(--hp-text)' }}
-                        onMouseEnter={(e) => (e.currentTarget.style.color = color)}
-                        onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--hp-text)')}
-                      >
+                      <p className={`font-display text-xl font-bold transition-colors duration-200 text-avs-accent group-hover:${accentClass}`}>
                         {title}
                       </p>
-                      <p
-                        className="mt-1 text-sm leading-relaxed"
-                        style={{ color: 'var(--hp-hint)' }}
-                      >
-                        {desc}
-                      </p>
+                      <p className="mt-1 text-sm leading-relaxed text-avs-accent/45">{desc}</p>
                     </div>
-                    <div
-                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-all duration-300 group-hover:scale-110"
-                      style={{ background: 'var(--hp-faint)', opacity: 0.45 }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.opacity = '1';
-                        e.currentTarget.style.background = color;
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.opacity = '0.45';
-                        e.currentTarget.style.background = 'var(--hp-faint)';
-                      }}
-                    >
-                      <ArrowUpRight size={15} style={{ color: 'var(--hp-text)' }} aria-hidden />
+                    <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-all duration-300 group-hover:scale-110 bg-avs-accent/8 opacity-45 group-hover:opacity-100 group-hover:${bgClass}`}>
+                      <ArrowUpRight size={15} className="text-avs-accent" aria-hidden />
                     </div>
                   </Link>
                 </motion.div>
@@ -763,14 +460,8 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ══════════════════════════════════════════════════════
-            § 6 — BENTO
-        ══════════════════════════════════════════════════════ */}
-        <section
-          aria-labelledby="bento-title"
-          className="px-6 pt-20 pb-24 lg:px-8"
-          style={{ background: 'var(--hp-bento-bg)' }}
-        >
+        {/* ══ § 6 — BENTO ═════════════════════════════════════════════════ */}
+        <section aria-labelledby="bento-title" className="px-6 pt-20 pb-24 lg:px-8 bg-avs-secondary">
           <div className="mx-auto max-w-6xl">
             <SectionLabel label="Pourquoi AVS" />
             <motion.div
@@ -786,14 +477,13 @@ export default function HomePage() {
                   variants={itemFade}
                   whileHover={{ y: -4 }}
                   transition={{ type: 'spring', stiffness: 300, damping: 26 }}
-                  className={`relative overflow-hidden rounded-2xl ${card.span || ''}`}
-                  style={{
-                    minHeight: card.minH,
-                    ...('solid' in card && card.solid ? { background: card.solid } : {}),
-                    ...('border' in card && card.border
-                      ? { border: `1px solid ${card.border}` }
-                      : { border: '1px solid var(--hp-border)' }),
-                  }}
+                  className={`
+                    relative overflow-hidden rounded-2xl
+                    ${'solidClass' in card ? card.solidClass : ''}
+                    ${'borderClass' in card ? card.borderClass : 'border border-avs-accent/8'}
+                    ${card.span || ''}
+                  `}
+                  style={{ minHeight: card.minH }}
                 >
                   {'css' in card && (
                     <>
@@ -801,44 +491,25 @@ export default function HomePage() {
                       <div className={`absolute inset-0 bg-gradient-to-br ${card.overlay}`} />
                     </>
                   )}
+
                   <div className="relative flex h-full flex-col justify-between p-7">
                     <div>
-                      <p
-                        className="mb-3 font-mono text-[8px] tracking-[.22em] uppercase"
-                        style={{ color: card.eyeColor, opacity: 0.85 }}
-                      >
+                      <p className={`mb-3 font-mono text-[8px] tracking-[.22em] uppercase opacity-85 ${card.eyeClass}`}>
                         {card.eyebrow}
                       </p>
-                      <h3
-                        className="font-display text-xl leading-tight font-bold"
-                        style={{ color: card.titleColor, letterSpacing: '-0.015em' }}
-                      >
+                      <h3 className={`font-display text-xl leading-tight font-bold ${card.titleClass}`} style={{ letterSpacing: '-0.015em' }}>
                         {card.title.split('\n').map((line, j) => (
-                          <span key={j} className="block">
-                            {line}
-                          </span>
+                          <span key={j} className="block">{line}</span>
                         ))}
                       </h3>
-                      <p
-                        className="mt-2.5 text-sm leading-relaxed"
-                        style={{ color: card.descColor }}
-                      >
-                        {card.desc}
-                      </p>
+                      <p className={`mt-2.5 text-sm leading-relaxed ${card.descClass}`}>{card.desc}</p>
                     </div>
+
                     <div className="mt-6">
                       {'chips' in card && (
                         <div className="flex flex-wrap gap-1.5">
                           {card.chips.map((c) => (
-                            <span
-                              key={c}
-                              className="rounded-lg border px-2.5 py-1 font-mono text-[9px] font-medium"
-                              style={{
-                                color: card.chipColor,
-                                borderColor: `${card.chipColor}30`,
-                                background: `${card.chipColor}08`,
-                              }}
-                            >
+                            <span key={c} className={`rounded-lg border px-2.5 py-1 font-mono text-[9px] font-medium ${card.chipClass}`}>
                               {c}
                             </span>
                           ))}
@@ -846,24 +517,16 @@ export default function HomePage() {
                       )}
                       {'bigNum' in card && (
                         <p
-                          className="font-display text-right leading-none font-black"
-                          style={{
-                            fontSize: '5rem',
-                            color: card.titleColor,
-                            opacity: 0.12,
-                            letterSpacing: '-0.04em',
-                          }}
+                          className={`font-display text-right leading-none font-black ${card.titleClass} opacity-[0.12]`}
+                          style={{ fontSize: '5rem', letterSpacing: '-0.04em' }}
                           aria-hidden
                         >
                           {card.bigNum}
                         </p>
                       )}
                       {'checkmark' in card && (
-                        <div
-                          className="flex h-9 w-9 items-center justify-center rounded-xl"
-                          style={{ background: 'rgba(74,103,65,.18)' }}
-                        >
-                          <Check size={17} style={{ color: '#4A6741' }} aria-hidden />
+                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-avs-ndop/18">
+                          <Check size={17} className="text-avs-ndop" aria-hidden />
                         </div>
                       )}
                       {'palette' in card && (
@@ -871,7 +534,7 @@ export default function HomePage() {
                           {card.palette.map((hex) => (
                             <div
                               key={hex}
-                              className="h-7 flex-1 rounded-lg shadow-sm first:rounded-l-xl last:rounded-r-xl"
+                              className="h-7 flex-1 rounded-lg shadow-avs first:rounded-l-xl last:rounded-r-xl"
                               style={{ background: hex }}
                               title={hex}
                             />
@@ -886,14 +549,8 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ══════════════════════════════════════════════════════
-            § 7 — TESTIMONIALS
-        ══════════════════════════════════════════════════════ */}
-        <section
-          aria-labelledby="testimonials-title"
-          className="px-6 py-24 lg:px-8"
-          style={{ background: 'var(--hp-testimonial-bg)' }}
-        >
+        {/* ══ § 7 — TESTIMONIALS ══════════════════════════════════════════ */}
+        <section aria-labelledby="testimonials-title" className="px-6 py-24 lg:px-8 bg-avs-secondary-dark">
           <div className="mx-auto max-w-6xl">
             <SectionLabel label="Ils utilisent AVS" />
             <motion.div
@@ -907,54 +564,29 @@ export default function HomePage() {
                 <motion.figure
                   key={name}
                   variants={itemFade}
-                  className="group flex flex-col gap-5 rounded-2xl p-7 backdrop-blur-sm transition-all duration-300"
-                  style={{
-                    background: 'var(--hp-card-bg)',
-                    border: '1px solid var(--hp-card-border)',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--hp-card-hover-b)';
-                    e.currentTarget.style.background = 'var(--hp-card-hover-bg)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--hp-card-border)';
-                    e.currentTarget.style.background = 'var(--hp-card-bg)';
-                  }}
+                  className="group flex flex-col gap-5 rounded-2xl p-7 backdrop-blur-sm transition-all duration-300 bg-avs-accent/3 border border-avs-accent/8 hover:bg-avs-secondary/70 hover:border-avs-primary/22"
                 >
                   <span
-                    className="font-display text-5xl leading-[.8] select-none"
-                    style={{ color: '#C0573E', fontFamily: 'Georgia,serif' }}
+                    className="font-display text-5xl leading-[.8] select-none text-avs-primary"
+                    style={{ fontFamily: 'Georgia,serif' }}
                     aria-hidden
                   >
                     &quot;
                   </span>
-                  <blockquote
-                    className="-mt-3 flex-1 text-sm leading-[1.8]"
-                    style={{ color: 'var(--hp-quote-text)' }}
-                  >
+                  <blockquote className="-mt-3 flex-1 text-sm leading-[1.8] text-avs-accent/72">
                     {quote}
                   </blockquote>
                   <figcaption className="flex items-center gap-3">
-                    <div
-                      className={`${css} relative h-10 w-10 shrink-0 overflow-hidden rounded-full`}
-                      style={{ border: '1.5px solid var(--hp-border-md)' }}
-                    >
+                    <div className={`${css} relative h-10 w-10 shrink-0 overflow-hidden rounded-full border border-avs-accent/14`}>
                       <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                        <span className="font-display text-sm font-black text-white drop-shadow">
+                        <span className="font-display text-sm font-black text-avs-secondary drop-shadow">
                           {name.charAt(0)}
                         </span>
                       </div>
                     </div>
                     <div>
-                      <p
-                        className="text-xs font-semibold"
-                        style={{ color: 'var(--hp-author-text)' }}
-                      >
-                        {flag} {name}
-                      </p>
-                      <p className="text-[10px]" style={{ color: 'var(--hp-role-text)' }}>
-                        {role}
-                      </p>
+                      <p className="text-xs font-semibold text-avs-accent">{flag} {name}</p>
+                      <p className="text-[10px] text-avs-accent/45">{role}</p>
                     </div>
                   </figcaption>
                 </motion.figure>
@@ -963,43 +595,25 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* ══════════════════════════════════════════════════════
-            § 8 — CTA (always dark — kente-imposed)
-        ══════════════════════════════════════════════════════ */}
-        <section
-          aria-labelledby="cta-title"
-          className="avs-pattern-kente-royale relative overflow-hidden"
-        >
+        {/* ══ § 8 — CTA (always dark — kente-imposed) ═════════════════════ */}
+        <section aria-labelledby="cta-title" className="avs-pattern-kente-royale relative overflow-hidden">
+          {/* Multi-stop directional gradient — justified inline */}
           <div
             className="absolute inset-0"
-            style={{
-              background:
-                'linear-gradient(135deg,rgba(10,8,6,.97) 0%,rgba(26,18,8,.90) 60%,rgba(50,25,10,.84) 100%)',
-            }}
+            style={{ background: 'linear-gradient(135deg,rgba(10,8,6,.97) 0%,rgba(26,18,8,.90) 60%,rgba(50,25,10,.84) 100%)' }}
             aria-hidden
           />
+
+          {/* Geometric decor rings */}
           <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-            <div
-              className="absolute -top-24 -right-24 h-96 w-96 rounded-full"
-              style={{ border: '1px solid rgba(192,87,62,.09)' }}
-            />
-            <div
-              className="absolute -top-10 -right-10 h-60 w-60 rounded-full"
-              style={{ border: '1px solid rgba(192,87,62,.14)' }}
-            />
-            <div
-              className="absolute top-12 right-20 h-20 w-20 rounded-full"
-              style={{ border: '1px solid rgba(255,255,255,.04)' }}
-            />
-            <div
-              className="absolute -bottom-12 -left-16 h-56 w-56 rotate-45"
-              style={{ border: '1px solid rgba(212,160,23,.08)' }}
-            />
+            <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full border border-avs-primary/9" />
+            <div className="absolute -top-10 -right-10 h-60 w-60 rounded-full border border-avs-primary/14" />
+            <div className="absolute top-12 right-20 h-20 w-20 rounded-full border border-avs-secondary/4" />
+            <div className="absolute -bottom-12 -left-16 h-56 w-56 rotate-45 border border-avs-kente/8" />
           </div>
-          <div
-            className="pointer-events-none absolute right-0 bottom-0 h-48 w-48 opacity-[.03]"
-            aria-hidden
-          >
+
+          {/* Adinkra watermark */}
+          <div className="pointer-events-none absolute right-0 bottom-0 h-48 w-48 opacity-[.03]" aria-hidden>
             <div className="avs-pattern-adinkra-sankofa h-full w-full" />
           </div>
 
@@ -1009,18 +623,10 @@ export default function HomePage() {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, ease }}
-              className="mb-8 inline-flex items-center gap-2.5 rounded-full border px-5 py-2"
-              style={{ background: 'rgba(192,87,62,.10)', borderColor: 'rgba(192,87,62,.28)' }}
+              className="mb-8 inline-flex items-center gap-2.5 rounded-full border px-5 py-2 bg-avs-primary/10 border-avs-primary/28"
             >
-              <span
-                className="h-1.5 w-1.5 animate-pulse rounded-full"
-                style={{ background: '#C0573E' }}
-                aria-hidden
-              />
-              <span
-                className="font-mono text-[9px] tracking-[.24em] uppercase"
-                style={{ color: '#C0573E' }}
-              >
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-avs-primary" aria-hidden />
+              <span className="font-mono text-[9px] tracking-[.24em] uppercase text-avs-primary">
                 Open Source · CC BY 4.0 · Gratuit
               </span>
             </motion.div>
@@ -1031,13 +637,11 @@ export default function HomePage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.85, ease }}
-              className="font-display leading-[.9] font-black tracking-[-0.025em]"
-              style={{ fontSize: 'clamp(2.75rem,7vw,5.75rem)', color: '#F5EBE0' }}
+              className="font-display leading-[.9] font-black tracking-[-0.025em] text-avs-secondary"
+              style={{ fontSize: 'clamp(2.75rem,7vw,5.75rem)' }}
             >
-              Construisons
-              <br />
-              <span style={{ color: '#C0573E' }}>le standard</span>
-              <br />
+              Construisons<br />
+              <span className="text-avs-primary">le standard</span><br />
               africain
             </motion.h2>
 
@@ -1046,8 +650,7 @@ export default function HomePage() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="mx-auto mt-8 max-w-md leading-relaxed"
-              style={{ color: 'rgba(245,235,224,.52)' }}
+              className="mx-auto mt-8 max-w-md leading-relaxed text-avs-secondary/52"
             >
               Artisan, designer, chercheur ou développeur — votre savoir enrichit la plus grande
               archive visuelle africaine open-source du monde.
@@ -1062,19 +665,7 @@ export default function HomePage() {
             >
               <Link
                 href={'/auth/register' as Route}
-                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl px-9 py-4 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5"
-                style={{
-                  background: '#C0573E',
-                  boxShadow: '4px 4px 0 rgba(192,87,62,.35),0 8px 24px rgba(192,87,62,.22)',
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.boxShadow =
-                    '6px 6px 0 rgba(192,87,62,.35),0 12px 32px rgba(192,87,62,.28)')
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.boxShadow =
-                    '4px 4px 0 rgba(192,87,62,.35),0 8px 24px rgba(192,87,62,.22)')
-                }
+                className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl px-9 py-4 text-sm font-bold text-avs-secondary bg-avs-primary shadow-avs-md hover:-translate-y-0.5 transition-all duration-300"
               >
                 <span
                   className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full"
@@ -1085,24 +676,13 @@ export default function HomePage() {
               </Link>
               <Link
                 href={'/patterns' as Route}
-                className="inline-flex items-center gap-2 rounded-xl px-9 py-4 text-sm font-semibold transition-all duration-200"
-                style={{
-                  border: '1px solid rgba(245,235,224,.14)',
-                  color: 'rgba(245,235,224,.75)',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(245,235,224,.28)';
-                  e.currentTarget.style.color = '#F5EBE0';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.borderColor = 'rgba(245,235,224,.14)';
-                  e.currentTarget.style.color = 'rgba(245,235,224,.75)';
-                }}
+                className="inline-flex items-center gap-2 rounded-xl px-9 py-4 text-sm font-semibold border border-avs-secondary/14 text-avs-secondary/75 hover:border-avs-secondary/28 hover:text-avs-secondary transition-all duration-200"
               >
                 Explorer d&apos;abord
               </Link>
             </motion.div>
 
+            {/* Community avatars */}
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
@@ -1114,18 +694,18 @@ export default function HomePage() {
                 {COMMUNITY_AVATARS.map((css, i) => (
                   <div
                     key={i}
-                    className={`${css} relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full ${i > 0 ? '-ml-2.5' : ''}`}
-                    style={{ zIndex: 5 - i, border: '2px solid var(--hp-avatar-ring)' }}
+                    className={`${css} relative flex h-9 w-9 items-center justify-center overflow-hidden rounded-full border-2 border-avs-accent ${i > 0 ? '-ml-2.5' : ''}`}
+                    style={{ zIndex: 5 - i }}
                   >
                     <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                      <span className="font-display text-xs font-black text-white drop-shadow">
-                        {['N', 'A', 'F', 'K', 'S'][i]}
+                      <span className="font-display text-xs font-black text-avs-secondary drop-shadow">
+                        {['N','A','F','K','S'][i]}
                       </span>
                     </div>
                   </div>
                 ))}
               </div>
-              <p className="text-sm" style={{ color: 'rgba(245,235,224,.60)' }}>
+              <p className="text-sm text-avs-secondary/60">
                 +312 artisans nous ont déjà rejoints
               </p>
             </motion.div>
@@ -1135,14 +715,14 @@ export default function HomePage() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.65, duration: 0.6 }}
-              className="mt-6 flex items-center justify-center gap-2 font-mono text-[10px] tracking-[.16em] uppercase"
-              style={{ color: 'rgba(245,235,224,.25)' }}
+              className="mt-6 flex items-center justify-center gap-2 font-mono text-[10px] tracking-[.16em] uppercase text-avs-secondary/25"
             >
               <Download size={10} />
               98k téléchargements ce mois — aucun compte requis
             </motion.p>
           </div>
         </section>
+
       </div>
     </>
   );

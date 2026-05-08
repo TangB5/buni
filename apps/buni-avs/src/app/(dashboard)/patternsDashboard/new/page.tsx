@@ -391,7 +391,7 @@ export default function NewPatternPage() {
         formData.append('svgFile', svgFile);
       }
 
-      const response = await fetch('/api/patterns', {
+      const response = await fetch('api/v1/patterns', {
         method: 'POST',
         body: formData,
       });
