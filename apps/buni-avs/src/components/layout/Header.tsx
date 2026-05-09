@@ -144,9 +144,9 @@ function PremiumModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
 function NavDropdown({ item, onPremiumClick }: { item: NavItem; onPremiumClick: () => void }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
-  const closeTimer = useRef<ReturnType<typeof setTimeout>>();
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const openMenu  = () => { clearTimeout(closeTimer.current); setOpen(true); };
+  const openMenu  = () => { clearTimeout(closeTimer.current!); setOpen(true); };
   const closeMenu = () => { closeTimer.current = setTimeout(() => setOpen(false), 120); };
 
   if (!item.children) {
@@ -157,7 +157,7 @@ function NavDropdown({ item, onPremiumClick }: { item: NavItem; onPremiumClick: 
         className={`relative rounded-xl px-3.5 py-2 text-[13px] font-semibold transition-all duration-200 ${isActive ? 'text-avs-primary' : 'text-avs-accent/55 hover:text-avs-accent'}`}
       >
         {item.label}
-        {isActive && <span className="absolute inset-x-2 -bottom-[17px] h-px rounded-full bg-avs-primary" />}
+        {isActive && <span className="absolute inset-x-2 -bottom-4.25 h-px rounded-full bg-avs-primary" />}
       </Link>
     );
   }
