@@ -5,8 +5,9 @@
 // =============================================================================
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { get, post } from '@/core/api/client';
+
 import type { Pattern, PatternFilters, PatternListResponse } from '../types';
+import { get, post } from 'apps/buni-avs/src/core/api/client';
 
 // ── Clés de query ─────────────────────────────────────────────────────────────
 export const patternKeys = {
@@ -48,7 +49,7 @@ export function usePattern(slug: string) {
 export function useFeaturedPatterns() {
   return useQuery({
     queryKey: patternKeys.featured(),
-    queryFn:  patternService.featured,
+    queryFn:  patternService.featured, 
     staleTime: 10 * 60 * 1000,
   });
 }

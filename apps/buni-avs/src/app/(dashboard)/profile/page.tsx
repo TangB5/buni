@@ -283,7 +283,7 @@ export default function ProfilePage() {
               className={`group relative flex items-center gap-2 overflow-hidden rounded-xl px-5 py-2.5 text-sm font-bold text-avs-secondary transition-all duration-300 hover:-translate-y-0.5 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 ${saved ? 'bg-emerald-500 shadow-emerald-500/25' : 'bg-avs-primary shadow-avs-md'}`}
               aria-busy={saving}
             >
-              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" aria-hidden />
+              <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" aria-hidden />
               <AnimatePresence mode="wait">
                 <motion.span
                   key={saving ? 'saving' : saved ? 'saved' : 'idle'}

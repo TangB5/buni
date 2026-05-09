@@ -2,7 +2,8 @@
 // Feature patterns — Pattern Service
 // =============================================================================
 
-import { get, post, put, del } from '@/core/api/client';
+
+import { del, get, post, put } from 'apps/buni-avs/src/core/api/client';
 import type { Pattern, PatternFilters, PatternListResponse } from '../types';
 
 export const patternService = {
@@ -23,7 +24,7 @@ export const patternService = {
     put<Pattern>(`/api/v1/patterns/${id}`, data),
 
   remove: (id: string) =>
-    del<void>(`/api/v1/patterns/${id}`),
+    del<void>(`/api/v1/patterns/${id}`), 
 
   publish: (id: string) =>
     post<Pattern>(`/api/v1/patterns/${id}/publish`),

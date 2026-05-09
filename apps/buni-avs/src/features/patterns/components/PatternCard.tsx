@@ -4,8 +4,9 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { MapPin, Download, Eye } from 'lucide-react';
-import { Badge, cn } from '@/components/ui';
+
 import type { Pattern } from '../types';
+import { Badge, cn } from 'apps/buni-avs/src/components/ui';
 
 // ── CSS patterns map ──────────────────────────────────────────────────────────
 const PATTERN_CSS: Record<string, string> = {
@@ -56,7 +57,7 @@ export function PatternCard({ pattern, index = 0, featured = false, className }:
           )}
 
           {/* Overlay hover */}
-          <div className="absolute inset-0 bg-gradient-to-t from-avs-accent/50 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+          <div className="absolute inset-0 bg-linear-to-t from-avs-accent/50 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
 
           {/* Badges */}
           <div className="absolute left-3 top-3">

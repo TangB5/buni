@@ -174,7 +174,7 @@ export default function MyPatternsPage() {
             <h1 className="font-display text-2xl font-bold text-avs-accent">Mes Motifs</h1>
             <p className="text-sm text-avs-accent/50">{patterns.length} motif{patterns.length > 1 ? 's' : ''} au total</p>
           </div>
-        <Link href={"patterns/new" as Route} className="avs-btn-primary gap-1.5 text-xs py-2 px-4">
+        <Link href={"patternsDashboard/new" as Route} className="avs-btn-primary gap-1.5 text-xs py-2 px-4">
             <Plus size={14} /> Nouveau motif
           </Link>
         </div>

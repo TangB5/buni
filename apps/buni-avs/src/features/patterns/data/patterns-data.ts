@@ -437,6 +437,6 @@ export const PATTERNS_DOCS: PatternDoc[] = [
       'Centre for National Culture — Kumasi, Ghana',
     ],
     downloads: 5640,
-    views: 34100,
+    views: 34100, 
   },
 ];
