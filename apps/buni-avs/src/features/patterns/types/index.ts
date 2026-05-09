@@ -6,8 +6,9 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // types/index.ts
 // ─────────────────────────────────────────────────────────────────────────────
+import { AVS_PATTERN_TYPES, AVS_REGIONS } from 'apps/buni-avs/src/core/constants/avs';
 import { z } from 'zod';
-import type { AVS_PATTERN_TYPES, AVS_REGIONS } from '@/core/constants/avs';
+
 
 export const PatternSchema = z.object({
   id:          z.string().uuid(),

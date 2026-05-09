@@ -1,105 +1,362 @@
 // =============================================================================
-// AVS — Système de gestion des motifs SVG
+// AVS — SVG Pattern Registry (Backend-driven)
 // src/core/utils/svg-patterns.ts
 //
-// COMMENT UTILISER VOS FICHIERS SVG :
-// 1. Placez vos SVG dans : public/patterns/
-//    ex: public/patterns/ndop-bamoum.svg
-//        public/patterns/toghu-bamileke.svg
-//        public/patterns/kente-asante.svg
+// NOUVELLE ARCHITECTURE
+// ─────────────────────────────────────────────────────────────────────────────
+// Les SVG sont maintenant gérés côté backend + Supabase Storage.
 //
-// 2. Déclarez-les dans le registre SVG_REGISTRY ci-dessous
+// Ce fichier ne contient PLUS les assets statiques.
+// Il fournit :
+// - les types TypeScript
+// - les helpers utilitaires
+// - les transformations frontend
 //
-// 3. Utilisez <SvgPattern name="ndop-bamoum" /> dans vos composants
-//    — le SVG est chargé via Next.js Image ou affiché inline
+// Le backend retourne les PatternDoc.
 // =============================================================================
 
-// ── Registre de tous vos SVG ───────────────────────────────────────────────────
-// Ajoutez chaque fichier SVG ici avec ses métadonnées
-export const SVG_REGISTRY = {
-  // ── Cameroun ──────────────────────────────────────────────────────────────
-  'ndop-bamoum': {
-    file:        '/patterns/ndop-bamoum.svg',
-    name:        'Ndop Bamoum',
-    origin:      'Foumban, Cameroun',
-    type:        'ndop' as const,
-    region:      'central-africa' as const,
-    colors:      ['#0D2340', '#C8A96E', '#F5EBE0'],
-    description: 'Tissu sacré du Sultanat Bamoum',
-    license:     'cc-by' as const,
-  },
-  'toghu-bamileke': {
-    file:        '/patterns/toghu-bamileke.svg',
-    name:        'Toghu Bamiléké',
-    origin:      'Bafoussam, Cameroun',
-    type:        'ndop' as const,
-    region:      'central-africa' as const,
-    colors:      ['#1D1D1B', '#C0573E', '#D4A017'],
-    description: 'Tissu de velours brodé des chefferies Bamiléké',
-    license:     'cc-by' as const,
-  },
-  // ── Afrique de l'Ouest ────────────────────────────────────────────────────
-  'toghu-bamenda': {
-    file:        '/patterns/toghu-bamenda.svg',
-    name:        'Toghu Bamenda',
-    origin:      'Bamenda, Cameroun',
-    type:        'ndop' as const,
-    region:      'central-africa' as const,
-    colors:      ['#D4A017', '#1D1D1B', '#C0573E'],
-    description: 'Tissu de velours brodé des hauts plateaux de Bamenda',
-    license:     'cc-by' as const,
-  },
-  // Ajoutez vos SVG ici en suivant le même format :
-  // 'mon-motif': {
-  //   file: '/patterns/mon-motif.svg',
-  //   name: 'Nom du motif',
-  //   origin: 'Origine',
-  //   type: 'kente',
-  //   region: 'west-africa',
-  //   colors: ['#hex1', '#hex2'],
-  //   description: 'Description courte',
-  //   license: 'cc-by',
-  // },
-} as const;
+// ──────────────────────────────────────────────────────────────────────────────
+// TYPES
+// ──────────────────────────────────────────────────────────────────────────────
 
-export type SvgPatternKey = keyof typeof SVG_REGISTRY;
-export type SvgPatternMeta = typeof SVG_REGISTRY[SvgPatternKey];
+export type PatternLicense =
+  | 'cc0'
+  | 'cc-by'
+  | 'cc-by-sa';
 
-// ── Utilitaires ────────────────────────────────────────────────────────────────
+export type PatternType =
+  | 'NDOP'
+  | 'KENTE'
+  | 'BOGOLAN'
+  | 'ADINKRA'
+  | 'TOGHU'
+  | 'MUDCLOTH'
+  | 'BARKCLOTH';
 
-/** Retourne les métadonnées d'un motif SVG */
-export function getSvgMeta(key: SvgPatternKey): SvgPatternMeta {
-  return SVG_REGISTRY[key];
+export interface PatternColor {
+  hex: string;
+  name: string;
+  meaning: string;
 }
 
-/** Retourne l'URL publique du SVG (pour <img src> ou téléchargement) */
-export function getSvgUrl(key: SvgPatternKey): string {
-  return SVG_REGISTRY[key].file;
+export interface PatternSymbol {
+  name: string;
+  nameFr: string;
+  cssPreview: string;
+  meaning: string;
+  usage: string;
+  sacred: boolean;
 }
 
-/** Liste tous les motifs d'un type donné */
-export function getSvgsByType(type: SvgPatternMeta['type']): SvgPatternKey[] {
-  return (Object.keys(SVG_REGISTRY) as SvgPatternKey[]).filter(
-    k => SVG_REGISTRY[k].type === type
+export interface PatternOrigin {
+  people: string;
+  region: string;
+  country: string;
+  flag: string;
+
+  // [latitude, longitude]
+  coords: [number, number];
+}
+
+export interface ArtisanQuote {
+  text: string;
+  author: string;
+  role: string;
+  country: string;
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// MAIN BACKEND DOCUMENT
+// ──────────────────────────────────────────────────────────────────────────────
+
+export interface PatternDoc {
+  id: string;
+
+  // URL-friendly slug
+  slug: string;
+
+  // Display names
+  nameFr: string;
+  nameLocal: string;
+
+  // Pattern category
+  type: PatternType;
+
+  // CSS classes
+  svgPattern?: string;
+  cssClass: string;
+
+  // Storage path returned by backend
+  // ex: patterns/ndop-bamoum.svg
+  storagePath?: string;
+
+  // Optional public URL returned directly by backend
+  svgUrl?: string;
+
+  // Cultural origin
+  origin: PatternOrigin;
+
+  // Historical metadata
+  era: string;
+
+  // Licensing
+  license: PatternLicense;
+
+  // Main palette
+  colors: PatternColor[];
+
+  // Documentation
+  summary: string;
+  history: string;
+  technique: string;
+  symbolism: string;
+  ceremonial: string;
+
+  // Symbol system
+  symbols: PatternSymbol[];
+
+  // Optional quote
+  artisanQuote?: ArtisanQuote;
+
+  // Academic / cultural references
+  sources: string[];
+
+  // Analytics
+  downloads: number;
+  views: number;
+
+  // Dates
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// FRONTEND VIEW MODEL
+// ──────────────────────────────────────────────────────────────────────────────
+
+export interface SvgPatternMeta {
+  id: string;
+  slug: string;
+
+  name: string;
+  localName: string;
+
+  type: PatternType;
+
+  svgUrl: string;
+
+  origin: string;
+
+  region: string;
+
+  country: string;
+
+  colors: string[];
+
+  description: string;
+
+  license: PatternLicense;
+
+  downloads: number;
+  views: number;
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// TRANSFORMERS
+// ──────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Transforme un PatternDoc backend
+ * en structure légère frontend
+ */
+export function toSvgPatternMeta(
+  pattern: PatternDoc
+): SvgPatternMeta {
+  return {
+    id: pattern.id,
+
+    slug: pattern.slug,
+
+    name: pattern.nameFr,
+
+    localName: pattern.nameLocal,
+
+    type: pattern.type,
+
+    svgUrl: pattern.svgUrl ?? '',
+
+    origin: `${pattern.origin.region}, ${pattern.origin.country}`,
+
+    region: pattern.origin.region,
+
+    country: pattern.origin.country,
+
+    colors: pattern.colors.map(c => c.hex),
+
+    description: pattern.summary,
+
+    license: pattern.license,
+
+    downloads: pattern.downloads,
+
+    views: pattern.views,
+  };
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// UTILITAIRES
+// ──────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Retourne uniquement les patterns d'un type donné
+ */
+export function getPatternsByType(
+  patterns: PatternDoc[],
+  type: PatternType
+): PatternDoc[] {
+  return patterns.filter(p => p.type === type);
+}
+
+/**
+ * Retourne uniquement les patterns d'un pays
+ */
+export function getPatternsByCountry(
+  patterns: PatternDoc[],
+  country: string
+): PatternDoc[] {
+  return patterns.filter(
+    p =>
+      p.origin.country.toLowerCase() ===
+      country.toLowerCase()
   );
 }
 
-/** Liste tous les motifs d'une région */
-export function getSvgsByRegion(region: SvgPatternMeta['region']): SvgPatternKey[] {
-  return (Object.keys(SVG_REGISTRY) as SvgPatternKey[]).filter(
-    k => SVG_REGISTRY[k].region === region
+/**
+ * Retourne uniquement les patterns sacrés
+ */
+export function getSacredPatterns(
+  patterns: PatternDoc[]
+): PatternDoc[] {
+  return patterns.filter(pattern =>
+    pattern.symbols.some(symbol => symbol.sacred)
   );
 }
 
-/** Génère le contenu du fichier de téléchargement JSON (pour export palette) */
-export function generatePaletteJson(key: SvgPatternKey): string {
-  const meta = SVG_REGISTRY[key];
-  return JSON.stringify({
-    name:    meta.name,
-    origin:  meta.origin,
-    type:    meta.type,
-    colors:  meta.colors,
-    license: meta.license,
-    source:  `AVS — African Visual Standard · avs-standard.com`,
-  }, null, 2);
+/**
+ * Recherche par texte
+ */
+export function searchPatterns(
+  patterns: PatternDoc[],
+  query: string
+): PatternDoc[] {
+  const q = query.toLowerCase();
+
+  return patterns.filter(pattern =>
+    pattern.nameFr.toLowerCase().includes(q) ||
+    pattern.nameLocal.toLowerCase().includes(q) ||
+    pattern.summary.toLowerCase().includes(q) ||
+    pattern.origin.people.toLowerCase().includes(q)
+  );
+}
+
+/**
+ * Retourne la palette HEX uniquement
+ */
+export function getPatternPalette(
+  pattern: PatternDoc
+): string[] {
+  return pattern.colors.map(c => c.hex);
+}
+
+/**
+ * Génère un JSON exportable de palette
+ */
+export function generatePaletteJson(
+  pattern: PatternDoc
+): string {
+  return JSON.stringify(
+    {
+      id: pattern.id,
+
+      name: pattern.nameFr,
+
+      localName: pattern.nameLocal,
+
+      type: pattern.type,
+
+      origin: pattern.origin,
+
+      colors: pattern.colors,
+
+      license: pattern.license,
+
+      source:
+        'AVS — African Visual Standard · avs-standard.com',
+    },
+    null,
+    2
+  );
+}
+
+/**
+ * Retourne les symboles sacrés uniquement
+ */
+export function getSacredSymbols(
+  pattern: PatternDoc
+): PatternSymbol[] {
+  return pattern.symbols.filter(
+    symbol => symbol.sacred
+  );
+}
+
+/**
+ * Retourne les couleurs principales format CSS
+ */
+export function getCssVariables(
+  pattern: PatternDoc
+): Record<string, string> {
+  return Object.fromEntries(
+    pattern.colors.map((color, index) => [
+      `--pattern-color-${index + 1}`,
+      color.hex,
+    ])
+  );
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// TYPES API
+// ──────────────────────────────────────────────────────────────────────────────
+
+export interface PatternsApiResponse {
+  data: PatternDoc[];
+
+  total: number;
+
+  page?: number;
+
+  limit?: number;
+}
+
+export interface PatternApiResponse {
+  data: PatternDoc;
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// TYPE GUARDS
+// ──────────────────────────────────────────────────────────────────────────────
+
+export function isPatternDoc(
+  value: unknown
+): value is PatternDoc {
+  if (!value || typeof value !== 'object') {
+    return false;
+  }
+
+  const pattern = value as PatternDoc;
+
+  return (
+    typeof pattern.id === 'string' &&
+    typeof pattern.slug === 'string' &&
+    typeof pattern.nameFr === 'string'
+  );
 }

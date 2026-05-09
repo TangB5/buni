@@ -1,3 +1,5 @@
+import { PatternType } from '@buni/patterns';
+
 /**
  * SVG PATTERNS DATA
  * 
@@ -38,7 +40,7 @@ export interface PatternDoc {
   slug: string;
   nameFr: string;
   nameLocal: string;
-  type: string;
+  type: PatternType;
   svgPattern?: string;
   cssClass: string;
   origin: {

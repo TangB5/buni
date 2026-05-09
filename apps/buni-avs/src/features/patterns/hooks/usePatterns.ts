@@ -7,7 +7,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 import type { Pattern, PatternFilters, PatternListResponse } from '../types';
-import { get, post } from 'apps/buni-avs/src/core/api/client';
+import { patternService } from '../services/pattern.service';
 
 // ── Clés de query ─────────────────────────────────────────────────────────────
 export const patternKeys = {
@@ -19,14 +19,6 @@ export const patternKeys = {
   featured:  () => [...patternKeys.all, 'featured'] as const,
 };
 
-// ── Service API ───────────────────────────────────────────────────────────────
-export const patternService = {
-  list:     (filters: PatternFilters) =>
-    get<PatternListResponse>('/patterns', filters as Record<string, unknown>),
-  bySlug:   (slug: string) => get<Pattern>(`/patterns/${slug}`),
-  featured: ()             => get<Pattern[]>('/patterns/featured'),
-  create:   (data: Partial<Pattern>) => post<Pattern>('/patterns', data),
-};
 
 // ── Hooks ─────────────────────────────────────────────────────────────────────
 export function usePatterns(filters: PatternFilters = {}) {

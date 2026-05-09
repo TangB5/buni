@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search,
@@ -10,9 +10,7 @@ import {
   ChevronRight,
   MapPin,
   Calendar,
-  BookOpen,
   Layers,
-  ArrowUpRight,
   X,
   Info,
   Star,
@@ -21,9 +19,9 @@ import {
 import { PatternReplacer } from 'apps/buni-avs/src/features/patterns/components/SvgPatternDisplay';
 import {
   PatternDoc,
-  PATTERNS_DOCS,
   PatternSymbol,
-} from 'apps/buni-avs/src/features/patterns/data/patterns-data';
+} from '@buni/patterns';
+import { PATTERNS_DOCS } from './mock';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CONSTANTS
@@ -79,9 +77,9 @@ function CopyBtn({ text, label }: { text: string; label?: string }) {
 
 function LicenseBadge({ license }: { license: PatternDoc['license'] }) {
   const variants: Record<string, string> = {
-    cc0:       'bg-avs-primary/10    text-avs-primary   border border-avs-primary/20',
-    'cc-by':   'bg-avs-primary/10    text-avs-primary   border border-avs-primary/20',
-    'cc-by-sa':'bg-avs-indigo/10     text-avs-indigo    border border-avs-indigo/20',
+    cc0:        'bg-avs-primary/10 text-avs-primary   border border-avs-primary/20',
+    'cc-by':    'bg-avs-primary/10 text-avs-primary   border border-avs-primary/20',
+    'cc-by-sa': 'bg-avs-indigo/10  text-avs-indigo    border border-avs-indigo/20',
   };
 
   const labels: Record<string, string> = {
@@ -144,7 +142,7 @@ function PatternDocSheet({ pattern }: { pattern: PatternDoc }) {
       {/* ── Cover ────────────────────────────────────────────────────── */}
       <div className="relative h-52 bg-avs-secondary-dark overflow-hidden">
         <PatternReplacer cssClass={pattern.cssClass} className="absolute inset-0" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/5" />
+        <div className="absolute inset-0 bg-linear-to-b from-black/20 to-black/5" />
 
         {/* Top-left badges */}
         <div className="absolute top-5 left-5 flex flex-wrap gap-2">
@@ -190,7 +188,7 @@ function PatternDocSheet({ pattern }: { pattern: PatternDoc }) {
                 hover:-translate-y-0.5 transition-all duration-200
               ">
                 <span
-                  className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full"
+                  className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full"
                   aria-hidden
                 />
                 <Download size={11} /> SVG
@@ -375,10 +373,10 @@ function PatternDocSheet({ pattern }: { pattern: PatternDoc }) {
                 <p className="text-sm leading-[1.85] text-avs-accent/70">
                   {
                     ({
-                      histoire:    pattern.history,
-                      technique:   pattern.technique,
-                      symbolisme:  pattern.symbolism,
-                      ceremoniel:  pattern.ceremonial,
+                      histoire:   pattern.history,
+                      technique:  pattern.technique,
+                      symbolisme: pattern.symbolism,
+                      ceremoniel: pattern.ceremonial,
                     } as Record<string, string>)[activeSection]
                   }
                 </p>
@@ -441,25 +439,31 @@ function PatternDocSheet({ pattern }: { pattern: PatternDoc }) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PAGE
+// PAGE  ← fonction manquante, c'était la cause du bug
 // ─────────────────────────────────────────────────────────────────────────────
 
-export default function PatternsPage() {
-  const [selected, setSelected]     = useState<PatternDoc>(PATTERNS_DOCS[0]!);
+export default function Page() {
+  const [selected, setSelected]     = useState<PatternDoc | null>(null);
   const [search, setSearch]         = useState('');
   const [activeType, setActiveType] = useState('ALL');
   const [mobileDoc, setMobileDoc]   = useState(false);
+  const [patterns, setPatterns]     = useState<PatternDoc[]>([]);
 
-  const filtered = PATTERNS_DOCS.filter((p) => {
+  // Load patterns from backend
+  useEffect(() => {
+    // TODO: Replace with actual API call
+    const mockPatterns: PatternDoc[] = PATTERNS_DOCS;
+    setPatterns(mockPatterns);
+  }, []);
+
+  const filtered = patterns.filter((p) => {
     const q = search.toLowerCase();
     const matchSearch =
       !q ||
       p.nameFr.toLowerCase().includes(q) ||
       p.origin.country.toLowerCase().includes(q) ||
       p.origin.people.toLowerCase().includes(q) ||
-      p.symbols.some(
-        (s) => s.nameFr.toLowerCase().includes(q) || s.name.toLowerCase().includes(q)
-      );
+      p.summary.toLowerCase().includes(q);
     const matchType = activeType === 'ALL' || p.type === activeType;
     return matchSearch && matchType;
   });
@@ -474,7 +478,6 @@ export default function PatternsPage() {
 
       {/* ══ TOPBAR ══════════════════════════════════════════════════════ */}
       <div className="relative shrink-0 overflow-hidden px-5 py-5 bg-avs-secondary border-b border-avs-accent/10 backdrop-blur-xl">
-        {/* Subtle pattern watermark */}
         <div className="avs-pattern-wax-dakar pointer-events-none absolute inset-0 opacity-[0.03]" aria-hidden />
 
         <div className="relative flex flex-col gap-4">
@@ -483,7 +486,7 @@ export default function PatternsPage() {
               <div className="mb-2 flex items-center gap-2">
                 <div className="h-px w-6 bg-avs-primary" aria-hidden />
                 <span className="font-mono text-[9px] font-bold tracking-[0.24em] uppercase text-avs-primary">
-                  Documentation culturelle · {PATTERNS_DOCS.length} motifs
+                  Documentation culturelle · {patterns.length} motifs
                 </span>
               </div>
               <h1 className="font-display leading-none font-black text-avs-accent text-4xl tracking-tight">
@@ -498,8 +501,7 @@ export default function PatternsPage() {
 
           {/* Search + type filters */}
           <div className="flex flex-wrap items-center gap-3">
-            {/* Search input */}
-            <div className="relative min-w-[220px] flex-1">
+            <div className="relative min-w-55 flex-1">
               <Search
                 size={13}
                 className="absolute top-1/2 left-3.5 -translate-y-1/2 text-avs-accent/40"
@@ -509,10 +511,7 @@ export default function PatternsPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Motif, peuple, symbole, pays…"
-                className="
-                  avs-input pl-9 pr-9
-                  focus:border-avs-primary
-                "
+                className="avs-input pl-9 pr-9 focus:border-avs-primary"
               />
               <AnimatePresence>
                 {search && (
@@ -530,7 +529,6 @@ export default function PatternsPage() {
               </AnimatePresence>
             </div>
 
-            {/* Type pills */}
             <div className="flex flex-wrap gap-1.5">
               {TYPES.map((t) => (
                 <button
@@ -560,12 +558,11 @@ export default function PatternsPage() {
         {/* SIDEBAR */}
         <aside
           className={`
-            flex w-[296px] shrink-0 flex-col overflow-hidden
+            flex w-74 shrink-0 flex-col overflow-hidden
             bg-avs-secondary border-r border-avs-accent/10
             ${mobileDoc ? 'hidden lg:flex' : 'flex'}
           `}
         >
-          {/* Count header */}
           <div className="flex items-center justify-between px-4 py-3 border-b border-avs-accent/10">
             <p className="font-mono text-[9px] font-bold tracking-[0.18em] uppercase text-avs-accent/40">
               {filtered.length} motif{filtered.length > 1 ? 's' : ''}
@@ -590,7 +587,8 @@ export default function PatternsPage() {
           ) : (
             <nav className="flex-1 overflow-y-auto py-1.5 [scrollbar-width:thin]" aria-label="Liste des motifs">
               {filtered.map((p) => {
-                const isActive = selected.id === p.id;
+                // FIX : selected peut être null → utiliser ?.id
+                const isActive = selected?.id === p.id;
                 return (
                   <motion.button
                     key={p.id}
@@ -608,7 +606,6 @@ export default function PatternsPage() {
                     `}
                   >
                     <div className="flex items-center gap-3 px-4 py-3.5">
-                      {/* Pattern swatch */}
                       <PatternReplacer
                         cssClass={p.cssClass}
                         className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl ring-1 ring-black/10 dark:ring-white/10 transition-transform duration-300 group-hover:scale-105"
@@ -629,7 +626,6 @@ export default function PatternsPage() {
                       )}
                     </div>
 
-                    {/* Color bar */}
                     <div className="flex h-1.5 overflow-hidden mx-4 mb-3">
                       {p.colors.map((c) => (
                         <div
@@ -646,7 +642,6 @@ export default function PatternsPage() {
             </nav>
           )}
 
-          {/* Sidebar footer */}
           <div className="p-4 border-t border-avs-accent/10">
             <p className="text-center text-[10px] leading-relaxed text-avs-accent">
               Documentation établie à partir de sources primaires ethnographiques vérifiées.
@@ -659,7 +654,6 @@ export default function PatternsPage() {
           className={`flex-1 overflow-hidden bg-avs-secondary ${!mobileDoc ? 'hidden lg:block' : 'block'}`}
           aria-label="Documentation du motif sélectionné"
         >
-          {/* Mobile back button */}
           {mobileDoc && (
             <div className="border-b border-avs-accent/10 px-5 py-3 lg:hidden">
               <button
@@ -671,17 +665,30 @@ export default function PatternsPage() {
             </div>
           )}
 
+          {/* FIX : selected peut être null → afficher un état vide par défaut */}
           <AnimatePresence mode="wait">
-            <motion.div
-              key={selected.id}
-              initial={{ opacity: 0, x: 12 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -8 }}
-              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-              className="h-full"
-            >
-              <PatternDocSheet pattern={selected} />
-            </motion.div>
+            {selected ? (
+              <motion.div
+                key={selected.id}
+                initial={{ opacity: 0, x: 12 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -8 }}
+                transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                className="h-full"
+              >
+                <PatternDocSheet pattern={selected} />
+              </motion.div>
+            ) : (
+              <motion.div
+                key="empty"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="flex h-full flex-col items-center justify-center gap-3 text-avs-accent/30"
+              >
+                <div className="avs-pattern-wax-dakar h-16 w-16 rounded-2xl opacity-20" aria-hidden />
+                <p className="text-sm font-medium">Sélectionnez un motif pour voir sa documentation</p>
+              </motion.div>
+            )}
           </AnimatePresence>
         </main>
       </div>

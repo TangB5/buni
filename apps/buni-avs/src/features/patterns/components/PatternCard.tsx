@@ -7,16 +7,8 @@ import { MapPin, Download, Eye } from 'lucide-react';
 
 import type { Pattern } from '../types';
 import { Badge, cn } from 'apps/buni-avs/src/components/ui';
+import { CSS_PATTERN_MAP } from '@buni/patterns';
 
-// ── CSS patterns map ──────────────────────────────────────────────────────────
-const PATTERN_CSS: Record<string, string> = {
-  kente:   'avs-pattern-kente',
-  ndop:    'avs-pattern-ndop-royal',
-  bogolan: 'avs-pattern-wax-bold',
-  wax:     'avs-pattern-wax',
-  adinkra: 'avs-pattern-kente',
-  ndebele: 'avs-pattern-wax',
-};
 
 interface PatternCardProps {
   pattern:    Pattern;
@@ -26,7 +18,7 @@ interface PatternCardProps {
 }
 
 export function PatternCard({ pattern, index = 0, featured = false, className }: PatternCardProps) {
-  const patternCSS = PATTERN_CSS[pattern.patternType] ?? 'avs-pattern-wax';
+  const patternCSS = CSS_PATTERN_MAP[pattern.patternType.toUpperCase()] ?? 'avs-pattern-wax';
 
   return (
     <motion.article
