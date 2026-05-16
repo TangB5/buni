@@ -17,6 +17,14 @@ export const apiClient: AxiosInstance = axios.create({
   withCredentials: true,
 });
 
+// Remove Content-Type header for FormData to let axios set multipart/form-data
+apiClient.interceptors.request.use((config) => {
+  if (config.data instanceof FormData) {
+    delete config.headers['Content-Type'];
+  }
+  return config;
+});
+
 // Response interceptor - handle 401 errors
 apiClient.interceptors.response.use(
   (response) => response,
