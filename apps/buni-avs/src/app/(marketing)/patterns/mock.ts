@@ -33,6 +33,7 @@ export interface PatternSymbol {
   meaning: string;
   usage: string;
   sacred: boolean;
+  imageUrl?: string;
 }
 
 export interface PatternDoc {

@@ -1,0 +1,541 @@
+/* Motifs CSS africains — continuent à fonctionner avec Tailwind v4 */
+
+@layer components {
+  /* ══════════════════════════════════════════════════════════════════════════════
+     KENTE (Ghana · Peuple Akan)
+     Tissu royal tissé en bandelettes de soie entrelacées.
+     ══════════════════════════════════════════════════════════════════════════════ */
+
+  .avs-pattern-kente-royale {
+    background-color: #1a1208;
+    background-image:
+      repeating-linear-gradient(
+        90deg,
+        var(--avs-kente, #d4a017) 0px,
+        var(--avs-kente, #d4a017) 6px,
+        transparent 6px,
+        transparent 12px,
+        var(--avs-primary, #c0573e) 12px,
+        var(--avs-primary, #c0573e) 16px,
+        transparent 16px,
+        transparent 22px,
+        var(--avs-ndop, #4a6741) 22px,
+        var(--avs-ndop, #4a6741) 26px,
+        transparent 26px,
+        transparent 32px,
+        var(--avs-kente, #d4a017) 32px,
+        var(--avs-kente, #d4a017) 36px,
+        #1a1208 36px,
+        #1a1208 48px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        rgba(245, 235, 224, 0.06) 0px,
+        rgba(245, 235, 224, 0.06) 2px,
+        transparent 2px,
+        transparent 6px,
+        rgba(212, 160, 23, 0.12) 6px,
+        rgba(212, 160, 23, 0.12) 8px,
+        transparent 8px,
+        transparent 16px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        transparent 22px,
+        rgba(192, 87, 62, 0.15) 22px,
+        rgba(192, 87, 62, 0.15) 24px,
+        transparent 24px,
+        transparent 48px
+      );
+    background-size:
+      48px 100%,
+      100% 16px,
+      48px 100%;
+  }
+
+  .avs-pattern-kente-etoile {
+    background-color: #1a1208;
+    background-image:
+      repeating-linear-gradient(
+        45deg,
+        var(--avs-kente, #d4a017) 0px,
+        var(--avs-kente, #d4a017) 3px,
+        transparent 3px,
+        transparent 12px,
+        var(--avs-primary, #c0573e) 12px,
+        var(--avs-primary, #c0573e) 15px,
+        transparent 15px,
+        transparent 24px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        transparent 0px,
+        transparent 9px,
+        var(--avs-ndop, #4a6741) 9px,
+        var(--avs-ndop, #4a6741) 12px,
+        transparent 12px,
+        transparent 21px,
+        rgba(212, 160, 23, 0.4) 21px,
+        rgba(212, 160, 23, 0.4) 24px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        rgba(245, 235, 224, 0.04) 0px,
+        rgba(245, 235, 224, 0.04) 1px,
+        transparent 1px,
+        transparent 24px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        rgba(245, 235, 224, 0.04) 0px,
+        rgba(245, 235, 224, 0.04) 1px,
+        transparent 1px,
+        transparent 24px
+      );
+    background-size:
+      24px 24px,
+      24px 24px,
+      24px 24px,
+      24px 24px;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════════════
+     NDOP (Cameroun · Sultanat Bamoum · Chefferies Bamiléké)
+     Tissu sacré réservé à la royauté. Fond indigo profond, motifs géométriques
+     ══════════════════════════════════════════════════════════════════════════════ */
+
+  .avs-pattern-ndop-ceremoniel {
+    background-color: #071828;
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        rgba(200, 169, 110, 0.3) 0px,
+        rgba(200, 169, 110, 0.3) 1.5px,
+        transparent 1.5px,
+        transparent 20px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        rgba(200, 169, 110, 0.3) 0px,
+        rgba(200, 169, 110, 0.3) 1.5px,
+        transparent 1.5px,
+        transparent 20px
+      ),
+      repeating-linear-gradient(
+        45deg,
+        transparent 0px,
+        transparent 8px,
+        rgba(200, 169, 110, 0.18) 8px,
+        rgba(200, 169, 110, 0.18) 10px,
+        transparent 10px,
+        transparent 20px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        transparent 0px,
+        transparent 8px,
+        rgba(200, 169, 110, 0.18) 8px,
+        rgba(200, 169, 110, 0.18) 10px,
+        transparent 10px,
+        transparent 20px
+      ),
+      radial-gradient(
+        circle,
+        rgba(200, 169, 110, 0.25) 0.75px,
+        transparent 1.5px
+      );
+    background-size:
+      20px 20px,
+      20px 20px,
+      20px 20px,
+      20px 20px,
+      10px 10px;
+  }
+
+  .avs-pattern-ndop-sultan {
+    background-color: #0d2340;
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        rgba(200, 169, 110, 0.2) 0px,
+        rgba(200, 169, 110, 0.2) 1px,
+        transparent 1px,
+        transparent 24px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        rgba(200, 169, 110, 0.2) 0px,
+        rgba(200, 169, 110, 0.2) 1px,
+        transparent 1px,
+        transparent 24px
+      ),
+      radial-gradient(circle, rgba(200, 169, 110, 0.4) 1.5px, transparent 2px);
+    background-size:
+      24px 24px,
+      24px 24px,
+      24px 24px;
+    background-position:
+      0 0,
+      0 0,
+      12px 12px;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════════════
+     BOGOLAN (Mali · Bambara)
+     Géométrie binaire terre/lumière
+     ══════════════════════════════════════════════════════════════════════════════ */
+
+  .avs-pattern-bogolan-terre {
+    background-color: #e8dcc8;
+    background-image:
+      repeating-linear-gradient(
+        45deg,
+        #8b4513 0px,
+        #8b4513 4px,
+        transparent 4px,
+        transparent 8px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        transparent 0px,
+        transparent 4px,
+        #8b4513 4px,
+        #8b4513 8px
+      );
+    background-size:
+      8px 8px,
+      8px 8px;
+  }
+
+  .avs-pattern-bogolan-fanga {
+    background-color: #f5ebe0;
+    background-image:
+      repeating-linear-gradient(
+        45deg,
+        #8b4513 0px,
+        #8b4513 3px,
+        transparent 3px,
+        transparent 14px
+      ),
+      repeating-linear-gradient(
+        135deg,
+        #8b4513 0px,
+        #8b4513 3px,
+        transparent 3px,
+        transparent 14px
+      );
+    background-size:
+      14px 14px,
+      14px 14px;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════════════
+     ADINKRA (Ghana · Akan)
+     Symboles gravés et imprimés
+     ══════════════════════════════════════════════════════════════════════════════ */
+
+  .avs-pattern-adinkra-sankofa {
+    background-color: #1d1d1b;
+    background-image:
+      repeating-radial-gradient(
+        circle at 0px 0px,
+        #d4a017 0px,
+        #d4a017 1.5px,
+        transparent 1.5px,
+        transparent 7px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        transparent 3px,
+        #d4a017 3px,
+        #d4a017 4px,
+        transparent 4px,
+        transparent 7px
+      );
+    background-size:
+      14px 14px,
+      14px 14px;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════════════
+     WAX (Pan-africain)
+     ══════════════════════════════════════════════════════════════════════════════ */
+
+  .avs-pattern-wax-dakar {
+    background-color: #f5ebe0;
+    background-image:
+      radial-gradient(
+        circle at 25% 25%,
+        rgba(212, 160, 23, 0.4) 0%,
+        rgba(212, 160, 23, 0.1) 30%,
+        transparent 50%
+      ),
+      radial-gradient(
+        circle at 75% 75%,
+        rgba(192, 87, 62, 0.3) 0%,
+        rgba(192, 87, 62, 0.05) 40%,
+        transparent 60%
+      );
+    background-size: 40px 40px;
+  }
+
+  .avs-pattern-wax-lagos {
+    background-color: #f5ebe0;
+    background-image:
+      repeating-radial-gradient(
+        circle,
+        #c0573e 0px,
+        #c0573e 2px,
+        transparent 2px,
+        transparent 6px,
+        rgba(192, 87, 62, 0.3) 6px,
+        rgba(192, 87, 62, 0.3) 8px,
+        transparent 8px,
+        transparent 12px
+      );
+    background-size: 12px 12px;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════════════
+     KUBA (Congo · Kasai)
+     Velours de raphia entrelacé
+     ══════════════════════════════════════════════════════════════════════════════ */
+
+  .avs-pattern-kuba-kasai {
+    background-color: #2a2420;
+    background-image:
+      repeating-linear-gradient(
+        45deg,
+        #c8a96e 0px,
+        #c8a96e 1px,
+        transparent 1px,
+        transparent 3px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        #c8a96e 0px,
+        #c8a96e 1px,
+        transparent 1px,
+        transparent 3px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        transparent 2px,
+        rgba(200, 169, 110, 0.2) 2px,
+        rgba(200, 169, 110, 0.2) 4px
+      );
+    background-size:
+      4px 4px,
+      4px 4px,
+      100% 6px;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════════════
+     NDEBELE (Afrique du Sud · Zimbabwe)
+     Peinture murale graphique
+     ══════════════════════════════════════════════════════════════════════════════ */
+
+  .avs-pattern-ndebele-amabhaxa {
+    background-color: #ffffff;
+    background-image:
+      repeating-linear-gradient(
+        90deg,
+        #c0573e 0px,
+        #c0573e 3px,
+        transparent 3px,
+        transparent 6px,
+        #2a4a6b 6px,
+        #2a4a6b 9px,
+        transparent 9px,
+        transparent 12px,
+        #d4a017 12px,
+        #d4a017 15px,
+        transparent 15px,
+        transparent 18px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        transparent 0px,
+        transparent 4px,
+        rgba(192, 87, 62, 0.1) 4px,
+        rgba(192, 87, 62, 0.1) 5px,
+        transparent 5px,
+        transparent 9px,
+        rgba(42, 74, 107, 0.1) 9px,
+        rgba(42, 74, 107, 0.1) 10px
+      );
+    background-size:
+      18px 100%,
+      100% 10px;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════════════
+     BERBER (Maroc · Amazigh)
+     Tapis losanges et chevrons
+     ══════════════════════════════════════════════════════════════════════════════ */
+
+  .avs-pattern-berber-amazigh {
+    background-color: #f5ebe0;
+    background-image:
+      repeating-linear-gradient(
+        45deg,
+        #1d1d1b 0px,
+        #1d1d1b 2px,
+        transparent 2px,
+        transparent 8px
+      ),
+      repeating-linear-gradient(
+        -45deg,
+        #1d1d1b 0px,
+        #1d1d1b 2px,
+        transparent 2px,
+        transparent 8px
+      );
+    background-size: 8px 8px;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════════════
+     RÉTROCOMPATIBILITÉ — Anciens motifs
+     ══════════════════════════════════════════════════════════════════════════════ */
+
+  .avs-pattern-wax {
+    background-color: #f5ebe0;
+    background-image:
+      repeating-radial-gradient(
+        circle at 50% 0%,
+        rgba(212, 160, 23, 0.3) 0%,
+        rgba(212, 160, 23, 0.1) 20%,
+        transparent 50%
+      );
+    background-size: 40px 40px;
+  }
+
+  .avs-pattern-ndop {
+    background: repeating-linear-gradient(
+      0deg,
+      #4a6741 0px,
+      #4a6741 20px,
+      #ffffff 20px,
+      #ffffff 40px
+    );
+  }
+
+  .avs-pattern-kente {
+    background-color: var(--avs-accent, #1d1d1b);
+    background-image:
+      repeating-linear-gradient(
+        90deg,
+        var(--avs-kente, #d4a017) 0px,
+        var(--avs-kente, #d4a017) 4px,
+        var(--avs-primary, #c0573e) 4px,
+        var(--avs-primary, #c0573e) 8px,
+        var(--avs-accent, #1d1d1b) 8px,
+        var(--avs-accent, #1d1d1b) 16px,
+        var(--avs-kente, #d4a017) 16px,
+        var(--avs-kente, #d4a017) 20px,
+        transparent 20px,
+        transparent 32px
+      ),
+      repeating-linear-gradient(
+        0deg,
+        rgba(245, 235, 224, 0.04) 0px,
+        rgba(245, 235, 224, 0.04) 2px,
+        transparent 2px,
+        transparent 8px
+      );
+    background-size:
+      32px 100%,
+      100% 8px;
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════════════
+     SVG PATTERNS — Rétrocompatibilité
+     ══════════════════════════════════════════════════════════════════════════════ */
+
+  [class*="avs-svg-pattern-"] {
+    background-repeat: repeat;
+    background-size: auto;
+    background-position: 0 0;
+  }
+
+  .avs-svg-pattern-ndop6 {
+    background-image: url('/patterns/ndop6.svg');
+  }
+
+  .avs-svg-pattern-ndop-bamoum {
+    background-image: url('/patterns/ndop-bamoum.svg');
+  }
+
+  .avs-svg-pattern-ndop-symbol-1 {
+    background-image: url('/patterns/ndopSymbol1.svg');
+  }
+
+  .avs-svg-pattern-ndop-symbol-2 {
+    background-image: url('/patterns/ndopSymbol2.svg');
+  }
+
+  .avs-svg-pattern-ndop-symbol-3 {
+    background-image: url('/patterns/ndopSymbol3.svg');
+  }
+
+  .avs-svg-pattern-ndop-symbol-4 {
+    background-image: url('/patterns/ndopSymbol4.svg');
+  }
+
+  .avs-svg-pattern-ndop-symbol-5 {
+    background-image: url('/patterns/ndopSymbol5.svg');
+  }
+
+  .avs-svg-pattern-toghu-bamenda {
+    background-image: url('/patterns/toghu-bamenda.svg');
+  }
+
+  .avs-svg-pattern-toghu-bamileke {
+    background-image: url('/patterns/toghu-bamileke.svg');
+  }
+
+  /* ══════════════════════════════════════════════════════════════════════════════
+     UTILITAIRES
+     ══════════════════════════════════════════════════════════════════════════════ */
+
+  .avs-pattern-overlay {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .avs-pattern-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: inherit;
+    opacity: 0.6;
+    z-index: -1;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .avs-pattern-animated {
+      transition:
+        background-size 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+        background-position 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .avs-pattern-kente-royale.avs-pattern-animated:hover {
+      background-size:
+        44px 100%,
+        100% 14px,
+        44px 100%;
+    }
+
+    .avs-pattern-ndop-ceremoniel.avs-pattern-animated:hover {
+      background-size:
+        18px 18px,
+        18px 18px,
+        18px 18px,
+        18px 18px,
+        9px 9px;
+    }
+  }
+}

@@ -1,4 +1,5 @@
-import { get } from '@/core/api/client';
+import { get } from "apps/buni-avs/src/core/api/client";
+
 
 export interface DashboardStats {
   patternsCount: number;

@@ -1,21 +1,133 @@
-/* AVS Design Tokens — CSS Custom Properties */
-:root {
-  --avs-primary:   #C0573E;
-  --avs-secondary: #F5EBE0;
-  --avs-accent:    #1D1D1B;
-  --avs-kente:     #D4A017;
-  --avs-ndop:      #4A6741;
-  --avs-raffia:    #C8A96E;
-  --avs-earth:     #8B4513;
+@import 'tailwindcss';
+
+@theme {
+  /* ═══════════════════════════════════════════════════════════════ */
+  /* Couleurs Buni — Design System Africain                          */
+  /* ═══════════════════════════════════════════════════════════════ */
+
+  /* Couleurs principales du design system */
+  --color-avs-primary: #C0573E;      /* Terre brûlée (poterie Yoruba) */
+  --color-avs-secondary: #F5EBE0;    /* Lin naturel (tissu Fulani) */
+  --color-avs-accent: #1D1D1B;       /* Obsidienne (basalte Kenya) */
+  --color-avs-kente: #D4A017;        /* Or kente (soie Asante) */
+  --color-avs-ndop: #4A6741;         /* Vert Bamiléké (indigo) */
+  --color-avs-indigo: #2A4A6B;       /* Bleu bogolan (Bambara) */
+  --color-avs-earth: #8B4513;        /* Ocre savane (Sahel) */
+  --color-avs-raffia: #C8A96E;       /* Raphia naturel (palmier) */
+
+  /* Palette clair/sombre */
+  --color-light-bg: #FFFFFF;
+  --color-light-surface: #F9F7F4;
+  --color-light-text: #1D1D1B;
+  --color-light-border: #E5E0D8;
+
+  --color-dark-bg: #0F0E0B;
+  --color-dark-surface: #1A1916;
+  --color-dark-text: #F5EBE0;
+  --color-dark-border: #28251F;
+
+  /* ─────────────────────────────────────────────────────────────── */
+  /* Typographie                                                    */
+  /* ─────────────────────────────────────────────────────────────── */
 
   --font-display: 'Playfair Display', Georgia, serif;
-  --font-body:    'DM Sans', 'Helvetica Neue', sans-serif;
+  --font-body: 'DM Sans', 'Helvetica Neue', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
 
-  --shadow-avs:    3px 3px 0px 0px var(--avs-accent);
-  --shadow-avs-md: 5px 5px 0px 0px var(--avs-primary);
+  /* ─────────────────────────────────────────────────────────────── */
+  /* Espacement & Rayon de bordure                                  */
+  /* ─────────────────────────────────────────────────────────────── */
 
-  --radius-avs:    0.375rem;
+  --radius-avs: 0.375rem;
   --radius-avs-lg: 1.5rem;
+  --radius-avs-xl: 2rem;
 
-  --transition: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  /* ─────────────────────────────────────────────────────────────── */
+  /* Ombres (offset style éditorial)                                */
+  /* ─────────────────────────────────────────────────────────────── */
+
+  --shadow-avs: 3px 3px 0px 0px rgb(29 29 27 / 1);
+  --shadow-avs-md: 5px 5px 0px 0px rgb(192 87 62 / 1);
+  --shadow-avs-lg: 8px 8px 0px 0px rgb(29 29 27 / 1);
+
+  /* ─────────────────────────────────────────────────────────────── */
+  /* Animations & Transitions                                       */
+  /* ─────────────────────────────────────────────────────────────── */
+
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+
+/* ════════════════════════════════════════════════════════════════ */
+/* Classes utilitaires CSS                                         */
+/* ════════════════════════════════════════════════════════════════ */
+
+@layer utilities {
+  /* Surface primaire — cartes, panneaux */
+  .surface-primary {
+    @apply bg-light-surface dark:bg-dark-surface;
+  }
+
+  /* Texte principal */
+  .text-primary {
+    @apply text-light-text dark:text-dark-text;
+  }
+
+  /* Bordure standard */
+  .border-primary {
+    @apply border-light-border dark:border-dark-border;
+  }
+
+  /* Ombres sombres */
+  .shadow-avs {
+    box-shadow: var(--shadow-avs);
+  }
+
+  .shadow-avs-md {
+    box-shadow: var(--shadow-avs-md);
+  }
+
+  .shadow-avs-lg {
+    box-shadow: var(--shadow-avs-lg);
+  }
+
+  /* Animations */
+  .animate-avs-spin {
+    animation: spin 1s linear infinite;
+  }
+
+  .animate-avs-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .animate-avs-fade {
+    animation: fadeIn 0.3s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* ════════════════════════════════════════════════════════════════ */
+/* Mode sombre — appliquer quand .dark est sur <html>             */
+/* ════════════════════════════════════════════════════════════════ */
+
+@layer base {
+  html {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
 }

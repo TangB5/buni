@@ -1,33 +1,122 @@
+'use client';
+
 import type { Metadata, Route } from 'next';
 import Link from 'next/link';
-import { ArrowLeft, Download, Share2, MapPin, Eye, Globe, Tag } from 'lucide-react';
-import { fetchPatternBySlug } from 'apps/buni-avs/src/lib/api';
+import { useEffect, useState } from 'react';
+import { ArrowLeft, Download, Share2, MapPin, Eye, Globe, Tag, Loader2, AlertCircle } from 'lucide-react';
+import { patternService } from 'apps/buni-avs/src/features/patterns/services/pattern.service';
+import type { Pattern } from 'apps/buni-avs/src/features/patterns/types';
+import { useToast } from '@buni/ui';
 
+// ── Pattern Detail Page ────────────────────────────────────────────────────────
+export default function PatternDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const [slug, setSlug] = useState('');
+  const [pattern, setPattern] = useState<Pattern | null>(null);
+  const [similarPatterns, setSimilarPatterns] = useState<Pattern[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const { add: addToast } = useToast();
 
-// ── Metadata dynamique ────────────────────────────────────────────────────────
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
-  try {
-    const { slug } = await params;
-    const response = await fetchPatternBySlug(slug);
-    const pattern = response.data.props;
-    return {
-      title: `${pattern.nameFr} — AVS`,
-      description: pattern.descFr.slice(0, 160),
-    };
-  } catch {
-    return { title: 'Motif introuvable' };
+  // Fetch pattern par slug
+  useEffect(() => {
+    (async () => {
+      try {
+        const resolved = await params;
+        setSlug(resolved.slug);
+
+        // Fetch le motif principal
+        const patternRes = await patternService.bySlug(resolved.slug);
+        setPattern(patternRes);
+
+        // Fetch les motifs similaires (même type)
+        if (patternRes.patternType) {
+          const similarRes = await patternService.list({
+            patternType: patternRes.patternType,
+            perPage: 4,
+          });
+          setSimilarPatterns(
+            similarRes.data.filter((p) => p.id !== patternRes.id).slice(0, 3)
+          );
+        }
+
+        // Track la vue
+        patternService.trackView(patternRes.id).catch(() => {});
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Erreur lors du chargement');
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [params]);
+
+  // Download SVG
+  const handleDownloadSvg = async () => {
+    if (!pattern?.assets?.svgUrl) return;
+    try {
+      const response = await fetch(pattern.assets.svgUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${pattern.slug}.svg`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      addToast({ variant: 'success', message: 'SVG téléchargé !' });
+    } catch (err) {
+      addToast({ variant: 'error', message: 'Erreur de téléchargement' });
+    }
+  };
+
+  // Share
+  const handleShare = async () => {
+    if (!pattern) return;
+    const url = `${window.location.origin}/patterns/${slug}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: pattern.nameFr,
+          text: pattern.descFr,
+          url,
+        });
+      } else {
+        await navigator.clipboard.writeText(url);
+        addToast({ variant: 'success', message: 'Lien copié !' });
+      }
+    } catch (err) {
+      console.error('Share error:', err);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-avs-secondary">
+        <Loader2 size={32} className="text-avs-primary animate-spin" />
+      </div>
+    );
   }
-}
 
-// ── Page ──────────────────────────────────────────────────────────────────────
-export default async function PatternDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const response = await fetchPatternBySlug(slug);
-  const pattern = response.data.props;
+  if (error || !pattern) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-avs-secondary">
+        <div className="max-w-md text-center">
+          <AlertCircle size={48} className="text-avs-primary mx-auto mb-4" />
+          <h1 className="font-display text-avs-accent mb-2 text-2xl font-bold">
+            Motif introuvable
+          </h1>
+          <p className="text-avs-accent/70 mb-6">{error || 'Le motif demandé n\'existe pas'}</p>
+          <Link
+            href="/patterns"
+            className="text-avs-primary hover:underline font-medium inline-flex items-center gap-1"
+          >
+            <ArrowLeft size={16} />
+            Retour aux motifs
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-avs-secondary min-h-screen">
@@ -68,14 +157,17 @@ export default async function PatternDetailPage({ params }: { params: Promise<{ 
               </div>
               <div className="absolute top-6 right-6 flex gap-2">
                 <button
+                  onClick={handleShare}
                   aria-label="Partager"
                   className="rounded-avs bg-avs-secondary/20 text-avs-secondary hover:bg-avs-secondary/30 flex h-9 w-9 items-center justify-center backdrop-blur-sm transition-colors"
                 >
                   <Share2 size={15} />
                 </button>
                 <button
+                  onClick={handleDownloadSvg}
+                  disabled={!pattern?.assets?.svgUrl}
                   aria-label="Télécharger"
-                  className="rounded-avs bg-avs-primary text-avs-secondary shadow-avs flex items-center gap-1.5 px-3 py-2 text-xs font-bold transition-all hover:-translate-y-0.5"
+                  className="rounded-avs bg-avs-primary text-avs-secondary shadow-avs flex items-center gap-1.5 px-3 py-2 text-xs font-bold transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Download size={13} aria-hidden />
                   SVG
@@ -236,13 +328,59 @@ export default async function PatternDetailPage({ params }: { params: Promise<{ 
             </div>
 
             {/* CTA téléchargement */}
-            <button className="rounded-avs-lg bg-avs-primary text-avs-secondary shadow-avs-md hover:shadow-avs-lg flex w-full items-center justify-center gap-2 py-4 text-sm font-bold transition-all hover:-translate-y-0.5">
+            <button
+              onClick={handleDownloadSvg}
+              disabled={!pattern?.assets?.svgUrl}
+              className="rounded-avs-lg bg-avs-primary text-avs-secondary shadow-avs-md hover:shadow-avs-lg flex w-full items-center justify-center gap-2 py-4 text-sm font-bold transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
               <Download size={16} aria-hidden />
-              Télécharger (SVG · PNG · JSON)
+              Télécharger SVG
             </button>
           </aside>
         </div>
+
+        {/* ── Motifs similaires ─────────────────────────────────────────────── */}
+        {similarPatterns.length > 0 && (
+          <section
+            aria-labelledby="similar-title"
+            className="border-avs-accent/10 mt-16 border-t pt-10"
+          >
+            <h2 id="similar-title" className="font-display text-avs-accent mb-6 text-2xl font-bold">
+              Motifs Similaires
+            </h2>
+            <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              {similarPatterns.map((similarPattern) => (
+                <Link
+                  key={similarPattern.id}
+                  href={`/patterns/${similarPattern.slug}`}
+                  className="group"
+                >
+                  <div
+                    className="rounded-avs-lg border-avs-accent/10 shadow-avs relative overflow-hidden border bg-gradient-to-br transition-all hover:shadow-avs-md"
+                    style={{
+                      backgroundImage: `linear-gradient(to bottom right, ${similarPattern.colors.primary}, ${similarPattern.colors.secondary})`,
+                    }}
+                  >
+                    <div className="from-avs-accent/60 absolute inset-0 bg-gradient-to-t via-transparent to-transparent" />
+                    <div className="relative h-48 p-4 flex flex-col justify-end">
+                      <p className="text-avs-secondary text-xs font-bold tracking-widest uppercase">
+                        {similarPattern.patternType}
+                      </p>
+                      <h3 className="font-display text-avs-secondary text-lg font-bold group-hover:underline">
+                        {similarPattern.nameFr}
+                      </h3>
+                      <p className="text-avs-secondary/70 text-xs mt-1">
+                        {similarPattern.region.replace(/-/g, ' ')}
+                      </p>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );
 }
+

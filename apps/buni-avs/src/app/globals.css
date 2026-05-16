@@ -3,64 +3,47 @@
    Tailwind CSS 4 — version FIXED
    ============================================================ */
 
-@import "tailwindcss";
+@import '@buni/tokens/css';
+@import '@buni/patterns/css';
+@import 'tailwindcss';
 @import 'primeicons/primeicons.css';
 
-/* ── 1. DESIGN TOKENS ─────────────────────────────────────── */
-
-@theme {
-  --color-avs-primary:        #C0573E;
-  --color-avs-primary-light:  #D4755F;
-  --color-avs-primary-dark:   #9E3D27;
-
-  --color-avs-secondary:      #F5EBE0;
-  --color-avs-secondary-dark: #E8D5C0;
-
-  --color-avs-accent:         #1D1D1B;
-  --color-avs-accent-muted:   #3A3A38;
-
-  --color-avs-kente:  #D4A017;
-  --color-avs-indigo: #2A4A6B;
-  --color-avs-earth:  #8B4513;
-  --color-avs-ndop:   #4A6741;
-  --color-avs-raffia: #C8A96E;
-
-  --font-display: Georgia, serif;
-  --font-body:    system-ui, sans-serif;
-  --font-mono:    monospace;
-
-  --radius-avs-sm: 0.375rem;
-  --radius-avs-lg: 1.5rem;
-  --radius-avs-xl: 3rem;
-
-  --ease-avs: 0.2s ease-in-out;
-
-  
-  
-}
-
-
-
-/* ── 2. VARIABLES ─────────────────────────────────────────── */
-
-:root {
-  --avs-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --avs-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  --avs-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-}
-/* ── 3. BASE ──────────────────────────────────────────────── */
+/* ── 1. BASE ──────────────────────────────────────────────── */
 
 @layer base {
-  *, *::before, *::after { box-sizing: border-box; }
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
 
   body {
+    @apply antialiased;
     font-family: var(--font-body);
-    background-color: var(--color-avs-secondary);
-    color: var(--color-avs-accent);
+    background-color: var(--color-light-bg);
+    color: var(--color-light-text);
     line-height: 1.6;
   }
 
-  h1,h2,h3,h4,h5,h6 {
+  html.dark body {
+    background-color: var(--color-dark-bg);
+    color: var(--color-dark-text);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: var(--font-display);
   }
 
@@ -70,10 +53,9 @@
   }
 }
 
-/* ── 4. COMPOSANTS ───────────────────────────────────────── */
+/* ── 2. COMPOSANTS ───────────────────────────────────────── */
 
 @layer components {
-
   .avs-container {
     @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
   }
@@ -83,48 +65,41 @@
   }
 
   .avs-badge {
-    @apply inline-flex items-center px-2.5 py-0.5
-           text-[10px] font-bold uppercase tracking-[0.3em];
-    border-radius: var(--radius-avs-sm);
+    @apply inline-flex items-center px-2.5 py-0.5 text-[10px] font-bold tracking-[0.3em] uppercase;
+    border-radius: var(--radius-avs);
   }
 
- 
   .avs-btn {
-    @apply inline-flex items-center justify-center gap-2
-           px-5 py-2.5 text-sm font-bold
-           transition-all duration-200 cursor-pointer border-0
-           disabled:pointer-events-none disabled:opacity-50;
-    border-radius: var(--radius-avs-sm);
+    @apply inline-flex cursor-pointer items-center justify-center gap-2 border-0 px-5 py-2.5 text-sm font-bold transition-all duration-200 disabled:pointer-events-none disabled:opacity-50;
+    border-radius: var(--radius-avs);
   }
 
-  
   .avs-btn-primary {
-    @apply inline-flex items-center justify-center gap-2
-           px-5 py-2.5 text-sm font-bold
-           transition-all duration-200 cursor-pointer border-0;
+    @apply inline-flex cursor-pointer items-center justify-center gap-2 border-0 px-5 py-2.5 text-sm font-bold transition-all;
 
     background-color: var(--color-avs-primary);
     color: var(--color-avs-secondary);
-    border-radius: var(--radius-avs-sm);
-    box-shadow: var(--avs-shadow-sm);
+    border-radius: var(--radius-avs);
+    box-shadow: var(--shadow-avs);
   }
 
   .avs-btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: var(--avs-shadow-md);
+    box-shadow: var(--shadow-avs-md);
   }
 
-  /* SECONDARY */
   .avs-btn-secondary {
-    @apply inline-flex items-center justify-center gap-2
-           px-5 py-2.5 text-sm font-bold
-           transition-all duration-200 cursor-pointer
-           border-2;
+    @apply inline-flex cursor-pointer items-center justify-center gap-2 border-2 px-5 py-2.5 text-sm font-bold transition-all;
 
     background: transparent;
-    color: var(--color-avs-accent);
-    border-color: rgba(29,29,27,0.2);
-    border-radius: var(--radius-avs-sm);
+    color: var(--color-light-text);
+    border-color: var(--color-light-border);
+    border-radius: var(--radius-avs);
+  }
+
+  html.dark .avs-btn-secondary {
+    color: var(--color-dark-text);
+    border-color: var(--color-dark-border);
   }
 
   .avs-btn-secondary:hover {
@@ -132,14 +107,18 @@
     color: var(--color-avs-primary);
   }
 
-  /* INPUT */
   .avs-input {
-    @apply w-full px-4 py-2.5 text-sm bg-white
-           border-2 transition-colors duration-200;
+    @apply w-full border-2 bg-white px-4 py-2.5 text-sm transition-colors;
 
-    border-color: rgba(29,29,27,0.15);
-    color: var(--color-avs-accent);
-    border-radius: var(--radius-avs-sm);
+    border-color: var(--color-light-border);
+    color: var(--color-light-text);
+    border-radius: var(--radius-avs);
+  }
+
+  html.dark .avs-input {
+    background-color: var(--color-dark-surface);
+    border-color: var(--color-dark-border);
+    color: var(--color-dark-text);
   }
 
   .avs-input:focus {
@@ -147,76 +126,61 @@
     outline: none;
   }
 
-  /* CARD */
   .avs-card {
     @apply border;
 
-    background-color: var(--color-avs-secondary);
-    border-color: rgba(29,29,27,0.1);
+    background-color: var(--color-light-surface);
+    border-color: var(--color-light-border);
     border-radius: var(--radius-avs-lg);
-    box-shadow: var(--avs-shadow-sm);
+    box-shadow: var(--shadow-avs);
+  }
+
+  html.dark .avs-card {
+    background-color: var(--color-dark-surface);
+    border-color: var(--color-dark-border);
   }
 
   .avs-label {
-    @apply block text-[12px] font-bold uppercase tracking-wide mb-1.5;
-    color: rgba(29,29,27,0.5);
+    @apply mb-1.5 block text-[12px] font-bold tracking-wide uppercase;
+    color: rgba(29, 29, 27, 0.5);
+  }
+
+  html.dark .avs-label {
+    color: rgba(245, 235, 224, 0.5);
   }
 
   .avs-divider {
     @apply h-px w-full;
-    background: rgba(29,29,27,0.1);
+    background: var(--color-light-border);
+  }
+
+  html.dark .avs-divider {
+    background: var(--color-dark-border);
+  }
+
+  .avs-toast {
+    @apply fixed right-6 bottom-6 z-[9999];
   }
 }
 
-/* ── 5. UTILITIES ─────────────────────────────────────────── */
+/* ── 3. UTILITIES ─────────────────────────────────────────── */
 
 @layer utilities {
-
-  .shadow-avs    { box-shadow: var(--avs-shadow-sm); }
-  .shadow-avs-md { box-shadow: var(--avs-shadow-md); }
-  .shadow-avs-lg { box-shadow: var(--avs-shadow-lg); }
-
   .text-gradient-avs {
-    background: linear-gradient(
-      135deg,
-      var(--color-avs-primary),
-      var(--color-avs-kente)
-    );
+    background: linear-gradient(135deg, var(--color-avs-primary), var(--color-avs-kente));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 
-  .animate-avs-spin   { animation: avs-spin 1s linear infinite; }
+  .animate-avs-spin {
+    animation: avs-spin 1s linear infinite;
+  }
 }
 
-/* ── 6. ANIMATIONS ───────────────────────────────────────── */
+/* ── 4. ANIMATIONS ───────────────────────────────────────── */
 
 @keyframes avs-spin {
-  to { transform: rotate(360deg); }
-}
-
-/* ── 7. DARK MODE ───────────────────────────────────────── */
-
-
-
-.dark body {
-  background-color: var(--avs-bg);
-  color: var(--avs-text);
-}
-
-.dark .avs-card {
-  background: var(--avs-card-bg);
-  border-color: var(--avs-card-border);
-}
-
-.dark .avs-input {
-  background: var(--avs-card-bg);
-  color: var(--avs-text);
-  border-color: var(--avs-border-md);
-}
-
-/* ── 8. MISC ───────────────────────────────────────────── */
-
-.avs-toast {
-  @apply fixed bottom-6 right-6 z-[9999];
+  to {
+    transform: rotate(360deg);
+  }
 }

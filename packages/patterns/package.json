@@ -8,9 +8,13 @@
     ".": {
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
+    },
+    "./css": {
+      "style": "./src/theme/patterns.css"
     }
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
   }
 }
+

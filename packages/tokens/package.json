@@ -9,10 +9,13 @@
       "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     },
-    "./css": "./dist/css/avs-tokens.css"
+    "./css": {
+      "style": "./src/css/avs-tokens.css"
+    }
   },
   "scripts": {
     "build": "tsc && mkdir -p dist/css && cp src/css/*.css dist/css/ && cp src/index.css dist/",
     "typecheck": "tsc --noEmit"
   }
 }
+

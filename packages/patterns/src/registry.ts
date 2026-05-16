@@ -46,6 +46,7 @@ export interface PatternSymbol {
   meaning: string;
   usage: string;
   sacred: boolean;
+  imageUrl?: string;
 }
 
 export interface PatternOrigin {
@@ -115,6 +116,7 @@ export interface PatternDoc {
   // Symbol system
   symbols: PatternSymbol[];
 
+ 
   // Optional quote
   artisanQuote?: ArtisanQuote;
 

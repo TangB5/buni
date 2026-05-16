@@ -343,6 +343,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (!isHydrated || !isAuthenticated) return;
+    console.log("hello world")
     const fetchData = async () => {
       try {
         const [s, p, a] = await Promise.all([
@@ -350,6 +351,7 @@ export default function DashboardPage() {
           dashboardService.getRecentPatterns(5),
           dashboardService.getActivity(6),
         ]);
+        console.log("parttern",p)
         setStats(s); setPatterns(p); setActivity(a);
       } catch {
         setStats(MOCK_STATS); setPatterns(MOCK_PATTERNS); setActivity(MOCK_ACTIVITY);

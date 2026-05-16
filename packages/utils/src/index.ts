@@ -29,3 +29,5 @@ export const truncate = (str: string, n: number): string =>
 
 export const sleep = (ms: number): Promise<void> =>
   new Promise(res => setTimeout(res, ms));
+
+export { useDarkMode } from './useDarkMode';

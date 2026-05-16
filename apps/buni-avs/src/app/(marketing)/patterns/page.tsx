@@ -18,10 +18,13 @@ import {
 } from 'lucide-react';
 import { PatternReplacer } from 'apps/buni-avs/src/features/patterns/components/SvgPatternDisplay';
 import {
+  CSS_PATTERN_MAP,
   PatternDoc,
   PatternSymbol,
+  
 } from '@buni/patterns';
 import { PATTERNS_DOCS } from './mock';
+import { patternService } from 'apps/buni-avs/src/features/patterns/services/pattern.service';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CONSTANTS
@@ -268,10 +271,20 @@ function PatternDocSheet({ pattern }: { pattern: PatternDoc }) {
                   `}
                 >
                   <div className="flex items-start gap-3 p-3.5">
-                    <div
-                      className="h-10 w-10 shrink-0 rounded-xl ring-1 ring-black/10 dark:ring-white/10"
-                      style={{ background: sym.cssPreview }}
-                    />
+                    <div className="h-10 w-10 shrink-0 rounded-xl ring-1 ring-black/10 dark:ring-white/10 overflow-hidden">
+                      {sym.imageUrl ? (
+                        <img
+                          src={sym.imageUrl}
+                          alt={sym.nameFr}
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div
+                          className="h-full w-full"
+                          style={{ background: sym.cssPreview }}
+                        />
+                      )}
+                    </div>
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5">
                         <p className={`font-display text-sm leading-tight font-bold ${isOpen ? 'text-avs-primary' : 'text-avs-accent'}`}>
@@ -451,9 +464,69 @@ export default function Page() {
 
   // Load patterns from backend
   useEffect(() => {
-    // TODO: Replace with actual API call
-    const mockPatterns: PatternDoc[] = PATTERNS_DOCS;
-    setPatterns(mockPatterns);
+    const loadPatterns = async () => {
+      try {
+        
+        const result = await patternService.list({ perPage: 100 });
+        
+        
+        // Transform backend Pattern data to PatternDoc interface
+        const transformedPatterns = (result.data || []).map((pattern: any): PatternDoc => {
+          const p = pattern.props || pattern; // Handle both wrapped and unwrapped data
+          return {
+          id: p.id,
+          slug: p.slug,
+          nameFr: p.nameFr,
+          nameLocal: p.nameLocal || '',
+          type: p.patternType,
+          cssClass: CSS_PATTERN_MAP[p.patternType] || 'avs-pattern-wax-dakar',
+          origin: {
+            country: p.country,
+            people: p.people || '',
+            region: p.region,
+            coords: p.coords || [0, 0],
+            flag: p.flag || '',
+          },
+          summary: p.descFr,
+          history: '',
+          technique: '',
+          ceremonial: '',
+          era: p.era || '',
+          symbolism: p.symbolism || {
+            meaning: '',
+            keywords: [],
+            usage: 'universal' as const,
+          },
+          downloads: p.downloads || 0,
+          views: p.viewCount || 0,
+          colors: p.colors ? [
+            { hex: p.colors.primary, name: 'Primary', meaning: 'Main color' },
+            { hex: p.colors.secondary, name: 'Secondary', meaning: 'Secondary color' },
+            ...(p.colors.additional?.map((hex: string, i: number) => ({
+              hex,
+              name: `Additional ${i + 1}`,
+              meaning: 'Additional color'
+            })) || [])
+          ] : [],
+          symbols: p.symbols || [],
+          sources: p.sources || [],
+          artisanQuote: p.artisanQuote,
+          svgPattern: p.assets?.svgUrl,
+          license: p.assets?.license || 'cc-by',
+          createdAt: p.createdAt,
+          updatedAt: p.updatedAt,
+        };
+        });
+        
+        setPatterns(transformedPatterns);
+      } catch (error) {
+        console.error('Failed to load patterns:', error);
+        // Fallback to mock data if API fails
+        setPatterns(PATTERNS_DOCS);
+      }
+    };
+    
+    loadPatterns();
   }, []);
 
   const filtered = patterns.filter((p) => {
