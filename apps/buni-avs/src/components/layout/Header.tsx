@@ -62,6 +62,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: '/templates',     label: 'Templates' },
   { href: '/documentation', label: 'Docs'      },
   { href: '/about',         label: 'À propos'  },
+  { href: '/contact',         label: 'nous contacter'  },
 ];
 
 // ══════════════════════════════════════════════════════════════════════════════

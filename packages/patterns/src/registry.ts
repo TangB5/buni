@@ -1,18 +1,23 @@
 // =============================================================================
-// AVS — SVG Pattern Registry (Backend-driven)
-// src/core/utils/svg-patterns.ts
+// AVS — Pattern Registry
+// src/core/domain/pattern.ts
 //
-// NOUVELLE ARCHITECTURE
+// CLEAN ARCHITECTURE
 // ─────────────────────────────────────────────────────────────────────────────
-// Les SVG sont maintenant gérés côté backend + Supabase Storage.
+// Ce fichier représente le DOMAINE métier.
 //
-// Ce fichier ne contient PLUS les assets statiques.
-// Il fournit :
-// - les types TypeScript
-// - les helpers utilitaires
-// - les transformations frontend
+// Il contient :
+// - les entités métier
+// - les types
+// - les view models
+// - les utilitaires
 //
-// Le backend retourne les PatternDoc.
+// Il NE contient PAS :
+// - Prisma
+// - Supabase
+// - props wrappers
+// - metadata ambiguës
+// - logique backend
 // =============================================================================
 
 // ──────────────────────────────────────────────────────────────────────────────
@@ -31,123 +36,148 @@ export type PatternType =
   | 'ADINKRA'
   | 'TOGHU'
   | 'MUDCLOTH'
-  | 'BARKCLOTH';
+  | 'BARKCLOTH'
+  | 'NDEBELE'
+  | 'KUBA'
+  | 'WAX';
+
+// ──────────────────────────────────────────────────────────────────────────────
+// VALUE OBJECTS
+// ──────────────────────────────────────────────────────────────────────────────
 
 export interface PatternColor {
   hex: string;
+
   name: string;
+
   meaning: string;
 }
 
 export interface PatternSymbol {
   name: string;
+
   nameFr: string;
-  cssPreview: string;
+
   meaning: string;
+
   usage: string;
+
   sacred: boolean;
+
+  cssPreview?: string;
+
   imageUrl?: string;
 }
 
 export interface PatternOrigin {
   people: string;
-  region: string;
-  country: string;
-  flag: string;
 
-  // [latitude, longitude]
-  coords: [number, number];
+  region: string;
+
+  country: string;
+
+  flag?: string;
+
+  coords?: [number, number];
 }
 
 export interface ArtisanQuote {
   text: string;
+
   author: string;
+
   role: string;
+
   country: string;
 }
-
+ 
 // ──────────────────────────────────────────────────────────────────────────────
-// MAIN BACKEND DOCUMENT
+// MAIN DOMAIN ENTITY
 // ──────────────────────────────────────────────────────────────────────────────
 
-export interface PatternDoc {
+export interface Pattern {
   id: string;
 
-  // URL-friendly slug
   slug: string;
 
-  // Display names
-  nameFr: string;
-  nameLocal: string;
+  // Names
+  name: string;
 
-  // Pattern category
+  localName?: string;
+
+  nameEn?: string;
+
+  // Classification
   type: PatternType;
 
-  // CSS classes
-  svgPattern?: string;
-  cssClass: string;
-
-  // Storage path returned by backend
-  // ex: patterns/ndop-bamoum.svg
-  storagePath?: string;
-
-  // Optional public URL returned directly by backend
+  // SVG
   svgUrl?: string;
+
+  svgPattern?: string;
+
+  cssClass: string;
 
   // Cultural origin
   origin: PatternOrigin;
 
-  // Historical metadata
-  era: string;
-
-  // Licensing
-  license: PatternLicense;
-
-  // Main palette
-  colors: PatternColor[];
-
   // Documentation
   summary: string;
-  history: string;
-  technique: string;
-  symbolism: string;
-  ceremonial: string;
 
-  // Symbol system
+  history?: string;
+
+  symbolism: string;
+
+  technique?: string;
+
+  ceremonial?: string;
+
+  era: string;
+
+  // Visual identity
+  colors: PatternColor[];
+
   symbols: PatternSymbol[];
 
- 
-  // Optional quote
-  artisanQuote?: ArtisanQuote;
-
-  // Academic / cultural references
+  // References
   sources: string[];
 
+  artisanQuote?: ArtisanQuote;
+
+  // Legal
+  license: PatternLicense;
+
+  // Publication
+  published: boolean;
+
+  featured: boolean;
+
   // Analytics
-  downloads: number;
   views: number;
+
+  downloads: number;
 
   // Dates
   createdAt?: string;
+
   updatedAt?: string;
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
-// FRONTEND VIEW MODEL
+// LIGHTWEIGHT UI MODEL
 // ──────────────────────────────────────────────────────────────────────────────
 
-export interface SvgPatternMeta {
+export interface PatternCard {
   id: string;
+
   slug: string;
 
   name: string;
-  localName: string;
+
+  localName?: string;
 
   type: PatternType;
 
-  svgUrl: string;
-
-  origin: string;
+  svgUrl?: string;
 
   region: string;
 
@@ -155,53 +185,72 @@ export interface SvgPatternMeta {
 
   colors: string[];
 
-  description: string;
+  summary: string;
 
-  license: PatternLicense;
-
-  downloads: number;
   views: number;
+
+  featured: boolean;
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// API RESPONSES
+// ──────────────────────────────────────────────────────────────────────────────
+
+export interface PaginatedResponse<T> {
+  success: boolean;
+
+  data: T[];
+
+  pagination: {
+    page: number;
+
+    perPage: number;
+
+    total: number;
+
+    totalPages: number;
+  };
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+
+  data: T;
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
 // TRANSFORMERS
 // ──────────────────────────────────────────────────────────────────────────────
 
-/**
- * Transforme un PatternDoc backend
- * en structure légère frontend
- */
-export function toSvgPatternMeta(
-  pattern: PatternDoc
-): SvgPatternMeta {
+export function toPatternCard(
+  pattern: Pattern
+): PatternCard {
   return {
     id: pattern.id,
 
     slug: pattern.slug,
 
-    name: pattern.nameFr,
+    name: pattern.name,
 
-    localName: pattern.nameLocal,
+    localName: pattern.localName,
 
     type: pattern.type,
 
-    svgUrl: pattern.svgUrl ?? '',
-
-    origin: `${pattern.origin.region}, ${pattern.origin.country}`,
+    svgUrl: pattern.svgUrl,
 
     region: pattern.origin.region,
 
     country: pattern.origin.country,
 
-    colors: pattern.colors.map(c => c.hex),
+    colors: pattern.colors.map(
+      color => color.hex
+    ),
 
-    description: pattern.summary,
-
-    license: pattern.license,
-
-    downloads: pattern.downloads,
+    summary: pattern.summary,
 
     views: pattern.views,
+
+    featured: pattern.featured,
   };
 }
 
@@ -209,80 +258,80 @@ export function toSvgPatternMeta(
 // UTILITAIRES
 // ──────────────────────────────────────────────────────────────────────────────
 
-/**
- * Retourne uniquement les patterns d'un type donné
- */
 export function getPatternsByType(
-  patterns: PatternDoc[],
+  patterns: Pattern[],
   type: PatternType
-): PatternDoc[] {
-  return patterns.filter(p => p.type === type);
+): Pattern[] {
+  return patterns.filter(
+    pattern => pattern.type === type
+  );
 }
 
-/**
- * Retourne uniquement les patterns d'un pays
- */
 export function getPatternsByCountry(
-  patterns: PatternDoc[],
+  patterns: Pattern[],
   country: string
-): PatternDoc[] {
+): Pattern[] {
   return patterns.filter(
-    p =>
-      p.origin.country.toLowerCase() ===
+    pattern =>
+      pattern.origin.country.toLowerCase() ===
       country.toLowerCase()
   );
 }
 
-/**
- * Retourne uniquement les patterns sacrés
- */
 export function getSacredPatterns(
-  patterns: PatternDoc[]
-): PatternDoc[] {
+  patterns: Pattern[]
+): Pattern[] {
   return patterns.filter(pattern =>
-    pattern.symbols.some(symbol => symbol.sacred)
+    pattern.symbols.some(
+      symbol => symbol.sacred
+    )
   );
 }
 
-/**
- * Recherche par texte
- */
 export function searchPatterns(
-  patterns: PatternDoc[],
+  patterns: Pattern[],
   query: string
-): PatternDoc[] {
+): Pattern[] {
   const q = query.toLowerCase();
 
   return patterns.filter(pattern =>
-    pattern.nameFr.toLowerCase().includes(q) ||
-    pattern.nameLocal.toLowerCase().includes(q) ||
-    pattern.summary.toLowerCase().includes(q) ||
-    pattern.origin.people.toLowerCase().includes(q)
+    pattern.name
+      .toLowerCase()
+      .includes(q) ||
+
+    pattern.localName
+      ?.toLowerCase()
+      .includes(q) ||
+
+    pattern.summary
+      .toLowerCase()
+      .includes(q) ||
+
+    pattern.origin.people
+      .toLowerCase()
+      .includes(q)
   );
 }
 
-/**
- * Retourne la palette HEX uniquement
- */
 export function getPatternPalette(
-  pattern: PatternDoc
+  pattern: Pattern
 ): string[] {
-  return pattern.colors.map(c => c.hex);
+  return pattern.colors.map(
+    color => color.hex
+  );
 }
 
-/**
- * Génère un JSON exportable de palette
- */
 export function generatePaletteJson(
-  pattern: PatternDoc
+  pattern: Pattern
 ): string {
   return JSON.stringify(
     {
       id: pattern.id,
 
-      name: pattern.nameFr,
+      name: pattern.name,
 
-      localName: pattern.nameLocal,
+      localName:
+        pattern.localName,
 
       type: pattern.type,
 
@@ -290,7 +339,8 @@ export function generatePaletteJson(
 
       colors: pattern.colors,
 
-      license: pattern.license,
+      license:
+        pattern.license,
 
       source:
         'AVS — African Visual Standard · avs-standard.com',
@@ -300,65 +350,47 @@ export function generatePaletteJson(
   );
 }
 
-/**
- * Retourne les symboles sacrés uniquement
- */
 export function getSacredSymbols(
-  pattern: PatternDoc
+  pattern: Pattern
 ): PatternSymbol[] {
   return pattern.symbols.filter(
     symbol => symbol.sacred
   );
 }
 
-/**
- * Retourne les couleurs principales format CSS
- */
 export function getCssVariables(
-  pattern: PatternDoc
+  pattern: Pattern
 ): Record<string, string> {
   return Object.fromEntries(
-    pattern.colors.map((color, index) => [
-      `--pattern-color-${index + 1}`,
-      color.hex,
-    ])
+    pattern.colors.map(
+      (color, index) => [
+        `--pattern-color-${index + 1}`,
+        color.hex,
+      ]
+    )
   );
-}
-
-// ──────────────────────────────────────────────────────────────────────────────
-// TYPES API
-// ──────────────────────────────────────────────────────────────────────────────
-
-export interface PatternsApiResponse {
-  data: PatternDoc[];
-
-  total: number;
-
-  page?: number;
-
-  limit?: number;
-}
-
-export interface PatternApiResponse {
-  data: PatternDoc;
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
 // TYPE GUARDS
 // ──────────────────────────────────────────────────────────────────────────────
 
-export function isPatternDoc(
+export function isPattern(
   value: unknown
-): value is PatternDoc {
-  if (!value || typeof value !== 'object') {
+): value is Pattern {
+  if (
+    !value ||
+    typeof value !== 'object'
+  ) {
     return false;
   }
 
-  const pattern = value as PatternDoc;
+  const pattern =
+    value as Pattern;
 
   return (
     typeof pattern.id === 'string' &&
     typeof pattern.slug === 'string' &&
-    typeof pattern.nameFr === 'string'
+    typeof pattern.name === 'string'
   );
 }

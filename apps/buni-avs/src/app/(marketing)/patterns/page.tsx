@@ -19,7 +19,7 @@ import {
 import { PatternReplacer } from 'apps/buni-avs/src/features/patterns/components/SvgPatternDisplay';
 import {
   CSS_PATTERN_MAP,
-  PatternDoc,
+  Pattern,
   PatternSymbol,
   
 } from '@buni/patterns';
@@ -78,7 +78,7 @@ function CopyBtn({ text, label }: { text: string; label?: string }) {
 // LICENSE BADGE
 // ─────────────────────────────────────────────────────────────────────────────
 
-function LicenseBadge({ license }: { license: PatternDoc['license'] }) {
+function LicenseBadge({ license }: { license: Pattern['license'] }) {
   const variants: Record<string, string> = {
     cc0:        'bg-avs-primary/10 text-avs-primary   border border-avs-primary/20',
     'cc-by':    'bg-avs-primary/10 text-avs-primary   border border-avs-primary/20',
@@ -126,7 +126,7 @@ function MetaChip({
 // PATTERN DOC SHEET
 // ─────────────────────────────────────────────────────────────────────────────
 
-function PatternDocSheet({ pattern }: { pattern: PatternDoc }) {
+function PatternSheet({ pattern }: { pattern: Pattern }) {
   const [activeSymbol, setActiveSymbol] = useState<PatternSymbol | null>(null);
   const [activeSection, setActiveSection] = useState<SectionId>('histoire');
   const contentRef = useRef<HTMLDivElement>(null);
@@ -174,10 +174,10 @@ function PatternDocSheet({ pattern }: { pattern: PatternDoc }) {
           <div className="flex items-start justify-between gap-4">
             <div>
               <h2 className="font-display leading-tight font-black text-avs-accent text-3xl tracking-tight">
-                {pattern.nameFr}
+                {pattern.name}
               </h2>
               <p className="mt-1 font-mono text-sm italic text-avs-accent/60">
-                {pattern.nameLocal}
+                {pattern.localName}
               </p>
             </div>
 
@@ -275,7 +275,7 @@ function PatternDocSheet({ pattern }: { pattern: PatternDoc }) {
                       {sym.imageUrl ? (
                         <img
                           src={sym.imageUrl}
-                          alt={sym.nameFr}
+                          alt={sym.name}
                           className="h-full w-full object-cover"
                         />
                       ) : (
@@ -288,7 +288,7 @@ function PatternDocSheet({ pattern }: { pattern: PatternDoc }) {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5">
                         <p className={`font-display text-sm leading-tight font-bold ${isOpen ? 'text-avs-primary' : 'text-avs-accent'}`}>
-                          {sym.nameFr}
+                          {sym.name}
                         </p>
                         {sym.sacred && (
                           <span className="rounded-md px-1.5 py-0.5 font-mono text-[7px] font-black tracking-wider uppercase bg-avs-kente/15 text-avs-kente border border-avs-kente/25">
@@ -456,67 +456,55 @@ function PatternDocSheet({ pattern }: { pattern: PatternDoc }) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function Page() {
-  const [selected, setSelected]     = useState<PatternDoc | null>(null);
+  const [selected, setSelected]     = useState<Pattern | null>(null);
   const [search, setSearch]         = useState('');
   const [activeType, setActiveType] = useState('ALL');
   const [mobileDoc, setMobileDoc]   = useState(false);
-  const [patterns, setPatterns]     = useState<PatternDoc[]>([]);
+  const [patterns, setPatterns]     = useState<Pattern[]>([]);
 
   // Load patterns from backend
   useEffect(() => {
     const loadPatterns = async () => {
       try {
-        
         const result = await patternService.list({ perPage: 100 });
         
-        
-        // Transform backend Pattern data to PatternDoc interface
-        const transformedPatterns = (result.data || []).map((pattern: any): PatternDoc => {
-          const p = pattern.props || pattern; // Handle both wrapped and unwrapped data
-          return {
-          id: p.id,
-          slug: p.slug,
-          nameFr: p.nameFr,
-          nameLocal: p.nameLocal || '',
-          type: p.patternType,
-          cssClass: CSS_PATTERN_MAP[p.patternType] || 'avs-pattern-wax-dakar',
+        const transformedPatterns = (result || []).map((pattern: any): Pattern => ({
+          id: pattern.id,
+          slug: pattern.slug,
+          name: pattern.nameFr,
+          localName: pattern.nameLocal || '',
+          type: pattern.type,
+          cssClass: pattern.cssClass || CSS_PATTERN_MAP[pattern.type] || 'avs-pattern-wax-dakar',
           origin: {
-            country: p.country,
-            people: p.people || '',
-            region: p.region,
-            coords: p.coords || [0, 0],
-            flag: p.flag || '',
+            country: pattern.origin?.country || '',
+            people: pattern.origin?.people || '',
+            region: pattern.origin?.region || '',
+            coords: pattern.origin?.coords || [0, 0],
+            flag: pattern.origin?.flag || '',
           },
-          summary: p.descFr,
-          history: '',
-          technique: '',
-          ceremonial: '',
-          era: p.era || '',
-          symbolism: p.symbolism || {
+          summary: pattern.summary || '',
+          history: pattern.history || '',
+          technique: pattern.technique || '',
+          ceremonial: pattern.ceremonial || '',
+          era: pattern.era || '',
+          symbolism: pattern.symbolism || {
             meaning: '',
             keywords: [],
             usage: 'universal' as const,
           },
-          downloads: p.downloads || 0,
-          views: p.viewCount || 0,
-          colors: p.colors ? [
-            { hex: p.colors.primary, name: 'Primary', meaning: 'Main color' },
-            { hex: p.colors.secondary, name: 'Secondary', meaning: 'Secondary color' },
-            ...(p.colors.additional?.map((hex: string, i: number) => ({
-              hex,
-              name: `Additional ${i + 1}`,
-              meaning: 'Additional color'
-            })) || [])
-          ] : [],
-          symbols: p.symbols || [],
-          sources: p.sources || [],
-          artisanQuote: p.artisanQuote,
-          svgPattern: p.assets?.svgUrl,
-          license: p.assets?.license || 'cc-by',
-          createdAt: p.createdAt,
-          updatedAt: p.updatedAt,
-        };
-        });
+          downloads: pattern.downloads || 0,
+          views: pattern.views || 0,
+          colors: pattern.colors || [],
+          symbols: pattern.symbols || [],
+          sources: pattern.sources || [],
+          artisanQuote: pattern.artisanQuote,
+          svgPattern: pattern.svgUrl,
+          license: pattern.license || 'cc-by',
+          createdAt: pattern.createdAt,
+          updatedAt: pattern.updatedAt,
+          published: true,
+          featured: false,
+        }));
         
         setPatterns(transformedPatterns);
       } catch (error) {
@@ -533,7 +521,7 @@ export default function Page() {
     const q = search.toLowerCase();
     const matchSearch =
       !q ||
-      p.nameFr.toLowerCase().includes(q) ||
+      p.name.toLowerCase().includes(q) ||
       p.origin.country.toLowerCase().includes(q) ||
       p.origin.people.toLowerCase().includes(q) ||
       p.summary.toLowerCase().includes(q);
@@ -541,7 +529,7 @@ export default function Page() {
     return matchSearch && matchType;
   });
 
-  const handleSelect = (p: PatternDoc) => {
+  const handleSelect = (p: Pattern) => {
     setSelected(p);
     setMobileDoc(true);
   };
@@ -685,7 +673,7 @@ export default function Page() {
                       />
                       <div className="min-w-0 flex-1">
                         <p className={`font-display truncate text-sm leading-tight font-bold ${isActive ? 'text-avs-primary' : 'text-avs-accent'}`}>
-                          {p.nameFr}
+                          {p.name}
                         </p>
                         <p className="mt-0.5 font-mono text-[9px] text-avs-accent/40">
                           {p.origin.flag} {p.origin.country}
@@ -749,7 +737,7 @@ export default function Page() {
                 transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
                 className="h-full"
               >
-                <PatternDocSheet pattern={selected} />
+                <PatternSheet pattern={selected} />
               </motion.div>
             ) : (
               <motion.div

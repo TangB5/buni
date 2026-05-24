@@ -4,25 +4,9 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { motion, useMotionValue, useTransform, AnimatePresence } from 'framer-motion';
 import {
-  Layers,
-  Download,
-  Eye,
-  Heart,
-  Plus,
-  ArrowRight,
-  ArrowUpRight,
-  Settings,
-  LogOut,
-  TrendingUp,
-  MessageSquare,
-  Check,
-  Palette,
-  User,
-  BarChart3,
-  ChevronRight,
-  Sparkles,
-  Bell,
-  Zap,
+  Layers, Download, Eye, Heart, Plus, ArrowRight, ArrowUpRight,
+  TrendingUp, MessageSquare, Check, Palette, User, ChevronRight,
+  Sparkles, Zap, BarChart2, Clock, Star,
 } from 'lucide-react';
 import { useAuth, useLogout } from '@buni/auth';
 import {
@@ -37,34 +21,18 @@ import { Route } from 'next';
 // TYPES & CONFIG
 // ─────────────────────────────────────────────────────────────────────────────
 
-const STATUS_CONFIG: Record<string, { label: string; css: string; dot: string }> = {
-  published: {
-    label: 'Publié',
-    css: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
-    dot: 'bg-emerald-500',
-  },
-  draft: {
-    label: 'Brouillon',
-    css: 'bg-avs-accent/6 text-avs-accent/50 border-avs-accent/10',
-    dot: 'bg-avs-accent/30',
-  },
-  review: {
-    label: 'En révision',
-    css: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20',
-    dot: 'bg-amber-500',
-  },
-  rejected: {
-    label: 'Rejeté',
-    css: 'bg-red-500/10 text-red-500 border-red-500/20',
-    dot: 'bg-red-500',
-  },
+const STATUS_CONFIG: Record<string, { label: string; dot: string; ring: string; text: string }> = {
+  published: { label: 'Publié',     dot: '#10B981', ring: 'rgba(16,185,129,0.15)', text: '#10B981' },
+  draft:     { label: 'Brouillon', dot: '#6B7280', ring: 'rgba(107,114,128,0.15)', text: '#6B7280' },
+  review:    { label: 'Révision',  dot: '#F59E0B', ring: 'rgba(245,158,11,0.15)',  text: '#F59E0B' },
+  rejected:  { label: 'Rejeté',   dot: '#EF4444', ring: 'rgba(239,68,68,0.15)',   text: '#EF4444' },
 };
 
-const ACTIVITY_CONFIG: Record<string, { icon: typeof MessageSquare; color: string; bg: string }> = {
-  comment:  { icon: MessageSquare, color: 'text-avs-indigo',  bg: 'bg-avs-indigo/10'  },
-  download: { icon: Download,      color: 'text-avs-ndop',    bg: 'bg-avs-ndop/10'    },
-  review:   { icon: Check,         color: 'text-emerald-600', bg: 'bg-emerald-500/10' },
-  favorite: { icon: Heart,         color: 'text-avs-primary', bg: 'bg-avs-primary/10' },
+const ACTIVITY_CONFIG: Record<string, { icon: typeof MessageSquare; color: string }> = {
+  comment:  { icon: MessageSquare, color: '#C0573E' },
+  download: { icon: Download,      color: '#4F7CFF' },
+  review:   { icon: Check,         color: '#10B981' },
+  favorite: { icon: Heart,         color: '#F59E0B' },
 };
 
 const CSS_PATTERN_MAP: Record<string, string> = {
@@ -74,24 +42,6 @@ const CSS_PATTERN_MAP: Record<string, string> = {
   WAX:     'avs-pattern-wax-dakar',
   ADINKRA: 'avs-pattern-adinkra-sankofa',
   KUBA:    'avs-pattern-kuba-kasai',
-};
-
-// ─────────────────────────────────────────────────────────────────────────────
-// ANIMATION VARIANTS
-// ─────────────────────────────────────────────────────────────────────────────
-
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 16 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, delay },
-});
-
-const stagger = { animate: { transition: { staggerChildren: 0.06 } } };
-
-const itemFade = {
-  initial: { opacity: 0, y: 10 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.4 },
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -122,121 +72,174 @@ const MOCK_ACTIVITY: DashboardActivity[] = [
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
+// UTILS
+// ─────────────────────────────────────────────────────────────────────────────
+
+function timeAgo(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime();
+  if (diff < 3600000)   return `${Math.round(diff / 60000)}min`;
+  if (diff < 86400000)  return `${Math.round(diff / 3600000)}h`;
+  if (diff < 604800000) return `${Math.round(diff / 86400000)}j`;
+  return new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // SKELETON
 // ─────────────────────────────────────────────────────────────────────────────
 
 function Skeleton({ className = '' }: { className?: string }) {
-  return (
-    <div className={`rounded-lg bg-avs-accent/8 animate-pulse ${className}`} />
-  );
+  return <div className={`rounded-md bg-avs-accent/6 animate-pulse ${className}`} />;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ANIMATED COUNTER
 // ─────────────────────────────────────────────────────────────────────────────
 
-function useCounter(target: number, duration = 1200) {
+function useCounter(target: number, duration = 1400) {
   const [value, setValue] = useState(0);
   useEffect(() => {
-    let start = 0;
-    const step = target / (duration / 16);
+    let frame = 0;
+    const totalFrames = Math.round(duration / 16);
     const timer = setInterval(() => {
-      start += step;
-      if (start >= target) { setValue(target); clearInterval(timer); }
-      else setValue(Math.floor(start));
+      frame++;
+      // Ease-out cubic
+      const progress = 1 - Math.pow(1 - frame / totalFrames, 3);
+      setValue(Math.round(target * progress));
+      if (frame >= totalFrames) { setValue(target); clearInterval(timer); }
     }, 16);
     return () => clearInterval(timer);
   }, [target, duration]);
   return value;
 }
 
-function AnimatedValue({ value, format }: { value: number; format?: (n: number) => string }) {
-  const count = useCounter(value);
-  return <>{format ? format(count) : count.toLocaleString()}</>;
-}
-
 // ─────────────────────────────────────────────────────────────────────────────
-// STAT CARD
+// KPI CARD — architecture repensée
 // ─────────────────────────────────────────────────────────────────────────────
 
-interface StatCardProps {
+interface KpiCardProps {
   label: string;
   value: number;
-  sub?: string;
+  trend: string;
+  trendUp?: boolean;
   icon: React.ElementType;
-  accentClass: string;        // e.g. "text-avs-primary"
-  accentBgClass: string;      // e.g. "bg-avs-primary/10"
-  accentBarClass: string;     // e.g. "bg-avs-primary"
-  accentGlowClass: string;    // e.g. "bg-avs-primary/20"
+  color: string;           // hex
   patternCss: string;
   delay: number;
+  format?: (n: number) => string;
 }
 
-function StatCard({
-  label, value, sub, icon: Icon,
-  accentClass, accentBgClass, accentBarClass, accentGlowClass,
-  patternCss, delay,
-}: StatCardProps) {
-  const ref = useRef<HTMLDivElement>(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const rotateX = useTransform(y, [-0.5, 0.5], [4, -4]);
-  const rotateY = useTransform(x, [-0.5, 0.5], [-4, 4]);
-
-  const handleMouse = (e: React.MouseEvent<HTMLDivElement>) => {
-    const rect = ref.current?.getBoundingClientRect();
-    if (!rect) return;
-    x.set((e.clientX - rect.left) / rect.width - 0.5);
-    y.set((e.clientY - rect.top) / rect.height - 0.5);
-  };
+function KpiCard({ label, value, trend, trendUp = true, icon: Icon, color, patternCss, delay }: KpiCardProps) {
+  const count = useCounter(value);
+  const pct = Math.min(100, (value / (value * 1.35)) * 100); // illustrative fill
 
   return (
     <motion.div
-      ref={ref}
-      {...fadeUp(delay)}
-      onMouseMove={handleMouse}
-      // @ts-ignore
-      onMouseLeave={() => { x.set(0); y.set(0); }}
-      style={{ rotateX, rotateY, transformPerspective: 800 }}
-      className="group relative overflow-hidden rounded-2xl border border-avs-accent/10 bg-avs-secondary shadow-avs hover:shadow-avs-md transition-shadow duration-500 cursor-default"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
+      className="group relative flex flex-col gap-5 rounded-2xl border border-avs-accent/8 bg-avs-secondary p-6 hover:border-avs-accent/18 transition-colors duration-300"
     >
-      {/* Top accent line */}
-      <div className={`${patternCss} absolute inset-x-0 top-0 h-0.5`} aria-hidden />
+      {/* Header row */}
+      <div className="flex items-center justify-between">
+        <p className="text-[11px] font-semibold tracking-[0.12em] uppercase text-avs-accent/40">{label}</p>
+        <div
+          className="flex h-9 w-9 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110"
+          style={{ background: `${color}14` }}
+        >
+          <Icon size={16} style={{ color }} aria-hidden />
+        </div>
+      </div>
 
-      {/* Glow blob */}
+      {/* Value */}
+      <div>
+        <p
+          className="font-display text-4xl font-black tabular-nums leading-none text-avs-accent"
+          style={{ fontVariantNumeric: 'tabular-nums' }}
+        >
+          {count.toLocaleString('fr-FR')}
+        </p>
+        <p className="mt-2 flex items-center gap-1.5 text-[11px] font-semibold" style={{ color }}>
+          <TrendingUp size={10} aria-hidden />
+          {trend}
+        </p>
+      </div>
+
+      {/* Progress bar */}
+      <div className="h-0.5 w-full overflow-hidden rounded-full bg-avs-accent/6">
+        <motion.div
+          initial={{ width: 0 }}
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 1.4, delay: delay + 0.2, ease: [0.22, 1, 0.36, 1] }}
+          className="h-full rounded-full"
+          style={{ background: color }}
+        />
+      </div>
+
+      {/* Pattern accent — coin bas-droit discret */}
       <div
-        className={`pointer-events-none absolute -top-10 -right-10 h-28 w-28 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700 blur-2xl ${accentGlowClass}`}
+        className={`${patternCss} pointer-events-none absolute bottom-0 right-0 h-16 w-16 rounded-br-2xl opacity-[0.07]`}
+        aria-hidden
+      />
+    </motion.div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// HERO BANNER — contribution
+// ─────────────────────────────────────────────────────────────────────────────
+
+function HeroBanner({ patternsCount }: { patternsCount: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.05, ease: [0.22, 1, 0.36, 1] }}
+      className="relative overflow-hidden rounded-2xl bg-avs-accent"
+    >
+      {/* Fond pattern à 8% */}
+      <div className="avs-pattern-kente-royale absolute inset-0 opacity-[0.08]" aria-hidden />
+
+      {/* Dégradé sombre directionnel */}
+      <div
+        className="absolute inset-0"
+        style={{ background: 'linear-gradient(110deg, rgba(10,8,6,0.82) 0%, rgba(10,8,6,0.55) 55%, transparent 100%)' }}
         aria-hidden
       />
 
-      <div className="p-5 pt-6">
-        <div className="flex items-start justify-between gap-4">
-          <div className="min-w-0 flex-1">
-            <p className="font-mono text-[9px] tracking-[0.2em] uppercase text-avs-accent/40">
-              {label}
-            </p>
-            <p className="font-display mt-2 text-[2.25rem] leading-none font-black tracking-tight text-avs-accent tabular-nums">
-              <AnimatedValue value={value} />
-            </p>
-            {sub && (
-              <p className={`mt-2 flex items-center gap-1.5 text-xs font-semibold ${accentClass}`}>
-                <TrendingUp size={10} aria-hidden /> {sub}
-              </p>
-            )}
-          </div>
-          <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:scale-110 ${accentBgClass} ${accentClass}`}>
-            <Icon size={20} aria-hidden />
-          </div>
+      {/* Cercles décoratifs géométriques */}
+      <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full border border-avs-secondary/5" aria-hidden />
+      <div className="pointer-events-none absolute -right-8  -top-8  h-40 w-40 rounded-full border border-avs-secondary/8" aria-hidden />
+
+      <div className="relative flex flex-col gap-6 px-8 py-8 sm:flex-row sm:items-center sm:justify-between">
+        {/* Texte */}
+        <div className="max-w-lg">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-avs-primary/30 bg-avs-primary/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.15em] text-avs-primary">
+            <Sparkles size={8} aria-hidden /> Standard AVS — Contributeur
+          </span>
+          <h2 className="font-display mt-3 text-2xl font-black leading-snug text-avs-secondary sm:text-3xl">
+            {patternsCount} motifs codifiés.{' '}
+            <span className="text-avs-primary">Chaque ligne, un héritage.</span>
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-avs-secondary/45">
+            Vous façonnez le premier standard visuel africain du numérique.
+          </p>
         </div>
 
-        {/* Mini progress bar */}
-        <div className="mt-4 h-px w-full overflow-hidden rounded-full bg-avs-accent/8">
-          <motion.div
-            initial={{ width: 0 }}
-            animate={{ width: '68%' }}
-            transition={{ duration: 1.2, delay: delay + 0.3, ease: 'easeInOut' }}
-            className={`h-full rounded-full ${accentBarClass}`}
-          />
+        {/* Actions */}
+        <div className="flex shrink-0 flex-wrap gap-3">
+          <Link
+            href={'/patternsDashboard/new' as Route}
+            className="group inline-flex items-center gap-2.5 rounded-xl bg-avs-primary px-6 py-3 text-sm font-bold text-avs-secondary shadow-lg shadow-avs-primary/25 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-avs-primary/35"
+          >
+            Soumettre un motif
+            <ArrowRight size={13} className="transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden />
+          </Link>
+          <Link
+            href={'/analytics' as Route}
+            className="inline-flex items-center gap-2 rounded-xl border border-avs-secondary/15 px-6 py-3 text-sm font-semibold text-avs-secondary/55 transition-all duration-200 hover:border-avs-secondary/30 hover:text-avs-secondary/90"
+          >
+            <BarChart2 size={14} aria-hidden /> Analytique
+          </Link>
         </div>
       </div>
     </motion.div>
@@ -244,86 +247,229 @@ function StatCard({
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// QUICK ACTION
+// PATTERN ROW
+// ─────────────────────────────────────────────────────────────────────────────
+
+function PatternRow({ pattern, index }: { pattern: UserPattern; index: number }) {
+  const status = STATUS_CONFIG[pattern.status] ?? STATUS_CONFIG.draft!;
+  const patCss = CSS_PATTERN_MAP[pattern.type] ?? 'avs-pattern-wax-dakar';
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: -8 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.35, delay: index * 0.06, ease: 'easeOut' }}
+      className="group flex items-center gap-4 px-5 py-3.5 transition-colors duration-150 hover:bg-avs-accent/3 cursor-pointer"
+    >
+      {/* Thumbnail pattern */}
+      <div className={`${patCss} relative h-10 w-10 shrink-0 rounded-lg overflow-hidden ring-1 ring-avs-accent/10`}>
+        <div className="absolute inset-0 bg-avs-accent/10" />
+      </div>
+
+      {/* Name + type */}
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-[13px] font-semibold text-avs-accent transition-colors duration-150 group-hover:text-avs-primary">
+          {pattern.name}
+        </p>
+        <p className="mt-0.5 text-[10px] font-mono font-medium uppercase tracking-[0.1em] text-avs-accent/35">
+          {pattern.type}
+        </p>
+      </div>
+
+      {/* Stats */}
+      <div className="hidden sm:flex items-center gap-4 text-[11px] text-avs-accent/35 tabular-nums">
+        <span className="flex items-center gap-1"><Eye size={10} aria-hidden />{pattern.viewCount.toLocaleString('fr-FR')}</span>
+        <span className="flex items-center gap-1"><Download size={10} aria-hidden />{pattern.downloadCount.toLocaleString('fr-FR')}</span>
+      </div>
+
+      {/* Status badge */}
+      <div
+        className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold"
+        style={{ background: status.ring, color: status.text }}
+      >
+        <span className="h-1.5 w-1.5 rounded-full" style={{ background: status.dot }} aria-hidden />
+        {status.label}
+      </div>
+
+      <ChevronRight size={13} className="shrink-0 text-avs-accent/20 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-avs-primary" aria-hidden />
+    </motion.div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// ACTIVITY ITEM
+// ─────────────────────────────────────────────────────────────────────────────
+
+function ActivityItem({ item, index }: { item: DashboardActivity; index: number }) {
+  const conf = ACTIVITY_CONFIG[item.type] ?? ACTIVITY_CONFIG.comment!;
+  const Icon = conf.icon;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3, delay: index * 0.05 }}
+      className="flex items-start gap-3.5 px-5 py-3.5 hover:bg-avs-accent/3 transition-colors duration-150"
+    >
+      <div
+        className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg mt-0.5"
+        style={{ background: `${conf.color}14` }}
+      >
+        <Icon size={12} style={{ color: conf.color }} aria-hidden />
+      </div>
+      <div className="min-w-0 flex-1">
+        <p className="text-[12px] leading-snug text-avs-accent/55">
+          {item.action}{' '}
+          <span className="font-semibold text-avs-accent">{item.target}</span>
+        </p>
+        <p className="mt-1 flex items-center gap-1 text-[10px] font-mono text-avs-accent/30">
+          <Clock size={8} aria-hidden /> {timeAgo(item.timestamp)}
+        </p>
+      </div>
+    </motion.div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// QUICK ACTION CARD
 // ─────────────────────────────────────────────────────────────────────────────
 
 function QuickAction({
-  href, icon: Icon, label, variant = 'ghost', description,
-}: {
-  href: string;
-  icon: React.ElementType;
-  label: string;
-  variant?: 'primary' | 'ghost';
-  description?: string;
-}) {
+  href, icon: Icon, label, sub, accent = false,
+}: { href: string; icon: React.ElementType; label: string; sub: string; accent?: boolean }) {
   return (
     <Link
       href={href as Route}
       className={`
-        group relative overflow-hidden rounded-2xl flex flex-col gap-3 p-5
-        transition-all duration-300 hover:-translate-y-1
-        ${variant === 'primary'
-          ? 'bg-avs-primary text-avs-secondary shadow-avs-lg shadow-avs-primary/20 hover:shadow-avs-lg hover:shadow-avs-primary/25'
-          : 'border border-avs-accent/10 bg-avs-secondary text-avs-accent/70 hover:border-avs-primary/40 hover:text-avs-primary'
+        group relative flex flex-col gap-3 overflow-hidden rounded-xl p-4 transition-all duration-300 hover:-translate-y-0.5
+        ${accent
+          ? 'bg-avs-primary text-avs-secondary shadow-lg shadow-avs-primary/20 hover:shadow-xl hover:shadow-avs-primary/28'
+          : 'border border-avs-accent/8 bg-avs-secondary text-avs-accent hover:border-avs-accent/18'
         }
       `}
     >
-      {variant === 'primary' && (
-        <div className="pointer-events-none absolute inset-0 opacity-10" aria-hidden>
-          <div className="avs-pattern-kente-royale h-full w-full" />
-        </div>
+      {accent && (
+        <div className="avs-pattern-kente-royale pointer-events-none absolute inset-0 opacity-[0.06]" aria-hidden />
       )}
       <div className={`
-        relative flex h-9 w-9 items-center justify-center rounded-xl
-        transition-transform duration-300 group-hover:scale-110
-        ${variant === 'primary'
-          ? 'bg-avs-secondary/20'
-          : 'bg-avs-accent/6 group-hover:bg-avs-primary/10'
-        }
+        relative flex h-8 w-8 items-center justify-center rounded-lg transition-transform duration-300 group-hover:scale-110
+        ${accent ? 'bg-avs-secondary/15' : 'bg-avs-accent/6 group-hover:bg-avs-primary/10'}
       `}>
-        <Icon size={17} aria-hidden />
+        <Icon size={15} aria-hidden />
       </div>
       <div className="relative">
-        <p className="text-sm font-bold leading-tight">{label}</p>
-        {description && (
-          <p className={`mt-0.5 text-[11px] leading-snug ${variant === 'primary' ? 'text-avs-secondary/60' : 'text-avs-accent/40'}`}>
-            {description}
-          </p>
-        )}
+        <p className="text-[13px] font-bold leading-tight">{label}</p>
+        <p className={`mt-0.5 text-[11px] leading-snug ${accent ? 'text-avs-secondary/50' : 'text-avs-accent/40'}`}>
+          {sub}
+        </p>
       </div>
     </Link>
   );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// SECTION HEADER
+// PANEL WRAPPER — card conteneur cohérent
 // ─────────────────────────────────────────────────────────────────────────────
 
-function SectionHeader({
-  title, patternCss, href, linkLabel,
-}: {
-  title: string;
-  patternCss: string;
-  href?: string;
-  linkLabel?: string;
-}) {
+function Panel({
+  children, className = '',
+}: { children: React.ReactNode; className?: string }) {
   return (
-    <div className="flex items-center justify-between px-5 py-4 border-b border-avs-accent/10">
-      <div className="flex items-center gap-3">
-        <div className="h-6 w-6 overflow-hidden rounded-md shadow-avs ring-1 ring-avs-accent/10">
-          <div className={`${patternCss} h-full w-full`} aria-hidden />
-        </div>
-        <h2 className="font-display text-avs-accent font-bold text-[15px]">{title}</h2>
+    <div className={`rounded-2xl border border-avs-accent/8 bg-avs-secondary overflow-hidden ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+function PanelHeader({
+  title, patternCss, href, linkLabel,
+}: { title: string; patternCss: string; href?: string; linkLabel?: string }) {
+  return (
+    <div className="flex items-center justify-between border-b border-avs-accent/8 px-5 py-4">
+      <div className="flex items-center gap-2.5">
+        <div className={`${patternCss} h-5 w-5 overflow-hidden rounded-md opacity-90`} aria-hidden />
+        <h3 className="text-[13px] font-bold text-avs-accent">{title}</h3>
       </div>
       {href && linkLabel && (
         <Link
           href={href as Route}
-          className="flex items-center gap-1 text-xs font-semibold text-avs-primary hover:underline underline-offset-4 transition-colors"
+          className="flex items-center gap-1 text-[11px] font-semibold text-avs-primary transition-colors hover:underline underline-offset-4"
         >
-          {linkLabel} <ChevronRight size={11} aria-hidden />
+          {linkLabel} <ChevronRight size={10} aria-hidden />
         </Link>
       )}
     </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// LOADING STATE
+// ─────────────────────────────────────────────────────────────────────────────
+
+function PageLoader() {
+  return (
+    <div className="flex min-h-[70vh] flex-col items-center justify-center gap-4">
+      <div className="relative h-12 w-12">
+        <div className="avs-pattern-kente-royale absolute inset-0 rounded-full opacity-70 animate-spin [animation-duration:2.5s]" />
+        <div className="absolute inset-2.5 rounded-full bg-avs-secondary" />
+      </div>
+      <p className="font-mono text-[9px] tracking-[0.25em] uppercase text-avs-accent/25 animate-pulse">
+        Chargement BUNI AVS…
+      </p>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PROFILE STRIP
+// ─────────────────────────────────────────────────────────────────────────────
+
+function ProfileStrip({
+  user, roleLabel, avatarPattern,
+}: { user: any; roleLabel: string; avatarPattern: string }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.0, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <Panel>
+        <div className="flex flex-col gap-4 px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+          {/* Avatar + identity */}
+          <div className="flex items-center gap-4">
+            <div className={`${avatarPattern} h-10 w-10 shrink-0 overflow-hidden rounded-xl ring-1 ring-avs-accent/10`} aria-hidden />
+            <div>
+              <p className="text-[14px] font-bold text-avs-accent">{user?.name ?? '—'}</p>
+              <p className="text-[11px] text-avs-accent/40">{user?.email ?? '—'}</p>
+            </div>
+            {/* Role badge */}
+            <span className="ml-1 hidden rounded-full border border-avs-primary/25 bg-avs-primary/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.1em] text-avs-primary sm:inline-flex">
+              {roleLabel}
+            </span>
+          </div>
+
+          {/* Meta info */}
+          <div className="flex items-center gap-6 text-[11px]">
+            {user?.createdAt && (
+              <div>
+                <p className="font-mono uppercase tracking-[0.1em] text-avs-accent/30">Membre depuis</p>
+                <p className="mt-0.5 font-semibold text-avs-accent">
+                  {new Date(user.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}
+                </p>
+              </div>
+            )}
+            <Link
+              href={'/profile' as Route}
+              className="group flex items-center gap-1.5 rounded-lg border border-avs-accent/12 px-3.5 py-2 text-[12px] font-semibold text-avs-accent/50 transition-all duration-200 hover:border-avs-primary/35 hover:text-avs-primary"
+            >
+              <User size={12} aria-hidden />
+              Profil
+              <ArrowUpRight size={10} className="opacity-0 transition-opacity group-hover:opacity-100" aria-hidden />
+            </Link>
+          </div>
+        </div>
+      </Panel>
+    </motion.div>
   );
 }
 
@@ -339,11 +485,9 @@ export default function DashboardPage() {
   const [patterns, setPatterns] = useState<UserPattern[]>([]);
   const [activity, setActivity] = useState<DashboardActivity[]>([]);
   const [loading, setLoading]   = useState(true);
-  const [notifOpen, setNotifOpen] = useState(false);
 
   useEffect(() => {
     if (!isHydrated || !isAuthenticated) return;
-    console.log("hello world")
     const fetchData = async () => {
       try {
         const [s, p, a] = await Promise.all([
@@ -351,7 +495,6 @@ export default function DashboardPage() {
           dashboardService.getRecentPatterns(5),
           dashboardService.getActivity(6),
         ]);
-        console.log("parttern",p)
         setStats(s); setPatterns(p); setActivity(a);
       } catch {
         setStats(MOCK_STATS); setPatterns(MOCK_PATTERNS); setActivity(MOCK_ACTIVITY);
@@ -362,346 +505,172 @@ export default function DashboardPage() {
     void fetchData();
   }, [isHydrated, isAuthenticated]);
 
-  if (!isHydrated) {
-    return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center gap-5">
-        <div className="relative h-14 w-14">
-          <div className="avs-pattern-kente-royale absolute inset-0 rounded-full opacity-80 animate-spin [animation-duration:2s]" />
-          <div className="absolute inset-2 rounded-full bg-avs-secondary" />
-        </div>
-        <p className="font-mono text-[10px] tracking-[0.22em] uppercase text-avs-accent/30 animate-pulse">
-          Chargement…
-        </p>
-      </div>
-    );
-  }
+  if (!isHydrated) return <PageLoader />;
 
-  const roleLabel = isAdmin ? 'Administrateur' : isCurator ? 'Curateur' : 'Contributeur';
-  const roleCss   = isAdmin
-    ? 'bg-avs-primary/10 text-avs-primary border-avs-primary/25'
-    : isCurator
-      ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
-      : 'bg-avs-indigo/10 text-avs-indigo border-avs-indigo/20';
-
+  const roleLabel   = isAdmin ? 'Administrateur' : isCurator ? 'Curateur' : 'Contributeur';
   const avatarPattern = isAdmin
     ? 'avs-pattern-ndop-sultan'
-    : isCurator
-      ? 'avs-pattern-kente-royale'
-      : 'avs-pattern-wax-dakar';
+    : isCurator ? 'avs-pattern-kente-royale' : 'avs-pattern-wax-dakar';
 
-  const timeAgo = (iso: string) => {
-    const diff = Date.now() - new Date(iso).getTime();
-    if (diff < 3600000)   return `il y a ${Math.round(diff / 60000)} min`;
-    if (diff < 86400000)  return `il y a ${Math.round(diff / 3600000)}h`;
-    if (diff < 604800000) return `il y a ${Math.round(diff / 86400000)}j`;
-    return new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
-  };
-
-  const statsCards: StatCardProps[] = [
+  // ── KPI cards config ────────────────────────────────────────────────────────
+  const kpiCards: KpiCardProps[] = [
     {
-      label: 'Mes motifs',      value: stats?.patternsCount   ?? 0, sub: '+2 ce mois',
-      icon: Layers,
-      accentClass: 'text-avs-primary',    accentBgClass: 'bg-avs-primary/10',
-      accentBarClass: 'bg-avs-primary',   accentGlowClass: 'bg-avs-primary/20',
-      patternCss: 'avs-pattern-kente-royale',  delay: 0,
+      label: 'Mes motifs',     value: stats?.patternsCount  ?? 0, trend: '+2 ce mois',
+      icon: Layers,   color: '#C0573E', patternCss: 'avs-pattern-kente-royale',  delay: 0.1,
     },
     {
-      label: 'Téléchargements', value: stats?.downloadsTotal  ?? 0, sub: '+18%',
-      icon: Download,
-      accentClass: 'text-avs-ndop',       accentBgClass: 'bg-avs-ndop/10',
-      accentBarClass: 'bg-avs-ndop',      accentGlowClass: 'bg-avs-ndop/20',
-      patternCss: 'avs-pattern-ndop-sultan',   delay: 0.08,
+      label: 'Téléchargements',value: stats?.downloadsTotal ?? 0, trend: '+18% vs mois dernier',
+      icon: Download, color: '#4F7CFF', patternCss: 'avs-pattern-ndop-sultan',   delay: 0.17,
     },
     {
-      label: 'Vues totales',    value: stats?.viewsTotal      ?? 0, sub: '+320 ce mois',
-      icon: Eye,
-      accentClass: 'text-avs-indigo',     accentBgClass: 'bg-avs-indigo/10',
-      accentBarClass: 'bg-avs-indigo',    accentGlowClass: 'bg-avs-indigo/20',
-      patternCss: 'avs-pattern-bogolan-fanga', delay: 0.16,
+      label: 'Vues totales',   value: stats?.viewsTotal     ?? 0, trend: '+320 ce mois',
+      icon: Eye,      color: '#8B5CF6', patternCss: 'avs-pattern-bogolan-fanga', delay: 0.24,
     },
     {
-      label: 'Favoris',         value: stats?.favoritesCount  ?? 0, sub: '+12',
-      icon: Heart,
-      accentClass: 'text-avs-kente',      accentBgClass: 'bg-avs-kente/10',
-      accentBarClass: 'bg-avs-kente',     accentGlowClass: 'bg-avs-kente/20',
-      patternCss: 'avs-pattern-adinkra-sankofa', delay: 0.24,
+      label: 'Favoris reçus',  value: stats?.favoritesCount ?? 0, trend: '+12 nouveaux',
+      icon: Star,     color: '#F59E0B', patternCss: 'avs-pattern-adinkra-sankofa', delay: 0.31,
     },
   ];
 
   return (
-    <div className="min-h-screen bg-avs-secondary transition-colors duration-300">
+    <div className="min-h-screen bg-avs-secondary">
+      <div className="mx-auto max-w-7xl space-y-5 px-5 py-7 lg:px-8">
 
-      <div className="mx-auto max-w-7xl space-y-7 px-6 py-8 lg:px-8">
+        {/* ══ 1. PROFILE STRIP ══════════════════════════════════════════ */}
+        <ProfileStrip user={user} roleLabel={roleLabel} avatarPattern={avatarPattern} />
 
-        {/* ══ KPI CARDS ══════════════════════════════════════════════════ */}
-        <section aria-label="Statistiques">
+        {/* ══ 2. KPI CARDS ══════════════════════════════════════════════ */}
+        <section aria-label="Statistiques clés">
           {loading ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="rounded-2xl border border-avs-accent/10 bg-avs-secondary p-5">
-                  <Skeleton className="mb-3 h-2.5 w-20" />
-                  <Skeleton className="h-9 w-20 mb-3" />
-                  <Skeleton className="h-2 w-full" />
+                <div key={i} className="rounded-2xl border border-avs-accent/8 bg-avs-secondary p-6 space-y-4">
+                  <div className="flex justify-between">
+                    <Skeleton className="h-2.5 w-20" />
+                    <Skeleton className="h-9 w-9 rounded-xl" />
+                  </div>
+                  <Skeleton className="h-9 w-24" />
+                  <Skeleton className="h-0.5 w-full" />
                 </div>
               ))}
             </div>
-          ) : stats ? (
-            <motion.div initial="initial" animate="animate" variants={stagger} className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {statsCards.map((card) => (
-                <StatCard key={card.label} {...card} />
-              ))}
-            </motion.div>
-          ) : null}
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {kpiCards.map((card) => <KpiCard key={card.label} {...card} />)}
+            </div>
+          )}
         </section>
 
-        {/* ══ PROFILE STRIP ══════════════════════════════════════════════ */}
-        <motion.section {...fadeUp(0.15)} aria-label="Profil">
-          <div className="rounded-2xl border border-avs-accent/10 bg-avs-secondary overflow-hidden">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 px-6 py-5">
-              <div className="flex items-center gap-5 flex-1 min-w-0">
-                <div className={`${avatarPattern} shrink-0 h-10 w-10 rounded-xl overflow-hidden ring-1 ring-avs-accent/10`} aria-hidden />
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-8 gap-y-2 flex-1 min-w-0">
-                  {[
-                    { label: 'Nom',    value: user?.name  ?? '—' },
-                    { label: 'Email',  value: user?.email ?? '—' },
-                    { label: 'Rôle',   value: roleLabel, accent: true },
-                    {
-                      label: 'Membre depuis',
-                      value: user?.createdAt
-                        ? new Date(user.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })
-                        : '—',
-                    },
-                  ].map(({ label, value, accent }) => (
-                    <div key={label} className="min-w-0">
-                      <p className="font-mono text-[9px] tracking-[0.18em] uppercase text-avs-accent/40">{label}</p>
-                      <p className={`mt-0.5 truncate text-sm font-semibold ${accent ? 'text-avs-primary' : 'text-avs-accent'}`}>
-                        {value}
-                      </p>
+        {/* ══ 3. HERO BANNER ════════════════════════════════════════════ */}
+        <HeroBanner patternsCount={stats?.patternsCount ?? 0} />
+
+        {/* ══ 4. PATTERNS + ACTIVITY — layout 3/5 + 2/5 ════════════════ */}
+        <div className="grid gap-5 lg:grid-cols-5">
+
+          {/* Patterns list */}
+          <motion.section
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-3"
+            aria-label="Motifs récents"
+          >
+            <Panel className="h-full">
+              <PanelHeader
+                title="Motifs récents"
+                patternCss="avs-pattern-kente-royale"
+                href="/patternsDashboard"
+                linkLabel="Voir tout"
+              />
+
+              {loading ? (
+                <div className="divide-y divide-avs-accent/6">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <div key={i} className="flex items-center gap-4 px-5 py-3.5">
+                      <Skeleton className="h-10 w-10 rounded-lg shrink-0" />
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-3 w-36" />
+                        <Skeleton className="h-2.5 w-16" />
+                      </div>
+                      <Skeleton className="h-5 w-16 rounded-full" />
                     </div>
                   ))}
                 </div>
-              </div>
-
-              <Link
-                href={'/profile' as Route}
-                className="group shrink-0 flex items-center gap-2 rounded-xl border border-avs-accent/15 px-4 py-2 text-xs font-semibold text-avs-accent/60 hover:border-avs-primary/40 hover:text-avs-primary transition-all duration-200"
-              >
-                <User size={13} />
-                Modifier le profil
-                <ArrowUpRight size={11} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-              </Link>
-            </div>
-          </div>
-        </motion.section>
-
-        {/* ══ PATTERNS + ACTIVITY ════════════════════════════════════════ */}
-        <div className="grid gap-6 lg:grid-cols-5">
-
-          {/* Patterns — 3 cols */}
-          <motion.section
-            {...fadeUp(0.2)}
-            className="lg:col-span-3 rounded-2xl border border-avs-accent/10 bg-avs-secondary overflow-hidden"
-            aria-label="Motifs récents"
-          >
-            <SectionHeader
-              title="Mes motifs récents"
-              patternCss="avs-pattern-kente-royale"
-              href="/patternsDashboard"
-              linkLabel="Tout voir"
-            />
-
-            {loading ? (
-              <div className="space-y-0">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="flex items-center gap-4 px-5 py-4 border-b border-avs-accent/8">
-                    <Skeleton className="h-11 w-11 rounded-xl shrink-0" />
-                    <div className="flex-1 space-y-2">
-                      <Skeleton className="h-3.5 w-40" />
-                      <Skeleton className="h-3 w-24" />
-                    </div>
-                    <Skeleton className="h-6 w-24 rounded-full" />
-                  </div>
-                ))}
-              </div>
-            ) : patterns.length > 0 ? (
-              <motion.div initial="initial" animate="animate" variants={stagger} className="divide-y divide-avs-accent/8">
-                {patterns.map((pattern) => {
-                  const { label, css, dot } = STATUS_CONFIG[pattern.status] ?? STATUS_CONFIG.draft!;
-                  const patCss = CSS_PATTERN_MAP[pattern.type] ?? 'avs-pattern-wax-dakar';
-                  return (
-                    <motion.div
-                      key={pattern.id}
-                      variants={itemFade}
-                      className="group flex items-center gap-4 px-5 py-3.5 hover:bg-avs-secondary-dark transition-colors duration-150 cursor-pointer"
-                    >
-                      <div className={`${patCss} relative h-11 w-11 shrink-0 rounded-xl overflow-hidden ring-1 ring-avs-accent/10`}>
-                        <div className="absolute inset-0 bg-avs-accent/15" />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-sm font-semibold text-avs-accent group-hover:text-avs-primary transition-colors truncate">
-                          {pattern.name}
-                        </p>
-                        <p className="text-xs text-avs-accent/40 mt-0.5 font-mono tracking-wide">{pattern.type}</p>
-                      </div>
-                      <div className={`flex items-center gap-1.5 rounded-full border px-3 py-1 text-[10px] font-bold ${css}`}>
-                        <span className={`h-1.5 w-1.5 rounded-full ${dot}`} aria-hidden />
-                        {label}
-                      </div>
-                      <div className="hidden sm:flex items-center gap-1.5 text-xs text-avs-accent/40 tabular-nums w-16 justify-end">
-                        <Eye size={11} />
-                        {pattern.viewCount.toLocaleString()}
-                      </div>
-                      <ChevronRight size={14} className="text-avs-accent/20 group-hover:text-avs-primary group-hover:translate-x-0.5 transition-all duration-200 shrink-0" />
-                    </motion.div>
-                  );
-                })}
-              </motion.div>
-            ) : (
-              <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
-                <div className="avs-pattern-wax-dakar h-14 w-14 rounded-full ring-1 ring-avs-accent/10 opacity-50" aria-hidden />
-                <div>
-                  <p className="text-sm font-semibold text-avs-accent/50">Aucun motif pour le moment</p>
-                  <p className="text-xs text-avs-accent/40 mt-1">Commencez par créer votre premier motif</p>
+              ) : patterns.length > 0 ? (
+                <div className="divide-y divide-avs-accent/5">
+                  {patterns.map((p, i) => <PatternRow key={p.id} pattern={p} index={i} />)}
                 </div>
-                <Link
-                  href={'/patternsDashboard/new' as Route}
-                  className="flex items-center gap-2 rounded-xl bg-avs-primary px-4 py-2 text-xs font-bold text-avs-secondary shadow-avs hover:shadow-avs-md transition-shadow duration-200"
-                >
-                  <Plus size={12} /> Créer un motif
-                </Link>
-              </div>
-            )}
+              ) : (
+                /* État vide */
+                <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
+                  <div className="avs-pattern-wax-dakar h-12 w-12 rounded-full ring-1 ring-avs-accent/10 opacity-40" aria-hidden />
+                  <div>
+                    <p className="text-sm font-semibold text-avs-accent/40">Aucun motif</p>
+                    <p className="mt-0.5 text-xs text-avs-accent/30">Créez votre premier motif AVS</p>
+                  </div>
+                  <Link
+                    href={'/patternsDashboard/new' as Route}
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-avs-primary px-4 py-2 text-xs font-bold text-avs-secondary"
+                  >
+                    <Plus size={11} /> Nouveau motif
+                  </Link>
+                </div>
+              )}
+            </Panel>
           </motion.section>
 
-          {/* Activity — 2 cols */}
+          {/* Activity feed */}
           <motion.section
-            {...fadeUp(0.27)}
-            className="lg:col-span-2 rounded-2xl border border-avs-accent/10 bg-avs-secondary overflow-hidden"
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:col-span-2"
             aria-label="Activité récente"
           >
-            <SectionHeader title="Activité" patternCss="avs-pattern-adinkra-sankofa" />
+            <Panel className="h-full">
+              <PanelHeader title="Activité" patternCss="avs-pattern-adinkra-sankofa" />
 
-            {loading ? (
-              <div className="space-y-0">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="flex items-start gap-3 px-5 py-4 border-b border-avs-accent/8">
-                    <Skeleton className="h-8 w-8 rounded-xl shrink-0" />
-                    <div className="flex-1 space-y-2">
-                      <Skeleton className="h-3 w-full" />
-                      <Skeleton className="h-2.5 w-20" />
+              {loading ? (
+                <div className="divide-y divide-avs-accent/5">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <div key={i} className="flex gap-3 px-5 py-3.5">
+                      <Skeleton className="h-7 w-7 rounded-lg shrink-0" />
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-3 w-full" />
+                        <Skeleton className="h-2 w-16" />
+                      </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            ) : activity.length > 0 ? (
-              <motion.div
-                initial="initial"
-                animate="animate"
-                variants={stagger}
-                className="divide-y divide-avs-accent/8 max-h-100 overflow-y-auto [scrollbar-width:thin]"
-              >
-                {activity.map((item) => {
-                  const conf = ACTIVITY_CONFIG[item.type] ?? ACTIVITY_CONFIG.comment!;
-                  const Icon = conf.icon;
-                  return (
-                    <motion.div
-                      key={item.id}
-                      variants={itemFade}
-                      className="flex items-start gap-3.5 px-5 py-4 hover:bg-avs-secondary-dark transition-colors duration-150"
-                    >
-                      <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl ${conf.bg}`}>
-                        <Icon size={13} className={conf.color} aria-hidden />
-                      </div>
-                      <div className="min-w-0 flex-1 pt-0.5">
-                        <p className="text-xs leading-snug text-avs-accent/60">
-                          {item.action}{' '}
-                          <span className="font-semibold text-avs-primary">{item.target}</span>
-                        </p>
-                        <p className="mt-1.5 text-[10px] font-mono text-avs-accent/35">
-                          {timeAgo(item.timestamp)}
-                        </p>
-                      </div>
-                    </motion.div>
-                  );
-                })}
-              </motion.div>
-            ) : (
-              <div className="flex flex-col items-center justify-center gap-2 py-12 text-center">
-                <p className="text-sm text-avs-accent/40">Aucune activité récente</p>
-              </div>
-            )}
+                  ))}
+                </div>
+              ) : activity.length > 0 ? (
+                <div className="divide-y divide-avs-accent/5 max-h-[420px] overflow-y-auto [scrollbar-width:thin]">
+                  {activity.map((item, i) => <ActivityItem key={item.id} item={item} index={i} />)}
+                </div>
+              ) : (
+                <div className="flex flex-col items-center justify-center py-14">
+                  <p className="text-sm text-avs-accent/35">Aucune activité récente</p>
+                </div>
+              )}
+            </Panel>
           </motion.section>
         </div>
 
-        {/* ══ QUICK ACTIONS ══════════════════════════════════════════════ */}
-        <motion.section {...fadeUp(0.3)} aria-label="Actions rapides">
-          <div className="rounded-2xl border border-avs-accent/10 bg-avs-secondary overflow-hidden">
-            <SectionHeader title="Actions rapides" patternCss="avs-pattern-kuba-kasai" />
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-5">
-              <QuickAction href="/patternsDashboard/new" icon={Plus}    label="Nouveau motif" description="Soumettre au catalogue" variant="primary" />
-              <QuickAction href="/patterns"              icon={Layers}  label="Bibliothèque"  description="Explorer les motifs" />
-              <QuickAction href="/dashboard/profile"     icon={User}    label="Mon profil"    description="Gérer le compte" />
-              <QuickAction href="/colors"                icon={Palette} label="Palettes"      description="Couleurs & thèmes" />
+        {/* ══ 5. QUICK ACTIONS ══════════════════════════════════════════ */}
+        <motion.section
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          aria-label="Actions rapides"
+        >
+          <Panel>
+            <PanelHeader title="Actions rapides" patternCss="avs-pattern-kuba-kasai" />
+            <div className="grid grid-cols-2 gap-3 p-4 sm:grid-cols-4">
+              <QuickAction href="/patternsDashboard/new" icon={Plus}    label="Nouveau motif"  sub="Soumettre au catalogue" accent />
+              <QuickAction href="/patterns"              icon={Layers}  label="Bibliothèque"   sub="Explorer les motifs" />
+              <QuickAction href="/dashboard/profile"    icon={User}    label="Mon profil"     sub="Gérer le compte" />
+              <QuickAction href="/colors"               icon={Palette} label="Palettes"       sub="Couleurs & thèmes" />
             </div>
-          </div>
-        </motion.section>
-
-        {/* ══ CONTRIBUTION BANNER ════════════════════════════════════════ */}
-        <motion.section {...fadeUp(0.35)}>
-          <div className="avs-pattern-kente-royale rounded-2xl relative overflow-hidden">
-            {/* Dark gradient overlay — seul endroit où inline est justifié : gradient complexe non tokenisable */}
-            <div
-              className="absolute inset-0"
-              style={{ background: 'linear-gradient(135deg, rgba(10,8,6,0.96) 0%, rgba(30,20,8,0.90) 60%, rgba(50,25,10,0.82) 100%)' }}
-              aria-hidden
-            />
-
-            {/* Geometric decor rings */}
-            <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-              <div className="absolute -top-12 -right-12 h-56 w-56 rounded-full border border-avs-primary/10" />
-              <div className="absolute -top-4  -right-4  h-36 w-36 rounded-full border border-avs-primary/15" />
-              <div className="absolute top-8   right-12  h-16 w-16 rounded-full border border-avs-secondary/5" />
-            </div>
-
-            {/* Zap icon accent */}
-            <div className="pointer-events-none absolute top-5 right-5 opacity-5" aria-hidden>
-              <Zap size={96} className="text-avs-primary" />
-            </div>
-
-            <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 px-7 py-8">
-              <div className="max-w-md">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-avs-primary/20 border border-avs-primary/30 px-3 py-1 font-mono text-[9px] tracking-[0.18em] uppercase text-avs-primary font-bold">
-                    <Sparkles size={9} /> Niveau contributeur
-                  </span>
-                </div>
-                <h3 className="font-display text-avs-secondary text-xl sm:text-2xl leading-snug font-black">
-                  Vous avez contribué{' '}
-                  <span className="text-avs-primary">{stats?.patternsCount ?? '—'} motifs</span>{' '}
-                  au standard AVS
-                </h3>
-                <p className="mt-2.5 text-sm text-avs-secondary/40 leading-relaxed">
-                  Chaque motif ajouté est une page d&apos;histoire préservée pour les générations futures.
-                </p>
-              </div>
-
-              <div className="flex shrink-0 flex-wrap gap-3">
-                <Link
-                  href={'/patternsDashboard/new' as Route}
-                  className="group inline-flex items-center gap-2.5 rounded-xl bg-avs-primary px-6 py-3 text-sm font-bold text-avs-secondary shadow-avs-md shadow-avs-primary/35 hover:shadow-avs-lg hover:shadow-avs-primary/45 hover:-translate-y-0.5 transition-all duration-300"
-                >
-                  Soumettre un motif
-                  <ArrowRight size={14} className="transition-transform duration-200 group-hover:translate-x-0.5" />
-                </Link>
-                <Link
-                  href={'/analytics' as Route}
-                  className="inline-flex items-center gap-2 rounded-xl border border-avs-secondary/15 px-6 py-3 text-sm font-semibold text-avs-secondary/60 hover:border-avs-secondary/30 hover:text-avs-secondary/90 transition-all duration-200"
-                >
-                  Analytique
-                </Link>
-              </div>
-            </div>
-          </div>
+          </Panel>
         </motion.section>
 
       </div>

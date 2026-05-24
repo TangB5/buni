@@ -59,3 +59,4 @@ export async function del<T>(url: string): Promise<T> {
   const res = await apiClient.delete<T>(url);
   return res.data;
 }
+

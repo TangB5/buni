@@ -3,21 +3,19 @@ export { pattern } from './UniversalPattern';
 
 // Types
 export type {
-  PatternDoc,
+  Pattern,
   PatternType,
   PatternColor,
   PatternSymbol,
   PatternOrigin,
   ArtisanQuote,
-  SvgPatternMeta,
   PatternLicense,
-  PatternsApiResponse,
-  PatternApiResponse,
+  
 } from './registry';
 
 // Transformers
 export {
-  toSvgPatternMeta,
+  
   getPatternsByType,
   getPatternsByCountry,
   getSacredPatterns,
@@ -26,7 +24,7 @@ export {
   generatePaletteJson,
   getSacredSymbols,
   getCssVariables,
-  isPatternDoc,
+  isPattern,
 } from './registry';
 
 // CSS pattern mappings for frontend display

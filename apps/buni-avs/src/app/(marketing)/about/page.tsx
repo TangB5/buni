@@ -135,13 +135,7 @@ export default function AboutPage() {
           </div>
 
           <div className="relative mx-auto max-w-3xl text-center">
-            {/* Eyebrow */}
-            <div className="anim-fade-up mb-7 inline-flex items-center gap-2.5 rounded-full border border-avs-primary/28 px-5 py-2 bg-avs-primary/10">
-              <span className="h-1.5 w-1.5 rounded-full bg-avs-primary" aria-hidden />
-              <span className="font-mono text-[9px] tracking-[0.24em] uppercase text-avs-primary">
-                Notre Mission
-              </span>
-            </div>
+            
 
             {/* Headline */}
             <h1

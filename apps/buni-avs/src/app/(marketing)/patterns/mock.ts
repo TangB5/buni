@@ -1,4 +1,4 @@
-import { PatternType } from '@buni/patterns';
+import { Pattern, PatternType } from '@buni/patterns';
 
 /**
  * SVG PATTERNS DATA
@@ -10,7 +10,7 @@ import { PatternType } from '@buni/patterns';
  * - id: unique identifier
  * - slug: URL slug
  * - nameFr: French name
- * - nameLocal: Local name
+ * - localName: Local name
  * - type: Pattern type (NDOP, KENTE, etc.)
  * - svgPattern: CSS class for the SVG pattern (e.g., 'avs-svg-pattern-ndop6')
  * - origin: Geographic and cultural origin
@@ -36,42 +36,13 @@ export interface PatternSymbol {
   imageUrl?: string;
 }
 
-export interface PatternDoc {
-  id: string;
-  slug: string;
-  nameFr: string;
-  nameLocal: string;
-  type: PatternType;
-  svgPattern?: string;
-  cssClass: string;
-  origin: {
-    people: string;
-    region: string;
-    country: string;
-    flag: string;
-    coords: [number, number];
-  };
-  era: string;
-  license: 'cc0' | 'cc-by' | 'cc-by-sa';
-  colors: { hex: string; name: string; meaning: string }[];
-  summary: string;
-  history: string;
-  technique: string;
-  symbolism: string;
-  ceremonial: string;
-  symbols: PatternSymbol[];
-  artisanQuote?: { text: string; author: string; role: string; country: string };
-  sources: string[];
-  downloads: number;
-  views: number;
-}
 
-export const PATTERNS_DOCS: PatternDoc[] = [ 
+export const PATTERNS_DOCS: Pattern[] = [ 
   {
     id: 'kente-asante',
     slug: 'kente-asante',
-    nameFr: 'Kente Asante',
-    nameLocal: 'Kente (Nwentom)',
+    name: 'Kente Asante',
+    localName: 'Kente (Nwentom)',
     type: 'KENTE',
     cssClass: 'avs-pattern-kente-royale',
     origin: {
@@ -97,24 +68,18 @@ export const PATTERNS_DOCS: PatternDoc[] = [
       },
       { hex: '#4A6741', name: 'Vert (Akyem)', meaning: 'Croissance, renouveau, prospérité' },
     ],
-    summary:
-      'Le Kente est le tissu le plus emblématique du peuple Akan du Ghana. Tissé en bandelettes entrelacées, chaque combinaison de couleurs et de motifs constitue un langage visuel codé, lisible par les initiés.',
-    history:
-      'Selon la tradition orale Ashanti, le Kente a été inventé au XVIIe siècle par les tisserands Oti Kraban et Kwaku Ameyaw, qui auraient appris l\'art du tissage en observant une araignée tisser sa toile. Le mot "Kente" dérive du terme "kenten" (panier), référence à la structure entrelacée du tissu. Réservé initialement aux cérémonies royales, le Kente s\'est progressivement démocratisé tout en conservant son caractère symbolique fort.',
-    technique:
-      'Le Kente est tissé sur un métier horizontal étroit (environ 10 cm) en bandelettes séparées qui sont ensuite assemblées latéralement. Les fils de chaîne et de trame créent des motifs géométriques précis. La soie était utilisée pour les pièces royales, le coton pour les pièces courantes. Chaque tisserand mémorise des centaines de séquences de motifs traditionnels.',
-    symbolism:
-      'Chaque motif Kente porte un nom et une signification précise. Le motif "Oyokoman Adwinasa" symbolise l\'excellence et la complétude. Le motif "Emaa Da" ("jamais vu avant") célèbre l\'innovation. La lecture du Kente est un acte de décodage culturel : porter un mauvais motif dans le mauvais contexte est une faute sociale grave.',
-    ceremonial:
-      "Mariages, funérailles royales, intronisations de chefs, graduations universitaires, réceptions d'État. Le Kente porté aux funérailles diffère de celui des mariages par sa palette — plus sombre, dominant le noir et le rouge.",
+    summary: 'Le Kente est le tissu le plus emblématique du peuple Akan du Ghana. Tissé en bandelettes entrelacées, chaque combinaison de couleurs et de motifs constitue un langage visuel codé, lisible par les initiés.',
+    history: 'Selon la tradition orale Ashanti, le Kente a été inventé au XVIIe siècle par les tisserands Oti Kraban et Kwaku Ameyaw, qui auraient appris l\'art du tissage en observant une araignée tisser sa toile. Le mot "Kente" dérive du terme "kenten" (panier), référence à la structure entrelacée du tissu. Réservé initialement aux cérémonies royales, le Kente s\'est progressivement démocratisé tout en conservant son caractère symbolique fort.',
+    technique: 'Le Kente est tissé sur un métier horizontal étroit (environ 10 cm) en bandelettes séparées qui sont ensuite assemblées latéralement. Les fils de chaîne et de trame créent des motifs géométriques précis. La soie était utilisée pour les pièces royales, le coton pour les pièces courantes. Chaque tisserand mémorise des centaines de séquences de motifs traditionnels.',
+    symbolism: 'Chaque motif Kente porte un nom et une signification précise. Le motif "Oyokoman Adwinasa" symbolise l\'excellence et la complétude. Le motif "Emaa Da" ("jamais vu avant") célèbre l\'innovation. La lecture du Kente est un acte de décodage culturel : porter un mauvais motif dans le mauvais contexte est une faute sociale grave.',
+    ceremonial: "Mariages, funérailles royales, intronisations de chefs, graduations universitaires, réceptions d'État. Le Kente porté aux funérailles diffère de celui des mariages par sa palette — plus sombre, dominant le noir et le rouge.",
     symbols: [
       {
         name: 'Oyokoman',
         nameFr: 'Motif Royal',
         cssPreview: '#D4A017',
         meaning: 'Symbole du clan royal Oyoko — excellence, complétude, perfection artistique',
-        usage:
-          "Exclusivement porté par les membres de la famille royale Ashanti lors des cérémonies d'État",
+        usage: "Exclusivement porté par les membres de la famille royale Ashanti lors des cérémonies d'État",
         sacred: true,
       },
       {
@@ -122,8 +87,7 @@ export const PATTERNS_DOCS: PatternDoc[] = [
         nameFr: 'Jamais vu avant',
         cssPreview: '#C0573E',
         meaning: 'Célèbre l\'innovation et la créativité — "ce qui n\'a jamais existé auparavant"',
-        usage:
-          "Remis lors de premières académiques, de découvertes, d'accomplissements sans précédent",
+        usage: "Remis lors de premières académiques, de découvertes, d'accomplissements sans précédent",
         sacred: false,
       },
       {
@@ -146,10 +110,8 @@ export const PATTERNS_DOCS: PatternDoc[] = [
         name: 'Fathia Fata Nkrumah',
         nameFr: 'Fathia convient à Nkrumah',
         cssPreview: '#1D1D1B',
-        meaning:
-          'Créé pour le mariage de Kwame Nkrumah — union, alliance politique, amour transculturel',
-        usage:
-          "Mariages interethniques, alliances diplomatiques, célébrations de l'unité africaine",
+        meaning: 'Créé pour le mariage de Kwame Nkrumah — union, alliance politique, amour transculturel',
+        usage: "Mariages interethniques, alliances diplomatiques, célébrations de l'unité africaine",
         sacred: false,
       },
     ],
@@ -166,12 +128,18 @@ export const PATTERNS_DOCS: PatternDoc[] = [
     ],
     downloads: 4820,
     views: 28400,
+    published: false,
+    featured: false
   },
+
+
+
+  
   {
     id: 'ndop-bamoum',
     slug: 'ndop-bamoum',
-    nameFr: 'Ndop Bamoum',
-    nameLocal: 'Ndop (Ndoup)',
+    name: 'Ndop Bamoum',
+    localName: 'Ndop (Ndoup)',
     type: 'NDOP',
     cssClass: 'avs-pattern-ndop-sultan',
     origin: {
@@ -196,23 +164,17 @@ export const PATTERNS_DOCS: PatternDoc[] = [
         meaning: 'Pureté spirituelle, communication divine',
       },
     ],
-    summary:
-      "Le Ndop est un tissu sacré du Sultanat Bamoum, tissé exclusivement pour la royauté et les cérémonies rituelles. Son fond indigo profond et ses motifs géométriques en fil de raphia doré constituent l'un des systèmes symboliques les plus complexes d'Afrique centrale.",
-    history:
-      "Le Ndop remonte au règne du Sultan Nshare Yen (XVe siècle), fondateur du Sultanat Bamoum. Le Sultan Ibrahim Njoya (1886-1931), célèbre pour avoir inventé l'écriture Bamum (Shu-mom), a codifié et élargi le catalogue des motifs Ndop, documentant leur signification dans des manuscrits aujourd'hui conservés au Musée des Arts et Traditions Bamoum.",
-    technique:
-      "Le Ndop est tissé sur un métier horizontal à pédales, avec un fond de coton teint à l'indigo naturel (Indigofera tinctoria). Les motifs sont créés par résistance (ligature des fils avant teinture) ou par broderie au fil de raphia après tissage.",
-    symbolism:
-      "Le Ndop fonctionne comme un texte sacré. Chaque motif géométrique — carré, losange, spirale, croix — est un idéogramme qui encode l'histoire dynastique, les attributs royaux et les forces spirituelles.",
-    ceremonial:
-      "Intronisation des sultans et notables, funérailles royales, rituels de guérison, fêtes annuelles du Nguon. Le Ndop n'est jamais lavé à l'eau — considéré comme un être vivant.",
+    summary: "Le Ndop est un tissu sacré du Sultanat Bamoum, tissé exclusivement pour la royauté et les cérémonies rituelles. Son fond indigo profond et ses motifs géométriques en fil de raphia doré constituent l'un des systèmes symboliques les plus complexes d'Afrique centrale.",
+    history: "Le Ndop remonte au règne du Sultan Nshare Yen (XVe siècle), fondateur du Sultanat Bamoum. Le Sultan Ibrahim Njoya (1886-1931), célèbre pour avoir inventé l'écriture Bamum (Shu-mom), a codifié et élargi le catalogue des motifs Ndop, documentant leur signification dans des manuscrits aujourd'hui conservés au Musée des Arts et Traditions Bamoum.",
+    technique: "Le Ndop est tissé sur un métier horizontal à pédales, avec un fond de coton teint à l'indigo naturel (Indigofera tinctoria). Les motifs sont créés par résistance (ligature des fils avant teinture) ou par broderie au fil de raphia après tissage.",
+    symbolism: "Le Ndop fonctionne comme un texte sacré. Chaque motif géométrique — carré, losange, spirale, croix — est un idéogramme qui encode l'histoire dynastique, les attributs royaux et les forces spirituelles.",
+    ceremonial: "Intronisation des sultans et notables, funérailles royales, rituels de guérison, fêtes annuelles du Nguon. Le Ndop n'est jamais lavé à l'eau — considéré comme un être vivant.",
     symbols: [
       {
         name: 'Nkap-Nkap',
         nameFr: 'Le carré royal',
         cssPreview: '#C8A96E',
-        meaning:
-          "Symbole de l'autorité sultanale — les quatre côtés représentent les quatre points cardinaux sous contrôle du Sultan",
+        meaning: "Symbole de l'autorité sultanale — les quatre côtés représentent les quatre points cardinaux sous contrôle du Sultan",
         usage: 'Présent sur tous les Ndop royaux, interdit sur les pièces destinées aux non-nobles',
         sacred: true,
       },
@@ -220,8 +182,7 @@ export const PATTERNS_DOCS: PatternDoc[] = [
         name: 'Mfon-Ntoung',
         nameFr: "L'œil du léopard",
         cssPreview: '#0D2340',
-        meaning:
-          "Le léopard est l'animal totem du Sultan — vision pénétrante, puissance, maîtrise du territoire",
+        meaning: "Le léopard est l'animal totem du Sultan — vision pénétrante, puissance, maîtrise du territoire",
         usage: 'Porté lors des jugements royaux et des décisions politiques importantes',
         sacred: true,
       },
@@ -229,8 +190,7 @@ export const PATTERNS_DOCS: PatternDoc[] = [
         name: 'Nkaa-Wou',
         nameFr: 'La spirale ancestrale',
         cssPreview: '#C8A96E',
-        meaning:
-          'Connexion entre le monde des vivants et celui des ancêtres — continuité dynastique sans interruption',
+        meaning: 'Connexion entre le monde des vivants et celui des ancêtres — continuité dynastique sans interruption',
         usage: 'Cérémonies funéraires royales, rituels de consultation des ancêtres',
         sacred: true,
       },
@@ -256,12 +216,14 @@ export const PATTERNS_DOCS: PatternDoc[] = [
     ],
     downloads: 3140,
     views: 19800,
+    published: false,
+    featured: false
   },
   {
     id: 'bogolan-malien',
     slug: 'bogolan-malien',
-    nameFr: 'Bogolan Malien',
-    nameLocal: 'Bògòlanfini',
+    name: 'Bogolan Malien',
+    localName: 'Bògòlanfini',
     type: 'BOGOLAN',
     cssClass: 'avs-pattern-bogolan-fanga',
     origin: {
@@ -278,23 +240,17 @@ export const PATTERNS_DOCS: PatternDoc[] = [
       { hex: '#5C2E0E', name: 'Brun profond (Nogo)', meaning: 'Nuit, mystère, puissance occulte' },
       { hex: '#F5EBE0', name: 'Écru naturel', meaning: 'Espace vide — le silence entre les mots' },
     ],
-    summary:
-      "Le Bogolan (Bògòlanfini) est un tissu de boue fermentée, teint à partir de terre argileuse et de feuilles d'arbre. Chaque motif géométrique encode un proverbe, une leçon de vie ou un fait historique transmis de génération en génération par les femmes Bamana.",
-    history:
-      "Le Bogolan est attesté depuis le XIIe siècle dans les sources orales Mandé. Traditionnellement, sa production était exclusivement féminine. En 1960, le créateur de mode Chris Seydou a internationalisé le Bogolan en l'intégrant dans la haute couture parisienne.",
-    technique:
-      'La fabrication du Bogolan est un processus en 4 étapes : 1) Teinture au décoction de feuilles de Nté. 2) Application de la boue fermentée. 3) Décoloration des zones à éclaircir. 4) Séchage au soleil. Un tissu Bogolan peut nécessiter 4 à 8 semaines.',
-    symbolism:
-      "Contrairement au Kente ou au Ndop, le Bogolan n'a pas de système symbolique unique — chaque famille, village et artisane possède son propre répertoire. Le Bogolan est fondamentalement un langage de femmes.",
-    ceremonial:
-      "Initiation des jeunes filles, mariages, retour des chasseurs, cérémonies de maternité. Aujourd'hui, le Bogolan est aussi un puissant symbole d'identité culturelle et de résistance.",
+    summary: "Le Bogolan (Bògòlanfini) est un tissu de boue fermentée, teint à partir de terre argileuse et de feuilles d'arbre. Chaque motif géométrique encode un proverbe, une leçon de vie ou un fait historique transmis de génération en génération par les femmes Bamana.",
+    history: "Le Bogolan est attesté depuis le XIIe siècle dans les sources orales Mandé. Traditionnellement, sa production était exclusivement féminine. En 1960, le créateur de mode Chris Seydou a internationalisé le Bogolan en l'intégrant dans la haute couture parisienne.",
+    technique: 'La fabrication du Bogolan est un processus en 4 étapes : 1) Teinture au décoction de feuilles de Nté. 2) Application de la boue fermentée. 3) Décoloration des zones à éclaircir. 4) Séchage au soleil. Un tissu Bogolan peut nécessiter 4 à 8 semaines.',
+    symbolism: "Contrairement au Kente ou au Ndop, le Bogolan n'a pas de système symbolique unique — chaque famille, village et artisane possède son propre répertoire. Le Bogolan est fondamentalement un langage de femmes.",
+    ceremonial: "Initiation des jeunes filles, mariages, retour des chasseurs, cérémonies de maternité. Aujourd'hui, le Bogolan est aussi un puissant symbole d'identité culturelle et de résistance.",
     symbols: [
       {
         name: 'Bolo Kolon',
         nameFr: 'La main vide',
         cssPreview: '#8B4513',
-        meaning:
-          "Ce que l'on possède naît du travail des mains — l'oisiveté est la mère de la misère",
+        meaning: "Ce que l'on possède naît du travail des mains — l'oisiveté est la mère de la misère",
         usage: "Offert lors des remises de diplômes, célébrations d'accomplissements personnels",
         sacred: false,
       },
@@ -319,8 +275,7 @@ export const PATTERNS_DOCS: PatternDoc[] = [
         nameFr: 'Le griot',
         cssPreview: '#F5EBE0',
         meaning: 'Gardien de la mémoire collective — celui qui relie le passé au présent',
-        usage:
-          'Offert aux griots lors de grandes cérémonies, aux personnes qui perpétuent la tradition orale',
+        usage: 'Offert aux griots lors de grandes cérémonies, aux personnes qui perpétuent la tradition orale',
         sacred: false,
       },
     ],
@@ -337,12 +292,14 @@ export const PATTERNS_DOCS: PatternDoc[] = [
     ],
     downloads: 2890,
     views: 16200,
+    published: false,
+    featured: false
   },
   {
     id: 'adinkra-akan',
     slug: 'adinkra-akan',
-    nameFr: 'Adinkra Akan',
-    nameLocal: 'Adinkra',
+    name: 'Adinkra Akan',
+    localName: 'Adinkra',
     type: 'ADINKRA',
     cssClass: 'avs-pattern-adinkra-sankofa',
     origin: {
@@ -363,25 +320,18 @@ export const PATTERNS_DOCS: PatternDoc[] = [
       { hex: '#D4A017', name: 'Ocre doré', meaning: 'Mémoire précieuse, savoir transmis' },
       { hex: '#C0573E', name: 'Rouge terre', meaning: 'Force vitale, sang des ancêtres' },
     ],
-    summary:
-      "Les Adinkra sont des symboles philosophiques imprimés sur tissu, chacun exprimant un concept, un proverbe ou une valeur morale du peuple Akan. Initialement utilisés pour les cérémonies de deuil, ils sont aujourd'hui gravés sur tout — textiles, bijoux, architecture, logos.",
-    history:
-      'Selon la tradition, les Adinkra ont été créés par Nana Kofi Adinkra, roi du royaume Gyaman, après sa défaite face au roi Ashanti Osei Bonsu en 1817. Le nom "Adinkra" signifie "au revoir" en langue Twi. Les premiers symboles ont été documentés par Thomas Edward Bowdich en 1817.',
-    technique:
-      "L'impression Adinkra traditionnelle utilise une encre noire appelée \"Adinkra aduru\", obtenue par ébullition d'écorce d'arbre Badie. Les tampons (prismes de calebasse sculptés) sont trempés dans cette encre et imprimés manuellement sur le tissu.",
-    symbolism:
-      "Chaque Adinkra est une phrase philosophique condensée en image. Ils couvrent les thèmes universels : le pouvoir, l'amour, l'unité, la sagesse, la résilience, la dualité du bien et du mal.",
-    ceremonial:
-      "Deuil et funérailles, cérémonies royales, cadeaux diplomatiques, vêtements de graduation. Aujourd'hui, les Adinkra décorent les bâtiments officiels du Ghana et les billets de banque.",
+    summary: "Les Adinkra sont des symboles philosophiques imprimés sur tissu, chacun exprimant un concept, un proverbe ou une valeur morale du peuple Akan. Initialement utilisés pour les cérémonies de deuil, ils sont aujourd'hui gravés sur tout — textiles, bijoux, architecture, logos.",
+    history: 'Selon la tradition, les Adinkra ont été créés par Nana Kofi Adinkra, roi du royaume Gyaman, après sa défaite face au roi Ashanti Osei Bonsu en 1817. Le nom "Adinkra" signifie "au revoir" en langue Twi. Les premiers symboles ont été documentés par Thomas Edward Bowdich en 1817.',
+    technique: "L'impression Adinkra traditionnelle utilise une encre noire appelée \"Adinkra aduru\", obtenue par ébullition d'écorce d'arbre Badie. Les tampons (prismes de calebasse sculptés) sont trempés dans cette encre et imprimés manuellement sur le tissu.",
+    symbolism: "Chaque Adinkra est une phrase philosophique condensée en image. Ils couvrent les thèmes universels : le pouvoir, l'amour, l'unité, la sagesse, la résilience, la dualité du bien et du mal.",
+    ceremonial: "Deuil et funérailles, cérémonies royales, cadeaux diplomatiques, vêtements de graduation. Aujourd'hui, les Adinkra décorent les bâtiments officiels du Ghana et les billets de banque.",
     symbols: [
       {
         name: 'Sankofa',
         nameFr: 'Revenir en arrière pour avancer',
         cssPreview: '#D4A017',
-        meaning:
-          '"Se se wo were fi na wosankofa a yenkyi" — Il n\'est pas interdit de revenir en arrière pour prendre ce que tu as oublié.',
-        usage:
-          'Porté lors des cérémonies de transmission du savoir, offert aux aînés et enseignants',
+        meaning: '"Se se wo were fi na wosankofa a yenkyi" — Il n\'est pas interdit de revenir en arrière pour prendre ce que tu as oublié.',
+        usage: 'Porté lors des cérémonies de transmission du savoir, offert aux aînés et enseignants',
         sacred: false,
       },
       {
@@ -397,16 +347,14 @@ export const PATTERNS_DOCS: PatternDoc[] = [
         nameFr: 'Adaptabilité',
         cssPreview: '#C0573E',
         meaning: "La capacité à s'adapter aux changements, à plier sans se briser.",
-        usage:
-          'Porté lors des transitions de vie, offert à ceux qui traversent des périodes difficiles',
+        usage: 'Porté lors des transitions de vie, offert à ceux qui traversent des périodes difficiles',
         sacred: false,
       },
       {
         name: 'Aya',
         nameFr: 'La fougère',
         cssPreview: '#4A6741',
-        meaning:
-          'Endurance et résilience — la fougère pousse même dans les sols les plus difficiles.',
+        meaning: 'Endurance et résilience — la fougère pousse même dans les sols les plus difficiles.',
         usage: 'Porté par ceux qui ont surmonté des obstacles majeurs, offert comme encouragement',
         sacred: false,
       },
@@ -414,8 +362,7 @@ export const PATTERNS_DOCS: PatternDoc[] = [
         name: 'Dwennimmen',
         nameFr: 'Les cornes du bélier',
         cssPreview: '#D4A017',
-        meaning:
-          "Humilité dans la force — le bélier se bat avec les cornes mais s'agenouille pour boire.",
+        meaning: "Humilité dans la force — le bélier se bat avec les cornes mais s'agenouille pour boire.",
         usage: 'Offert aux leaders comme rappel de la responsabilité du pouvoir',
         sacred: false,
       },
@@ -440,6 +387,8 @@ export const PATTERNS_DOCS: PatternDoc[] = [
       'Centre for National Culture — Kumasi, Ghana',
     ],
     downloads: 5640,
-    views: 34100, 
+    views: 34100,
+    published: false,
+    featured: false
   },
 ];
