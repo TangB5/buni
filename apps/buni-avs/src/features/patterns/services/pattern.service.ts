@@ -1,7 +1,7 @@
 import { del, get, post, put } from 'apps/buni-avs/src/core/api/client';
 import { toFormData, toCreatePayload } from '../mappers/pattern.mapper';
 import type {
-  Pattern,
+  
   PatternFilters,
   PatternListResponse,
   PatternSymbol,
@@ -9,6 +9,7 @@ import type {
   Step2Data,
   Step3Data,
 } from '../types';
+import { Pattern,CSS_PATTERN_MAP } from '@buni/patterns';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ERROR
@@ -42,48 +43,74 @@ export const patternService = {
   featured: () =>
     get<Pattern[]>('/api/v1/patterns?featured=true&perPage=6'),
 
-  // ── WRITE ──────────────────────────────────────────────────────────────────
-
   /**
-   * Création d'un motif depuis le formulaire multi-step.
-   * Construit le FormData via le mapper et envoie en multipart
-   * (fichiers SVG + images de symboles inclus).
-   *
-   * Usage dans usePatternForm :
-   *   await patternService.createFromForm(step1, step2, step3, svgFile, symbols);
+   * Charge + transforme les motifs
    */
-  // createFromForm: async (
-  //   step1: Step1Data,
-  //   step2: Step2Data,
-  //   step3: Step3Data,
-  //   svgFile: File | null,
-  //   symbols: PatternSymbol[],
-  // ): Promise<Pattern> => {
-  //   const payload = toCreatePayload(step1, step2, step3);
-  //   const fd      = toFormData(payload, svgFile, symbols);
+  loadPatterns: async (
+    filters: PatternFilters = {},
+  ): Promise<Pattern[]> => {
+    try {
+      const result = await patternService.list({
+        perPage: 100,
+        ...filters,
+      });
 
-  //   // fetch direct : le client interne envoie du JSON, pas du multipart.
-  //   const res = await fetch('/api/v1/patterns', {
-  //     method: 'POST',
-  //     body: fd,
-  //     // Pas de Content-Type : le browser pose lui-même le boundary multipart
-  //   });
+      return (result.data || []).map((pattern: Pattern): Pattern => ({
+        id: pattern.id,
+        slug: pattern.slug,
+        name: pattern.name,
+        localName: pattern.localName || '',
+        type: pattern.type,
 
-  //   if (!res.ok) {
-  //     const body = await res.json().catch(() => ({})) as {
-  //       message?: string;
-  //       errors?: Record<string, string>;
-  //     };
-  //     throw new PatternServiceError(
-  //       body.message ?? `Erreur serveur (${res.status})`,
-  //       res.status,
-  //       body.errors,
-  //     );
-  //   }
+        cssClass:
+          pattern.cssClass ||
+          CSS_PATTERN_MAP[pattern.type] ||
+          'avs-pattern-wax-dakar',
 
-  //   return res.json() as Promise<Pattern>;
-  // },
+        origin: {
+          country: pattern.origin?.country || '',
+          people: pattern.origin?.people || '',
+          region: pattern.origin?.region || '',
+          coords: pattern.origin?.coords || [0, 0],
+          flag: pattern.origin?.flag || '',
+        },
 
+        summary: pattern.summary || '',
+        history: pattern.history || '',
+        technique: pattern.technique || '',
+        ceremonial: pattern.ceremonial || '',
+        era: pattern.era || '',
+
+        symbolism: pattern.symbolism || {
+          meaning: '',
+          keywords: [],
+          usage: 'universal',
+        },
+
+        downloads: pattern.downloads || 0,
+        views: pattern.views || 0,
+
+        colors: pattern.colors || [],
+        symbols: pattern.symbols || [],
+        sources: pattern.sources || [],
+
+        artisanQuote: pattern.artisanQuote,
+        svgPattern: pattern.svgPattern,
+
+        license: pattern.license || 'cc-by',
+
+        createdAt: pattern.createdAt,
+        updatedAt: pattern.updatedAt,
+
+        published: true,
+        featured: false,
+      }));
+    } catch (error) {
+      console.error('Failed to load patterns:', error);
+      throw error;
+    }
+  },
+  
   createFromForm: async (
   step1: Step1Data,
     step2: Step2Data,
@@ -114,5 +141,10 @@ export const patternService = {
   /** Fire-and-forget : échoue silencieusement. */
   trackView: (id: string): void => {
     void post(`/api/v1/patterns/${id}/view`).catch(() => { /* silencieux */ });
+
+    /**
+   * charger les motif
+   */
+  
   },
 };

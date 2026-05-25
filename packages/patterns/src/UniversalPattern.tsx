@@ -20,7 +20,7 @@ interface UniversalPatternProps {
 
 /**
  * Universal Pattern Component
- * 
+ *
  * Usage:
  * <pattern type="KENTE" className="my-class" />
  * <pattern type="NDOP" as="section" />
@@ -34,7 +34,10 @@ export function pattern({
   as: Component = 'div',
   onClick,
 }: UniversalPatternProps) {
-  const patternClass = CSS_PATTERN_MAP[type.toUpperCase()] || CSS_PATTERN_MAP.KENTE;
+  
+  const patternKey = type.toLowerCase() as keyof typeof CSS_PATTERN_MAP;
+
+  const patternClass = CSS_PATTERN_MAP[patternKey] ?? CSS_PATTERN_MAP.kente;
   const combinedClasses = `${patternClass} ${className}`.trim();
 
   return (

@@ -18,7 +18,6 @@ import {
 } from 'lucide-react';
 import { PatternReplacer } from 'apps/buni-avs/src/features/patterns/components/SvgPatternDisplay';
 import {
-  CSS_PATTERN_MAP,
   Pattern,
   PatternSymbol,
   
@@ -130,6 +129,7 @@ function PatternSheet({ pattern }: { pattern: Pattern }) {
   const [activeSymbol, setActiveSymbol] = useState<PatternSymbol | null>(null);
   const [activeSection, setActiveSection] = useState<SectionId>('histoire');
   const contentRef = useRef<HTMLDivElement>(null);
+  
 
   useEffect(() => {
     contentRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
@@ -390,7 +390,7 @@ function PatternSheet({ pattern }: { pattern: Pattern }) {
                       technique:  pattern.technique,
                       symbolisme: pattern.symbolism,
                       ceremoniel: pattern.ceremonial,
-                    } as Record<string, string>)[activeSection]
+                    } as Record<string, any>)[activeSection]
                   }
                 </p>
               ) : (
@@ -464,55 +464,17 @@ export default function Page() {
 
   // Load patterns from backend
   useEffect(() => {
+
     const loadPatterns = async () => {
-      try {
-        const result = await patternService.list({ perPage: 100 });
-        
-        const transformedPatterns = (result || []).map((pattern: any): Pattern => ({
-          id: pattern.id,
-          slug: pattern.slug,
-          name: pattern.nameFr,
-          localName: pattern.nameLocal || '',
-          type: pattern.type,
-          cssClass: pattern.cssClass || CSS_PATTERN_MAP[pattern.type] || 'avs-pattern-wax-dakar',
-          origin: {
-            country: pattern.origin?.country || '',
-            people: pattern.origin?.people || '',
-            region: pattern.origin?.region || '',
-            coords: pattern.origin?.coords || [0, 0],
-            flag: pattern.origin?.flag || '',
-          },
-          summary: pattern.summary || '',
-          history: pattern.history || '',
-          technique: pattern.technique || '',
-          ceremonial: pattern.ceremonial || '',
-          era: pattern.era || '',
-          symbolism: pattern.symbolism || {
-            meaning: '',
-            keywords: [],
-            usage: 'universal' as const,
-          },
-          downloads: pattern.downloads || 0,
-          views: pattern.views || 0,
-          colors: pattern.colors || [],
-          symbols: pattern.symbols || [],
-          sources: pattern.sources || [],
-          artisanQuote: pattern.artisanQuote,
-          svgPattern: pattern.svgUrl,
-          license: pattern.license || 'cc-by',
-          createdAt: pattern.createdAt,
-          updatedAt: pattern.updatedAt,
-          published: true,
-          featured: false,
-        }));
-        
-        setPatterns(transformedPatterns);
-      } catch (error) {
-        console.error('Failed to load patterns:', error);
-        // Fallback to mock data if API fails
-        setPatterns(PATTERNS_DOCS);
-      }
-    };
+  try {
+    const patterns = await patternService.loadPatterns();
+
+    setPatterns(patterns);
+  } catch (error) {
+    console.error(error);
+    setPatterns(PATTERNS_DOCS);
+  }
+};
     
     loadPatterns();
   }, []);
