@@ -55,3 +55,23 @@ export function searchPatterns(
     p.origin.people.toLowerCase().includes(q)
   );
 }
+
+export function generatePaletteJson(
+  pattern: Pattern
+): string {
+  return JSON.stringify(
+    {
+      id: pattern.id,
+      name: pattern.name,
+      localName: pattern.localName,
+      type: pattern.type,
+      origin: pattern.origin,
+      colors: pattern.colors,
+      license: pattern.license,
+      source:
+        'AVS — African Visual Standard · avs-standard.com',
+    },
+    null,
+    2
+  );
+}

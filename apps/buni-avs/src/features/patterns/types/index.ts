@@ -87,7 +87,7 @@ export interface Step1Data {
 
   nameEn: string;
 
-  type: PatternType;
+  patternType: PatternType;
 
   region: RegionType;
 

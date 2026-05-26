@@ -24,7 +24,7 @@ export function toCreatePayload(
     nameFr:      s1.nameFr,
     nameEn:      s1.nameEn,
     nameLocal:   s1.nameLocal,
-    patternType: s1.patternType,
+    type:        s1.patternType,
     region:      s1.region,
     country:     s1.country,
     license:     s1.license,
@@ -71,7 +71,7 @@ export function toFormData(
 
   // ── Scalar fields ──────────────────────────────────────────────────────────
   const scalars: (keyof CreatePatternPayload)[] = [
-    'nameFr', 'nameEn', 'nameLocal', 'patternType', 'region',
+    'nameFr', 'nameEn', 'nameLocal', 'type', 'region',
     'country', 'license', 'symbolUsage', 'descFr', 'descEn',
     'summary', 'history', 'technique', 'symbolMeaning', 'ceremonial',
     'svgPattern', 'people', 'flag', 'kingdom', 'era',

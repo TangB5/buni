@@ -3,7 +3,7 @@
 import { useCallback } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useAuthStore } from '@buni/auth';
-import type { LoginDto } from '@/features/auth/types';
+import type { LoginDto } from '../types';
 
 interface LoginResponse {
   success: boolean;

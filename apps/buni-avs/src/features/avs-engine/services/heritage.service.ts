@@ -3,7 +3,7 @@
 // Couche d'abstraction pour les appels API patrimoniaux
 // =============================================================================
 
-import { get, post, put, del } from '@/core/api/client';
+import { get, post, put, del } from '../../../core/api/client';
 import type { HeritagePiece } from '../types';
 
 // ── Query keys ────────────────────────────────────────────────────────────────

@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '@buni/ui';
+import { Input } from '@buni/ui';
 import Link from 'next/link';
 import { useLogin } from '../hooks/useAuth';
 

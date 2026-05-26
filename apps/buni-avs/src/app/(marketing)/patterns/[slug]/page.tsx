@@ -29,9 +29,9 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
         setPattern(patternRes);
 
         // Fetch les motifs similaires (même type)
-        if (patternRes.patternType) {
+        if (patternRes.type) {
           const similarRes = await patternService.list({
-            patternType: patternRes.patternType,
+            type: patternRes.type,
             perPage: 4,
           });
           setSimilarPatterns(
@@ -40,7 +40,7 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
         }
 
         // Track la vue
-        patternService.trackView(patternRes.id).catch(() => {});
+        patternService.trackView(patternRes.id);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Erreur lors du chargement');
       } finally {
@@ -51,9 +51,9 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
 
   // Download SVG
   const handleDownloadSvg = async () => {
-    if (!pattern?.assets?.svgUrl) return;
+    if (!pattern?.svgUrl) return;
     try {
-      const response = await fetch(pattern.assets.svgUrl);
+      const response = await fetch(pattern.svgUrl);
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
@@ -76,8 +76,8 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
     try {
       if (navigator.share) {
         await navigator.share({
-          title: pattern.nameFr,
-          text: pattern.descFr,
+          title: pattern.name,
+          text: pattern.summary,
           url,
         });
       } else {
@@ -131,7 +131,7 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
             Motifs
           </Link>
           <span>/</span>
-          <span className="text-avs-accent">{pattern?.nameFr}</span>
+          <span className="text-avs-accent">{pattern?.name}</span>
         </div>
       </div>
 
@@ -141,18 +141,18 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
           <div className="space-y-10">
             {/* Visuel hero du motif */}
             <div
-              className="rounded-avs-lg border-avs-accent/10 relative h-72 overflow-hidden border bg-gradient-to-br sm:h-96"
+              className="rounded-avs-lg border-avs-accent/10 relative h-72 overflow-hidden border bg-linear-to-br sm:h-96"
               style={{
-                backgroundImage: `linear-gradient(to bottom right, ${pattern?.colors?.primary}, ${pattern?.colors?.secondary})`,
+                backgroundImage: `linear-gradient(to bottom right, ${pattern?.colors?.[0]?.hex}, ${pattern?.colors?.[1]?.hex})`,
               }}
             >
-              <div className="from-avs-accent/80 absolute inset-0 bg-gradient-to-t via-transparent to-transparent" />
+              <div className="from-avs-accent/80 absolute inset-0 bg-linear-to-t via-transparent to-transparent" />
               <div className="absolute bottom-6 left-6">
                 <p className="text-avs-primary text-xs font-bold tracking-widest uppercase">
-                  {pattern?.patternType?.toUpperCase()}
+                  {pattern?.type?.toUpperCase()}
                 </p>
                 <h1 className="font-display text-avs-secondary text-3xl font-bold">
-                  {pattern?.nameFr}
+                  {pattern?.name}
                 </h1>
               </div>
               <div className="absolute top-6 right-6 flex gap-2">
@@ -165,7 +165,7 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
                 </button>
                 <button
                   onClick={handleDownloadSvg}
-                  disabled={!pattern?.assets?.svgUrl}
+                  disabled={!pattern?.svgUrl}
                   aria-label="Télécharger"
                   className="rounded-avs bg-avs-primary text-avs-secondary shadow-avs flex items-center gap-1.5 px-3 py-2 text-xs font-bold transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -180,7 +180,7 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
               <h2 id="desc-title" className="font-display text-avs-accent mb-3 text-xl font-bold">
                 Description
               </h2>
-              <p className="text-avs-accent/70 leading-relaxed">{pattern?.descFr}</p>
+              <p className="text-avs-accent/70 leading-relaxed">{pattern?.summary}</p>
             </section>
 
             {/* Histoire */}
@@ -212,19 +212,19 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
               <div className="grid gap-4 sm:grid-cols-3">
                 {[
                   {
-                    hex: pattern.colors.primary,
+                    hex: pattern.colors[0]?.hex,
                     name: 'Couleur Primaire',
                     meaning: 'Teinte dominante du motif',
                   },
                   {
-                    hex: pattern.colors.secondary,
+                    hex: pattern.colors[1]?.hex,
                     name: 'Couleur Secondaire',
                     meaning: 'Teinte contrastante',
                   },
-                  ...(pattern.colors.accent
+                  ...(pattern.colors[2]?.hex
                     ? [
                         {
-                          hex: pattern.colors.accent,
+                          hex: pattern.colors[2]?.hex,
                           name: 'Couleur Accent',
                           meaning: 'Teinte accentue',
                         },
@@ -254,17 +254,17 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
               <h2 className="font-display text-avs-accent mb-5 font-bold">Informations</h2>
               <dl className="space-y-4 text-sm">
                 {[
-                  { icon: MapPin, label: 'Pays', value: pattern.country },
+                  { icon: MapPin, label: 'Pays', value: pattern.origin.country },
                   {
                     icon: Globe,
                     label: 'Région',
-                    value: pattern.region.replace(/-/g, ' ').toUpperCase(),
+                    value: pattern.origin.region.replace(/-/g, ' ').toUpperCase(),
                   },
                   {
                     icon: Tag,
                     label: 'Type',
                     value:
-                      pattern.patternType.charAt(0).toUpperCase() + pattern.patternType.slice(1),
+                      pattern.type.charAt(0).toUpperCase() + pattern.type.slice(1),
                   },
                   {
                     icon: Eye,
@@ -289,7 +289,7 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
 
             {/* Stats */}
             <div className="grid grid-cols-2 gap-3">
-              {[{ value: pattern.viewCount.toLocaleString(), label: 'Vues', icon: Eye }].map(
+              {[{ value: pattern.views.toLocaleString(), label: 'Vues', icon: Eye }].map(
                 ({ value, label, icon: Icon }) => (
                   <div
                     key={label}
@@ -330,7 +330,7 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
             {/* CTA téléchargement */}
             <button
               onClick={handleDownloadSvg}
-              disabled={!pattern?.assets?.svgUrl}
+              disabled={!pattern?.svgUrl}
               className="rounded-avs-lg bg-avs-primary text-avs-secondary shadow-avs-md hover:shadow-avs-lg flex w-full items-center justify-center gap-2 py-4 text-sm font-bold transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Download size={16} aria-hidden />
@@ -356,21 +356,21 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
                   className="group"
                 >
                   <div
-                    className="rounded-avs-lg border-avs-accent/10 shadow-avs relative overflow-hidden border bg-gradient-to-br transition-all hover:shadow-avs-md"
+                    className="rounded-avs-lg border-avs-accent/10 shadow-avs relative overflow-hidden border bg-linear-to-br transition-all hover:shadow-avs-md"
                     style={{
-                      backgroundImage: `linear-gradient(to bottom right, ${similarPattern.colors.primary}, ${similarPattern.colors.secondary})`,
+                      backgroundImage: `linear-gradient(to bottom right, ${similarPattern.colors[0]?.hex}, ${similarPattern.colors[1]?.hex})`,
                     }}
                   >
-                    <div className="from-avs-accent/60 absolute inset-0 bg-gradient-to-t via-transparent to-transparent" />
+                    <div className="from-avs-accent/60 absolute inset-0 bg-linear-to-t via-transparent to-transparent" />
                     <div className="relative h-48 p-4 flex flex-col justify-end">
                       <p className="text-avs-secondary text-xs font-bold tracking-widest uppercase">
-                        {similarPattern.patternType}
+                        {similarPattern.type}
                       </p>
                       <h3 className="font-display text-avs-secondary text-lg font-bold group-hover:underline">
-                        {similarPattern.nameFr}
+                        {similarPattern.name}
                       </h3>
                       <p className="text-avs-secondary/70 text-xs mt-1">
-                        {similarPattern.region.replace(/-/g, ' ')}
+                        {similarPattern.origin.region.replace(/-/g, ' ')}
                       </p>
                     </div>
                   </div>

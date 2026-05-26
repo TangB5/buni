@@ -19,6 +19,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { Download, Info } from 'lucide-react';
+// TODO: These SVG utilities should be implemented in @buni/patterns
 import {
   SVG_REGISTRY,
   getSvgMeta,
@@ -357,7 +358,14 @@ export function SvgDownloadCard({ name }: { name: SvgPatternKey }) {
     if (format === 'svg') {
       downloadFile(getSvgUrl(name), `avs-${name}.svg`);
     } else {
-      const blob = new Blob([generatePaletteJson(name)], { type: 'application/json' });
+      const paletteJson = JSON.stringify({
+        key: name,
+        name: meta.name,
+        colors: meta.colors,
+        type: meta.type,
+        origin: meta.origin,
+      }, null, 2);
+      const blob = new Blob([paletteJson], { type: 'application/json' });
       const url  = URL.createObjectURL(blob);
       downloadFile(url, `avs-${name}-palette.json`);
       setTimeout(() => URL.revokeObjectURL(url), 1000);

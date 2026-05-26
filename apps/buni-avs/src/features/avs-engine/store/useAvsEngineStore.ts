@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
 import type { AvsEngineState, HeritagePiece } from '../types';
-import type { AvsPatternType } from '@/core/constants/avs';
+import type { AvsPatternType } from '../../../core/constants/avs';
 
 interface AvsEngineActions {
   setPieces:       (pieces: HeritagePiece[]) => void;

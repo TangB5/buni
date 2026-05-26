@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useAuthStore } from '@buni/auth';
-import type { RegisterDto } from '@/features/auth/types';
+import type { RegisterDto } from '../types';
 
 interface RegisterResponse {
   success: boolean;

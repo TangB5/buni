@@ -3,7 +3,7 @@
 import React, { Component, type ErrorInfo, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, AlertCircle, Info, XCircle, X, AlertTriangle } from 'lucide-react';
-import { cn } from '@/components/ui';
+import { cn } from '@buni/ui';
 
 // =============================================================================
 // ALERT — messages d'état inline

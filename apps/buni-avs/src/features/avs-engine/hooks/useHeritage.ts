@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useCallback } from 'react';
 import { useAvsEngineStore } from '../store/useAvsEngineStore';
-import { get } from '@/core/api/client';
+import { get } from '../../../core/api/client';
 import type { HeritagePiece } from '../types';
 
 export function useHeritage() {

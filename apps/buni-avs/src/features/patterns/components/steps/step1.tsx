@@ -1,7 +1,7 @@
 'use client';
 
 import type { Step1Data, FieldErrors } from '../../types';
-import { PATTERN_TYPES, REGIONS, LICENSES } from '../../constants/pattern.constants';
+import { PATTERN_TYPES, REGIONS, PATTERN_LICENSES,PatternType } from '@buni/patterns';
 import { Field, PillBtn, SelectField, StepTitle } from '../Patternform.primitives';
 
 interface Step1Props {
@@ -46,12 +46,12 @@ export function Step1({ data, errors, onChange }: Step1Props) {
 
         <Field label="Licence" error={errors['license']} required>
           <div className="mt-1 flex flex-wrap gap-2">
-            {LICENSES.map((l) => (
+            {PATTERN_LICENSES.map((l) => (
               <PillBtn
-                key={l.value}
-                label={l.label}
-                active={data.license === l.value}
-                onClick={() => onChange({ license: l.value as Step1Data['license'] })}
+                key={l}
+                label={l}
+                active={data.license === l}
+                onClick={() => onChange({ license: l as Step1Data['license'] })}
               />
             ))}
           </div>
@@ -81,7 +81,7 @@ export function Step1({ data, errors, onChange }: Step1Props) {
           >
             <option value="">Choisir…</option>
             {REGIONS.map((r) => (
-              <option key={r.value} value={r.value}>{r.label}</option>
+              <option key={r} value={r}>{r}</option>
             ))}
           </SelectField>
         </Field>

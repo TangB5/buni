@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { AvsRegion, AvsPatternType, CameroonPattern } from '@/core/constants/avs';
+import type { AvsRegion, AvsPatternType, CameroonPattern } from '../../../core/constants/avs';
 
 // ── Schémas Zod ──────────────────────────────────────────────────────────────
 export const HeritagePieceSchema = z.object({

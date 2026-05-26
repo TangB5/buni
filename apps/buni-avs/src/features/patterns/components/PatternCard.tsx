@@ -18,7 +18,8 @@ interface PatternCardProps {
 }
 
 export function PatternCard({ pattern, index = 0, featured = false, className }: PatternCardProps) {
-  const patternCSS = CSS_PATTERN_MAP[pattern.patternType.toUpperCase()] ?? 'avs-pattern-wax';
+  const patternKey = pattern.type.toLowerCase() as keyof typeof CSS_PATTERN_MAP;
+  const patternCSS = CSS_PATTERN_MAP[patternKey] ?? CSS_PATTERN_MAP.kente;
 
   return (
     <motion.article
@@ -32,14 +33,14 @@ export function PatternCard({ pattern, index = 0, featured = false, className }:
         className
       )}
     >
-      <Link href={`/patterns/${pattern.slug}`} aria-label={`Voir le motif ${pattern.nameFr}`}>
+      <Link href={`/patterns/${pattern.slug}`} aria-label={`Voir le motif ${pattern.localName ?? pattern.name}`}>
 
         {/* Visuel */}
         <div className={cn('relative overflow-hidden', featured ? 'h-52' : 'h-44')}>
-          {pattern.assets.previewUrl ? (
+          {pattern.svgPattern ? (
             <Image
-              src={pattern.assets.previewUrl}
-              alt={`Aperçu — ${pattern.nameFr}`}
+              src={pattern.svgPattern}
+              alt={`Aperçu — ${pattern.localName ?? pattern.name}`}
               fill
               sizes="(max-width: 768px) 100vw, 33vw"
               className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -54,10 +55,10 @@ export function PatternCard({ pattern, index = 0, featured = false, className }:
           {/* Badges */}
           <div className="absolute left-3 top-3">
             <Badge variant="secondary" className="bg-avs-accent/80 text-avs-secondary backdrop-blur-sm">
-              {pattern.patternType.toUpperCase()}
+              {pattern.type.toUpperCase()}
             </Badge>
           </div>
-          {pattern.isFeatured && (
+          {pattern.featured && (
             <div className="absolute right-3 top-3">
               <Badge variant="kente">✦ Vedette</Badge>
             </div>
@@ -66,7 +67,7 @@ export function PatternCard({ pattern, index = 0, featured = false, className }:
           {/* Stats hover */}
           <div className="absolute bottom-3 right-3 flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
             <span className="flex items-center gap-1 rounded-avs bg-avs-accent/70 px-2 py-0.5 text-[10px] font-semibold text-avs-secondary backdrop-blur-sm">
-              <Eye size={10} aria-hidden /> {pattern.viewCount.toLocaleString()}
+              <Eye size={10} aria-hidden /> {pattern.views.toLocaleString()}
             </span>
             <span className="flex items-center gap-1 rounded-avs bg-avs-accent/70 px-2 py-0.5 text-[10px] font-semibold text-avs-secondary backdrop-blur-sm">
               <Download size={10} aria-hidden /> {pattern.downloads.toLocaleString()}
@@ -76,22 +77,22 @@ export function PatternCard({ pattern, index = 0, featured = false, className }:
 
         {/* Contenu */}
         <div className="p-4">
-          <h3 className="font-display font-bold text-avs-accent line-clamp-1">{pattern.nameFr}</h3>
+          <h3 className="font-display font-bold text-avs-accent line-clamp-1">{pattern.localName ?? pattern.name}</h3>
           <div className="mt-0.5 flex items-center gap-1 text-xs text-avs-accent/50">
             <MapPin size={10} aria-hidden />
-            <span>{pattern.country.toUpperCase()} · {pattern.region.replace('-', ' ')}</span>
+            <span>{pattern.origin.country.toUpperCase()} · {pattern.origin.region.replace('-', ' ')}</span>
           </div>
-          <p className="mt-2 text-xs text-avs-accent/60 line-clamp-2 leading-relaxed">{pattern.descFr}</p>
+          <p className="mt-2 text-xs text-avs-accent/60 line-clamp-2 leading-relaxed">{pattern.summary}</p>
 
           {/* Palette */}
           <div className="mt-3 flex gap-1.5">
-            {[pattern.colors.primary, pattern.colors.secondary, ...(pattern.colors.additional.slice(0,2))].map(c => (
+            {pattern.colors.slice(0, 3).map(c => (
               <span
-                key={c}
+                key={c.hex}
                 className="h-4 w-4 rounded-full border border-avs-accent/10 shadow-sm"
-                style={{ backgroundColor: c }}
-                title={c}
-                aria-label={`Couleur ${c}`}
+                style={{ backgroundColor: c.hex }}
+                title={c.hex}
+                aria-label={`Couleur ${c.hex}`}
               />
             ))}
           </div>

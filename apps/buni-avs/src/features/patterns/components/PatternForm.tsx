@@ -5,8 +5,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Check, Sparkles } from 'lucide-react';
 
 import { BuniLoader } from '@buni/ui';
-
-import { CSS_PATTERN_MAP, FALLBACK_PATTERN_CSS, FORM_STEPS } from '../constants/pattern.constants';
+import {CSS_PATTERN_MAP, FALLBACK_PATTERN_CSS } from '@buni/patterns';
+import {  FORM_STEPS } from '../constants/pattern.constants';
 
 
 import { Step1 } from './steps/step1';
@@ -88,7 +88,9 @@ export function PatternForm() {
     submit,
   } = form;
 
-  const previewCSS = CSS_PATTERN_MAP[step1.patternType ?? 'ndop'] ?? FALLBACK_PATTERN_CSS;
+  const previewCSS =
+  CSS_PATTERN_MAP[step1.type ?? 'ndop'] ??
+  FALLBACK_PATTERN_CSS;
   const progress   = (currentStep / (FORM_STEPS.length - 1)) * 100;
 
   return (
