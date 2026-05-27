@@ -14,7 +14,7 @@ import { Step2 } from './steps/step2';
 import { Step3 } from './steps/step3';
 import { Step4 } from './steps/step4';
 import { LivePreviewSidebar } from './Patternform.preview';
-import { usePatternForm } from '../hooks/Usepatternform ';
+import { usePatternForm } from '../hooks/Usepatternform';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STEPPER
@@ -89,7 +89,7 @@ export function PatternForm() {
   } = form;
 
   const previewCSS =
-  CSS_PATTERN_MAP[step1.type ?? 'ndop'] ??
+  step1.patternType ? CSS_PATTERN_MAP[(step1.patternType.toLowerCase()) as keyof typeof CSS_PATTERN_MAP] : CSS_PATTERN_MAP.ndop ??
   FALLBACK_PATTERN_CSS;
   const progress   = (currentStep / (FORM_STEPS.length - 1)) * 100;
 
@@ -241,7 +241,7 @@ export function PatternForm() {
                       className="avs-btn-primary group relative flex items-center gap-2 overflow-hidden"
                     >
                       <span
-                        className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full"
+                        className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full"
                         aria-hidden
                       />
                       Suivant <ArrowRight size={13} className="transition-transform group-hover:translate-x-0.5" />
@@ -255,7 +255,7 @@ export function PatternForm() {
                       className="avs-btn-primary group relative flex items-center gap-2 overflow-hidden disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       <span
-                        className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full"
+                        className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full"
                         aria-hidden
                       />
                       {loading

@@ -43,7 +43,7 @@ export const Step2Schema = z.object({
 
   symbolUsage: z.enum([
     'ceremonial', 'daily', 'royal', 'spiritual', 'universal',
-  ]),
+  ] as const),
 });
 
 export type Step2Schema = z.infer<typeof Step2Schema>;

@@ -49,7 +49,7 @@ export function useFeaturedPatterns() {
 export function useCreatePattern() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (data: Partial<Pattern>) => patternService.create(data),
+    mutationFn: (data: Partial<Pattern>) => patternService.update('', data),
     onSuccess:  () => void qc.invalidateQueries({ queryKey: patternKeys.all }),
   });
 }

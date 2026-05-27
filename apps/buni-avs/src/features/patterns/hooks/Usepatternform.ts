@@ -211,8 +211,8 @@ export function usePatternForm() {
       );
 
       const destination = result.id
-        ? `/dashboard/patternsDashboard/${result.id}?created=true`
-        : '/dashboard/patternsDashboard?created=true';
+        ? `/patternsDashboard/${result.id}?created=true`
+        : '/patternsDashboard?created=true';
 
       router.push(destination as Route);
     } catch (err) {

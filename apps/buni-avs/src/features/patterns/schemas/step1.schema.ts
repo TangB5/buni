@@ -18,12 +18,12 @@ export const Step1Schema = z.object({
 
   patternType: z.enum([
     'kente', 'bogolan', 'adinkra', 'ndebele', 'ndop', 'wax', 'kuba', 'berber',
-  ], { required_error: 'Sélectionnez un type de motif' }),
+  ] as const),
 
   region: z.enum([
     'west-africa', 'east-africa', 'central-africa',
     'north-africa', 'south-africa', 'diaspora',
-  ], { required_error: 'Sélectionnez une région' }),
+  ] as const),
 
   country: z
     .string()
@@ -39,7 +39,7 @@ export const Step1Schema = z.object({
     .tuple([z.number(), z.number()])
     .optional(),
 
-  license: z.enum(['cc0', 'cc-by', 'cc-by-sa', 'proprietary']).default('cc-by'),
+  license: z.enum(['cc0', 'cc-by', 'cc-by-sa', 'proprietary'] as const).default('cc-by'),
 });
 
 export type Step1Schema = z.infer<typeof Step1Schema>;

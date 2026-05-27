@@ -16,7 +16,7 @@ export function Step4({ step1, step2, step3, errors }: Step4Props) {
     { label: 'Nom FR',    value: step1.nameFr },
     { label: 'Nom EN',    value: step1.nameEn },
     { label: 'Type',      value: step1.patternType?.toUpperCase() },
-    { label: 'Région',    value: REGIONS.find((r) => r.value === step1.region)?.label },
+    { label: 'Région',    value: step1.region },
     { label: 'Pays',      value: step1.country },
     { label: 'Peuple',    value: step1.people },
     { label: 'Royaume',   value: step1.kingdom },

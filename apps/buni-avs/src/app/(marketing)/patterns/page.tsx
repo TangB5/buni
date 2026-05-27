@@ -145,6 +145,7 @@ function PatternSheet({ pattern }: { pattern: Pattern }) {
       {/* ── Cover ────────────────────────────────────────────────────── */}
       <div className="relative h-52 bg-avs-secondary-dark overflow-hidden">
         <PatternReplacer cssClass={pattern.cssClass} className="absolute inset-0" />
+        
         <div className="absolute inset-0 bg-linear-to-b from-black/20 to-black/5" />
 
         {/* Top-left badges */}
@@ -469,6 +470,7 @@ export default function Page() {
   try {
     const patterns = await patternService.loadPatterns();
 
+    
     setPatterns(patterns);
   } catch (error) {
     console.error(error);
@@ -633,6 +635,7 @@ export default function Page() {
                         cssClass={p.cssClass}
                         className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl ring-1 ring-black/10 dark:ring-white/10 transition-transform duration-300 group-hover:scale-105"
                       />
+                      
                       <div className="min-w-0 flex-1">
                         <p className={`font-display truncate text-sm leading-tight font-bold ${isActive ? 'text-avs-primary' : 'text-avs-accent'}`}>
                           {p.name}
@@ -700,6 +703,7 @@ export default function Page() {
                 className="h-full"
               >
                 <PatternSheet pattern={selected} />
+
               </motion.div>
             ) : (
               <motion.div

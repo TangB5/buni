@@ -3,7 +3,7 @@ import type {
   Step2Data,
   Step3Data,
   CreatePatternPayload,
-  PatternSymbol,
+  UploadablePatternSymbol,
 } from '../types';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -65,7 +65,7 @@ export function toCreatePayload(
 export function toFormData(
   payload: CreatePatternPayload,
   svgFile: File | null,
-  symbols: PatternSymbol[],
+  symbols: UploadablePatternSymbol[],
 ): FormData {
   const fd = new FormData();
 
@@ -80,7 +80,9 @@ export function toFormData(
   for (const key of scalars) {
     const val = payload[key];
     if (val !== undefined && val !== null) {
-      fd.append(key, String(val));
+      // Rename 'type' to 'patternType' for backend compatibility
+      const fieldName = key === 'type' ? 'patternType' : key;
+      fd.append(fieldName, String(val));
     }
   }
 

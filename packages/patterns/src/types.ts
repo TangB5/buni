@@ -1,4 +1,4 @@
-import type { PatternType, PatternLicense } from './registry';
+import type { PatternType, PatternLicense, PatternStatus } from './registry';
 
 // ─────────────────────────────────────────────────────────────
 // CORE DOMAIN TYPES
@@ -53,6 +53,7 @@ export interface Pattern {
   localName?: string;
   nameEn?: string;
 
+  imgUrl: string;
   type: PatternType;
 
   svgUrl?: string;
@@ -78,8 +79,9 @@ export interface Pattern {
 
   license: PatternLicense;
 
-  published: boolean;
+  
   featured: boolean;
+  status: PatternStatus;
 
   views: number;
   downloads: number;

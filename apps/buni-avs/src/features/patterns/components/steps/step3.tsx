@@ -337,14 +337,14 @@ function SymbolCard({
           className="flex cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed border-avs-accent/20 p-4 transition-colors hover:border-avs-primary/40 hover:bg-avs-accent/5"
           htmlFor={`symbol-image-${index}`}
         >
-          {symbol.image ? (
+          {symbol.imageUrl ? (
             <div className="flex items-center gap-2">
               <img
-                src={URL.createObjectURL(symbol.image)}
+                src={symbol.imageUrl}
                 alt=""
                 className="h-8 w-8 rounded object-cover"
               />
-              <span className="text-xs text-avs-accent/60">{symbol.image.name}</span>
+              <span className="text-xs text-avs-accent/60">{symbol.name}</span>
             </div>
           ) : (
             <>
@@ -360,7 +360,7 @@ function SymbolCard({
           className="sr-only"
           onChange={(e) => {
             const file = e.target.files?.[0];
-            if (file) onChange({ image: file });
+            if (file) onChange({ imageUrl: URL.createObjectURL(file) });
           }}
         />
       </div>
