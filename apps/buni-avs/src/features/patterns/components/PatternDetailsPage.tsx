@@ -3,9 +3,11 @@
 import { motion } from 'framer-motion';
 import { ArrowLeft, Calendar, MapPin, Share2, Download, Eye } from 'lucide-react';
 import Link from 'next/link';
-import { usePattern } from '@/features/patterns/hooks/usePatterns';
-import { PatternAdminActions } from '@/features/patterns/components/PatternAdminActions';
-import type { Pattern } from '@/features/patterns/types';
+
+
+import { usePattern } from '../hooks/usePatterns';
+import { PatternAdminActions } from './PatternAdminActions';
+
 
 interface PatternDetailsPageProps {
   slug: string;
@@ -61,7 +63,7 @@ export default function PatternDetailsPage({ slug }: PatternDetailsPageProps) {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="rounded-xl border border-gray-200 bg-gradient-to-br from-gray-50 to-white overflow-hidden shadow-sm"
+        className="rounded-xl border border-gray-200 bg-linear-to-br from-gray-50 to-white overflow-hidden shadow-sm"
       >
         <div className="grid md:grid-cols-2 gap-8 p-8">
           {/* Image */}
@@ -73,7 +75,7 @@ export default function PatternDetailsPage({ slug }: PatternDetailsPageProps) {
                 className="w-full h-auto rounded-lg shadow-md object-cover max-h-96"
               />
             ) : (
-              <div className="w-full h-96 rounded-lg bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center">
+              <div className="w-full h-96 rounded-lg bg-linear-to-br from-purple-400 to-pink-400 flex items-center justify-center">
                 <span className="text-white text-6xl">✨</span>
               </div>
             )}
@@ -83,7 +85,7 @@ export default function PatternDetailsPage({ slug }: PatternDetailsPageProps) {
           <div className="space-y-6">
             <div>
               <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                {pattern.name || pattern.nameLocal}
+                {pattern.name || pattern.localName}
               </h1>
               <p className="text-lg text-gray-600">{pattern.summary}</p>
             </div>
@@ -220,15 +222,17 @@ export default function PatternDetailsPage({ slug }: PatternDetailsPageProps) {
           <h2 className="text-xl font-bold text-gray-900 mb-6">Couleurs</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {pattern.colors.map((color: any) => (
-              <div key={color.id} className="space-y-3">
+              <div key={color?.id} className="space-y-3">
                 <div
                   className="h-24 rounded-lg border-2 border-gray-200 shadow-sm"
-                  style={{ backgroundColor: color.hex }}
+                  style={{ backgroundColor: color?.hex }}
                 />
                 <div>
-                  <p className="font-semibold text-gray-900">{color.name}</p>
-                  <p className="text-xs text-gray-500 font-mono">{color.hex}</p>
-                  <p className="text-xs text-gray-600 mt-1">{color.meaning}</p>
+                  <p className="font-semibold text-gray-900">{color?.name}</p>
+                  <p className="text-xs text-gray-500 font-mono">{color?.hex}</p>
+                  {color?.meaning && (
+                    <p className="text-xs text-gray-600 mt-1">{color.meaning}</p>
+                  )}
                 </div>
               </div>
             ))}
@@ -247,9 +251,9 @@ export default function PatternDetailsPage({ slug }: PatternDetailsPageProps) {
           <h2 className="text-xl font-bold text-gray-900 mb-6">Symboles</h2>
           <div className="grid md:grid-cols-2 gap-6">
             {pattern.symbols.map((symbol: any) => (
-              <div key={symbol.id} className="border border-gray-200 rounded-lg p-4">
+              <div key={symbol?.id} className="border border-gray-200 rounded-lg p-4">
                 <div className="flex items-start gap-4">
-                  {symbol.imageUrl && (
+                  {symbol?.imageUrl && (
                     <img
                       src={symbol.imageUrl}
                       alt={symbol.name}
@@ -257,9 +261,13 @@ export default function PatternDetailsPage({ slug }: PatternDetailsPageProps) {
                     />
                   )}
                   <div className="flex-1">
-                    <h3 className="font-semibold text-gray-900">{symbol.name}</h3>
-                    <p className="text-sm text-gray-600 mt-1">{symbol.meaning}</p>
-                    <p className="text-xs text-gray-500 mt-2">{symbol.usage}</p>
+                    <h3 className="font-semibold text-gray-900">{symbol?.name}</h3>
+                    {symbol?.meaning && (
+                      <p className="text-sm text-gray-600 mt-1">{symbol.meaning}</p>
+                    )}
+                    {symbol?.usage && (
+                      <p className="text-xs text-gray-500 mt-2">{symbol.usage}</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -274,7 +282,7 @@ export default function PatternDetailsPage({ slug }: PatternDetailsPageProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
-          className="rounded-xl border border-gray-200 bg-gradient-to-br from-blue-50 to-indigo-50 p-8 shadow-sm italic"
+          className="rounded-xl border border-gray-200 bg-linear-to-br from-blue-50 to-indigo-50 p-8 shadow-sm italic"
         >
           <p className="text-lg text-gray-900 mb-4">"{pattern.artisanQuote.text}"</p>
           <div className="border-t border-gray-300 pt-4">

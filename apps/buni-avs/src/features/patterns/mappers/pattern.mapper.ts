@@ -1,9 +1,12 @@
+import { CSS_PATTERN_MAP } from 'packages/patterns/dist';
 import type {
   Step1Data,
   Step2Data,
   Step3Data,
   CreatePatternPayload,
   UploadablePatternSymbol,
+  Pattern,
+  PatternDto,
 } from '../types';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -112,3 +115,41 @@ export function toFormData(
 
   return fd;
 }
+
+export const mapPatternDtoToModel = (
+  dto: PatternDto
+): Pattern => {
+  return {
+    id: dto.id,
+    slug: dto.slug,
+
+    name: dto.name || 'Sans titre',
+
+    localName: dto.nameLocal || '',
+
+    imgUrl: dto.imgUrl || '',
+
+    type: dto.type,
+
+    cssClass:
+      dto.cssClass ||
+      CSS_PATTERN_MAP[dto.type] ||
+      'avs-pattern-default',
+
+    featured: dto.isFeatured ?? false,
+
+    origin: {
+      country: dto.origin?.country || '',
+      people: dto.origin?.people || '',
+      region: dto.origin?.region || '',
+      coords: dto.origin?.coords || [0, 0],
+      flag: dto.origin?.flag || '',
+    },
+
+    summary: dto.summary || '',
+
+    colors: dto.colors || [],
+
+    status: dto.status,
+  };
+};

@@ -1,39 +1,73 @@
 'use client';
 
-// =============================================================================
-// Feature Patterns — Service + Hooks
-// =============================================================================
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import type {
+  Pattern,
+  PatternFilters,
+} from '../types';
 
-import type { Pattern, PatternFilters, PatternListResponse } from '../types';
-import { patternService } from '../services/pattern.service';
+import { loadPatterns } from '../usecases/load-patterns.usecase';
 
-// ── Clés de query ─────────────────────────────────────────────────────────────
+import { loadPattern } from '../usecases/load-pattern.usecase';
+
+import { loadFeaturedPatterns } from '../usecases/load-featured-patterns.usecase';
+
+// ─────────────────────────────────────────────────────────────
+// Query Keys
+// ─────────────────────────────────────────────────────────────
+
 export const patternKeys = {
-  all:       ['patterns'] as const,
-  lists:     () => [...patternKeys.all, 'list'] as const,
-  list:      (filters: PatternFilters) => [...patternKeys.lists(), filters] as const,
-  details:   () => [...patternKeys.all, 'detail'] as const,
-  detail:    (slug: string) => [...patternKeys.details(), slug] as const,
-  featured:  () => [...patternKeys.all, 'featured'] as const,
+  all: ['patterns'] as const,
+
+  lists: () =>
+    [...patternKeys.all, 'list'] as const,
+
+  list: (filters: PatternFilters) =>
+    [...patternKeys.lists(), filters] as const,
+
+  details: () =>
+    [...patternKeys.all, 'detail'] as const,
+
+  detail: (slug: string) =>
+    [...patternKeys.details(), slug] as const,
+
+  featured: () =>
+    [...patternKeys.all, 'featured'] as const,
 };
 
+// ─────────────────────────────────────────────────────────────
+// Hooks
+// ─────────────────────────────────────────────────────────────
 
-// ── Hooks ─────────────────────────────────────────────────────────────────────
-export function usePatterns(filters: PatternFilters = {}) {
+export function usePatterns(
+  filters: PatternFilters = {}
+) {
   return useQuery({
     queryKey: patternKeys.list(filters),
-    queryFn:  () => patternService.list(filters),
+
+    queryFn: () =>
+      loadPatterns(filters),
+
     placeholderData: prev => prev,
   });
 }
 
-export function usePattern(slug: string) {
+export function usePattern(
+  slug: string
+) {
   return useQuery({
-    queryKey:  patternKeys.detail(slug),
-    queryFn:   () => patternService.bySlug(slug),
-    enabled:   !!slug,
+    queryKey: patternKeys.detail(slug),
+
+    queryFn: () =>
+      loadPattern(slug),
+
+    enabled: !!slug,
+
     staleTime: 5 * 60 * 1000,
   });
 }
@@ -41,15 +75,10 @@ export function usePattern(slug: string) {
 export function useFeaturedPatterns() {
   return useQuery({
     queryKey: patternKeys.featured(),
-    queryFn:  patternService.featured, 
-    staleTime: 10 * 60 * 1000,
-  });
-}
 
-export function useCreatePattern() {
-  const qc = useQueryClient();
-  return useMutation({
-    mutationFn: (data: Partial<Pattern>) => patternService.update('', data),
-    onSuccess:  () => void qc.invalidateQueries({ queryKey: patternKeys.all }),
+    queryFn: () =>
+      loadFeaturedPatterns(),
+
+    staleTime: 10 * 60 * 1000,
   });
 }

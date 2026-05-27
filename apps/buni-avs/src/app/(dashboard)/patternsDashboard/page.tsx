@@ -221,7 +221,7 @@ function ActionMenu({
               className="border-avs-accent/9 bg-avs-secondary shadow-avs-lg absolute right-0 z-20 mt-1.5 w-48 overflow-hidden rounded-xl border"
             >
               <Link
-                href={`/dashboard/patternsDashboard/${pattern.slug}/edit` as Route}
+                href={`/dashboard/patternsDashboard/${pattern.slug}?edit=true` as Route}
                 onClick={() => setOpen(false)}
                 className="text-avs-accent/70 hover:bg-avs-primary/5 hover:text-avs-primary flex items-center gap-2.5 px-4 py-2.5 text-sm"
               >

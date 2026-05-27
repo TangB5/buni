@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { ToastProvider } from '@buni/ui';
 import ThemeProvider from './ThemeProvider';
 
 interface ProvidersProps {
@@ -36,15 +37,17 @@ export function Providers({ children }: ProvidersProps) {
   return (
     <ThemeProvider attribute="class">
       <QueryClientProvider client={queryClient}>
-        {children}
+        <ToastProvider>
+          {children}
 
-        {/* ✅ Important: avoid SSR mismatch */}
-        {mounted && process.env.NODE_ENV === 'development' && (
-          <ReactQueryDevtools
-            initialIsOpen={false}
-            buttonPosition="bottom-left"
-          />
-        )}
+          {/* ✅ Important: avoid SSR mismatch */}
+          {mounted && process.env.NODE_ENV === 'development' && (
+            <ReactQueryDevtools
+              initialIsOpen={false}
+              buttonPosition="bottom-left"
+            />
+          )}
+        </ToastProvider>
       </QueryClientProvider>
     </ThemeProvider>
   );

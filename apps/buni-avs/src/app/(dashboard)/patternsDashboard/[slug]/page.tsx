@@ -1,19 +1,24 @@
 'use client';
 
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import PatternDetailsPage from '@/features/patterns/components/PatternDetailsPage';
+import PatternEditPage from '@/features/patterns/components/PatternEditPage';
 
 /**
- * Page dynamique pour voir les détails d'un pattern
+ * Page dynamique pour voir/éditer les détails d'un pattern
  * Route: /patternsDashboard/[slug]
+ * Mode édition: /patternsDashboard/[slug]?edit=true
  */
 export default function PatternPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const slug = params.slug as string;
+  const isEdit = searchParams.get('edit') === 'true';
 
   return (
     <div className="space-y-6">
-      <PatternDetailsPage slug={slug} />
+      {isEdit ? <PatternEditPage slug={slug} /> : <PatternDetailsPage slug={slug} />}
     </div>
   );
 }
