@@ -26,6 +26,7 @@ import {
 import { Route } from 'next';
 import { Pattern, PatternSymbol } from '@buni/patterns';
 import { patternService } from 'apps/buni-avs/src/features/patterns/services/pattern.service';
+import { useToggleFeature } from 'apps/buni-avs/src/features/patterns/hooks/usePatternActions';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TYPES
@@ -193,9 +194,11 @@ function ActionMenu({
 }: {
   pattern: Pattern;
   onDelete: (id: string) => void;
-  onToggleFeatured: (id: string) => void;
+  onToggleFeatured: (id: string, shouldFeature: boolean) => void;
 }) {
   const [open, setOpen] = useState(false);
+  const featureToggle = useToggleFeature();
+  
   return (
     <div className="relative">
       <button
@@ -218,7 +221,7 @@ function ActionMenu({
               className="border-avs-accent/9 bg-avs-secondary shadow-avs-lg absolute right-0 z-20 mt-1.5 w-48 overflow-hidden rounded-xl border"
             >
               <Link
-                href={`/dashboard/patterns/${pattern.slug}/edit` as Route}
+                href={`/dashboard/patternsDashboard/${pattern.slug}/edit` as Route}
                 onClick={() => setOpen(false)}
                 className="text-avs-accent/70 hover:bg-avs-primary/5 hover:text-avs-primary flex items-center gap-2.5 px-4 py-2.5 text-sm"
               >
@@ -233,10 +236,11 @@ function ActionMenu({
               </Link>
               <button
                 onClick={() => {
-                  onToggleFeatured(pattern.id);
+                  featureToggle.mutate(pattern.id, !pattern.featured);
                   setOpen(false);
                 }}
-                className="text-avs-accent/70 hover:bg-avs-primary/5 hover:text-avs-primary flex w-full items-center gap-2.5 px-4 py-2.5 text-sm"
+                disabled={featureToggle.isLoading}
+                className="text-avs-accent/70 hover:bg-avs-primary/5 hover:text-avs-primary disabled:opacity-50 flex w-full items-center gap-2.5 px-4 py-2.5 text-sm transition-opacity"
               >
                 {pattern.featured ? (
                   <>
@@ -302,6 +306,11 @@ export default function MyPatternsPage() {
   const [sortKey, setSortKey] = useState<SortKey>('updatedAt');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [deleteModal, setDeleteModal] = useState<{ open: boolean; patternId: string | null; patternName: string }>({
+    open: false,
+    patternId: null,
+    patternName: '',
+  });
 
   const normalizeStatus = (
   status?: string
@@ -388,12 +397,37 @@ export default function MyPatternsPage() {
   };
 
   const handleDelete = (id: string) => {
-    if (confirm('Supprimer ce motif définitivement ?'))
-      setPatterns((ps) => ps.filter((p) => p.id !== id));
+    const pattern = patterns.find((p) => p.id === id);
+    setDeleteModal({
+      open: true,
+      patternId: id,
+      patternName: pattern?.name || 'ce motif',
+    });
   };
 
-  const handleToggleFeatured = (id: string) =>
-    setPatterns((ps) => ps.map((p) => (p.id === id ? { ...p, featured: !p.featured } : p)));
+  const confirmDelete = async () => {
+    if (!deleteModal.patternId) return;
+    
+    try {
+      await patternService.remove(deleteModal.patternId);
+      setPatterns((ps) => ps.filter((p) => p.id !== deleteModal.patternId));
+      setDeleteModal({ open: false, patternId: null, patternName: '' });
+    } catch (error) {
+      console.error('Erreur lors de la suppression:', error);
+    }
+  };
+
+  const handleToggleFeatured = (id: string, shouldFeature: boolean) => {
+    if (shouldFeature) {
+      patternService.feature(id).catch((error) => {
+        console.error('Erreur:', error);
+      });
+    } else {
+      patternService.unfeature(id).catch((error) => {
+        console.error('Erreur:', error);
+      });
+    }
+  };
 
   const toggleSelect = (id: string) =>
     setSelected((prev) => {
@@ -411,6 +445,53 @@ export default function MyPatternsPage() {
 
   return (
     <div className="bg-avs-secondary-dark min-h-screen">
+      {/* Modal de confirmation de suppression */}
+      <AnimatePresence>
+        {deleteModal.open && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setDeleteModal({ open: false, patternId: null, patternName: '' })}
+              className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 8 }}
+              transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              className="border-avs-accent/9 bg-avs-secondary shadow-avs-lg fixed left-1/2 top-1/2 z-50 w-full max-w-sm -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl border"
+            >
+              <div className="space-y-4 p-6">
+                <div>
+                  <h2 className="font-display text-avs-accent text-lg font-bold">
+                    Supprimer ce motif ?
+                  </h2>
+                  <p className="text-avs-accent/50 mt-1 text-sm">
+                    Le motif <span className="font-semibold text-avs-accent">{deleteModal.patternName}</span> sera supprimé définitivement. Cette action est irréversible.
+                  </p>
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <button
+                    onClick={() => setDeleteModal({ open: false, patternId: null, patternName: '' })}
+                    className="border-avs-accent/15 text-avs-accent/70 hover:border-avs-accent/30 hover:text-avs-accent flex-1 rounded-xl border px-4 py-2.5 font-semibold transition-colors"
+                  >
+                    Annuler
+                  </button>
+                  <button
+                    onClick={confirmDelete}
+                    className="bg-red-600 hover:bg-red-700 flex-1 rounded-xl px-4 py-2.5 font-semibold text-white transition-colors"
+                  >
+                    Supprimer
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
       {/* ══ STICKY HEADER — même patron que profil ══════════════════════════ */}
       <div className="border-avs-accent/9 bg-avs-secondary sticky top-0 z-30 border-b backdrop-blur-xl">
         {/* Watermark pattern — identique profil */}
