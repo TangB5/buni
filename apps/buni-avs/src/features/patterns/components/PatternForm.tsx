@@ -3,11 +3,12 @@
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ArrowLeft, ArrowRight, Check, Sparkles } from 'lucide-react';
+import { useEffect } from 'react';
 
 import { BuniLoader } from '@buni/ui';
 import {CSS_PATTERN_MAP, FALLBACK_PATTERN_CSS } from '@buni/patterns';
 import {  FORM_STEPS } from '../constants/pattern.constants';
-
+import type { Pattern } from '@buni/patterns';
 
 import { Step1 } from './steps/step1';
 import { Step2 } from './steps/step2';
@@ -70,9 +71,13 @@ function Stepper({ currentStep }: { currentStep: number }) {
 // MAIN FORM
 // ─────────────────────────────────────────────────────────────────────────────
 
-export function PatternForm() {
+interface PatternFormProps {
+  initialPattern?: Pattern;
+}
+
+export function PatternForm({ initialPattern }: PatternFormProps) {
   const router = useRouter();
-  const form   = usePatternForm();
+  const form   = usePatternForm(initialPattern);
 
   const {
     currentStep, loading, errors,

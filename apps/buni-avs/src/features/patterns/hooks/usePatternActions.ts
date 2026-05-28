@@ -10,20 +10,19 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { Pattern } from '../types';
-import { patternService, PatternServiceError } from '../services/pattern.service';
+import {
+  publishPattern,
+  unpublishPattern,
+  featurePattern,
+  unfeaturePattern,
+} from '../usecases/pattern-actions.usecase';
 import { patternKeys } from './usePatterns';
 
-/**
- * Hook pour publier/dépublier un pattern
- * Mise à jour optimiste + invalidation de cache
- */
 export function usePublishPattern() {
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id: string) => {
-      return patternService.publish(id);
-    },
+    mutationFn: publishPattern,
     onMutate: async (id) => {
       // Annuler les requêtes en cours
       await qc.cancelQueries({ queryKey: patternKeys.all });
@@ -61,9 +60,7 @@ export function useUnpublishPattern() {
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id: string) => {
-      return patternService.unpublish(id);
-    },
+    mutationFn: unpublishPattern,
     onMutate: async (id) => {
       await qc.cancelQueries({ queryKey: patternKeys.all });
       const previousPatterns = qc.getQueryData<Pattern[]>(patternKeys.all);
@@ -95,9 +92,7 @@ export function useFeaturePattern() {
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id: string) => {
-      return patternService.feature(id);
-    },
+    mutationFn: featurePattern,
     onMutate: async (id) => {
       await qc.cancelQueries({ queryKey: patternKeys.all });
       const previousPatterns = qc.getQueryData<Pattern[]>(patternKeys.all);
@@ -129,9 +124,7 @@ export function useUnfeaturePattern() {
   const qc = useQueryClient();
 
   return useMutation({
-    mutationFn: async (id: string) => {
-      return patternService.unfeature(id);
-    },
+    mutationFn: unfeaturePattern,
     onMutate: async (id) => {
       await qc.cancelQueries({ queryKey: patternKeys.all });
       const previousPatterns = qc.getQueryData<Pattern[]>(patternKeys.all);

@@ -1,10 +1,6 @@
 // ONLY UI / FORM CONFIG (no domain duplication)
 
-import type {
-  PatternColor,
-  PatternSymbol,
-} from '../types';
-import { REGIONS, PATTERN_TYPES } from '@buni/patterns';
+import { REGIONS, PATTERN_TYPES, PatternLicense, PatternOrigin, PatternSymbolism, PatternColor, PatternSymbol } from '@buni/patterns';
 
 // ─────────────────────────────────────────────────────────────
 // REGIONS & TYPES (re-exported from @buni/patterns)
@@ -78,3 +74,10 @@ export const FORM_STEPS = [
 ] as const;
 
 export type StepIndex = 0 | 1 | 2 | 3;
+
+export type RegionType = PatternOrigin['region'];
+
+export type LicenseType = PatternLicense;
+
+export type SymbolUsageType =
+  PatternSymbolism['usage'];

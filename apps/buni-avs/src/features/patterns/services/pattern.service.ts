@@ -1,153 +1,88 @@
-import { del, get, post, put } from 'apps/buni-avs/src/core/api/client';
-import { toFormData, toCreatePayload } from '../mappers/pattern.mapper';
+
+
+import { post, put, del, get } from 'apps/buni-avs/src/core/api/client';
+
 import type {
-  PatternFilters,
-  PatternSymbol,
-  Step1Data,
-  Step2Data,
-  Step3Data,
+  PatternDto,
+  PatternListApiResponse,
 } from '../types';
-import { Pattern, CSS_PATTERN_MAP } from '@buni/patterns';
-
-// ─────────────────────────────────────────────────────────────────────────────
-// ERROR
-// ─────────────────────────────────────────────────────────────────────────────
-
-export class PatternServiceError extends Error {
-  constructor(
-    message: string,
-    public readonly status?: number,
-    public readonly fieldErrors?: Record<string, string>
-  ) {
-    super(message);
-    this.name = 'PatternServiceError';
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// SERVICE
-// ─────────────────────────────────────────────────────────────────────────────
 
 export const patternService = {
-  // ── READ ───────────────────────────────────────────────────────────────────
 
-  list: (filters: PatternFilters = {}) =>
-    get<Pattern[]>('/api/v1/patterns', filters as Record<string, unknown>),
+  async list(filters = {}) {
 
-  bySlug: (slug: string) => get<Pattern>(`/api/v1/patterns/${slug}`),
-
-  featured: () => get<Pattern[]>('/api/v1/patterns?featured=true&perPage=6'),
-
-  /**
-   * Charge + transforme les motifs
-   */
-
-  loadPatterns: async (filters: PatternFilters = {}): Promise<Pattern[]> => {
-    try {
-      const result: Pattern[] = await patternService.list({
-        perPage: 100,
-        ...filters,
-      });
-
-      return result.map(
-        (pattern: Pattern): Pattern => ({
-          id: pattern.id,
-          slug: pattern.slug,
-
-          name: (pattern as any).nameFr || pattern.name || 'Sans titre',
-
-          imgUrl: (pattern as any).imgUrl || '',
-          localName: (pattern as any).nameLocal || pattern.localName || '',
-
-          type: pattern.type,
-
-          cssClass: pattern.cssClass || CSS_PATTERN_MAP[pattern.type] || 'avs-pattern-wax-dakar',
-
-          origin: {
-            country: pattern.origin?.country || '',
-            people: pattern.origin?.people || '',
-            region: pattern.origin?.region || '',
-            coords: pattern.origin?.coords || [0, 0],
-            flag: pattern.origin?.flag || '',
-          },
-
-          summary: pattern.summary || '',
-          history: pattern.history || '',
-          technique: pattern.technique || '',
-          ceremonial: pattern.ceremonial || '',
-          era: pattern.era || '',
-
-          symbolism: pattern.symbolism || {
-            meaning: '',
-            keywords: [],
-            usage: 'universal',
-          },
-
-          downloads: pattern.downloads || 0,
-          views: pattern.views || 0,
-
-          colors: pattern.colors || [],
-          symbols: pattern.symbols || [],
-          sources: pattern.sources || [],
-
-          artisanQuote: pattern.artisanQuote,
-          svgPattern: pattern.svgPattern,
-
-          license: pattern.license || 'cc-by',
-
-          createdAt: pattern.createdAt,
-          updatedAt: pattern.updatedAt,
-
-          status: pattern.status || 'draft',
-          featured: false,
-        })
-      );
-    } catch (error) {
-      console.error('Failed to load patterns:', error);
-      throw error;
-    }
+    return get<PatternListApiResponse>(
+      '/api/v1/patterns',
+      filters as Record<string, unknown>
+    );
   },
 
-  createFromForm: async (
-    step1: Step1Data,
-    step2: Step2Data,
-    step3: Step3Data,
-    svgFile: File | null,
-    symbols: PatternSymbol[]
-  ): Promise<Pattern> => {
-    const payload = toCreatePayload(step1, step2, step3);
-    const fd = toFormData(payload, svgFile, symbols);
+  async bySlug(slug: string) {
 
-    return post<Pattern>('/api/v1/patterns', fd);
+    return get<{ data: PatternDto }>(
+      `/api/v1/patterns/${slug}`
+    );
   },
 
-  /**
-   * Mise à jour partielle (JSON — pas de fichier).
-   */
-  update: (id: string, data: Partial<Pattern>) => put<Pattern>(`/api/v1/patterns/${id}`, data),
+  async featured() {
 
-  remove: (id: string) => del<void>(`/api/v1/patterns/${id}`),
-
-  // ── ACTIONS ────────────────────────────────────────────────────────────────
-
-  publish: (id: string) => post<Pattern>(`/api/v1/patterns/${id}/publish`),
-  
-  unpublish: (id: string) => post<Pattern>(`/api/v1/patterns/${id}/unpublish`),
-
-  feature: (id: string) => post<Pattern>(`/api/v1/patterns/${id}/feature`),
-
-  unfeature: (id: string) => post<Pattern>(`/api/v1/patterns/${id}/unfeature`),
-
-  /** Fire-and-forget : échoue silencieusement. */
-  trackView: (id: string): void => {
-    void post(`/api/v1/patterns/${id}/view`).catch(() => {
-      /* silencieux */
-    });
+    return get<PatternListApiResponse>(
+      '/api/v1/patterns?featured=true&perPage=6'
+    );
   },
 
-  trackDownload: (id: string): void => {
-    void post(`/api/v1/patterns/${id}/download`).catch(() => {
-      /* silencieux */
-    });
+  async create(formData: FormData) {
+
+    return post<{ data: PatternDto }>(
+      '/api/v1/patterns',
+      formData
+    );
   },
+
+  async update(
+    id: string,
+    data: unknown
+  ) {
+
+    return put<{ data: PatternDto }>(
+      `/api/v1/patterns/${id}`,
+      data
+    );
+  },
+
+  async delete(id: string) {
+
+    return del(
+      `/api/v1/patterns/${id}`
+    );
+  },
+
+  async feature(id: string) {
+
+  return post<{ data: PatternDto }>(
+    `/api/v1/patterns/${id}/feature`
+  );
+},
+
+async unfeature(id: string) {
+
+  return post<{ data: PatternDto }>(
+    `/api/v1/patterns/${id}/unfeature`
+  );
+},
+
+async publish(id: string) {
+
+  return post<{ data: PatternDto }>(
+    `/api/v1/patterns/${id}/publish`
+  );
+},
+
+async unpublish(id: string) {
+
+  return post<{ data: PatternDto }>(
+    `/api/v1/patterns/${id}/unpublish`
+  );
+},
+
 };

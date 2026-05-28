@@ -1,10 +1,10 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import type { ZodSchema } from 'zod';
 import { z } from 'zod';
 
 import { Step1Schema, Step2Schema, Step3Schema } from '../schemas/create-pattern.schema';
-import { patternService, PatternServiceError } from '../services/pattern.service';
+import { createPattern, CreatePatternError } from '../usecases/create-pattern.usecase';
 
 import { DEFAULT_COLORS, DEFAULT_SYMBOL } from '../constants/pattern.constants';
 
@@ -16,6 +16,7 @@ import type {
   PatternColor,
   PatternSymbol,
 } from '../types';
+import type { Pattern } from '@buni/patterns';
 import type { Route } from 'next';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -41,7 +42,7 @@ const INITIAL_S3: Partial<Step3Data> = {
 // HOOK
 // ─────────────────────────────────────────────────────────────────────────────
 
-export function usePatternForm() {
+export function usePatternForm(initialPattern?: Pattern) {
   const router = useRouter();
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -53,6 +54,35 @@ export function usePatternForm() {
   const [step1, setStep1] = useState<Partial<Step1Data>>(INITIAL_S1);
   const [step2, setStep2] = useState<Partial<Step2Data>>(INITIAL_S2);
   const [step3, setStep3] = useState<Partial<Step3Data>>(INITIAL_S3);
+
+  // Initialize form with pattern data if provided
+  useEffect(() => {
+    if (initialPattern) {
+      setStep1({
+        patternType: initialPattern.type,
+        name: initialPattern.name,
+        description: initialPattern.description,
+        license: initialPattern.license || 'cc-by',
+      });
+
+      setStep2({
+        symbolKeywords: initialPattern.keywords || [],
+        symbolUsage: 'ceremonial',
+        summary: initialPattern.summary || '',
+        history: initialPattern.history || '',
+        technique: initialPattern.technique || '',
+        ceremonial: initialPattern.ceremonial || '',
+        symbolMeaning: initialPattern.symbolMeaning || '',
+      });
+
+      setStep3({
+        colors: initialPattern.colors || [...DEFAULT_COLORS],
+        sources: initialPattern.sources || [],
+        symbols: initialPattern.symbols || [],
+        svgPattern: initialPattern.svgPattern || '',
+      });
+    }
+  }, [initialPattern]);
 
   // ── Validation ─────────────────────────────────────────────────────────────
 
@@ -202,7 +232,7 @@ export function usePatternForm() {
 
     setLoading(true);
     try {
-      const result = await patternService.createFromForm(
+      const result = await createPattern(
         step1 as Step1Data,
         step2 as Step2Data,
         step3 as Step3Data,
@@ -216,7 +246,7 @@ export function usePatternForm() {
 
       router.push(destination as Route);
     } catch (err) {
-      if (err instanceof PatternServiceError) {
+      if (err instanceof CreatePatternError) {
         setErrors({ submit: err.message, ...err.fieldErrors });
       } else {
         setErrors({ submit: 'Une erreur inattendue est survenue. Veuillez réessayer.' });

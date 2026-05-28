@@ -1,7 +1,18 @@
-import {
+import type {
   PatternColor,
+  PatternLicense,
+  PatternStatus,
   PatternSymbol,
+  PatternSymbolism,
+  PatternType,
+  ArtisanQuote,
+  PatternOrigin,
 } from '@buni/patterns';
+
+// ─────────────────────────────────────────────────────────────
+// BACKEND DTO
+// Représente EXACTEMENT la réponse backend
+// ─────────────────────────────────────────────────────────────
 
 export interface PatternDto {
   id: string;
@@ -10,33 +21,53 @@ export interface PatternDto {
 
   name: string;
 
-  nameLocal: string;
+  nameLocal?: string;
+
+  nameEn?: string;
 
   imgUrl: string;
 
-  type: string;
+  type: PatternType;
 
-  status: string;
+  cssClass?: string;
+
+  status: PatternStatus;
 
   isFeatured: boolean;
 
-  origin?: {
-    country?: string;
+  svgUrl?: string;
 
-    people?: string;
+  svgPattern?: string;
 
-    region?: string;
+  origin?: PatternOrigin;
 
-    coords?: [number, number];
+  summary?: string;
 
-    flag?: string;
-  };
+  history?: string;
+
+  symbolism?: PatternSymbolism;
+
+  technique?: string;
+
+  ceremonial?: string;
+
+  era?: string;
 
   colors?: PatternColor[];
 
   symbols?: PatternSymbol[];
 
-  summary?: string;
+  sources?: string[];
 
-  history?: string;
+  artisanQuote?: ArtisanQuote;
+
+  license?: PatternLicense;
+
+  views?: number;
+
+  downloads?: number;
+
+  createdAt?: string;
+
+  updatedAt?: string;
 }

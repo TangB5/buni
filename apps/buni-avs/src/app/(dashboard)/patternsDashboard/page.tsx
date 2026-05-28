@@ -25,8 +25,13 @@ import {
 } from 'lucide-react';
 import { Route } from 'next';
 import { Pattern, PatternSymbol } from '@buni/patterns';
+import {
+  useFeaturePattern,
+  useToggleFeature,
+  useUnfeaturePattern,
+} from 'apps/buni-avs/src/features/patterns/hooks/usePatternActions';
 import { patternService } from 'apps/buni-avs/src/features/patterns/services/pattern.service';
-import { useToggleFeature } from 'apps/buni-avs/src/features/patterns/hooks/usePatternActions';
+import { mapPatternDtoToModel } from 'apps/buni-avs/src/features/patterns/mappers/pattern.mapper';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TYPES
@@ -70,7 +75,6 @@ const STATUS_CFG: Record<
 };
 
 const STATUS_FILTERS: { value: Status | 'all'; label: string }[] = [
-
   { value: 'all', label: 'Tous' },
   { value: 'published', label: 'Publiés' },
   { value: 'draft', label: 'Brouillons' },
@@ -142,11 +146,9 @@ function StatCard({
 // ─────────────────────────────────────────────────────────────────────────────
 
 function StatusBadge({ status }: { status: Status }) {
-  const normalizedStatus =
-  status?.toLowerCase() as Status;
+  const normalizedStatus = status?.toLowerCase() as Status;
 
-const { label, dot, pill } =
-  STATUS_CFG[normalizedStatus];
+  const { label, dot, pill } = STATUS_CFG[normalizedStatus];
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 font-mono text-[9px] font-black tracking-[0.14em] uppercase ${pill}`}
@@ -198,7 +200,7 @@ function ActionMenu({
 }) {
   const [open, setOpen] = useState(false);
   const featureToggle = useToggleFeature();
-  
+
   return (
     <div className="relative">
       <button
@@ -240,7 +242,7 @@ function ActionMenu({
                   setOpen(false);
                 }}
                 disabled={featureToggle.isLoading}
-                className="text-avs-accent/70 hover:bg-avs-primary/5 hover:text-avs-primary disabled:opacity-50 flex w-full items-center gap-2.5 px-4 py-2.5 text-sm transition-opacity"
+                className="text-avs-accent/70 hover:bg-avs-primary/5 hover:text-avs-primary flex w-full items-center gap-2.5 px-4 py-2.5 text-sm transition-opacity disabled:opacity-50"
               >
                 {pattern.featured ? (
                   <>
@@ -306,43 +308,50 @@ export default function MyPatternsPage() {
   const [sortKey, setSortKey] = useState<SortKey>('updatedAt');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [selected, setSelected] = useState<Set<string>>(new Set());
-  const [deleteModal, setDeleteModal] = useState<{ open: boolean; patternId: string | null; patternName: string }>({
+  const featureMutation = useFeaturePattern();
+
+  const unfeatureMutation = useUnfeaturePattern();
+  const [deleteModal, setDeleteModal] = useState<{
+    open: boolean;
+    patternId: string | null;
+    patternName: string;
+  }>({
     open: false,
     patternId: null,
     patternName: '',
   });
 
-  const normalizeStatus = (
-  status?: string
-): Status => {
-  switch (status?.toUpperCase()) {
-    case 'PUBLISHED':
-      return 'published';
+  const normalizeStatus = (status?: string): Status => {
+    switch (status?.toUpperCase()) {
+      case 'PUBLISHED':
+        return 'published';
 
-    case 'DRAFT':
-      return 'draft';
+      case 'DRAFT':
+        return 'draft';
 
-    case 'REVIEW':
-      return 'review';
+      case 'REVIEW':
+        return 'review';
 
-    case 'REJECTED':
-      return 'rejected';
+      case 'REJECTED':
+        return 'rejected';
 
-    default:
-      return 'draft';
-  }
-};
+      default:
+        return 'draft';
+    }
+  };
   useEffect(() => {
     const loadPatterns = async () => {
       try {
-        const patterns = (await patternService.loadPatterns()).map(
-  (p) => ({
-    ...p,
-    status: normalizeStatus(p.status),
-  })
-);
+        const response = await patternService.list();
+        const patterns = response.data.data.map((p) => {
+          const pattern = mapPatternDtoToModel(p);
 
-        
+          return {
+            ...pattern,
+            status: normalizeStatus(pattern.status),
+          };
+        });
+
         setPatterns(patterns);
       } catch (error) {
         console.error(error);
@@ -407,9 +416,9 @@ export default function MyPatternsPage() {
 
   const confirmDelete = async () => {
     if (!deleteModal.patternId) return;
-    
+
     try {
-      await patternService.remove(deleteModal.patternId);
+      await patternService.delete(deleteModal.patternId);
       setPatterns((ps) => ps.filter((p) => p.id !== deleteModal.patternId));
       setDeleteModal({ open: false, patternId: null, patternName: '' });
     } catch (error) {
@@ -419,13 +428,9 @@ export default function MyPatternsPage() {
 
   const handleToggleFeatured = (id: string, shouldFeature: boolean) => {
     if (shouldFeature) {
-      patternService.feature(id).catch((error) => {
-        console.error('Erreur:', error);
-      });
+      featureMutation.mutate(id);
     } else {
-      patternService.unfeature(id).catch((error) => {
-        console.error('Erreur:', error);
-      });
+      unfeatureMutation.mutate(id);
     }
   };
 
@@ -461,7 +466,7 @@ export default function MyPatternsPage() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 8 }}
               transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              className="border-avs-accent/9 bg-avs-secondary shadow-avs-lg fixed left-1/2 top-1/2 z-50 w-full max-w-sm -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl border"
+              className="border-avs-accent/9 bg-avs-secondary shadow-avs-lg fixed top-1/2 left-1/2 z-50 w-full max-w-sm -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl border"
             >
               <div className="space-y-4 p-6">
                 <div>
@@ -469,20 +474,24 @@ export default function MyPatternsPage() {
                     Supprimer ce motif ?
                   </h2>
                   <p className="text-avs-accent/50 mt-1 text-sm">
-                    Le motif <span className="font-semibold text-avs-accent">{deleteModal.patternName}</span> sera supprimé définitivement. Cette action est irréversible.
+                    Le motif{' '}
+                    <span className="text-avs-accent font-semibold">{deleteModal.patternName}</span>{' '}
+                    sera supprimé définitivement. Cette action est irréversible.
                   </p>
                 </div>
 
                 <div className="flex gap-3 pt-4">
                   <button
-                    onClick={() => setDeleteModal({ open: false, patternId: null, patternName: '' })}
+                    onClick={() =>
+                      setDeleteModal({ open: false, patternId: null, patternName: '' })
+                    }
                     className="border-avs-accent/15 text-avs-accent/70 hover:border-avs-accent/30 hover:text-avs-accent flex-1 rounded-xl border px-4 py-2.5 font-semibold transition-colors"
                   >
                     Annuler
                   </button>
                   <button
                     onClick={confirmDelete}
-                    className="bg-red-600 hover:bg-red-700 flex-1 rounded-xl px-4 py-2.5 font-semibold text-white transition-colors"
+                    className="flex-1 rounded-xl bg-red-600 px-4 py-2.5 font-semibold text-white transition-colors hover:bg-red-700"
                   >
                     Supprimer
                   </button>
@@ -743,7 +752,6 @@ export default function MyPatternsPage() {
             </div>
           )}
         </section>
-        
       </div>
     </div>
   );

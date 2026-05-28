@@ -23,7 +23,7 @@ import {
   
 } from '@buni/patterns';
 import { PATTERNS_DOCS } from './mock';
-import { patternService } from 'apps/buni-avs/src/features/patterns/services/pattern.service';
+import { patternRepository } from 'apps/buni-avs/src/features/patterns/repositories/pattern.repository';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CONSTANTS
@@ -468,7 +468,7 @@ export default function Page() {
 
     const loadPatterns = async () => {
   try {
-    const patterns = await patternService.loadPatterns();
+    const patterns = await patternRepository.findAll();
 
     
     setPatterns(patterns);

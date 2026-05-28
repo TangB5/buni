@@ -4,14 +4,14 @@ import type { Metadata, Route } from 'next';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { ArrowLeft, Download, Share2, MapPin, Eye, Globe, Tag, Loader2, AlertCircle } from 'lucide-react';
-import { patternService } from 'apps/buni-avs/src/features/patterns/services/pattern.service';
+import { patternRepository } from 'apps/buni-avs/src/features/patterns/repositories/pattern.repository';
 import type { Pattern } from 'apps/buni-avs/src/features/patterns/types';
 import { useToast } from '@buni/ui';
 
 // ── Pattern Detail Page ────────────────────────────────────────────────────────
 export default function PatternDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const [slug, setSlug] = useState('');
-  const [pattern, setPattern] = useState<Pattern | null>(null);
+  const [pattern, setPattern] = useState<Pattern >(null);
   const [similarPatterns, setSimilarPatterns] = useState<Pattern[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

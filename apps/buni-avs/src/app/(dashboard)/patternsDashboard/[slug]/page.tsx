@@ -2,8 +2,8 @@
 
 import { useParams, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import PatternDetailsPage from '@/features/patterns/components/PatternDetailsPage';
-import PatternEditPage from '@/features/patterns/components/PatternEditPage';
+import PatternDetailsPage from '../../../../features/patterns/components/PatternDetailsPage';
+import PatternEditPage from '../../../../features/patterns/components/PatternEditPage';
 
 /**
  * Page dynamique pour voir/éditer les détails d'un pattern

@@ -29,3 +29,5 @@ export type PatternListApiResponse =
 
 export type PatternDetailsApiResponse =
   ApiResponse<PatternDto>;
+
+  

@@ -1,5 +1,6 @@
-import { PatternType, PatternColor, ArtisanQuote } from "packages/patterns/dist";
-import { RegionType, LicenseType, SymbolUsageType, UploadablePatternSymbol } from "..";
+import { RegionType, PatternType, PatternColor, ArtisanQuote } from "@buni/patterns";
+import { UploadablePatternSymbol } from "../uploads/pattern.upload";
+import { LicenseType, SymbolUsageType } from "../../constants/pattern.constants";
 
 export interface Step1Data {
   nameFr: string;

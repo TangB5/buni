@@ -1,9 +1,9 @@
-'use client';
+ 'use client';
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import PatternForm from './PatternForm';
-import { patternService } from '../services/pattern.service';
+import { PatternForm } from './PatternForm';
+import { loadPattern } from '../usecases/load-pattern.usecase';
 import type { Pattern } from '@buni/patterns';
 
 interface PatternEditPageProps {
@@ -17,10 +17,10 @@ export default function PatternEditPage({ slug }: PatternEditPageProps) {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadPattern = async () => {
+    const fetchPattern = async () => {
       try {
         setLoading(true);
-        const data = await patternService.bySlug(slug);
+        const data = await loadPattern(slug);
         setPattern(data);
       } catch (err) {
         console.error('Erreur lors du chargement du pattern:', err);
@@ -30,7 +30,7 @@ export default function PatternEditPage({ slug }: PatternEditPageProps) {
       }
     };
 
-    loadPattern();
+    fetchPattern();
   }, [slug]);
 
   if (loading) {
