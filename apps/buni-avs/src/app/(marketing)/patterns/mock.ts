@@ -31,6 +31,8 @@ import { Pattern , PatternSymbol} from '@buni/patterns';
 
 export const PATTERNS_DOCS: Pattern[] = [ 
   {
+    imgUrl: "",
+    status: "published" as const,
     id: 'kente-asante',
     slug: 'kente-asante',
     name: 'Kente Asante',
@@ -39,7 +41,7 @@ export const PATTERNS_DOCS: Pattern[] = [
     cssClass: 'avs-pattern-kente-royale',
     origin: {
       people: 'Peuple Akan — Ashanti',
-      region: 'Région Ashanti',
+      region: 'west-africa',
       country: 'Ghana',
       flag: '🇬🇭',
       coords: [6.6885, -1.6244],
@@ -124,7 +126,7 @@ export const PATTERNS_DOCS: Pattern[] = [
     ],
     downloads: 4820,
     views: 28400,
-    published: false,
+    
     featured: false
   },
 
@@ -132,6 +134,8 @@ export const PATTERNS_DOCS: Pattern[] = [
 
   
   {
+    imgUrl: "",
+    status: "published" as const,
     id: 'ndop-bamoum',
     slug: 'ndop-bamoum',
     name: 'Ndop Bamoum',
@@ -140,7 +144,7 @@ export const PATTERNS_DOCS: Pattern[] = [
     cssClass: 'avs-pattern-ndop-sultan',
     origin: {
       people: 'Peuple Bamoum (Bamum)',
-      region: 'Sultanat de Foumban',
+      region: 'central-africa',
       country: 'Cameroun',
       flag: '🇨🇲',
       coords: [5.7239, 10.9055],
@@ -216,10 +220,12 @@ export const PATTERNS_DOCS: Pattern[] = [
     ],
     downloads: 3140,
     views: 19800,
-    published: false,
+    
     featured: false
   },
   {
+    imgUrl: "",
+    status: "published" as const,
     id: 'bogolan-malien',
     slug: 'bogolan-malien',
     name: 'Bogolan Malien',
@@ -228,7 +234,7 @@ export const PATTERNS_DOCS: Pattern[] = [
     cssClass: 'avs-pattern-bogolan-fanga',
     origin: {
       people: 'Peuples Bamana, Mandé',
-      region: 'Région de Ségou',
+      region: 'west-africa',
       country: 'Mali',
       flag: '🇲🇱',
       coords: [13.46, -6.27],
@@ -296,10 +302,12 @@ export const PATTERNS_DOCS: Pattern[] = [
     ],
     downloads: 2890,
     views: 16200,
-    published: false,
+    
     featured: false
   },
   {
+    imgUrl: "",
+    status: "published" as const,
     id: 'adinkra-akan',
     slug: 'adinkra-akan',
     name: 'Adinkra Akan',
@@ -308,7 +316,7 @@ export const PATTERNS_DOCS: Pattern[] = [
     cssClass: 'avs-pattern-adinkra-sankofa',
     origin: {
       people: 'Peuple Akan — Gyaman',
-      region: 'Brong-Ahafo',
+      region: 'west-africa',
       country: "Ghana / Côte d'Ivoire",
       flag: '🇬🇭',
       coords: [7.496, -2.7942],
@@ -396,7 +404,8 @@ export const PATTERNS_DOCS: Pattern[] = [
     ],
     downloads: 5640,
     views: 34100,
-    published: false,
+    
     featured: false
   },
+  
 ];

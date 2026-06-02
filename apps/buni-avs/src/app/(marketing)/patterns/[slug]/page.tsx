@@ -44,7 +44,7 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
            const similar = similarRes.data.data.map(mapPatternDtoToModel);
 
         setSimilarPatterns(
-          similar.filter(p => p.id !== patternRes.id).slice(0, 3)
+          similar.filter((p: any) => p.id !== patternRes.id).slice(0, 3)
         );
       }
 
