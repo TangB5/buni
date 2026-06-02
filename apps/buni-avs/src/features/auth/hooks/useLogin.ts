@@ -1,6 +1,5 @@
 'use client';
 
-import { useCallback } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useAuthStore } from '@buni/auth';
 import type { LoginDto } from '../types';
@@ -36,7 +35,7 @@ export const useLogin = () => {
       return res.json() as Promise<LoginResponse>;
     },
     onSuccess: (data) => {
-      setUser(data.data.user, data.data.tokens.accessToken);
+      setUser(data.data.user);
     },
   });
 

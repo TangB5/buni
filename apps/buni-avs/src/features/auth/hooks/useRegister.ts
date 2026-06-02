@@ -1,6 +1,5 @@
 'use client';
 
-import { useState, useCallback } from 'react';
 import { useMutation } from '@tanstack/react-query';
 import { useAuthStore } from '@buni/auth';
 import type { RegisterDto } from '../types';
@@ -36,7 +35,7 @@ export const useRegister = () => {
       return res.json() as Promise<RegisterResponse>;
     },
     onSuccess: (data) => {
-      setUser(data.data.user, data.data.tokens.accessToken);
+      setUser(data.data.user);
     },
   });
 

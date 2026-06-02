@@ -1,6 +1,6 @@
 
 
-import { post, put, del, get } from 'apps/buni-avs/src/core/api/client';
+import { post, put, del, get } from '@buni/api';
 
 import type {
   PatternDto,

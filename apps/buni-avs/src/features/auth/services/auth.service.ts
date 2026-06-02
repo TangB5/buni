@@ -1,6 +1,6 @@
 'use client';
 
-import { post, get } from '../../../core/api/client';
+import { post, get } from '@buni/api';
 import type { LoginDto, RegisterDto, User } from '../types';
 
 export interface AuthResponse {

@@ -4,14 +4,15 @@ import type { Metadata, Route } from 'next';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { ArrowLeft, Download, Share2, MapPin, Eye, Globe, Tag, Loader2, AlertCircle } from 'lucide-react';
-import { patternRepository } from 'apps/buni-avs/src/features/patterns/repositories/pattern.repository';
 import type { Pattern } from 'apps/buni-avs/src/features/patterns/types';
 import { useToast } from '@buni/ui';
+import { patternService } from 'apps/buni-avs/src/features/patterns/services/pattern.service';
+import { mapPatternDtoToModel } from 'apps/buni-avs/src/features/patterns/mappers/pattern.mapper';
 
 // ── Pattern Detail Page ────────────────────────────────────────────────────────
 export default function PatternDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const [slug, setSlug] = useState('');
-  const [pattern, setPattern] = useState<Pattern >(null);
+  const [pattern, setPattern] = useState<Pattern | null >(null);
   const [similarPatterns, setSimilarPatterns] = useState<Pattern[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -25,22 +26,31 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
         setSlug(resolved.slug);
 
         // Fetch le motif principal
-        const patternRes = await patternService.bySlug(resolved.slug);
+        const responce = await patternService.bySlug(resolved.slug);
+
+        const patternRes = mapPatternDtoToModel(responce.data);
+
+        
+
         setPattern(patternRes);
 
-        // Fetch les motifs similaires (même type)
+        
         if (patternRes.type) {
           const similarRes = await patternService.list({
             type: patternRes.type,
             perPage: 4,
           });
-          setSimilarPatterns(
-            similarRes.data.filter((p) => p.id !== patternRes.id).slice(0, 3)
-          );
-        }
+          
+           const similar = similarRes.data.data.map(mapPatternDtoToModel);
+
+        setSimilarPatterns(
+          similar.filter(p => p.id !== patternRes.id).slice(0, 3)
+        );
+      }
+
 
         // Track la vue
-        patternService.trackView(patternRes.id);
+        // patternService.trackView(patternRes.id);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Erreur lors du chargement');
       } finally {

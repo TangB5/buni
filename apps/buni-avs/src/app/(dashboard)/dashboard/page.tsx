@@ -486,6 +486,8 @@ export default function DashboardPage() {
   const [activity, setActivity] = useState<DashboardActivity[]>([]);
   const [loading, setLoading]   = useState(true);
 
+  console.log("isAdmin...........",isAdmin)
+
   useEffect(() => {
     if (!isHydrated || !isAuthenticated) return;
     const fetchData = async () => {
@@ -505,6 +507,8 @@ export default function DashboardPage() {
     void fetchData();
   }, [isHydrated, isAuthenticated]);
 
+  console.log("stats........................",stats)
+  console.log("recentPatterns......................",patterns)
   if (!isHydrated) return <PageLoader />;
 
   const roleLabel   = isAdmin ? 'Administrateur' : isCurator ? 'Curateur' : 'Contributeur';

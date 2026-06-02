@@ -196,7 +196,7 @@ export default function PatternDetailsPage({ slug }: PatternDetailsPageProps) {
           className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm"
         >
           <h2 className="text-xl font-bold text-gray-900 mb-4">Symbolisme</h2>
-          <p className="text-gray-600 leading-relaxed">{pattern.symbolism}</p>
+          {/* <p className="text-gray-600 leading-relaxed">{pattern.symbolism}</p> */}
         </motion.div>
 
         {/* Ceremonial */}

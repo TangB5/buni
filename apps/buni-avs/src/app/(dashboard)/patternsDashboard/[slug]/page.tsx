@@ -1,7 +1,6 @@
 'use client';
 
 import { useParams, useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import PatternDetailsPage from '../../../../features/patterns/components/PatternDetailsPage';
 import PatternEditPage from '../../../../features/patterns/components/PatternEditPage';
 

@@ -8,15 +8,8 @@ import { createPattern, CreatePatternError } from '../usecases/create-pattern.us
 
 import { DEFAULT_COLORS, DEFAULT_SYMBOL } from '../constants/pattern.constants';
 
-import type {
-  Step1Data,
-  Step2Data,
-  Step3Data,
-  FieldErrors,
-  PatternColor,
-  PatternSymbol,
-} from '../types';
-import type { Pattern } from '@buni/patterns';
+import type { FieldErrors, Step1Data, Step2Data, Step3Data } from '../types';
+import type { Pattern, PatternColor, PatternSymbol } from '@buni/patterns';
 import type { Route } from 'next';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -28,11 +21,15 @@ const INITIAL_S1: Partial<Step1Data> = { license: 'cc-by' };
 const INITIAL_S2: Partial<Step2Data> = {
   symbolKeywords: [],
   symbolUsage: 'ceremonial',
-  summary: '', history: '', technique: '', ceremonial: '', symbolMeaning: '',
+  summary: '',
+  history: '',
+  technique: '',
+  ceremonial: '',
+  symbolMeaning: '',
 };
 
 const INITIAL_S3: Partial<Step3Data> = {
-  colors:  [...DEFAULT_COLORS],
+  colors: [...DEFAULT_COLORS],
   sources: [],
   symbols: [],
   svgPattern: '',
@@ -46,10 +43,10 @@ export function usePatternForm(initialPattern?: Pattern) {
   const router = useRouter();
 
   const [currentStep, setCurrentStep] = useState(0);
-  const [loading, setLoading]         = useState(false);
-  const [errors, setErrors]           = useState<FieldErrors>({});
-  const [svgFile, setSvgFile]         = useState<File | null>(null);
-  const [newKeyword, setNewKeyword]   = useState('');
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState<FieldErrors>({});
+  const [svgFile, setSvgFile] = useState<File | null>(null);
+  const [newKeyword, setNewKeyword] = useState('');
 
   const [step1, setStep1] = useState<Partial<Step1Data>>(INITIAL_S1);
   const [step2, setStep2] = useState<Partial<Step2Data>>(INITIAL_S2);
@@ -60,55 +57,67 @@ export function usePatternForm(initialPattern?: Pattern) {
     if (initialPattern) {
       setStep1({
         patternType: initialPattern.type,
-        name: initialPattern.name,
-        description: initialPattern.description,
-        license: initialPattern.license || 'cc-by',
+        nameFr: initialPattern.name || '',
+        nameLocal: initialPattern.localName || '',
+        nameEn: initialPattern.nameEn || '',
+        region: initialPattern.origin?.region || '',
+        country: initialPattern.origin?.country || '',
+        people: initialPattern.origin?.people,
+        flag: initialPattern.origin?.flag,
+        coords: initialPattern.origin?.coords,
+        license: initialPattern.license,
       });
 
       setStep2({
-        symbolKeywords: initialPattern.keywords || [],
-        symbolUsage: 'ceremonial',
+        symbolKeywords: initialPattern.symbolism?.keywords || [],
+        symbolUsage: (initialPattern.symbolism?.usage || 'ceremonial') as any,
         summary: initialPattern.summary || '',
         history: initialPattern.history || '',
         technique: initialPattern.technique || '',
         ceremonial: initialPattern.ceremonial || '',
-        symbolMeaning: initialPattern.symbolMeaning || '',
+        symbolMeaning: initialPattern.symbolism?.meaning || '',
+        descFr: '',
+        descEn: '',
       });
 
       setStep3({
         colors: initialPattern.colors || [...DEFAULT_COLORS],
         sources: initialPattern.sources || [],
-        symbols: initialPattern.symbols || [],
+        symbols: (initialPattern.symbols || []) as any,
         svgPattern: initialPattern.svgPattern || '',
+        artisanQuote: initialPattern.artisanQuote,
       });
     }
   }, [initialPattern]);
 
   // ── Validation ─────────────────────────────────────────────────────────────
 
-  const validateStep = useCallback((step: number): boolean => {
-    const schemas: Record<number, ZodSchema> = {
-      0: Step1Schema,
-      1: Step2Schema,
-      2: Step3Schema,
-    };
-    const data: Record<number, unknown> = { 0: step1, 1: step2, 2: step3 };
-    const schema = schemas[step];
-    if (!schema) return true; // step 3 is review only
+  const validateStep = useCallback(
+    (step: number): boolean => {
+      const schemas: Record<number, ZodSchema> = {
+        0: Step1Schema,
+        1: Step2Schema,
+        2: Step3Schema,
+      };
+      const data: Record<number, unknown> = { 0: step1, 1: step2, 2: step3 };
+      const schema = schemas[step];
+      if (!schema) return true; // step 3 is review only
 
-    const result = schema.safeParse(data[step]);
-    if (result.success) {
-      setErrors({});
-      return true;
-    }
+      const result = schema.safeParse(data[step]);
+      if (result.success) {
+        setErrors({});
+        return true;
+      }
 
-    const fieldErrors: FieldErrors = {};
-    result.error.issues.forEach((issue) => {
-      if (issue.path[0]) fieldErrors[String(issue.path[0])] = issue.message;
-    });
-    setErrors(fieldErrors);
-    return false;
-  }, [step1, step2, step3]);
+      const fieldErrors: FieldErrors = {};
+      result.error.issues.forEach((issue) => {
+        if (issue.path[0]) fieldErrors[String(issue.path[0])] = issue.message;
+      });
+      setErrors(fieldErrors);
+      return false;
+    },
+    [step1, step2, step3]
+  );
 
   // ── Navigation ─────────────────────────────────────────────────────────────
 
@@ -214,8 +223,8 @@ export function usePatternForm(initialPattern?: Pattern) {
     // Validate all steps before submitting
     const allValid = [0, 1, 2].every((s) => {
       const schemas = [Step1Schema, Step2Schema, Step3Schema];
-      const data    = [step1, step2, step3];
-      const result  = schemas[s]!.safeParse(data[s]);
+      const data = [step1, step2, step3];
+      const result = schemas[s]!.safeParse(data[s]);
       if (!result.success) {
         const fieldErrors: FieldErrors = {};
         result.error.issues.forEach((i) => {
@@ -237,7 +246,7 @@ export function usePatternForm(initialPattern?: Pattern) {
         step2 as Step2Data,
         step3 as Step3Data,
         svgFile,
-        step3.symbols ?? [],
+        step3.symbols ?? []
       );
 
       const destination = result.id
@@ -265,19 +274,31 @@ export function usePatternForm(initialPattern?: Pattern) {
     errors,
     svgFile,
     newKeyword,
-    step1, step2, step3,
+    step1,
+    step2,
+    step3,
 
     // Setters
-    setStep1, setStep2, setStep3,
+    setStep1,
+    setStep2,
+    setStep3,
     setSvgFile,
     setNewKeyword,
 
     // Actions
-    goNext, goPrev,
-    addKeyword, removeKeyword,
-    updateColor, addColor, removeColor,
-    updateSource, addSource, removeSource,
-    updateSymbol, addSymbol, removeSymbol,
+    goNext,
+    goPrev,
+    addKeyword,
+    removeKeyword,
+    updateColor,
+    addColor,
+    removeColor,
+    updateSource,
+    addSource,
+    removeSource,
+    updateSymbol,
+    addSymbol,
+    removeSymbol,
     submit,
   };
 }

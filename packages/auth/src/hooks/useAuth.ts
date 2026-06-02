@@ -1,30 +1,38 @@
 'use client';
-import { useCallback } from 'react';
-import { useAuthStore } from '../store/useAuthStore';
 
-interface UseAuthReturn {
-  user: any | null;
-  token: string | null;
-  isHydrated: boolean;
-  isAuthenticated: boolean;
-  isAdmin: boolean;
-  isCurator: boolean;
+import { useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import { useMutation } from '@tanstack/react-query';
+import { useAuthStore } from '../store/useAuthStore';
+import type { LoginDto, RegisterDto } from '../types';
+
+// Main auth hook - state from store
+export function useAuth() {
+  const { user, isLoading, isHydrated, error, logout, isAdmin, isCurator, canContribute } =
+    useAuthStore();
+
+  const isAuthenticated = !!user;
+
+  return {
+    user: isAuthenticated ? user : null,
+    isLoading,
+    isHydrated,
+    error,
+    isAuthenticated,
+    isAdmin: isAuthenticated && isAdmin(),
+    isCurator: isAuthenticated && isCurator(),
+    canContribute: isAuthenticated && canContribute(),
+    logout,
+  };
 }
 
-export const useAuth = (): UseAuthReturn => {
-  const { user, isHydrated, token, isAdmin, isCurator } = useAuthStore();
-  return {
-    user, token, isHydrated,
-    isAuthenticated: !!user,
-    isAdmin: isAdmin(),
-    isCurator: isCurator(),
-  };
-};
+// Logout hook
+export function useLogout() {
+  const router = useRouter();
+  const { logout } = useAuthStore();
 
-// useLogin / useRegister / useLogout — à implémenter avec le client API de chaque app
-export { useAuthStore };
-
-export const useLogout = () => {
-  const logout = useAuthStore(s => s.logout);
-  return useCallback(() => { logout(); }, [logout]);
-};
+  return useCallback(async () => {
+    logout();
+    router.push('/');
+  }, [logout, router]);
+}

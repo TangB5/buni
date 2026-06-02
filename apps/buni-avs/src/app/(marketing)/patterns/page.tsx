@@ -469,8 +469,6 @@ export default function Page() {
     const loadPatterns = async () => {
   try {
     const patterns = await patternRepository.findAll();
-
-    
     setPatterns(patterns);
   } catch (error) {
     console.error(error);

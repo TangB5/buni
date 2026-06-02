@@ -12,13 +12,34 @@ export const apiClient = axios.create({
 apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   const token = useAuthStore.getState().token;
   if (token) config.headers.Authorization = `Bearer ${token}`;
+  if (config.data instanceof FormData) delete config.headers['Content-Type'];
   return config;
 });
 
 apiClient.interceptors.response.use(
   r => r,
   async (err: AxiosError) => {
-    if (err.response?.status === 401) useAuthStore.getState().clearAuth();
+    if (err.response?.status === 401) useAuthStore.getState().logout();
     return Promise.reject(err);
   }
 );
+
+export async function get<T>(url: string, params?: Record<string, unknown>): Promise<T> {
+  const res = await apiClient.get<T>(url, { params });
+  return res.data;
+}
+
+export async function post<T, D = unknown>(url: string, data?: D): Promise<T> {
+  const res = await apiClient.post<T>(url, data);
+  return res.data;
+}
+
+export async function put<T, D = unknown>(url: string, data?: D): Promise<T> {
+  const res = await apiClient.put<T>(url, data);
+  return res.data;
+}
+
+export async function del<T>(url: string): Promise<T> {
+  const res = await apiClient.delete<T>(url);
+  return res.data;
+}

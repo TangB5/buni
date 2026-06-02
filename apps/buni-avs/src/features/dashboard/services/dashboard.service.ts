@@ -1,4 +1,4 @@
-import { get } from "apps/buni-avs/src/core/api/client";
+import { get } from '@buni/api';
 
 
 export interface DashboardStats {

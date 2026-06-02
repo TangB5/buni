@@ -1,4 +1,4 @@
-import type { PatternType, PatternLicense, PatternStatus } from './registry';
+import type { PatternType, PatternLicense, PatternStatus, RegionType } from './registry';
 
 // ─────────────────────────────────────────────────────────────
 // CORE DOMAIN TYPES
@@ -28,9 +28,13 @@ export interface PatternSymbol {
 
 export interface PatternOrigin {
   people: string;
-  region: string;
+
+  region: RegionType;
+
   country: string;
+
   flag?: string;
+
   coords?: [number, number];
 }
 
@@ -103,8 +107,8 @@ export interface PatternCard {
 
   svgUrl?: string;
 
-  region: string;
-  country: string;
+  region: RegionType;
+  country: PatternOrigin['country'];
 
   colors: string[];
 

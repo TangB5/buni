@@ -1,6 +1,6 @@
 'use client';
 
-import { BuniLoader } from './BuniLoader';
+import { BuniLoader } from '@buni/ui';
 
 interface LoadingOverlayProps {
   isLoading: boolean;
