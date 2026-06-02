@@ -532,7 +532,7 @@ export function Header() {
             {!isHydrated ? (
               <div className="h-9 w-28 animate-pulse rounded-xl bg-avs-accent/4" />
             ) : isAuthenticated && user ? (
-              <UserMenu user={user} onLogout={handleLogout} />
+              <UserMenu user={user as { name: string; email: string; role: string }} onLogout={handleLogout} />
             ) : (
               <div className="hidden items-center gap-2 sm:flex">
                 <Link
@@ -641,11 +641,11 @@ export function Header() {
                         <div className="flex items-center gap-3 rounded-xl p-3.5 bg-avs-primary/8 border border-avs-primary/20">
                           <div className="avs-pattern-kente-royale relative h-9 w-9 shrink-0 overflow-hidden rounded-full">
                             <div className="absolute inset-0 flex items-center justify-center bg-black/25">
-                              <span className="font-display text-sm font-black text-avs-secondary">{user.name.charAt(0).toUpperCase()}</span>
+                              <span className="font-display text-sm font-black text-avs-secondary">{(user.name || '?').charAt(0).toUpperCase()}</span>
                             </div>
                           </div>
                           <div className="min-w-0">
-                            <p className="truncate text-sm font-bold text-avs-accent">{user.name}</p>
+                            <p className="truncate text-sm font-bold text-avs-accent">{user.name || 'User'}</p>
                             <p className="truncate text-xs capitalize text-avs-accent/35">{user.role}</p>
                           </div>
                           <span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-emerald-500" />

@@ -1,0 +1,30 @@
+'use client';
+import { useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuthStore } from '../store/useAuthStore';
+// Main auth hook - state from store
+export function useAuth() {
+    const { user, isLoading, isHydrated, error, logout, isAdmin, isCurator, canContribute } = useAuthStore();
+    const isAuthenticated = !!user;
+    return {
+        user: isAuthenticated ? user : null,
+        isLoading,
+        isHydrated,
+        error,
+        isAuthenticated,
+        isAdmin: isAuthenticated && isAdmin(),
+        isCurator: isAuthenticated && isCurator(),
+        canContribute: isAuthenticated && canContribute(),
+        logout,
+    };
+}
+// Logout hook
+export function useLogout() {
+    const router = useRouter();
+    const { logout } = useAuthStore();
+    return useCallback(async () => {
+        logout();
+        router.push('/');
+    }, [logout, router]);
+}
+//# sourceMappingURL=useAuth.js.map

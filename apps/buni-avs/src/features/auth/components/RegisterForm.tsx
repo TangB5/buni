@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '@buni/ui';
 import { Input } from '@buni/ui';
 import Link from 'next/link';
-import { useRegister } from '../hooks/useAuth';
+import { useRegister } from '../hooks/useRegister';
 
 export function RegisterForm() {
   const { mutate, isPending, error } = useRegister();
@@ -78,7 +78,7 @@ export function RegisterForm() {
           </p>
         </div>
 
-        {error && <p className="text-sm text-red-500">{error.message}</p>}
+        {error && <p className="text-sm text-red-500">{error}</p>}
 
         <Button type="submit" className="w-full" disabled={isPending}>
           {isPending ? 'Creating account...' : 'Create Account'}

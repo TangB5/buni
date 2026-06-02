@@ -7,7 +7,7 @@ import { Eye, EyeOff, AlertCircle, Check, ArrowRight, User, Mail, Lock, ChevronD
 import { BuniLoader } from '@buni/ui';
 import { z } from 'zod';
 import { Route } from 'next';
-import { useRegister } from 'apps/buni-avs/src/features/auth/hooks/useAuth';
+import { useRegister } from 'apps/buni-avs/src/features/auth/hooks/useRegister';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // VALIDATION
@@ -398,7 +398,7 @@ export default function RegisterPage() {
 
             {/* API error */}
             <AnimatePresence>
-              {error instanceof Error && (
+              {error && typeof error === 'string' && (
                 <motion.div
                   initial={{ opacity: 0, height: 0, marginBottom: 0 }}
                   animate={{ opacity: 1, height: 'auto', marginBottom: '1.25rem' }}
@@ -407,7 +407,7 @@ export default function RegisterPage() {
                   className="flex items-center gap-2.5 overflow-hidden rounded-xl px-4 py-3 text-sm text-red-500 bg-red-500/8 border border-red-500/22"
                 >
                   <AlertCircle size={14} />
-                  {error.message}
+                  {error}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -524,7 +524,7 @@ export default function RegisterPage() {
                 className="group relative w-full overflow-hidden rounded-xl py-3.5 text-sm font-bold text-avs-secondary bg-avs-primary shadow-avs-md transition-all duration-300 hover:-translate-y-0.5 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
                 aria-busy={isPending}
               >
-                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" aria-hidden />
+                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" aria-hidden />
                 <span className="relative flex items-center justify-center gap-2">
                   {isPending
                     ? <><BuniLoader size={18} showText={false} /> Création…</>

@@ -17,7 +17,7 @@ interface RegisterResponse {
 }
 
 export const useRegister = () => {
-  const setUser = useAuthStore((s) => s.setUser);
+  const { setUser } = useAuthStore();
 
   const mutation = useMutation({
     mutationFn: async (data: RegisterDto) => {

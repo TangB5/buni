@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, Mail, AlertCircle, ArrowRight } from 'lucide-react';
 import { BuniLoader } from '@buni/ui';
 import { z } from 'zod';
-import { useLogin } from 'apps/buni-avs/src/features/auth/hooks/useAuth';
+import { useLogin } from 'apps/buni-avs/src/features/auth/hooks/useLogin';
 import { Route } from 'next';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -368,7 +368,7 @@ export default function LoginPage() {
                 className="group relative w-full overflow-hidden rounded-xl py-3.5 text-sm font-bold text-avs-secondary bg-avs-primary shadow-avs-md transition-all duration-300 hover:-translate-y-0.5 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
                 aria-busy={isPending}
               >
-                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" aria-hidden />
+                <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" aria-hidden />
                 <span className="relative flex items-center justify-center gap-2">
                   {isPending
                     ? <><BuniLoader size={18} showText={false} /> Connexion…</>

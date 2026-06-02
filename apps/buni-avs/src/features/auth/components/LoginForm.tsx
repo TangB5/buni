@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Button } from '@buni/ui';
 import { Input } from '@buni/ui';
 import Link from 'next/link';
-import { useLogin } from '../hooks/useAuth';
+import { useLogin } from '../hooks/useLogin';
 
 export function LoginForm() {
   const { mutate, isPending, error } = useLogin();
