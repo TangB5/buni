@@ -18,7 +18,6 @@ export async function POST(request: NextRequest) {
 
     const response = NextResponse.json(data, { status: 200 });
 
-    // Capture et propage les cookies du backend (clearCookie)
     const setCookieHeader = backendRes.headers.get('set-cookie');
     if (setCookieHeader) {
       response.headers.set('set-cookie', setCookieHeader);

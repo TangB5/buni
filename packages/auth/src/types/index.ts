@@ -41,7 +41,6 @@ export type RegisterDto = z.infer<typeof RegisterSchema>;
 
 export interface AuthState {
   user: User | null;
-  token: string | null;
   isLoading: boolean;
   isHydrated: boolean;
   error: string | null;

@@ -8,16 +8,11 @@ interface LoginResponse {
   success: boolean;
   data: {
     user: any;
-    tokens: {
-      accessToken: string;
-      refreshToken: string;
-      expiresIn: number;
-    };
   };
 }
 
 export const useLogin = () => {
-  const { setUser, setToken } = useAuthStore();
+  const { setUser } = useAuthStore();
 
   const mutation = useMutation({
     mutationFn: async (data: LoginDto) => {
@@ -25,6 +20,7 @@ export const useLogin = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
+        credentials: 'include',
       });
 
       if (!res.ok) {
@@ -36,7 +32,6 @@ export const useLogin = () => {
     },
     onSuccess: (data) => {
       setUser(data.data.user);
-      setToken(data.data.tokens.accessToken);
     },
   });
 

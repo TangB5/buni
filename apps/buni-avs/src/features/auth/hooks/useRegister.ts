@@ -8,16 +8,11 @@ interface RegisterResponse {
   success: boolean;
   data: {
     user: any;
-    tokens: {
-      accessToken: string;
-      refreshToken: string;
-      expiresIn: number;
-    };
   };
 }
 
 export const useRegister = () => {
-  const { setUser, setToken } = useAuthStore();
+  const { setUser } = useAuthStore();
 
   const mutation = useMutation({
     mutationFn: async (data: RegisterDto) => {
@@ -25,6 +20,7 @@ export const useRegister = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
+        credentials: 'include',
       });
 
       if (!res.ok) {
@@ -36,7 +32,6 @@ export const useRegister = () => {
     },
     onSuccess: (data) => {
       setUser(data.data.user);
-      setToken(data.data.tokens.accessToken);
     },
   });
 
