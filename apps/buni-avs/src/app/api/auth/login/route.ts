@@ -9,6 +9,7 @@ export async function POST(request: NextRequest) {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
+      credentials: 'include', // Important pour les cookies
     });
 
     const data = await backendRes.json();
@@ -17,7 +18,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(data, { status: backendRes.status });
     }
 
-    return NextResponse.json(data, { status: 200 });
+    const response = NextResponse.json(data, { status: 200 });
+
+    // Capture et propage les cookies du backend
+    const setCookieHeader = backendRes.headers.get('set-cookie');
+    if (setCookieHeader) {
+      response.headers.set('set-cookie', setCookieHeader);
+    }
+
+    return response;
   } catch (err) {
     return NextResponse.json(
       { success: false, message: err instanceof Error ? err.message : 'Erreur serveur' },

@@ -507,8 +507,7 @@ export default function DashboardPage() {
     void fetchData();
   }, [isHydrated, isAuthenticated]);
 
-  console.log("stats........................",stats)
-  console.log("recentPatterns......................",patterns)
+  
   if (!isHydrated) return <PageLoader />;
 
   const roleLabel   = isAdmin ? 'Administrateur' : isCurator ? 'Curateur' : 'Contributeur';

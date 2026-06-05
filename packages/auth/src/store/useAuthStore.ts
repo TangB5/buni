@@ -4,6 +4,7 @@ import type { AuthState, User } from '../types';
 
 interface AuthActions {
   setUser: (user: User) => void;
+  setToken: (token: string | null) => void;
   updateUser: (partial: Partial<User>) => void;
   logout: () => void;
   setLoading: (v: boolean) => void;
@@ -32,6 +33,10 @@ export const useAuthStore = create<AuthState & AuthActions>()(
           set({ user, error: null }, false, 'auth/setUser');
         },
 
+        setToken: (token) => {
+          set({ token }, false, 'auth/setToken');
+        },
+
         updateUser: (partial) =>
           set(
             (s) => ({ user: s.user ? { ...s.user, ...partial } : null }),
@@ -55,7 +60,7 @@ export const useAuthStore = create<AuthState & AuthActions>()(
         name: 'buni-auth',
         partialize: (s) => ({
           user: s.user,
-          token: null,
+          token: s.token,
           isHydrated: s.isHydrated,
         }),
       },

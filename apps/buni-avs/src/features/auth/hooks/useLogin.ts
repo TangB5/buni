@@ -17,7 +17,7 @@ interface LoginResponse {
 }
 
 export const useLogin = () => {
-  const { setUser } = useAuthStore();
+  const { setUser, setToken } = useAuthStore();
 
   const mutation = useMutation({
     mutationFn: async (data: LoginDto) => {
@@ -36,6 +36,7 @@ export const useLogin = () => {
     },
     onSuccess: (data) => {
       setUser(data.data.user);
+      setToken(data.data.tokens.accessToken);
     },
   });
 

@@ -223,7 +223,10 @@ export default function RegisterPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    mutate(form);
+    mutate({
+      ...form,
+      role: form.role.toUpperCase() as any,
+    });
   };
 
   // Input border/shadow driven by focus + error — dynamic, can't be Tailwind

@@ -2,13 +2,11 @@ import { type NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
-    const backendRes = await fetch(`${apiUrl}/api/v1/auth/register`, {
+    const backendRes = await fetch(`${apiUrl}/api/v1/auth/logout`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
       credentials: 'include',
     });
 
@@ -18,9 +16,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(data, { status: backendRes.status });
     }
 
-    const response = NextResponse.json(data, { status: 201 });
+    const response = NextResponse.json(data, { status: 200 });
 
-    // Capture et propage les cookies du backend
+    // Capture et propage les cookies du backend (clearCookie)
     const setCookieHeader = backendRes.headers.get('set-cookie');
     if (setCookieHeader) {
       response.headers.set('set-cookie', setCookieHeader);

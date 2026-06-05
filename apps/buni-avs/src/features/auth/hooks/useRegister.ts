@@ -17,7 +17,7 @@ interface RegisterResponse {
 }
 
 export const useRegister = () => {
-  const { setUser } = useAuthStore();
+  const { setUser, setToken } = useAuthStore();
 
   const mutation = useMutation({
     mutationFn: async (data: RegisterDto) => {
@@ -36,6 +36,7 @@ export const useRegister = () => {
     },
     onSuccess: (data) => {
       setUser(data.data.user);
+      setToken(data.data.tokens.accessToken);
     },
   });
 

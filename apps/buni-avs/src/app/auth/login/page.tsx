@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, Mail, AlertCircle, ArrowRight } from 'lucide-react';
@@ -102,7 +103,8 @@ function Field({ id, label, error, right, children }: {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function LoginPage() {
-  const { mutate, isPending, error } = useLogin();
+  const router = useRouter();
+  const { mutate, isPending, error, isSuccess } = useLogin();
 
   const [form,    setForm]    = useState<LoginForm>({ email: '', password: '' });
   const [errors,  setErrors]  = useState<FieldErrors>({});
@@ -127,7 +129,11 @@ export default function LoginPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    mutate(form);
+    mutate(form, {
+      onSuccess: () => {
+        router.push('/dashboard');
+      },
+    });
   };
 
   // Input border/shadow driven by focus + error state — dynamic, can't be Tailwind
