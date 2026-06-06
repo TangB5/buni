@@ -16,14 +16,16 @@ import {
   Star,
   Eye,
 } from 'lucide-react';
-import { PatternReplacer } from 'apps/buni-avs/src/features/patterns/components/SvgPatternDisplay';
+
 import {
   Pattern,
   PatternSymbol,
   
 } from '@buni/patterns';
 import { PATTERNS_DOCS } from './mock';
-import { patternRepository } from 'apps/buni-avs/src/features/patterns/repositories/pattern.repository';
+import { PatternReplacer } from '@/features/patterns/components/SvgPatternDisplay';
+import { patternRepository } from '@/features/patterns/repositories/pattern.repository';
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // CONSTANTS

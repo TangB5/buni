@@ -43,11 +43,11 @@ const COLLAGE = [
 ] as const;
 
 const GALLERY = [
-  { css: 'avs-pattern-ndop-sultan',       type: 'NDOP',    name: 'Ndop Sultan',    origin: 'Foumban · CM', cls: 'lg:col-span-3 lg:row-span-2' },
-  { css: 'avs-pattern-kente-royale',      type: 'KENTE',   name: 'Kente Royale',   origin: 'Kumasi · GH',  cls: 'lg:col-span-2'               },
-  { css: 'avs-pattern-adinkra-sankofa',   type: 'ADINKRA', name: 'Adinkra Sankofa',origin: 'Akan · GH',    cls: ''                            },
-  { css: 'avs-pattern-kuba-kasai',        type: 'KUBA',    name: 'Kuba Kasai',     origin: 'Kasai · CD',   cls: ''                            },
-  { css: 'avs-pattern-bogolan-fanga',     type: 'BOGOLAN', name: 'Bogolan Fanga',  origin: 'Ségou · ML',   cls: 'lg:col-span-2'               },
+  { css: 'avs-pattern-ndop-sultan',       type: 'NDOP',    name: 'Ndop Sultan',    origin: 'Foumban · CM', slug: 'ndop-bamoum',      cls: 'lg:col-span-3 lg:row-span-2' },
+  { css: 'avs-pattern-kente-royale',      type: 'KENTE',   name: 'Kente Royale',   origin: 'Kumasi · GH',  slug: 'kente-asante',     cls: 'lg:col-span-2'               },
+  { css: 'avs-pattern-adinkra-sankofa',   type: 'ADINKRA', name: 'Adinkra Sankofa',origin: 'Akan · GH',    slug: 'adinkra-akan', cls: ''                            },
+  { css: 'avs-pattern-kuba-kasai',        type: 'KUBA',    name: 'Kuba Kasai',     origin: 'Kasai · CD',   slug: 'kuba-kasai',      cls: ''                            },
+  { css: 'avs-pattern-bogolan-fanga',     type: 'BOGOLAN', name: 'Bogolan Fanga',  origin: 'Ségou · ML',   slug: 'bogolan-malien',   cls: 'lg:col-span-2'               },
 ] as const;
 
 // Features use AVS tokens via inline accentClass/bgClass to avoid hardcoded hex
@@ -284,34 +284,39 @@ export default function HomePage() {
               variants={stagger}
               className="grid grid-cols-2 gap-2 lg:grid-cols-6 lg:grid-rows-2"
             >
-              {GALLERY.map(({ css, type, name, origin, cls }, i) => (
-                <motion.div
+              {GALLERY.map(({ css, type, name, origin, slug, cls }, i) => (
+                <Link
                   key={name}
-                  variants={itemFade}
-                  className={`group relative cursor-pointer overflow-hidden rounded-2xl ${cls}`}
+                  href={`/patterns/${slug}` as Route}
+                  className={`group relative overflow-hidden rounded-2xl block ${cls}`}
                   style={{ minHeight: i === 0 ? '380px' : '165px' }}
-                  whileHover={{ scale: 1.014 }}
-                  transition={{ type: 'spring', stiffness: 320, damping: 26 }}
                 >
-                  <div className={`${css} absolute inset-0 transition-transform duration-700 group-hover:scale-[1.06]`} />
-                  {/* Dark-to-transparent gradient — justified inline: complex multi-stop positional gradient */}
-                  <div
-                    className="absolute inset-0"
-                    style={{ background: 'linear-gradient(to top,rgba(10,8,6,.92) 0%,rgba(10,8,6,.08) 55%,transparent 100%)' }}
-                  />
-                  <div className="absolute top-3 left-3">
-                    <span className="rounded-md px-2 py-0.5 font-mono text-[8px] font-bold tracking-[.2em] uppercase backdrop-blur-sm bg-avs-primary/85 text-avs-secondary">
-                      {type}
-                    </span>
-                  </div>
-                  <div className="absolute right-0 bottom-0 left-0 translate-y-1.5 p-4 opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100">
-                    <p className="font-display text-sm font-bold text-avs-secondary">{name}</p>
-                    <p className="text-[10px] text-avs-secondary/60">{origin}</p>
-                  </div>
-                  <div className="absolute top-3 right-3 flex h-7 w-7 items-center justify-center rounded-full opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 bg-avs-secondary/10">
-                    <ArrowUpRight size={11} className="text-avs-secondary" aria-hidden />
-                  </div>
-                </motion.div>
+                  <motion.div
+                    variants={itemFade}
+                    whileHover={{ scale: 1.014 }}
+                    transition={{ type: 'spring', stiffness: 320, damping: 26 }}
+                    className="h-full"
+                  >
+                    <div className={`${css} absolute inset-0 transition-transform duration-700 group-hover:scale-[1.06]`} />
+                    {/* Dark-to-transparent gradient — justified inline: complex multi-stop positional gradient */}
+                    <div
+                      className="absolute inset-0"
+                      style={{ background: 'linear-gradient(to top,rgba(10,8,6,.92) 0%,rgba(10,8,6,.08) 55%,transparent 100%)' }}
+                    />
+                    <div className="absolute top-3 left-3">
+                      <span className="rounded-md px-2 py-0.5 font-mono text-[8px] font-bold tracking-[.2em] uppercase backdrop-blur-sm bg-avs-primary/85 text-avs-secondary">
+                        {type}
+                      </span>
+                    </div>
+                    <div className="absolute right-0 bottom-0 left-0 translate-y-1.5 p-4 opacity-0 transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100">
+                      <p className="font-display text-sm font-bold text-avs-secondary">{name}</p>
+                      <p className="text-[10px] text-avs-secondary/60">{origin}</p>
+                    </div>
+                    <div className="absolute top-3 right-3 flex h-7 w-7 items-center justify-center rounded-full opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100 bg-avs-secondary/10">
+                      <ArrowUpRight size={11} className="text-avs-secondary" aria-hidden />
+                    </div>
+                  </motion.div>
+                </Link>
               ))}
             </motion.div>
           </div>
