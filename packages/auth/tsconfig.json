@@ -7,18 +7,7 @@
     "declarationMap": true,
     "sourceMap": true,
     "types": ["node"],
-    "skipLibCheck": true,
-    "paths": {
-      "@buni/ui": ["../ui/src/index.ts"],
-      "@buni/tokens": ["../tokens/src/index.ts"],
-      "@buni/patterns": ["../patterns/src/index.ts"],
-      "@buni/icons": ["../icons/src/index.ts"],
-      "@buni/auth": ["."],
-      "@buni/api": ["../api/src/index.ts"],
-      "@buni/config": ["../config/src/index.ts"],
-      "@buni/analytics": ["../analytics/src/index.ts"],
-      "@buni/utils": ["../utils/src/index.ts"]
-    }
+    "skipLibCheck": true
   },
   "include": ["src"],
   "exclude": ["dist", "node_modules"]

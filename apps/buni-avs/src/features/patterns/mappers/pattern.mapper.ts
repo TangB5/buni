@@ -1,4 +1,4 @@
-import { CSS_PATTERN_MAP } from 'packages/patterns/dist';
+
 
 import type {
   Step1Data,
@@ -8,7 +8,7 @@ import type {
   Pattern,
   PatternDto,
 } from '../types';
-import { PatternOrigin, PatternSymbolism } from '@buni/patterns';
+import { CSS_PATTERN_MAP, PatternOrigin, PatternSymbolism } from '@buni/patterns';
 import type { UploadablePatternSymbol } from '../types/uploads/pattern.upload';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -182,7 +182,7 @@ export function toFormData(
 const DEFAULT_ORIGIN: PatternOrigin = {
   country: '',
   people: '',
-  region: '',
+  region: 'west-africa',
   coords: [0, 0],
   flag: '',
 };

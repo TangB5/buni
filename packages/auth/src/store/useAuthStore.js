@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { devtools, persist } from 'zustand/middleware';
+import { devtools } from 'zustand/middleware';
 const initial = {
     user: null,
     token: null,
@@ -7,10 +7,13 @@ const initial = {
     isHydrated: false,
     error: null,
 };
-export const useAuthStore = create()(devtools(persist((set, get) => ({
+export const useAuthStore = create()(devtools((set, get) => ({
     ...initial,
     setUser: (user) => {
         set({ user, error: null }, false, 'auth/setUser');
+    },
+    setToken: (token) => {
+        set({ token }, false, 'auth/setToken');
     },
     updateUser: (partial) => set((s) => ({ user: s.user ? { ...s.user, ...partial } : null }), false, 'auth/updateUser'),
     logout: () => {
@@ -22,12 +25,5 @@ export const useAuthStore = create()(devtools(persist((set, get) => ({
     isAdmin: () => get().user?.role === 'admin',
     isCurator: () => ['admin', 'curator'].includes(get().user?.role ?? ''),
     canContribute: () => ['admin', 'curator', 'contributor'].includes(get().user?.role ?? ''),
-}), {
-    name: 'buni-auth',
-    partialize: (s) => ({
-        user: s.user,
-        token: null,
-        isHydrated: s.isHydrated,
-    }),
 }), { name: 'Buni Auth' }));
 //# sourceMappingURL=useAuthStore.js.map

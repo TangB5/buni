@@ -9,13 +9,9 @@ import {
   Sparkles, Zap, BarChart2, Clock, Star,
 } from 'lucide-react';
 import { useAuth, useLogout } from '@buni/auth';
-import {
-  dashboardService,
-  type DashboardStats,
-  type UserPattern,
-  type DashboardActivity,
-} from 'apps/buni-avs/src/features/dashboard/services/dashboard.service';
+
 import { Route } from 'next';
+import { DashboardStats, UserPattern, DashboardActivity, dashboardService } from '@/features/dashboard/services/dashboard.service';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TYPES & CONFIG

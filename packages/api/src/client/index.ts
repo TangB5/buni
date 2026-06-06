@@ -7,11 +7,10 @@ export const apiClient = axios.create({
   baseURL: BASE,
   timeout: 15000,
   headers: { 'Content-Type': 'application/json' },
+  withCredentials: true,
 });
 
 apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const token = useAuthStore.getState().token;
-  if (token) config.headers.Authorization = `Bearer ${token}`;
   if (config.data instanceof FormData) delete config.headers['Content-Type'];
   return config;
 });

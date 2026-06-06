@@ -11,7 +11,7 @@ export function middleware(request: NextRequest) {
 
   // Récupérer le token (cookie ou header)
   const token =
-    request.cookies.get('avs_session')?.value ??
+    request.cookies.get('avs_access')?.value ??
     request.headers.get('Authorization')?.replace('Bearer ', '');
     console.log("token..................................................",token
       

@@ -3,16 +3,27 @@
 import type { Metadata, Route } from 'next';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { ArrowLeft, Download, Share2, MapPin, Eye, Globe, Tag, Loader2, AlertCircle } from 'lucide-react';
-import type { Pattern } from 'apps/buni-avs/src/features/patterns/types';
+import {
+  ArrowLeft,
+  Download,
+  Share2,
+  MapPin,
+  Eye,
+  Globe,
+  Tag,
+  Loader2,
+  AlertCircle,
+} from 'lucide-react';
+
 import { useToast } from '@buni/ui';
-import { patternService } from 'apps/buni-avs/src/features/patterns/services/pattern.service';
-import { mapPatternDtoToModel } from 'apps/buni-avs/src/features/patterns/mappers/pattern.mapper';
+import { mapPatternDtoToModel } from '@/features/patterns/mappers/pattern.mapper';
+import { patternService } from '@/features/patterns/services/pattern.service';
+import { Pattern } from '@buni/patterns';
 
 // ── Pattern Detail Page ────────────────────────────────────────────────────────
 export default function PatternDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const [slug, setSlug] = useState('');
-  const [pattern, setPattern] = useState<Pattern | null >(null);
+  const [pattern, setPattern] = useState<Pattern | null>(null);
   const [similarPatterns, setSimilarPatterns] = useState<Pattern[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -30,24 +41,18 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
 
         const patternRes = mapPatternDtoToModel(responce.data);
 
-        
-
         setPattern(patternRes);
 
-        
         if (patternRes.type) {
           const similarRes = await patternService.list({
             type: patternRes.type,
             perPage: 4,
           });
-          
-           const similar = similarRes.data.data.map(mapPatternDtoToModel);
 
-        setSimilarPatterns(
-          similar.filter((p: any) => p.id !== patternRes.id).slice(0, 3)
-        );
-      }
+          const similar = similarRes.data.data.map(mapPatternDtoToModel);
 
+          setSimilarPatterns(similar.filter((p: any) => p.id !== patternRes.id).slice(0, 3));
+        }
 
         // Track la vue
         // patternService.trackView(patternRes.id);
@@ -101,7 +106,7 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-avs-secondary">
+      <div className="bg-avs-secondary flex min-h-screen items-center justify-center">
         <Loader2 size={32} className="text-avs-primary animate-spin" />
       </div>
     );
@@ -109,16 +114,16 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
 
   if (error || !pattern) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-avs-secondary">
+      <div className="bg-avs-secondary flex min-h-screen items-center justify-center">
         <div className="max-w-md text-center">
           <AlertCircle size={48} className="text-avs-primary mx-auto mb-4" />
           <h1 className="font-display text-avs-accent mb-2 text-2xl font-bold">
             Motif introuvable
           </h1>
-          <p className="text-avs-accent/70 mb-6">{error || 'Le motif demandé n\'existe pas'}</p>
+          <p className="text-avs-accent/70 mb-6">{error || "Le motif demandé n'existe pas"}</p>
           <Link
             href="/patterns"
-            className="text-avs-primary hover:underline font-medium inline-flex items-center gap-1"
+            className="text-avs-primary inline-flex items-center gap-1 font-medium hover:underline"
           >
             <ArrowLeft size={16} />
             Retour aux motifs
@@ -134,7 +139,7 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
       <div className="border-avs-accent/10 bg-avs-secondary border-b px-4 py-4 sm:px-6 lg:px-8">
         <div className="text-avs-accent/50 mx-auto flex max-w-7xl items-center gap-2 text-sm">
           <Link
-            href={"/patterns" as Route}
+            href={'/patterns' as Route}
             className="text-avs-primary flex items-center gap-1.5 font-medium hover:underline"
           >
             <ArrowLeft size={14} aria-hidden />
@@ -177,7 +182,7 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
                   onClick={handleDownloadSvg}
                   disabled={!pattern?.svgUrl}
                   aria-label="Télécharger"
-                  className="rounded-avs bg-avs-primary text-avs-secondary shadow-avs flex items-center gap-1.5 px-3 py-2 text-xs font-bold transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="rounded-avs bg-avs-primary text-avs-secondary shadow-avs flex items-center gap-1.5 px-3 py-2 text-xs font-bold transition-all hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
                 >
                   <Download size={13} aria-hidden />
                   SVG
@@ -273,8 +278,7 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
                   {
                     icon: Tag,
                     label: 'Type',
-                    value:
-                      pattern.type.charAt(0).toUpperCase() + pattern.type.slice(1),
+                    value: pattern.type.charAt(0).toUpperCase() + pattern.type.slice(1),
                   },
                   {
                     icon: Eye,
@@ -309,7 +313,7 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
                     <p className="font-display text-avs-accent text-xl font-bold">{value}</p>
                     <p className="text-avs-accent/50 text-xs">{label}</p>
                   </div>
-                ),
+                )
               )}
             </div>
 
@@ -341,7 +345,7 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
             <button
               onClick={handleDownloadSvg}
               disabled={!pattern?.svgUrl}
-              className="rounded-avs-lg bg-avs-primary text-avs-secondary shadow-avs-md hover:shadow-avs-lg flex w-full items-center justify-center gap-2 py-4 text-sm font-bold transition-all hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="rounded-avs-lg bg-avs-primary text-avs-secondary shadow-avs-md hover:shadow-avs-lg flex w-full items-center justify-center gap-2 py-4 text-sm font-bold transition-all hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Download size={16} aria-hidden />
               Télécharger SVG
@@ -366,20 +370,20 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
                   className="group"
                 >
                   <div
-                    className="rounded-avs-lg border-avs-accent/10 shadow-avs relative overflow-hidden border bg-linear-to-br transition-all hover:shadow-avs-md"
+                    className="rounded-avs-lg border-avs-accent/10 shadow-avs hover:shadow-avs-md relative overflow-hidden border bg-linear-to-br transition-all"
                     style={{
                       backgroundImage: `linear-gradient(to bottom right, ${similarPattern.colors[0]?.hex}, ${similarPattern.colors[1]?.hex})`,
                     }}
                   >
                     <div className="from-avs-accent/60 absolute inset-0 bg-linear-to-t via-transparent to-transparent" />
-                    <div className="relative h-48 p-4 flex flex-col justify-end">
+                    <div className="relative flex h-48 flex-col justify-end p-4">
                       <p className="text-avs-secondary text-xs font-bold tracking-widest uppercase">
                         {similarPattern.type}
                       </p>
                       <h3 className="font-display text-avs-secondary text-lg font-bold group-hover:underline">
                         {similarPattern.name}
                       </h3>
-                      <p className="text-avs-secondary/70 text-xs mt-1">
+                      <p className="text-avs-secondary/70 mt-1 text-xs">
                         {similarPattern.origin.region.replace(/-/g, ' ')}
                       </p>
                     </div>
@@ -393,4 +397,3 @@ export default function PatternDetailPage({ params }: { params: Promise<{ slug: 
     </div>
   );
 }
-

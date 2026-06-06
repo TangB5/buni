@@ -25,13 +25,10 @@ import {
 } from 'lucide-react';
 import { Route } from 'next';
 import { Pattern, PatternSymbol } from '@buni/patterns';
-import {
-  useFeaturePattern,
-  useToggleFeature,
-  useUnfeaturePattern,
-} from 'apps/buni-avs/src/features/patterns/hooks/usePatternActions';
-import { patternService } from 'apps/buni-avs/src/features/patterns/services/pattern.service';
-import { mapPatternDtoToModel } from 'apps/buni-avs/src/features/patterns/mappers/pattern.mapper';
+import { useFeaturePattern, useToggleFeature, useUnfeaturePattern } from '@/features/patterns/hooks/usePatternActions';
+import { mapPatternDtoToModel } from '@/features/patterns/mappers/pattern.mapper';
+import { patternService } from '@/features/patterns/services/pattern.service';
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TYPES

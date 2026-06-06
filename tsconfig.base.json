@@ -12,17 +12,18 @@
     "resolveJsonModule": true,
     "allowJs": true,
     "incremental": true,
+    
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "@buni/ui":        ["packages/ui/src/index.ts"],
-      "@buni/tokens":    ["packages/tokens/src/index.ts"],
-      "@buni/patterns":  ["packages/patterns/src/index.ts"],
-      "@buni/icons":     ["packages/icons/src/index.ts"],
-      "@buni/auth":      ["packages/auth/src/index.ts"],
-      "@buni/api":       ["packages/api/src/index.ts"],
-      "@buni/config":    ["packages/config/src/index.ts"],
-      "@buni/analytics": ["packages/analytics/src/index.ts"],
-      "@buni/utils":     ["packages/utils/src/index.ts"]
+      "@buni/ui": ["./packages/ui/src/index.ts"],
+      "@buni/tokens": ["./packages/tokens/src/index.ts"],
+      "@buni/patterns": ["./packages/patterns/src/index.ts"],
+      "@buni/icons": ["./packages/icons/src/index.ts"],
+      "@buni/auth": ["./packages/auth/src/index.ts"],
+      "@buni/api": ["./packages/api/src/index.ts"],
+      "@buni/config": ["./packages/config/src/index.ts"],
+      "@buni/analytics": ["./packages/analytics/src/index.ts"],
+      "@buni/utils": ["./packages/utils/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "dist", ".next", "coverage"]

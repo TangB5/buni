@@ -4,11 +4,7 @@ import { useParams, useSearchParams } from 'next/navigation';
 import PatternDetailsPage from '../../../../features/patterns/components/PatternDetailsPage';
 import PatternEditPage from '../../../../features/patterns/components/PatternEditPage';
 
-/**
- * Page dynamique pour voir/éditer les détails d'un pattern
- * Route: /patternsDashboard/[slug]
- * Mode édition: /patternsDashboard/[slug]?edit=true
- */
+
 export default function PatternPage() {
   const params = useParams();
   const searchParams = useSearchParams();
