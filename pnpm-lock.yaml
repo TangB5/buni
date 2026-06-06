@@ -232,142 +232,7 @@ importers:
         specifier: workspace:*
         version: link:../../packages/utils
 
-  apps/buni-behance:
-    dependencies:
-      '@buni/analytics':
-        specifier: workspace:*
-        version: link:../../packages/analytics
-      '@buni/api':
-        specifier: workspace:*
-        version: link:../../packages/api
-      '@buni/auth':
-        specifier: workspace:*
-        version: link:../../packages/auth
-      '@buni/config':
-        specifier: workspace:*
-        version: link:../../packages/config
-      '@buni/patterns':
-        specifier: workspace:*
-        version: link:../../packages/patterns
-      '@buni/tokens':
-        specifier: workspace:*
-        version: link:../../packages/tokens
-      '@buni/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      '@buni/utils':
-        specifier: workspace:*
-        version: link:../../packages/utils
-
-  apps/buni-components:
-    dependencies:
-      '@buni/analytics':
-        specifier: workspace:*
-        version: link:../../packages/analytics
-      '@buni/api':
-        specifier: workspace:*
-        version: link:../../packages/api
-      '@buni/auth':
-        specifier: workspace:*
-        version: link:../../packages/auth
-      '@buni/config':
-        specifier: workspace:*
-        version: link:../../packages/config
-      '@buni/patterns':
-        specifier: workspace:*
-        version: link:../../packages/patterns
-      '@buni/tokens':
-        specifier: workspace:*
-        version: link:../../packages/tokens
-      '@buni/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      '@buni/utils':
-        specifier: workspace:*
-        version: link:../../packages/utils
-
-  apps/buni-drop:
-    dependencies:
-      '@buni/analytics':
-        specifier: workspace:*
-        version: link:../../packages/analytics
-      '@buni/api':
-        specifier: workspace:*
-        version: link:../../packages/api
-      '@buni/auth':
-        specifier: workspace:*
-        version: link:../../packages/auth
-      '@buni/config':
-        specifier: workspace:*
-        version: link:../../packages/config
-      '@buni/patterns':
-        specifier: workspace:*
-        version: link:../../packages/patterns
-      '@buni/tokens':
-        specifier: workspace:*
-        version: link:../../packages/tokens
-      '@buni/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      '@buni/utils':
-        specifier: workspace:*
-        version: link:../../packages/utils
-
-  apps/buni-icons:
-    dependencies:
-      '@buni/analytics':
-        specifier: workspace:*
-        version: link:../../packages/analytics
-      '@buni/api':
-        specifier: workspace:*
-        version: link:../../packages/api
-      '@buni/auth':
-        specifier: workspace:*
-        version: link:../../packages/auth
-      '@buni/config':
-        specifier: workspace:*
-        version: link:../../packages/config
-      '@buni/patterns':
-        specifier: workspace:*
-        version: link:../../packages/patterns
-      '@buni/tokens':
-        specifier: workspace:*
-        version: link:../../packages/tokens
-      '@buni/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      '@buni/utils':
-        specifier: workspace:*
-        version: link:../../packages/utils
-
   apps/buni-mode:
-    dependencies:
-      '@buni/analytics':
-        specifier: workspace:*
-        version: link:../../packages/analytics
-      '@buni/api':
-        specifier: workspace:*
-        version: link:../../packages/api
-      '@buni/auth':
-        specifier: workspace:*
-        version: link:../../packages/auth
-      '@buni/config':
-        specifier: workspace:*
-        version: link:../../packages/config
-      '@buni/patterns':
-        specifier: workspace:*
-        version: link:../../packages/patterns
-      '@buni/tokens':
-        specifier: workspace:*
-        version: link:../../packages/tokens
-      '@buni/ui':
-        specifier: workspace:*
-        version: link:../../packages/ui
-      '@buni/utils':
-        specifier: workspace:*
-        version: link:../../packages/utils
-
-  apps/buni-templates:
     dependencies:
       '@buni/analytics':
         specifier: workspace:*
@@ -408,7 +273,11 @@ importers:
 
   packages/tokens: {}
 
-  packages/ui: {}
+  packages/ui:
+    devDependencies:
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
 
   packages/utils: {}
 
@@ -7639,6 +7508,11 @@ packages:
 
   typescript@5.9.3:
     resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
+  typescript@6.0.3:
+    resolution: {integrity: sha512-y2TvuxSZPDyQakkFRPZHKFm+KKVqIisdg9/CZwm9ftvKXLP8NRWj38/ODjNbr43SsoXqNuAisEf1GdCxqWcdBw==}
     engines: {node: '>=14.17'}
     hasBin: true
 
@@ -16131,6 +16005,8 @@ snapshots:
   typescript@5.4.5: {}
 
   typescript@5.9.3: {}
+
+  typescript@6.0.3: {}
 
   uint8array-extras@1.5.0: {}
 

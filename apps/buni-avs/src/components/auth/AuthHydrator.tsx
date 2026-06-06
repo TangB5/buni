@@ -17,6 +17,16 @@ export function AuthHydrator() {
 
     const hydrateAuth = async () => {
       try {
+        // Extract token from cookie if available
+        const tokenFromCookie = document.cookie
+          .split('; ')
+          .find(row => row.startsWith('avs_session='))
+          ?.split('=')[1];
+
+        if (tokenFromCookie) {
+          useAuthStore.setState({ token: tokenFromCookie });
+        }
+
         // Validate session with server
         const response = await authService.getMe();
         useAuthStore.setState({
@@ -28,6 +38,7 @@ export function AuthHydrator() {
         // Clear user but still mark as hydrated
         useAuthStore.setState({
           user: null,
+          token: null,
           isHydrated: true,
         });
       } finally {

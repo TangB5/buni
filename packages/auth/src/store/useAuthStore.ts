@@ -4,6 +4,7 @@ import type { AuthState, User } from '../types';
 
 interface AuthActions {
   setUser: (user: User) => void;
+  setToken: (token: string | null) => void;
   updateUser: (partial: Partial<User>) => void;
   logout: () => void;
   setLoading: (v: boolean) => void;
@@ -16,6 +17,7 @@ interface AuthActions {
 
 const initial: AuthState = {
   user: null,
+  token: null,
   isLoading: false,
   isHydrated: false,
   error: null,
@@ -28,6 +30,10 @@ export const useAuthStore = create<AuthState & AuthActions>()(
 
       setUser: (user) => {
         set({ user, error: null }, false, 'auth/setUser');
+      },
+
+      setToken: (token) => {
+        set({ token }, false, 'auth/setToken');
       },
 
       updateUser: (partial) =>

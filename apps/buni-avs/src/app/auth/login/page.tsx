@@ -1,14 +1,15 @@
 'use client';
 
+
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, Mail, AlertCircle, ArrowRight } from 'lucide-react';
 import { BuniLoader } from '@buni/ui';
 import { z } from 'zod';
-import { useLogin } from 'apps/buni-avs/src/features/auth/hooks/useLogin';
+import { useAuthStore } from '@buni/auth';
 import { Route } from 'next';
+import { useLogin } from '@/features/auth/hooks/useLogin';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // VALIDATION
@@ -103,8 +104,8 @@ function Field({ id, label, error, right, children }: {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function LoginPage() {
-  const router = useRouter();
-  const { mutate, isPending, error, isSuccess } = useLogin();
+  const user = useAuthStore((s) => s.user);
+  const { mutate, isPending, error } = useLogin();
 
   const [form,    setForm]    = useState<LoginForm>({ email: '', password: '' });
   const [errors,  setErrors]  = useState<FieldErrors>({});
@@ -129,11 +130,7 @@ export default function LoginPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    mutate(form, {
-      onSuccess: () => {
-        router.push('/dashboard');
-      },
-    });
+    mutate(form);
   };
 
   // Input border/shadow driven by focus + error state — dynamic, can't be Tailwind
@@ -426,3 +423,5 @@ export default function LoginPage() {
     </>
   );
 }
+
+  

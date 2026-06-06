@@ -13,7 +13,11 @@ export function middleware(request: NextRequest) {
   const token =
     request.cookies.get('avs_session')?.value ??
     request.headers.get('Authorization')?.replace('Bearer ', '');
+    console.log("token..................................................",token
+      
+    )
 
+  // ── Redirections et headers de sécurité ─────────────────────────────────────
   const isProtected = PROTECTED_PREFIXES.some((p) => pathname.startsWith(p));
   const isAuthRoute = AUTH_ROUTES.some((p) => pathname.startsWith(p));
 

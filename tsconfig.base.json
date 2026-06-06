@@ -13,7 +13,6 @@
     "allowJs": true,
     "incremental": true,
     "forceConsistentCasingInFileNames": true,
-    "baseUrl": ".",
     "paths": {
       "@buni/ui":        ["packages/ui/src/index.ts"],
       "@buni/tokens":    ["packages/tokens/src/index.ts"],
