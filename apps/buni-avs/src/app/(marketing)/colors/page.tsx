@@ -23,7 +23,7 @@ interface Palette {
   description: string;
   tokens:      ColorToken[];
   patternCSS:  string;
-  accentClass: string;   // text-avs-* Tailwind class
+  accentClass: string;   // text-avs-* Tailwind class — must be in safelist: text-avs-primary, text-avs-kente, text-avs-indigo, text-avs-earth, text-avs-etruscan, text-avs-olive
   accentHex:   string;   // kept only for dynamic inline uses (boxShadow, radial-gradient) that Tailwind can't express
 }
 type ExportFormat = 'css' | 'json' | 'tailwind';
@@ -42,6 +42,7 @@ const PALETTES: Palette[] = [
       { name: 'avs-primary',   hex: '#C0573E', meaning: 'Terre brûlée — chaleur, énergie, identité', origin: 'Poterie Yoruba',  css: '--avs-primary'   },
       { name: 'avs-secondary', hex: '#F5EBE0', meaning: 'Lin naturel — repos, clarté, neutralité',   origin: 'Tissu Fulani',   css: '--avs-secondary' },
       { name: 'avs-accent',    hex: '#1D1D1B', meaning: 'Obsidienne — profondeur, autorité, nuit',   origin: 'Basalte Kenya',  css: '--avs-accent'    },
+      { name: 'avs-mist',      hex: '#B0C4C8', meaning: 'Brume lagunaire — sérénité, horizon',       origin: 'Lagune de Cotonou', css: '--avs-mist'   },
     ],
   },
   {
@@ -50,10 +51,11 @@ const PALETTES: Palette[] = [
     description: 'Palette extraite du tissu royal Akan — or royal, noir sacré, rouge du sacrifice.',
     patternCSS: 'avs-pattern-kente-royale',
     tokens: [
-      { name: 'kente-gold',  hex: '#D4A017', meaning: 'Or royal — richesse, royauté, soleil',      origin: 'Fil de soie Asante', css: '--avs-kente'   },
-      { name: 'kente-black', hex: '#1D1D1B', meaning: 'Noir maturité — sagesse, énergie cosmique', origin: 'Encre de charbon',   css: '--avs-accent'  },
-      { name: 'kente-red',   hex: '#C0573E', meaning: 'Rouge sang — sacrifice, courage, ancêtres', origin: 'Ocre ferrugineux',   css: '--avs-primary' },
-      { name: 'kente-green', hex: '#4A6741', meaning: 'Vert forêt — croissance, vie, renouveau',   origin: 'Plantes indigo',     css: '--avs-ndop'    },
+      { name: 'kente-gold',    hex: '#D4A017', meaning: 'Or royal — richesse, royauté, soleil',      origin: 'Fil de soie Asante', css: '--avs-kente'      },
+      { name: 'kente-black',   hex: '#1D1D1B', meaning: 'Noir maturité — sagesse, énergie cosmique', origin: 'Encre de charbon',   css: '--avs-accent'     },
+      { name: 'kente-red',     hex: '#C0573E', meaning: 'Rouge sang — sacrifice, courage, ancêtres', origin: 'Ocre ferrugineux',   css: '--avs-primary'    },
+      { name: 'kente-green',   hex: '#4A6741', meaning: 'Vert forêt — croissance, vie, renouveau',   origin: 'Plantes indigo',     css: '--avs-ndop'       },
+      { name: 'kente-ivory',   hex: '#F5EBE0', meaning: 'Ivoire — pureté rituelle, lumière douce',   origin: 'Coton blanchi',      css: '--avs-secondary'  },
     ],
   },
   {
@@ -62,10 +64,11 @@ const PALETTES: Palette[] = [
     description: 'Teintes profondes du tissu sacré Bamoum — indigo cosmos, or raphia, ivoire rituel.',
     patternCSS: 'avs-pattern-ndop-sultan',
     tokens: [
-      { name: 'ndop-indigo', hex: '#0D2340', meaning: 'Indigo cosmos — eaux primordiales, infini', origin: 'Indigo de Foumban',  css: '--ndop-indigo'  },
-      { name: 'ndop-raffia', hex: '#C8A96E', meaning: 'Or raphia — richesse naturelle, soleil',    origin: 'Fibre de palmier',  css: '--avs-raffia'   },
-      { name: 'ndop-ivory',  hex: '#F5EBE0', meaning: 'Ivoire — pureté, paix, ancêtres',           origin: 'Ivoire végétal',    css: '--avs-secondary'},
-      { name: 'ndop-royal',  hex: '#2A4A6B', meaning: 'Bleu royal — autorité, ciel, puissance',    origin: 'Teinture naturelle',css: '--avs-indigo'   },
+      { name: 'ndop-indigo',   hex: '#0D2340', meaning: 'Indigo cosmos — eaux primordiales, infini', origin: 'Indigo de Foumban',  css: '--ndop-indigo'  },
+      { name: 'ndop-raffia',   hex: '#C8A96E', meaning: 'Or raphia — richesse naturelle, soleil',    origin: 'Fibre de palmier',  css: '--avs-raffia'   },
+      { name: 'ndop-ivory',    hex: '#F5EBE0', meaning: 'Ivoire — pureté, paix, ancêtres',           origin: 'Ivoire végétal',    css: '--avs-secondary'},
+      { name: 'ndop-royal',    hex: '#2A4A6B', meaning: 'Bleu royal — autorité, ciel, puissance',    origin: 'Teinture naturelle',css: '--avs-indigo'   },
+      { name: 'ndop-nile',     hex: '#A8CCCC', meaning: 'Eau du Nil — apaisement, fluidité, vie',    origin: 'Pigment de Foumban',css: '--avs-nile'     },
     ],
   },
   {
@@ -74,10 +77,41 @@ const PALETTES: Palette[] = [
     description: 'Ocres, siennas et terres minérales extraits des pigments naturels du continent.',
     patternCSS: 'avs-pattern-bogolan-fanga',
     tokens: [
-      { name: 'earth-sienna', hex: '#8B4513', meaning: 'Sienna brûlée — sol fertile, ancrage',     origin: 'Argile du Sahel',   css: '--avs-earth'    },
-      { name: 'earth-ochre',  hex: '#C8821A', meaning: 'Ocre chaude — lumière rasante, crépuscule', origin: 'Oxyde de fer',      css: '--earth-ochre'  },
-      { name: 'earth-sand',   hex: '#E8C99A', meaning: 'Sable doré — Sahara, voyage, ouverture',   origin: 'Dunes sahariennes', css: '--earth-sand'   },
-      { name: 'earth-baobab', hex: '#5C3317', meaning: 'Écorce de baobab — durée, mémoire',        origin: 'Bois de baobab',    css: '--earth-baobab' },
+      { name: 'earth-sienna',  hex: '#8B4513', meaning: 'Sienna brûlée — sol fertile, ancrage',      origin: 'Argile du Sahel',   css: '--avs-earth'    },
+      { name: 'earth-ochre',   hex: '#C8821A', meaning: 'Ocre chaude — lumière rasante, crépuscule',  origin: 'Oxyde de fer',      css: '--earth-ochre'  },
+      { name: 'earth-sand',    hex: '#E8C99A', meaning: 'Sable doré — Sahara, voyage, ouverture',     origin: 'Dunes sahariennes', css: '--earth-sand'   },
+      { name: 'earth-baobab',  hex: '#5C3317', meaning: 'Écorce de baobab — durée, mémoire',          origin: 'Bois de baobab',    css: '--earth-baobab' },
+      { name: 'earth-clay',    hex: '#D4A882', meaning: 'Argile pâle — douceur, construction, foyer', origin: 'Latérite du Sahel', css: '--earth-clay'   },
+    ],
+  },
+  {
+    // Palette 5 — inspirée du Dictionnaire de combinaisons de couleurs (Seigensha)
+    // Combinaisons 025 + 026 + 065 : rouge étrusque, bleu Nil, jaune sulfin, ocre doré
+    id: 'seigensha-warm', name: 'Contraste Chaud', origin: 'Seigensha · Combinaisons',
+    accentClass: 'text-avs-etruscan', accentHex: '#B84A36',
+    description: 'Harmonie chaude tirée du Dictionnaire de combinaisons de couleurs — rouge étrusque, bleu Nil, or sulfin, ocre de palmier.',
+    patternCSS: 'avs-pattern-wax-dakar',
+    tokens: [
+      { name: 'sg-etruscan',   hex: '#B84A36', meaning: 'Rouge étrusque — force, feu, caractère',    origin: 'Dict. comb. #025',  css: '--avs-etruscan'  },
+      { name: 'sg-nile-blue',  hex: '#BDD8DC', meaning: 'Bleu Nil — repos, eau, horizon serein',     origin: 'Dict. comb. #025',  css: '--avs-nile-blue' },
+      { name: 'sg-umber',      hex: '#6B3A1F', meaning: 'Ombre brûlée — terre, profondeur, racines', origin: 'Dict. comb. #026',  css: '--avs-umber'     },
+      { name: 'sg-golden',     hex: '#D4881A', meaning: 'Jaune doré — lumière, chaleur, récolte',    origin: 'Dict. comb. #026',  css: '--avs-golden'    },
+      { name: 'sg-sulphine',   hex: '#C8B020', meaning: 'Jaune sulfin — éclat, vitalité, savane',   origin: 'Dict. comb. #065',  css: '--avs-sulphine'  },
+    ],
+  },
+  {
+    // Palette 6 — inspirée du Dictionnaire de combinaisons de couleurs (Seigensha)
+    // Combinaisons 066 + 106 + 289 : olive, ocre, violet, indigo, vert-jaune
+    id: 'seigensha-deep', name: 'Profondeur & Contraste', origin: 'Seigensha · Combinaisons',
+    accentClass: 'text-avs-olive', accentHex: '#5A6320',
+    description: 'Profondeur tonale du Dictionnaire Seigensha — olive sacré, indigo nuit, ocre jaune et vert chartreuse.',
+    patternCSS: 'avs-pattern-ndop-sultan',
+    tokens: [
+      { name: 'sg-olive',      hex: '#5A6320', meaning: 'Vert olive — maturité, ancrage, équilibre',  origin: 'Dict. comb. #066',  css: '--avs-olive'     },
+      { name: 'sg-ocher',      hex: '#C8A020', meaning: 'Ocre olive — chaleur sèche, steppe, soleil', origin: 'Dict. comb. #066',  css: '--avs-ocher'     },
+      { name: 'sg-violet-nuit',hex: '#1A1440', meaning: 'Violet nuit — cosmos, mystère, infini',      origin: 'Dict. comb. #106',  css: '--avs-violet-nuit'},
+      { name: 'sg-antwarp',    hex: '#2070B8', meaning: 'Bleu Antwarp — clarté, confiance, mer',      origin: 'Dict. comb. #106',  css: '--avs-antwarp'   },
+      { name: 'sg-chartreuse', hex: '#B8C018', meaning: 'Vert chartreuse — fraîcheur, nature, espoir',origin: 'Dict. comb. #289',  css: '--avs-chartreuse'},
     ],
   },
 ];
@@ -345,6 +379,7 @@ export default function ColorsPage() {
                 { v: `${PALETTES.length}`,                                   l: 'palettes' },
                 { v: `${PALETTES.reduce((a, p) => a + p.tokens.length, 0)}`, l: 'couleurs' },
                 { v: '3',                                                     l: 'formats'  },
+                { v: '2',                                                     l: 'sources'  },
               ].map(({ v, l }) => (
                 <div key={l} className="rounded-xl px-4 py-3 text-center bg-avs-secondary border border-avs-accent/9">
                   <p className="font-display text-2xl font-black leading-none text-avs-accent" style={{ letterSpacing: '-0.02em' }}>{v}</p>
