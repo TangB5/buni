@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search,
@@ -15,6 +16,7 @@ import {
   Info,
   Star,
   Eye,
+  Share2,
 } from 'lucide-react';
 
 import {
@@ -22,8 +24,8 @@ import {
   PatternSymbol,
   
 } from '@buni/patterns';
+import { useToast } from '@buni/ui';
 import { PATTERNS_DOCS } from './mock';
-import { PatternReplacer } from '@/features/patterns/components/SvgPatternDisplay';
 import { patternRepository } from '@/features/patterns/repositories/pattern.repository';
 
 
@@ -42,6 +44,43 @@ const SECTIONS = [
 ] as const;
 
 type SectionId = (typeof SECTIONS)[number]['id'];
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PATTERN DISPLAY HELPER
+// ─────────────────────────────────────────────────────────────────────────────
+
+const CSS_CLASS_FALLBACK: Record<string, string> = {
+  'avs-pattern-adinkra-default': 'avs-pattern-adinkra-sankofa',
+  'avs-pattern-kente-default': 'avs-pattern-kente-royale',
+  'avs-pattern-ndop-default': 'avs-pattern-ndop-sultan',
+  'avs-pattern-bogolan-default': 'avs-pattern-bogolan-fanga',
+  'avs-pattern-wax-default': 'avs-pattern-wax-dakar',
+};
+
+function getPatternBackground(pattern: Pattern): React.CSSProperties | undefined {
+  // Priority 1: Use imgUrl if available
+  if (pattern.imgUrl && pattern.imgUrl.trim()) {
+    return {
+      backgroundImage: `url('${pattern.imgUrl}')`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+    };
+  }
+  
+  // Priority 2: Use CSS class (with fallback if needed)
+  // Don't need to return styles; CSS class will be applied via className
+  return undefined;
+}
+
+function getPatternCSSClass(cssClass: string): string {
+  // Try direct mapping first
+  if (CSS_CLASS_FALLBACK[cssClass]) {
+    return CSS_CLASS_FALLBACK[cssClass];
+  }
+  // If it's already a known class, use it
+  return cssClass || 'avs-pattern-wax-dakar';
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // COPY BUTTON
@@ -71,6 +110,44 @@ function CopyBtn({ text, label }: { text: string; label?: string }) {
     >
       {copied ? <Check size={9} /> : <Copy size={9} />}
       {copied ? 'Copié !' : (label ?? text)}
+    </button>
+  );
+}
+
+function ShareBtn({ pattern }: { pattern: Pattern }) {
+  const { add: addToast } = useToast();
+
+  const handleShare = async () => {
+    const url = `${typeof window !== 'undefined' ? window.location.origin : ''}/patterns?pattern=${pattern.id}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({
+          title: pattern.name,
+          text: pattern.summary,
+          url,
+        });
+      } else {
+        await navigator.clipboard.writeText(url);
+        addToast({ variant: 'success', message: 'Lien copié !' });
+      }
+    } catch (err) {
+      console.error('Share error:', err);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleShare}
+      className="
+        flex items-center gap-1.5
+        rounded-xl px-3 py-2 text-xs font-bold
+        bg-avs-primary/10 text-avs-primary
+        hover:bg-avs-primary/20
+        transition-all duration-200
+      "
+      title="Partager ce motif"
+    >
+      <Share2 size={11} /> Partager
     </button>
   );
 }
@@ -146,7 +223,7 @@ function PatternSheet({ pattern }: { pattern: Pattern }) {
     >
       {/* ── Cover ────────────────────────────────────────────────────── */}
       <div className="relative h-52 bg-avs-secondary-dark overflow-hidden">
-        <PatternReplacer cssClass={pattern.cssClass} className="absolute inset-0" />
+        <div className={`${pattern.cssClass} absolute inset-0`} />
         
         <div className="absolute inset-0 bg-linear-to-b from-black/20 to-black/5" />
 
@@ -186,19 +263,22 @@ function PatternSheet({ pattern }: { pattern: Pattern }) {
 
             <div className="flex shrink-0 flex-col items-end gap-2 pt-1">
               <CopyBtn text={`.${pattern.cssClass}`} label="Copier classe CSS" />
-              <button className="
-                group relative flex items-center gap-1.5 overflow-hidden
-                rounded-xl px-4 py-2 text-xs font-bold
-                bg-avs-primary text-avs-secondary
-                shadow-avs-sm hover:shadow-avs-md
-                hover:-translate-y-0.5 transition-all duration-200
-              ">
-                <span
-                  className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full"
-                  aria-hidden
-                />
-                <Download size={11} /> SVG
-              </button>
+              <div className="flex gap-2">
+                <ShareBtn pattern={pattern} />
+                <button className="
+                  group relative flex items-center gap-1.5 overflow-hidden
+                  rounded-xl px-4 py-2 text-xs font-bold
+                  bg-avs-primary text-avs-secondary
+                  shadow-avs-sm hover:shadow-avs-md
+                  hover:-translate-y-0.5 transition-all duration-200
+                ">
+                  <span
+                    className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full"
+                    aria-hidden
+                  />
+                  <Download size={11} /> SVG
+                </button>
+              </div>
             </div>
           </div>
 
@@ -459,27 +539,48 @@ function PatternSheet({ pattern }: { pattern: Pattern }) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function Page() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  
   const [selected, setSelected]     = useState<Pattern | null>(null);
   const [search, setSearch]         = useState('');
   const [activeType, setActiveType] = useState('ALL');
   const [mobileDoc, setMobileDoc]   = useState(false);
   const [patterns, setPatterns]     = useState<Pattern[]>([]);
 
-  // Load patterns from backend
+  // Load patterns: mocks first, then merge with backend
   useEffect(() => {
-
-    const loadPatterns = async () => {
-  try {
-    const patterns = await patternRepository.findAll();
-    setPatterns(patterns);
-  } catch (error) {
-    console.error(error);
+    // Start with mock patterns immediately
     setPatterns(PATTERNS_DOCS);
-  }
-};
+
+    const loadPatternsFromBackend = async () => {
+      try {
+        const backendPatterns = await patternRepository.findAll();
+        // Merge: keep mocks but add backend patterns not already present
+        const mockIds = new Set(PATTERNS_DOCS.map(p => p.id));
+        const newPatterns = backendPatterns.filter(p => !mockIds.has(p.id));
+        setPatterns([...PATTERNS_DOCS, ...newPatterns]);
+      } catch (error) {
+        console.error('Error loading patterns from backend:', error);
+        // Keep mocks only if backend fails
+        setPatterns(PATTERNS_DOCS);
+      }
+    };
     
-    loadPatterns();
+    loadPatternsFromBackend();
   }, []);
+
+  // Handle pattern from URL params
+  useEffect(() => {
+    const patternId = searchParams.get('pattern');
+    if (patternId && patterns.length > 0) {
+      const found = patterns.find(p => p.id === patternId);
+      if (found) {
+        setSelected(found);
+        setMobileDoc(true);
+      }
+    }
+  }, [searchParams, patterns]);
 
   const filtered = patterns.filter((p) => {
     const q = search.toLowerCase();
@@ -496,6 +597,8 @@ export default function Page() {
   const handleSelect = (p: Pattern) => {
     setSelected(p);
     setMobileDoc(true);
+    
+    router.push(`/patterns?pattern=${p.id}`, { scroll: false });
   };
 
   return (
@@ -631,9 +734,8 @@ export default function Page() {
                     `}
                   >
                     <div className="flex items-center gap-3 px-4 py-3.5">
-                      <PatternReplacer
-                        cssClass={p.cssClass}
-                        className="relative h-11 w-11 shrink-0 overflow-hidden rounded-xl ring-1 ring-black/10 dark:ring-white/10 transition-transform duration-300 group-hover:scale-105"
+                      <div
+                        className={`${p.cssClass} relative h-11 w-11 shrink-0 overflow-hidden rounded-xl ring-1 ring-black/10 dark:ring-white/10 transition-transform duration-300 group-hover:scale-105`}
                       />
                       
                       <div className="min-w-0 flex-1">

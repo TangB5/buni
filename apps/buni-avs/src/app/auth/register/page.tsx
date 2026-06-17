@@ -7,7 +7,8 @@ import { Eye, EyeOff, AlertCircle, Check, ArrowRight, User, Mail, Lock, ChevronD
 import { BuniLoader } from '@buni/ui';
 import { z } from 'zod';
 import { Route } from 'next';
-import { useRegister } from 'apps/buni-avs/src/features/auth/hooks/useRegister';
+import { useRegister } from '@/features/auth/hooks/useRegister';
+
 
 // ─────────────────────────────────────────────────────────────────────────────
 // VALIDATION

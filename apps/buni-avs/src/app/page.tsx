@@ -35,19 +35,13 @@ const MARQUEE_ITEMS = [
   'NDEBELE','BERBER','TOGHU','RAPHIA','MAASAI','ANKARA',
 ];
 
-const COLLAGE = [
-  { css: 'avs-pattern-ndop-sultan',    type: 'NDOP',    name: 'Ndop Sultan',    origin: 'Foumban · CM', style: { left:'5%',    top:'5%',    width:'56%', height:'52%', rotate:'-2deg'  } },
-  { css: 'avs-pattern-kente-royale',   type: 'KENTE',   name: 'Kente Royale',   origin: 'Kumasi · GH',  style: { right:'0',    top:'8%',    width:'40%', height:'36%', rotate:'1.5deg' } },
-  { css: 'avs-pattern-wax-dakar',      type: 'WAX',     name: 'Wax Lagos',      origin: 'Lagos · NG',   style: { right:'4%',   top:'48%',   width:'42%', height:'30%', rotate:'-1deg'  } },
-  { css: 'avs-pattern-bogolan-fanga',  type: 'BOGOLAN', name: 'Bogolan Fanga',  origin: 'Ségou · ML',   style: { left:'0',     bottom:'5%', width:'50%', height:'28%', rotate:'2deg'   } },
-] as const;
 
 const GALLERY = [
-  { css: 'avs-pattern-ndop-sultan',       type: 'NDOP',    name: 'Ndop Sultan',    origin: 'Foumban · CM', slug: 'ndop-bamoum',      cls: 'lg:col-span-3 lg:row-span-2' },
-  { css: 'avs-pattern-kente-royale',      type: 'KENTE',   name: 'Kente Royale',   origin: 'Kumasi · GH',  slug: 'kente-asante',     cls: 'lg:col-span-2'               },
-  { css: 'avs-pattern-adinkra-sankofa',   type: 'ADINKRA', name: 'Adinkra Sankofa',origin: 'Akan · GH',    slug: 'adinkra-akan', cls: ''                            },
-  { css: 'avs-pattern-kuba-kasai',        type: 'KUBA',    name: 'Kuba Kasai',     origin: 'Kasai · CD',   slug: 'kuba-kasai',      cls: ''                            },
-  { css: 'avs-pattern-bogolan-fanga',     type: 'BOGOLAN', name: 'Bogolan Fanga',  origin: 'Ségou · ML',   slug: 'bogolan-malien',   cls: 'lg:col-span-2'               },
+  { cssClass: 'avs-pattern-ndop-sultan',       type: 'NDOP',    name: 'Ndop Sultan',    origin: 'Foumban · CM', slug: 'ndop-bamoum',      cls: 'lg:col-span-3 lg:row-span-2' },
+  { cssClass: 'avs-pattern-kente-royale',      type: 'KENTE',   name: 'Kente Royale',   origin: 'Kumasi · GH',  slug: 'kente-asante',     cls: 'lg:col-span-2'               },
+  { cssClass: 'avs-pattern-adinkra-sankofa',   type: 'ADINKRA', name: 'Adinkra Sankofa',origin: 'Akan · GH',    slug: 'adinkra-akan', cls: ''                            },
+  { cssClass: 'avs-pattern-kuba-kasai',        type: 'KUBA',    name: 'Kuba Kasai',     origin: 'Kasai · CD',   slug: 'kuba-kasai',      cls: ''                            },
+  { cssClass: 'avs-pattern-bogolan-fanga',     type: 'BOGOLAN', name: 'Bogolan Fanga',  origin: 'Ségou · ML',   slug: 'bogolan-malien',   cls: 'lg:col-span-2'               },
 ] as const;
 
 // Features use AVS tokens via inline accentClass/bgClass to avoid hardcoded hex
@@ -266,6 +260,7 @@ export default function HomePage() {
 
         {/* ══ § 3 — GALLERY ═══════════════════════════════════════════════ */}
         <section aria-labelledby="gallery-title" className="px-6 py-20 lg:px-8 bg-avs-secondary-dark">
+          
           <div className="mx-auto max-w-7xl">
             <div className="mb-8 flex items-center justify-between">
               <SectionLabel label="Patrimoine · Motifs en vedette" />
@@ -284,10 +279,10 @@ export default function HomePage() {
               variants={stagger}
               className="grid grid-cols-2 gap-2 lg:grid-cols-6 lg:grid-rows-2"
             >
-              {GALLERY.map(({ css, type, name, origin, slug, cls }, i) => (
+              {GALLERY.map(({ cssClass, type, name, origin, slug, cls }, i) => (
                 <Link
                   key={name}
-                  href={`/patterns/${slug}` as Route}
+                  href={`/patterns?pattern=${slug}` as Route}
                   className={`group relative overflow-hidden rounded-2xl block ${cls}`}
                   style={{ minHeight: i === 0 ? '380px' : '165px' }}
                 >
@@ -297,7 +292,7 @@ export default function HomePage() {
                     transition={{ type: 'spring', stiffness: 320, damping: 26 }}
                     className="h-full"
                   >
-                    <div className={`${css} absolute inset-0 transition-transform duration-700 group-hover:scale-[1.06]`} />
+                    <div className={`${cssClass} absolute inset-0 transition-transform duration-700 group-hover:scale-[1.06]`} />
                     {/* Dark-to-transparent gradient — justified inline: complex multi-stop positional gradient */}
                     <div
                       className="absolute inset-0"
