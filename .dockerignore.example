@@ -1,0 +1,65 @@
+# Copy this to .dockerignore if you need to customize it
+# This is a reference of all possible exclusions
+
+# Build artifacts
+.next
+dist
+build
+*.tsbuildinfo
+
+# Version control
+.git
+.gitignore
+.gitattributes
+.github
+
+# Dependencies (optional - can slow builds if excluded)
+node_modules
+pnpm-lock.yaml
+package-lock.json
+npm-shrinkwrap.json
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+.vim
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation
+docs
+documentation
+*.md
+LICENSE
+
+# Tools and config
+tools
+.nx
+.husky
+lint-staged
+.prettier*
+.eslint*
+
+# Testing
+__tests__
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+.playwright
+coverage
+cypress
+
+# Misc
+README.md
+BUNI_AUTHENTICATION_GUIDE.md
+.editorconfig

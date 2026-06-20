@@ -14,4 +14,6 @@ coverage
 .storybook-out
 FINAL_STATUS.md
 documentation.md
-documentation/*
+documentation/*compose.override.yaml
+/documentation
+compose.override.yaml

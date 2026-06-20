@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - APP=buni-avs
+        - NODE_VERSION=20.13.0
+    container_name: buni-web-dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:3001
+      - DEBUG=*
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - buni-network
+    depends_on:
+      api:
+        condition: service_started
+
+  api:
+    image: node:20.13.0-slim
+    container_name: buni-api-dev
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./services:/app/services
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - DEBUG=*
+    restart: on-failure
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    networks:
+      - buni-network
+    command: node services/api/server.js
+
+networks:
+  buni-network:
+    driver: bridge
