@@ -74,14 +74,16 @@ async unfeature(id: string) {
 async publish(id: string) {
 
   return post<{ data: PatternDto }>(
-    `/api/v1/patterns/${id}/publish`
+    `/api/v1/patterns/${id}/status`,
+    { status: 'published' }
   );
 },
 
 async unpublish(id: string) {
 
   return post<{ data: PatternDto }>(
-    `/api/v1/patterns/${id}/unpublish`
+    `/api/v1/patterns/${id}/status`,
+    { status: 'draft' }
   );
 },
 

@@ -1,8 +1,9 @@
 'use client';
 
 import { Check, Upload, X } from 'lucide-react';
-import type { Step3Data, PatternColor, PatternSymbol, ArtisanQuote, FieldErrors } from '../../types';
 import { Field, StepTitle, AddRowBtn } from '../Patternform.primitives';
+import { FieldErrors, Step3Data } from '../../types';
+import { PatternColor, PatternSymbol } from '@buni/patterns';
 
 interface Step3Props {
   data: Partial<Step3Data>;

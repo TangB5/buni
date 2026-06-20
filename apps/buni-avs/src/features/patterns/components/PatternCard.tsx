@@ -6,8 +6,9 @@ import { motion } from 'framer-motion';
 import { MapPin, Download, Eye } from 'lucide-react';
 
 import type { Pattern } from '../types';
-import { Badge, cn } from 'apps/buni-avs/src/components/ui';
+import { Badge, cn } from '@/components/ui';
 import { CSS_PATTERN_MAP } from '@buni/patterns';
+import { Route } from 'next';
 
 
 interface PatternCardProps {
@@ -33,7 +34,7 @@ export function PatternCard({ pattern, index = 0, featured = false, className }:
         className
       )}
     >
-      <Link href={`/patterns/${pattern.slug}`} aria-label={`Voir le motif ${pattern.localName ?? pattern.name}`}>
+      <Link href={`/patterns/${pattern.slug}` as Route} aria-label={`Voir le motif ${pattern.localName ?? pattern.name}`}>
 
         {/* Visuel */}
         <div className={cn('relative overflow-hidden', featured ? 'h-52' : 'h-44')}>

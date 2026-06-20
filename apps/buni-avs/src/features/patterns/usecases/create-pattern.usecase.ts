@@ -1,6 +1,7 @@
 import { patternRepository } from '../repositories/pattern.repository';
 import { toFormData, toCreatePayload } from '../mappers/pattern.mapper';
-import type { Pattern, Step1Data, Step2Data, Step3Data, PatternSymbol } from '../types';
+import type { Pattern, Step1Data, Step2Data, Step3Data} from '../types';
+import { PatternSymbol } from '@buni/patterns';
 
 export class CreatePatternError extends Error {
   constructor(

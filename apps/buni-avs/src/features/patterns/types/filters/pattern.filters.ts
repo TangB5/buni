@@ -1,5 +1,5 @@
-import { PatternType } from "packages/patterns/dist";
-import { RegionType } from "..";
+import { PatternType, RegionType } from "@buni/patterns";
+
 
 export interface PatternFilters {
   search?: string;

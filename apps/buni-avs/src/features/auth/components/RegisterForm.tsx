@@ -12,7 +12,7 @@ export function RegisterForm() {
     email: '',
     password: '',
     name: '',
-    role: 'VIEWER' as const,
+    role: 'viewer' as const,
   });
 
   const handleSubmit = (e: React.FormEvent) => {

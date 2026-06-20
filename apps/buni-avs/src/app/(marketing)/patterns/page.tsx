@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -75,8 +75,9 @@ function getPatternBackground(pattern: Pattern): React.CSSProperties | undefined
 
 function getPatternCSSClass(cssClass: string): string {
   // Try direct mapping first
+
   if (CSS_CLASS_FALLBACK[cssClass]) {
-    return CSS_CLASS_FALLBACK[cssClass];
+    return CSS_CLASS_FALLBACK[cssClass] as string;
   }
   // If it's already a known class, use it
   return cssClass || 'avs-pattern-wax-dakar';
@@ -538,7 +539,7 @@ function PatternSheet({ pattern }: { pattern: Pattern }) {
 // PAGE  ← fonction manquante, c'était la cause du bug
 // ─────────────────────────────────────────────────────────────────────────────
 
-export default function Page() {
+function PatternsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   
@@ -822,6 +823,14 @@ export default function Page() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Chargement...</div>}>
+      <PatternsContent />
+    </Suspense>
   );
 }
 
