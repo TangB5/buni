@@ -33,8 +33,8 @@ const CONTACT_CHANNELS = [
   {
     icon:    Mail,
     label:   'Email général',
-    value:   'hello@avs-standard.com',
-    href:    'mailto:hello@avs-standard.com',
+    value:   'buni@avs-standard.com',
+    href:    'mailto:buni@avs-standard.com',
     pattern: 'avs-pattern-wax-dakar',
     accentClass: 'text-avs-primary',
     bgClass:     'bg-avs-primary/8',
@@ -51,7 +51,7 @@ const CONTACT_CHANNELS = [
   {
     icon:    MapPin,
     label:   'Basé à',
-    value:   'Dakar · Yaoundé · Accra',
+    value:   'Douala-bonamoussadi',
     href:    undefined,
     pattern: 'avs-pattern-ndop-sultan',
     accentClass: 'text-avs-ndop',

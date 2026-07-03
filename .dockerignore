@@ -1,55 +1,16 @@
-# Build artifacts
+# Dépendances locales (Docker va installer les siennes)
+node_modules
+**/node_modules
+
+# Caches et builds locaux à ne pas envoyer
 .next
+**/.next
 dist
 build
+.turbo
 
-# Version control
+# Fichiers système et Git
 .git
 .gitignore
-.gitattributes
-
-# Dependencies
-node_modules
-pnpm-lock.yaml
-package-lock.json
-npm-shrinkwrap.json
-
-# Environment
-.env
-.env.local
-.env.*.local
-
-# IDE
-.vscode
-.idea
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Documentation
-docs
-documentation
-*.md
-LICENSE
-
-# Tools
-tools
-.nx
-.husky
-lint-staged
-
-# Testing
-__tests__
-*.test.ts
-*.test.tsx
-*.spec.ts
-*.spec.tsx
-.playwright
-coverage
-
-# Misc
+.dockerignore
 README.md
-BUNI_AUTHENTICATION_GUIDE.md

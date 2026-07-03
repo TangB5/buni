@@ -13,8 +13,8 @@ interface Step4Props {
 
 export function Step4({ step1, step2, step3, errors }: Step4Props) {
   const rows = [
-    { label: 'Nom FR',    value: step1.nameFr },
     { label: 'Nom EN',    value: step1.nameEn },
+    { label: 'Nom Local', value: step1.nameLocal },
     { label: 'Type',      value: step1.patternType?.toUpperCase() },
     { label: 'Région',    value: step1.region },
     { label: 'Pays',      value: step1.country },

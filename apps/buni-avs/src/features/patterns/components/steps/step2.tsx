@@ -36,27 +36,6 @@ export function Step2({
         <CharCount value={data.summary ?? ''} max={FIELD_LIMITS.summary} />
       </Field>
 
-      <Field label="Description (français)" error={errors['descFr']} required>
-        <textarea
-          rows={4}
-          className="avs-input resize-none"
-          value={data.descFr ?? ''}
-          onChange={(e) => onChange({ descFr: e.target.value })}
-          placeholder="Décrivez l'histoire et le contexte culturel du motif en français…"
-        />
-        <CharCount value={data.descFr ?? ''} max={FIELD_LIMITS.descFr} />
-      </Field>
-
-      <Field label="Description (anglais)" error={errors['descEn']} required>
-        <textarea
-          rows={4}
-          className="avs-input resize-none"
-          value={data.descEn ?? ''}
-          onChange={(e) => onChange({ descEn: e.target.value })}
-          placeholder="Describe the history and cultural context in English…"
-        />
-      </Field>
-
       <Field label="Histoire" error={errors['history']} required>
         <textarea
           rows={3}

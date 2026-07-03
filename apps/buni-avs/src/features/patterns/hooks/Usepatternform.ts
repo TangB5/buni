@@ -57,7 +57,6 @@ export function usePatternForm(initialPattern?: Pattern) {
     if (initialPattern) {
       setStep1({
         patternType: initialPattern.type,
-        nameFr: initialPattern.name || '',
         nameLocal: initialPattern.localName || '',
         nameEn: initialPattern.nameEn || '',
         region: initialPattern.origin?.region || '',
@@ -65,7 +64,7 @@ export function usePatternForm(initialPattern?: Pattern) {
         people: initialPattern.origin?.people,
         flag: initialPattern.origin?.flag,
         coords: initialPattern.origin?.coords,
-        license: initialPattern.license,
+        license: (initialPattern.license === 'proprietary' ? 'cc-by' : initialPattern.license) as Step1Data['license'],
       });
 
       setStep2({
@@ -76,8 +75,6 @@ export function usePatternForm(initialPattern?: Pattern) {
         technique: initialPattern.technique || '',
         ceremonial: initialPattern.ceremonial || '',
         symbolMeaning: initialPattern.symbolism?.meaning || '',
-        descFr: '',
-        descEn: '',
       });
 
       setStep3({

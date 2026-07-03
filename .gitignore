@@ -17,3 +17,4 @@ documentation.md
 documentation/*compose.override.yaml
 /documentation
 compose.override.yaml
+.pnpm-store/v11

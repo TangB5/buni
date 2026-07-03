@@ -38,6 +38,18 @@
     color: var(--color-dark-text);
   }
 
+  /* Couleurs AVS dynamiques pour le mode sombre */
+  html.dark {
+    --color-avs-primary: #E8755C;
+    --color-avs-secondary: #1A1916 ;
+    --color-avs-accent: #F5EBE0;
+    --color-avs-kente: #E8B828;
+    --color-avs-ndop: #5C7F52;
+    --color-avs-indigo: #3D5D7E;
+    --color-avs-earth: #A05523;
+    --color-avs-raffia: #D4BC7E;
+  }
+
   h1,
   h2,
   h3,

@@ -3,8 +3,6 @@ import { UploadablePatternSymbol } from "../uploads/pattern.upload";
 import { LicenseType, SymbolUsageType } from "../../constants/pattern.constants";
 
 export interface Step1Data {
-  nameFr: string;
-
   nameLocal: string;
 
   nameEn: string;
@@ -29,10 +27,6 @@ export interface Step1Data {
 }
 
 export interface Step2Data {
-  descFr: string;
-
-  descEn: string;
-
   summary: string;
 
   history: string;
@@ -78,13 +72,11 @@ export interface PatternFormState {
 
 export interface CreatePatternPayload {
   // Step 1
-  nameFr: string;
-
   nameEn: string;
 
   nameLocal: string;
 
-  type: PatternType;
+  patternType: PatternType;
 
   region: RegionType;
 
@@ -103,10 +95,6 @@ export interface CreatePatternPayload {
   era?: string;
 
   // Step 2
-  descFr: string;
-
-  descEn: string;
-
   summary: string;
 
   history: string;

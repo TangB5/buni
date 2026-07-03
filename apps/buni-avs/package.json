@@ -2,10 +2,6 @@
   "name": "@buni/buni-avs",
   "version": "0.0.1",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*" 
-  ],
   "scripts": {
     "dev":       "next dev",
     "build":     "next build",
@@ -14,13 +10,14 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@buni/ui":        "workspace:*", 
+    "@buni/ui":        "workspace:*",
     "@buni/tokens":    "workspace:*",
     "@buni/patterns":  "workspace:*",
     "@buni/auth":      "workspace:*",
     "@buni/api":       "workspace:*",
     "@buni/analytics": "workspace:*",
     "@buni/utils":     "workspace:*",
-    "@buni/config":    "workspace:*"
+    "@buni/config":    "workspace:*",
+    "@buni/theme":     "workspace:*"
   }
 }

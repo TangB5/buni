@@ -1,7 +1,8 @@
 'use client';
 
 import type { Step1Data, FieldErrors } from '../../types';
-import { PATTERN_TYPES, REGIONS, PATTERN_LICENSES,PatternType } from '@buni/patterns';
+import { PATTERN_TYPES, REGIONS,  } from '@buni/patterns';
+import { LICENSES } from '../../constants/pattern.constants';
 import { Field, PillBtn, SelectField, StepTitle } from '../Patternform.primitives';
 
 interface Step1Props {
@@ -17,15 +18,6 @@ export function Step1({ data, errors, onChange }: Step1Props) {
 
       {/* Names */}
       <div className="grid gap-5 sm:grid-cols-2">
-        <Field label="Nom (français)" error={errors['nameFr']} required>
-          <input
-            className="avs-input"
-            value={data.nameFr ?? ''}
-            onChange={(e) => onChange({ nameFr: e.target.value })}
-            placeholder="Ndop Royal Bamoum"
-          />
-        </Field>
-
         <Field label="Nom local" error={errors['nameLocal']} required>
           <input
             className="avs-input"
@@ -46,7 +38,7 @@ export function Step1({ data, errors, onChange }: Step1Props) {
 
         <Field label="Licence" error={errors['license']} required>
           <div className="mt-1 flex flex-wrap gap-2">
-            {PATTERN_LICENSES.map((l) => (
+            {LICENSES.map((l) => (
               <PillBtn
                 key={l}
                 label={l}

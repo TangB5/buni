@@ -58,5 +58,4 @@ export {
 export { ScrollArea, ScrollBar } from './components/ScrollArea';
 export { BuniLoader } from './components/BuniLoader';
 export { cn } from './utils';
-export { useDarkMode } from '@buni/utils';
-export { ThemeToggle } from './components/theme-toggle';
+export { Comingsoon } from './components/comingsoon';

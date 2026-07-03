@@ -2,6 +2,7 @@
   "name": "@buni/source",
   "version": "0.0.0",
   "license": "MIT",
+  "packageManager": "pnpm@10.0.0",
   "scripts": {},
   "private": true,
   "devDependencies": {
@@ -21,7 +22,7 @@
     "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.58.1",
     "@typescript-eslint/parser": "^8.58.1",
-    "eslint": "^10.2.0",
+    "eslint": "^9.39.4",
     "eslint-config-next": "^16.2.2",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",

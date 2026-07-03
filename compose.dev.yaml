@@ -1,63 +1,42 @@
-version: '3.8'
-
 services:
-  web:
+  # 🚀 1. MODE DÉVELOPPEMENT (Hot Reload + Fast Refresh)
+  web-dev:
     build:
       context: .
       dockerfile: Dockerfile
+      target: installer # 💡 On s'arrête au stade où pnpm et les devDependencies sont prêts
       args:
-        - APP=buni-avs
-        - NODE_VERSION=20.13.0
+        APP: "@buni/buni-avs"
+        APP_DIR: "buni-avs"
+        NODE_VERSION: 22.17.0
     container_name: buni-web-dev
     ports:
       - "3000:3000"
     volumes:
       - .:/app
-      - /app/node_modules
-      - /app/.next
+      - /app/node_modules # Protège les packages installés dans le conteneur
+      - /app/apps/buni-avs/.next # Évite les conflits de cache Next.js local/conteneur
     environment:
-      - NODE_ENV=development
-      - NEXT_PUBLIC_API_URL=http://localhost:3001
-      - DEBUG=*
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://host.docker.internal:4000
+      DEBUG: "*"
+    command: pnpm --filter @buni/buni-avs dev # 💡 Force l'exécution du serveur de dev
     restart: on-failure
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-    networks:
-      - buni-network
-    depends_on:
-      api:
-        condition: service_started
 
-  api:
-    image: node:20.13.0-slim
-    container_name: buni-api-dev
+  # 📦 2. MODE PROD LOCAL (Test de l'image standalone finale)
+  web-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      # 💡 Pas de 'target' ici : on laisse le Dockerfile compiler le build standalone complet
+      args:
+        APP: "@buni/buni-avs"
+        APP_DIR: "buni-avs"
+        NODE_VERSION: 22.17.0
+    container_name: buni-web-prod
     ports:
-      - "3001:3001"
-    volumes:
-      - ./services:/app/services
+      - "3001:3000" 
     environment:
-      - NODE_ENV=development
-      - PORT=3001
-      - DEBUG=*
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: http://host.docker.internal:4000
     restart: on-failure
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "3"
-    networks:
-      - buni-network
-    command: node services/api/server.js
-
-networks:
-  buni-network:
-    driver: bridge

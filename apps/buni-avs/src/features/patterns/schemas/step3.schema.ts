@@ -15,6 +15,7 @@ const SymbolSchema = z.object({
   meaning:    z.string().min(1, 'Signification requise'),
   usage:      z.string().min(1, 'Usage requis'),
   sacred:     z.boolean(),
+  imageUrl:   z.string().url('Invalid image URL').optional(),
   // File is validated at runtime, not by Zod (browser File API)
   image:      z.instanceof(File).optional(),
 });

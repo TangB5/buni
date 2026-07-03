@@ -61,7 +61,7 @@ export function LivePreviewSidebar({
           )}
 
           <p className="font-display text-sm font-bold leading-tight tracking-tight text-avs-accent">
-            {step1.nameFr || (
+            {step1.nameEn || (
               <span className="text-avs-accent/30">Nom du motif</span>
             )}
           </p>
@@ -75,7 +75,7 @@ export function LivePreviewSidebar({
           )}
 
           <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-avs-accent/60">
-            {step2.descFr || (
+            {step2.summary || (
               <span className="text-avs-accent/25">Description apparaîtra ici…</span>
             )}
           </p>

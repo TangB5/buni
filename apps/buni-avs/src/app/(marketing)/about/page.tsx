@@ -48,13 +48,80 @@ const TEAM = [
   { name: 'Thabo Mokoena',    role: 'Communauté & Partenariats Artisans',   origin: "🇿🇦 Jo'burg", pattern: 'avs-pattern-adinkra-sankofa' },
 ] as const;
 
-const TIMELINE = [
-  { year: '2019', event: 'Première réunion fondatrice à Dakar — 12 chercheurs, 3 pays',    highlight: false },
-  { year: '2020', event: 'Lancement du prototype avec 200 motifs documentés',               highlight: false },
-  { year: '2021', event: 'Partenariats avec 5 musées africains et 3 universités',           highlight: false },
-  { year: '2022', event: 'Version beta publique — 850 motifs, 120 artisans vérifiés',       highlight: false },
-  { year: '2023', event: 'Intégration dans Figma, Tailwind et Adobe Color',                 highlight: false },
-  { year: '2024', event: 'v1.0 — 1 248 motifs, 54 pays, standard ouvert officiel',         highlight: true  },
+// ─────────────────────────────────────────────────────────────────────────────
+// DATA — remplace ton ancien TIMELINE
+// ─────────────────────────────────────────────────────────────────────────────
+// ─────────────────────────────────────────────────────────────────────────────
+// DATA — remplace entièrement ton ancien TIMELINE
+// ─────────────────────────────────────────────────────────────────────────────
+const ROADMAP_PHASES = [
+  {
+    phase: '01',
+    period: '2024 – 2025',
+    status: 'done' as const,
+    title: 'Recherche & cadrage',
+    objective: 'Comprendre le besoin réel avant de coder quoi que ce soit.',
+    metric: '18 mois de recherche terrain',
+    deliverables: [
+      'Entretiens avec artisans et chercheurs pour cartographier les motifs existants',
+      'Veille ethnographique sur les systèmes de classification africains',
+      'Premiers prototypes techniques — formats SVG, structure de tokens',
+      "Définition du modèle de données et de l'architecture du standard",
+    ],
+  },
+  {
+    phase: '02',
+    period: '2026',
+    status: 'now' as const,
+    title: 'Lancement v1.0',
+    objective: 'Sortir un socle solide, documenté et utilisable en production.',
+    metric: '1 248 motifs · 312 artisans vérifiés',
+    deliverables: [
+      'Bibliothèque ouverte de motifs documentés',
+      'Intégrations Figma & Tailwind',
+      'Système de vérification artisan (v1)',
+      'Documentation publique du standard',
+    ],
+  },
+  {
+    phase: '03',
+    period: '2027',
+    status: 'planned' as const,
+    title: 'Consolidation',
+    objective: "Solidifier la qualité et la gouvernance avant d'accélérer.",
+    deliverables: [
+      "Partenariats avec musées et universités d'Afrique centrale",
+      'API publique pour intégrations tierces',
+      'Programme de certification artisan renforcé',
+      'Premiers revenus récurrents — licences et partenariats',
+    ],
+  },
+  {
+    phase: '04',
+    period: '2028',
+    status: 'planned' as const,
+    title: 'Expansion régionale',
+    objective: 'Étendre la couverture géographique et la communauté.',
+    deliverables: [
+      "Couverture Afrique de l'Ouest et Afrique australe",
+      'Gouvernance communautaire — comité consultatif artisans',
+      'Programme de traduction multilingue du standard',
+      'Outils designers — plugin, CLI, API stable',
+    ],
+  },
+  {
+    phase: '05',
+    period: '2029',
+    status: 'planned' as const,
+    title: 'Standard de référence',
+    objective: 'Devenir la référence continentale, reconnue et adoptée.',
+    deliverables: [
+      '54 pays couverts, gouvernance ouverte et transparente',
+      'Adoption par des institutions culturelles majeures',
+      'Modèle de financement pérenne',
+      'Certification officielle « AVS Verified »',
+    ],
+  },
 ] as const;
 
 const NUMBERS = [
@@ -204,83 +271,134 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* ══ § 3 — TIMELINE ════════════════════════════════════════════════ */}
-        <section
-          aria-labelledby="history-title"
-          className="avs-pattern-kente-royale relative overflow-hidden px-4 py-24 sm:px-6 lg:px-8"
+        {/* ══ § 3 — ROADMAP ═════════════════════════════════════════════════ */}
+<section
+  aria-labelledby="history-title"
+  className="avs-pattern-kente-royale relative overflow-hidden px-4 py-28 sm:px-6 lg:px-8"
+>
+  <div className="absolute inset-0 bg-avs-accent/93" aria-hidden />
+  <div
+    className="pointer-events-none absolute inset-0"
+    style={{ background: 'radial-gradient(ellipse 55% 60% at 15% 30%, rgba(192,87,62,0.10) 0%, transparent 70%)' }}
+    aria-hidden
+  />
+
+  <div className="relative mx-auto max-w-5xl">
+    {/* — En-tête — */}
+    <div className="mb-6 text-center">
+      <div className="mb-4 flex items-center justify-center gap-3">
+        <div className="h-px w-8 bg-avs-primary" aria-hidden />
+        <span className="font-mono text-[9px] tracking-[0.26em] uppercase text-avs-primary">
+          Feuille de route 2024–2029
+        </span>
+        <div className="h-px w-8 bg-avs-primary" aria-hidden />
+      </div>
+      <h2
+        id="history-title"
+        className="font-display font-black leading-tight text-avs-secondary"
+        style={{ fontSize: 'clamp(2rem,4vw,3.25rem)', letterSpacing: '-0.025em' }}
+      >
+        De Douala au standard continental
+      </h2>
+      <p className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-avs-secondary/55">
+        Lancé en 2024 depuis Bonamoussadi, Douala — deux ans de terrain avant la première
+        ligne de code publique. Voici le plan, phase par phase.
+      </p>
+    </div>
+
+    {/* — Barre de progression globale — */}
+    <div className="mx-auto mb-16 flex max-w-md items-center gap-1.5" aria-hidden>
+      {ROADMAP_PHASES.map(({ phase, status }) => (
+        <div
+          key={phase}
+          className={`h-1 flex-1 rounded-full ${
+            status === 'done' ? 'bg-avs-primary' : status === 'now' ? 'bg-avs-primary/60' : 'bg-avs-secondary/12'
+          }`}
+        />
+      ))}
+    </div>
+
+    {/* — Phases — */}
+    <ol className="relative space-y-8" aria-label="Phases de la feuille de route AVS">
+      {ROADMAP_PHASES.map(({ phase, period, status, title, objective, metric, deliverables }, i) => (
+        <li
+          key={phase}
+          className="anim-fade-up relative grid gap-5 sm:grid-cols-[88px_1fr]"
+          style={{ animationDelay: `${0.06 + i * 0.08}s` }}
         >
-          {/* Dark overlay — justified inline: opacity level */}
-          <div className="absolute inset-0 bg-avs-accent/92" aria-hidden />
-          {/* Warm ambient — justified inline: radial-gradient */}
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{ background: 'radial-gradient(ellipse 50% 60% at 20% 50%, rgba(192,87,62,0.10) 0%, transparent 70%)' }}
-            aria-hidden
-          />
-
-          <div className="relative mx-auto max-w-4xl">
-            <div className="mb-16 text-center">
-              <div className="mb-4 flex items-center justify-center gap-3">
-                <div className="h-px w-8 bg-avs-primary" aria-hidden />
-                <span className="font-mono text-[9px] tracking-[0.26em] uppercase text-avs-primary">Histoire</span>
-                <div className="h-px w-8 bg-avs-primary" aria-hidden />
-              </div>
-              <h2
-                id="history-title"
-                className="font-display font-black leading-tight text-avs-secondary"
-                style={{ fontSize: 'clamp(2rem,4vw,3.25rem)', letterSpacing: '-0.025em' }}
-              >
-                5 ans de construction
-              </h2>
+          {/* Rail — numéro de phase + connecteur */}
+          <div className="flex sm:flex-col sm:items-center">
+            <div
+              className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 font-mono text-xs font-black ${
+                status === 'now'
+                  ? 'bg-avs-primary border-avs-primary text-avs-secondary tl-dot-active'
+                  : status === 'done'
+                  ? 'border-avs-primary/60 text-avs-primary bg-avs-primary/10'
+                  : 'border-dashed border-avs-primary/35 text-avs-primary/50'
+              }`}
+            >
+              {phase}
             </div>
-
-            <div className="grid gap-x-16 lg:grid-cols-2">
-              {/* Left — first 3 entries */}
-              <ol className="relative space-y-0" aria-label="Chronologie AVS (partie 1)">
-                <div className="absolute left-[7px] top-2 bottom-2 w-px bg-avs-primary/22" aria-hidden />
-                {TIMELINE.slice(0, 3).map(({ year, event, highlight }) => (
-                  <li key={year} className="relative pb-10 pl-9 last:pb-0">
-                    <div
-                      className={`absolute left-0 top-1 h-3.5 w-3.5 rounded-full border-2 ${
-                        highlight
-                          ? 'bg-avs-primary border-avs-primary tl-dot-active'
-                          : 'bg-avs-primary/30 border-avs-primary/50'
-                      }`}
-                      aria-hidden
-                    />
-                    <time className="font-mono text-[10px] font-black tracking-[0.18em] uppercase text-avs-primary">{year}</time>
-                    <p className="mt-1.5 text-sm leading-relaxed text-avs-secondary/65">{event}</p>
-                  </li>
-                ))}
-              </ol>
-
-              {/* Right — last 3 entries */}
-              <ol className="relative mt-10 space-y-0 lg:mt-0" aria-label="Chronologie AVS (partie 2)">
-                <div className="absolute left-[7px] top-2 bottom-2 w-px bg-avs-primary/22" aria-hidden />
-                {TIMELINE.slice(3).map(({ year, event, highlight }) => (
-                  <li key={year} className="relative pb-10 pl-9 last:pb-0">
-                    <div
-                      className={`absolute left-0 top-1 h-3.5 w-3.5 rounded-full border-2 ${
-                        highlight
-                          ? 'bg-avs-primary border-avs-primary tl-dot-active'
-                          : 'bg-avs-primary/30 border-avs-primary/50'
-                      }`}
-                      aria-hidden
-                    />
-                    <time className="font-mono text-[10px] font-black tracking-[0.18em] uppercase text-avs-primary">{year}</time>
-                    <p className="mt-1.5 text-sm leading-relaxed text-avs-secondary/65">{event}</p>
-                    {highlight && (
-                      <span className="mt-2 inline-flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-[9px] font-bold tracking-wide uppercase bg-avs-primary/15 border border-avs-primary/30 text-avs-primary">
-                        <span className="h-1 w-1 rounded-full bg-avs-primary" aria-hidden />
-                        Aujourd&apos;hui
-                      </span>
-                    )}
-                  </li>
-                ))}
-              </ol>
-            </div>
+            {i < ROADMAP_PHASES.length - 1 && (
+              <div
+                className={`mt-2 hidden w-px flex-1 sm:block ${
+                  status === 'done' ? 'bg-avs-primary/30' : 'bg-avs-primary/12'
+                }`}
+                aria-hidden
+              />
+            )}
           </div>
-        </section>
+
+          {/* Carte de contenu */}
+          <div
+            className={`rounded-2xl border p-6 sm:p-7 ${
+              status === 'now'
+                ? 'border-avs-primary/35 bg-avs-primary/[.07]'
+                : 'border-avs-secondary/10 bg-avs-secondary/[.03]'
+            }`}
+          >
+            <div className="flex flex-wrap items-center gap-3">
+              <time className="font-mono text-[10px] font-black tracking-[0.18em] uppercase text-avs-primary">
+                {period}
+              </time>
+              <span
+                className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 font-mono text-[9px] font-bold uppercase tracking-wide ${
+                  status === 'now'
+                    ? 'bg-avs-primary text-avs-secondary'
+                    : status === 'done'
+                    ? 'border border-avs-primary/30 text-avs-primary/80'
+                    : 'border border-avs-secondary/15 text-avs-secondary/40'
+                }`}
+              >
+                {status === 'now' ? "En cours · Aujourd'hui" : status === 'done' ? 'Terminé' : 'Prévu'}
+              </span>
+              {metric && (
+                <span className="font-mono text-[10px] tracking-wide text-avs-secondary/40">{metric}</span>
+              )}
+            </div>
+
+            <h3 className="mt-3 font-display text-xl font-black text-avs-secondary">{title}</h3>
+            <p className="mt-1.5 text-sm leading-relaxed text-avs-secondary/60">{objective}</p>
+
+            <ul className="mt-5 grid gap-2.5 sm:grid-cols-2">
+              {deliverables.map((item) => (
+                <li key={item} className="flex gap-2.5 text-[13px] leading-snug text-avs-secondary/55">
+                  <span
+                    className={`mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full ${
+                      status === 'planned' ? 'bg-avs-secondary/25' : 'bg-avs-primary'
+                    }`}
+                    aria-hidden
+                  />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
 
         {/* ══ § 4 — ÉQUIPE ══════════════════════════════════════════════════ */}
         <section
@@ -338,12 +456,7 @@ export default function AboutPage() {
 
           <div className="relative mx-auto max-w-2xl text-center">
             {/* Eyebrow */}
-            <div className="mb-7 inline-flex items-center gap-2.5 rounded-full border border-avs-primary/28 px-5 py-2 bg-avs-primary/10">
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-avs-primary" aria-hidden />
-              <span className="font-mono text-[9px] tracking-[0.24em] uppercase text-avs-primary">
-                Contribuer au standard
-              </span>
-            </div>
+            
 
             <h2
               id="join-title"

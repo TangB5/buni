@@ -1,16 +1,6 @@
 import { z } from 'zod';
 
 export const Step2Schema = z.object({
-  descFr: z
-    .string()
-    .min(20, 'Minimum 20 caractères')
-    .max(2000, 'Maximum 2000 caractères'),
-
-  descEn: z
-    .string()
-    .min(20, 'Minimum 20 caractères')
-    .max(2000, 'Maximum 2000 caractères'),
-
   summary: z
     .string()
     .min(10, 'Minimum 10 caractères')

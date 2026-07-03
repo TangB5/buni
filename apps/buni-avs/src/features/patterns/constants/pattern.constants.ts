@@ -1,12 +1,24 @@
 // ONLY UI / FORM CONFIG (no domain duplication)
 
-import { REGIONS, PATTERN_TYPES, PatternLicense, PatternOrigin, PatternSymbolism, PatternColor, PatternSymbol } from '@buni/patterns';
+import { REGIONS, PATTERN_TYPES, PatternOrigin, PatternSymbolism, PatternColor, PatternSymbol } from '@buni/patterns';
 
 // ─────────────────────────────────────────────────────────────
 // REGIONS & TYPES (re-exported from @buni/patterns)
 // ─────────────────────────────────────────────────────────────
 
 export { REGIONS, PATTERN_TYPES };
+
+// ─────────────────────────────────────────────────────────────
+// LICENSES (backend source of truth)
+// ─────────────────────────────────────────────────────────────
+
+export const LICENSES = [
+  'cc0',
+  'cc-by',
+  'cc-by-sa',
+] as const;
+
+export type LicenseType = typeof LICENSES[number];
 
 export const SYMBOL_USAGES = [
   'ceremonial',
@@ -50,8 +62,6 @@ export const DEFAULT_SYMBOL: PatternSymbol = {
 
 export const FIELD_LIMITS = {
   summary: 500,
-  descFr: 2000,
-  descEn: 2000,
   history: 2000,
   technique: 1000,
   ceremonial: 1000,
@@ -77,7 +87,6 @@ export type StepIndex = 0 | 1 | 2 | 3;
 
 export type RegionType = PatternOrigin['region'];
 
-export type LicenseType = PatternLicense;
 
 export type SymbolUsageType =
   PatternSymbolism['usage'];

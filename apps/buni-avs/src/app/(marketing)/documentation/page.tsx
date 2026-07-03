@@ -2,28 +2,7 @@
 
 import { useState, useRef, useCallback, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Search,
-  Copy,
-  Check,
-  ChevronRight,
-  Menu,
-  X,
-  ExternalLink,
-  BookOpen,
-  Hash,
-  ArrowLeft,
-  ArrowRight,
-  Sun,
-  Layers,
-  ChevronDown,
-  AlertCircle,
-  Info,
-  Lightbulb,
-  Terminal,
-  Sparkles,
-  FileCode2,
-} from 'lucide-react';
+import 'primeicons/primeicons.css';
 
 // ══════════════════════════════════════════════════════════════════════════════
 // TYPES
@@ -108,10 +87,10 @@ const KEYFRAMES = `
 // ══════════════════════════════════════════════════════════════════════════════
 
 const CALLOUT_CONF = {
-  info:    { bg: 'bg-avs-indigo/8',   border: 'border-avs-indigo',   icon: Info,        textClass: 'text-avs-indigo',   label: 'Info'       },
-  tip:     { bg: 'bg-avs-ndop/8',     border: 'border-avs-ndop',     icon: Lightbulb,   textClass: 'text-avs-ndop',     label: 'Astuce'     },
-  warning: { bg: 'bg-avs-kente/8',    border: 'border-avs-kente',    icon: AlertCircle, textClass: 'text-avs-kente',    label: 'Attention'  },
-  danger:  { bg: 'bg-avs-primary/9',  border: 'border-avs-primary',  icon: AlertCircle, textClass: 'text-avs-primary',  label: 'Important'  },
+  info:    { bg: 'bg-avs-indigo/8',   border: 'border-avs-indigo',   icon: 'pi pi-info-circle',   textClass: 'text-avs-indigo',   label: 'Info'       },
+  tip:     { bg: 'bg-avs-ndop/8',     border: 'border-avs-ndop',     icon: 'pi pi-lightbulb',     textClass: 'text-avs-ndop',     label: 'Astuce'     },
+  warning: { bg: 'bg-avs-kente/8',    border: 'border-avs-kente',    icon: 'pi pi-exclamation-triangle', textClass: 'text-avs-kente',    label: 'Attention'  },
+  danger:  { bg: 'bg-avs-primary/9',  border: 'border-avs-primary',  icon: 'pi pi-exclamation-circle', textClass: 'text-avs-primary',  label: 'Important'  },
 } as const;
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -139,8 +118,8 @@ function CodeBlock({ code, lang = 'tsx', id, title }: { code: string; lang?: str
           className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 font-mono text-[10px] font-semibold text-avs-secondary/35 opacity-0 transition-all duration-200 group-hover:opacity-100 hover:bg-avs-secondary/10 hover:text-avs-secondary/70"
         >
           {copied === id
-            ? <><Check size={10} className="text-emerald-400" /> Copié</>
-            : <><Copy size={10} /> Copier</>}
+            ? <><i className="pi pi-check" style={{ fontSize: '10px', color: '#34d399' }} /> Copié</>
+            : <><i className="pi pi-copy" style={{ fontSize: '10px' }} /> Copier</>}
         </button>
       </div>
       {/* Body */}
@@ -152,10 +131,10 @@ function CodeBlock({ code, lang = 'tsx', id, title }: { code: string; lang?: str
 }
 
 function Callout({ type = 'info', title, children }: { type?: keyof typeof CALLOUT_CONF; title?: string; children: React.ReactNode }) {
-  const { bg, border, icon: Icon, textClass, label } = CALLOUT_CONF[type];
+  const { bg, border, icon, textClass, label } = CALLOUT_CONF[type];
   return (
     <div className={`my-5 flex gap-3.5 rounded-r-xl px-4 py-4 ${bg} border border-l-[3px] ${border}`}>
-      <Icon size={15} className={`mt-0.5 shrink-0 ${textClass}`} aria-hidden />
+      <i className={`${icon} mt-0.5 shrink-0 ${textClass}`} style={{ fontSize: '15px' }} aria-hidden />
       <div>
         <p className={`mb-1.5 text-[9px] font-bold tracking-[0.18em] uppercase ${textClass}`}>
           {title ?? label}
@@ -226,7 +205,7 @@ function SectionAnchor({ id, children }: { id: string; children: React.ReactNode
         className="opacity-0 transition-opacity group-hover:opacity-100 text-avs-accent/32"
         aria-label={`Lien vers ${id}`}
       >
-        <Hash size={13} />
+        <i className="pi pi-hashtag" style={{ fontSize: '13px' }} />
       </a>
     </div>
   );
@@ -245,11 +224,11 @@ const IntroductionPage: React.FC = () => (
       <div className="relative px-8 py-10">
         <div className="mb-3 flex items-center gap-2">
           <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[9px] tracking-[0.18em] uppercase font-bold bg-avs-primary/20 text-avs-primary border border-avs-primary/30">
-            <Sparkles size={8} /> v1.0 · Open Standard
+            <i className="pi pi-star" style={{ fontSize: '8px' }} /> v1.0 · Open Standard
           </span>
         </div>
         <h1 className="font-display text-3xl font-black leading-tight text-avs-secondary" style={{ letterSpacing: '-0.02em' }}>
-          AVS — African Visual Standard
+          Buni — African Visual Standard
         </h1>
         <p className="mt-3 max-w-lg text-sm leading-relaxed text-avs-secondary/60">
           Bibliothèque de composants UI open-source construite avec React, Radix UI et Tailwind CSS.
@@ -268,13 +247,13 @@ const IntroductionPage: React.FC = () => (
 
     <div className="my-6 grid gap-3 sm:grid-cols-2">
       {[
-        { icon: '🌍', title: 'Culturellement ancré', desc: 'Chaque token de couleur, motif et composant est documenté avec sa source primaire africaine.' },
-        { icon: '🔓', title: 'Public par défaut',    desc: 'Composants, motifs, templates — tout est accessible sans authentification.' },
-        { icon: '⚡', title: 'Copy & Paste',         desc: 'Vous possédez votre code. Aucune dépendance lourde. Adaptez, étendez, supprimez.' },
-        { icon: '🎨', title: 'Design System cohérent', desc: 'Palette extraite de pigments naturels africains, tokens CSS, motifs CSS pur.' },
+        { icon: 'pi pi-globe', title: 'Culturellement ancré', desc: 'Chaque token de couleur, motif et composant est documenté avec sa source primaire africaine.' },
+        { icon: 'pi pi-unlock', title: 'Public par défaut',    desc: 'Composants, motifs, templates — tout est accessible sans authentification.' },
+        { icon: 'pi pi-bolt', title: 'Copy & Paste',         desc: 'Vous possédez votre code. Aucune dépendance lourde. Adaptez, étendez, supprimez.' },
+        { icon: 'pi pi-palette', title: 'Design System cohérent', desc: 'Palette extraite de pigments naturels africains, tokens CSS, motifs CSS pur.' },
       ].map(({ icon, title, desc }) => (
         <div key={title} className="rounded-xl p-5 transition-colors border border-avs-accent/9 bg-avs-secondary">
-          <div className="mb-2 text-2xl">{icon}</div>
+          <div className="mb-2 text-2xl"><i className={icon} style={{ fontSize: '24px' }} /></div>
           <h3 className="mb-1 text-sm font-bold text-avs-accent font-display">{title}</h3>
           <p className="text-xs leading-relaxed text-avs-accent/32 mb-0">{desc}</p>
         </div>
@@ -282,28 +261,41 @@ const IntroductionPage: React.FC = () => (
     </div>
 
     <SectionAnchor id="comparaison"><h2>Comparaison avec PrimeReact</h2></SectionAnchor>
+    <Callout type="info">
+      Buni utilise PrimeIcons pour les icônes, mais adopte l&apos;approche Copy &amp; Paste de Shadcn/UI pour les composants.
+    </Callout>
     <div className="my-4 overflow-x-auto rounded-xl border border-avs-accent/9">
       <table className="w-full text-xs">
         <thead>
           <tr className="border-b border-avs-accent/9 bg-avs-primary/10">
-            {['Fonctionnalité', 'AVS', 'PrimeReact', 'Shadcn'].map((h) => (
+            {['Fonctionnalité', 'Buni', 'PrimeReact', 'Shadcn'].map((h) => (
               <th key={h} className="px-4 py-2.5 text-left font-bold tracking-wider uppercase text-avs-accent/32 text-[9px]">{h}</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {[
-            ['Accès sans compte',   '✅','✅','✅'],
-            ['Copy & Paste',        '✅','❌','✅'],
-            ['Design africain',     '✅','❌','❌'],
-            ['SVG natifs',          '✅','⚠️','❌'],
-            ['Motifs CSS',          '✅','❌','❌'],
-            ['Radix UI',            '✅','❌','✅'],
-            ['TypeScript strict',   '✅','✅','✅'],
-          ].map(([feat, ...vals], i, arr) => (
+            ['Accès sans compte',   'check','check','check'],
+            ['Copy & Paste',        'check','times','check'],
+            ['Design africain',     'check','times','times'],
+            ['SVG natifs',          'minus','times','times'],
+            ['Motifs CSS',          'check','times','times'],
+            ['Radix UI',            'check','times','check'],
+            ['TypeScript strict',   'check','check','check'],
+          ].map(([feat, ...icons], i, arr) => (
             <tr key={feat} className={`transition-colors hover:bg-avs-primary/10 ${i < arr.length - 1 ? 'border-b border-avs-accent/9' : ''}`}>
               <td className="px-4 py-2.5 font-semibold text-avs-accent">{feat}</td>
-              {vals.map((v, vi) => <td key={vi} className="px-4 py-2.5 text-center">{v}</td>)}
+              {icons.map((icon, vi) => (
+                <td key={vi} className="px-4 py-2.5 text-center">
+                  <i 
+                    className={`pi pi-${icon}`} 
+                    style={{ 
+                      fontSize: '14px',
+                      color: icon === 'check' ? '#10b981' : icon === 'times' ? '#ef4444' : '#f59e0b'
+                    }} 
+                  />
+                </td>
+              ))}
             </tr>
           ))}
         </tbody>
@@ -312,7 +304,7 @@ const IntroductionPage: React.FC = () => (
 
     <Callout type="tip" title="Bonne pratique">
       Commencez par lire la section Installation, puis explorez les{' '}
-      <a href="/components">Composants</a> qui proposent des previews live interactives.
+      <a href="/patterns">Motifs</a> et <a href="/colors">Couleurs</a> disponibles.
     </Callout>
   </div>
 );
@@ -324,11 +316,11 @@ const InstallationPage: React.FC = () => {
   return (
     <div className="avs-prose">
       <SectionAnchor id="installation"><h1>Installation</h1></SectionAnchor>
-      <p>Plusieurs méthodes pour intégrer AVS dans votre projet. La méthode CLI est recommandée pour démarrer rapidement.</p>
+      <p>Plusieurs méthodes pour intégrer Buni dans votre projet. La méthode CLI est recommandée pour démarrer rapidement.</p>
 
       <SectionAnchor id="methode-cli"><h2>Méthode 1 — CLI (recommandé)</h2></SectionAnchor>
-      <CodeBlock id="cli-init" lang="bash" title="Terminal" code={`# Initialiser AVS dans un projet Next.js existant
-npx @avs/cli init
+      <CodeBlock id="cli-init" lang="bash" title="Terminal" code={`# Initialiser Buni dans un projet Next.js existant
+npx @buni/cli init
 
 # Répondre aux questions :
 # ✔ Chemin src/ ? › src
@@ -336,12 +328,12 @@ npx @avs/cli init
 # ✔ Ajouter les motifs CSS ? › Oui
 # ✔ Ajouter le design system complet ? › Oui`} />
       <CodeBlock id="cli-add" lang="bash" title="Terminal" code={`# Ajouter des composants individuellement
-npx @avs/cli add button
-npx @avs/cli add badge
-npx @avs/cli add pattern-card
+npx @buni/cli add button
+npx @buni/cli add badge
+npx @buni/cli add pattern-card
 
 # Lister tous les composants disponibles
-npx @avs/cli list`} />
+npx @buni/cli list`} />
 
       <SectionAnchor id="methode-npm"><h2>Méthode 2 — Package npm</h2></SectionAnchor>
       <div className="mb-2 flex w-fit items-center gap-0.5 rounded-xl p-1 border border-avs-accent/9 bg-avs-secondary">
@@ -353,7 +345,7 @@ npx @avs/cli list`} />
           >{m}</button>
         ))}
       </div>
-      <CodeBlock id="npm-install" lang="bash" title="Terminal" code={`${cmds[pkgMgr]} @avs/ui @avs/icons
+      <CodeBlock id="npm-install" lang="bash" title="Terminal" code={`${cmds[pkgMgr]} @buni/ui @buni/tokens @buni/patterns
 ${cmds[pkgMgr]} @radix-ui/react-slot @radix-ui/react-dialog
 ${cmds[pkgMgr]} framer-motion clsx tailwind-merge class-variance-authority`} />
 
@@ -361,49 +353,37 @@ ${cmds[pkgMgr]} framer-motion clsx tailwind-merge class-variance-authority`} />
       <CodeBlock id="cdn" lang="html" title="index.html" code={`<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <link rel="stylesheet" href="https://cdn.avs-standard.com/ui/latest/avs-ui.min.css" />
+  <link rel="stylesheet" href="https://cdn.buni-standard.com/ui/latest/buni-ui.min.css" />
 </head>
 <body>
-  <avs-button variant="primary">Cliquez ici</avs-button>
-  <img src="https://cdn.avs-standard.com/icons/v1/ndop-bamoum.svg"
+  <buni-button variant="primary">Cliquez ici</buni-button>
+  <img src="https://cdn.buni-standard.com/icons/v1/ndop-bamoum.svg"
        alt="Ndop Bamoum" width="64" height="64" />
-  <script src="https://cdn.avs-standard.com/ui/latest/avs-ui.min.js"></script>
+  <script src="https://cdn.buni-standard.com/ui/latest/buni-ui.min.js"></script>
 </body>
 </html>`} />
 
       <SectionAnchor id="configuration"><h2>Configuration Tailwind</h2></SectionAnchor>
       <CodeBlock id="tailwind-config" lang="ts" title="tailwind.config.ts" code={`import type { Config } from 'tailwindcss';
+import { buniPreset } from '@buni/config';
 
 const config: Config = {
+  presets: [buniPreset],
   content: ['./src/**/*.{ts,tsx}'],
-  theme: {
-    extend: {
-      colors: {
-        'avs-primary':   '#C0573E',   // Terre brûlée
-        'avs-secondary': '#F5EBE0',   // Lin naturel
-        'avs-accent':    '#1D1D1B',   // Obsidienne
-        'avs-kente':     '#D4A017',   // Or kente
-        'avs-ndop':      '#4A6741',   // Vert Bamiléké
-        'avs-indigo':    '#2A4A6B',   // Bleu bogolan
-      },
-    },
-  },
 };
 export default config;`} />
 
       <SectionAnchor id="globals"><h2>globals.css</h2></SectionAnchor>
-      <CodeBlock id="globals" lang="css" title="src/app/globals.css" code={`@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@import '../theme/tokens/avs-tokens.css';
-@import '../theme/patterns/patterns.css';
+      <CodeBlock id="globals" lang="css" title="src/app/globals.css" code={`@import '@buni/tokens/css';
+@import '@buni/patterns/css';
+@import 'tailwindcss';
+@import 'primeicons/primeicons.css';
 
 @layer components {
-  .avs-btn-primary {
+  .buni-btn-primary {
     @apply inline-flex items-center justify-center gap-2 rounded-xl
-           bg-avs-primary px-5 py-2.5 text-sm font-bold text-white
-           shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all;
+           bg-avs-primary px-5 py-2.5 text-sm font-bold text-avs-secondary
+           shadow-avs hover:-translate-y-0.5 hover:shadow-avs-md transition-all;
   }
 }`} />
     </div>
@@ -426,7 +406,7 @@ const DesignTokensPage: React.FC = () => {
   return (
     <div className="avs-prose">
       <SectionAnchor id="tokens"><h1>Design Tokens</h1></SectionAnchor>
-      <p>La palette AVS est extraite de pigments naturels africains. Chaque couleur est documentée avec sa source ethnographique primaire. Cliquez sur un swatch pour copier le HEX.</p>
+      <p>La palette Buni est extraite de pigments naturels africains. Chaque couleur est documentée avec sa source ethnographique primaire. Cliquez sur un swatch pour copier le HEX.</p>
 
       <SectionAnchor id="palette"><h2>Palette principale</h2></SectionAnchor>
       <div className="my-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -570,7 +550,7 @@ const ButtonPage: React.FC = () => {
       <SectionAnchor id="btn-import"><h2>Import</h2></SectionAnchor>
       <CodeBlock id="btn-import-code" lang="tsx" code={`import { Button } from '@/components/ui';
 // ou
-import { Button } from '@avs/ui';`} />
+import { Button } from '@buni/ui';`} />
 
       <SectionAnchor id="btn-variantes"><h2>Variantes</h2></SectionAnchor>
       <LiveDemo>
@@ -744,28 +724,28 @@ const AddSvgPage: React.FC = () => (
 
 const DOC_SECTIONS: DocSection[] = [
   {
-    id: 'getting-started', title: 'Démarrage', icon: <Sparkles size={13} />,
+    id: 'getting-started', title: 'Démarrage', icon: <i className="pi pi-star" style={{ fontSize: '13px' }} />,
     pages: [
       { id: 'introduction', title: 'Introduction', content: IntroductionPage, toc: [{ id: 'philosophie', level: 2, label: 'Philosophie' }, { id: 'comparaison', level: 2, label: 'Comparaison' }] },
       { id: 'installation', title: 'Installation', content: InstallationPage, toc: [{ id: 'methode-cli', level: 2, label: 'CLI' }, { id: 'methode-npm', level: 2, label: 'npm' }, { id: 'methode-cdn', level: 2, label: 'CDN' }, { id: 'configuration', level: 2, label: 'Tailwind config' }, { id: 'globals', level: 2, label: 'globals.css' }] },
     ],
   },
   {
-    id: 'design-system', title: 'Design System', icon: <Layers size={13} />,
+    id: 'design-system', title: 'Design System', icon: <i className="pi pi-layer-group" style={{ fontSize: '13px' }} />,
     pages: [
       { id: 'design-tokens', title: 'Tokens & Couleurs', content: DesignTokensPage, toc: [{ id: 'palette', level: 2, label: 'Palette' }, { id: 'css-variables', level: 2, label: 'CSS Variables' }, { id: 'typography', level: 2, label: 'Typographie' }] },
       { id: 'css-patterns',  title: 'Motifs CSS',        content: CssPatternsPage,  toc: [{ id: 'patterns-list', level: 2, label: 'Catalogue' }, { id: 'patterns-usage', level: 2, label: 'Usages typiques' }] },
     ],
   },
   {
-    id: 'composants', title: 'Composants', icon: <FileCode2 size={13} />,
+    id: 'composants', title: 'Composants', icon: <i className="pi pi-code" style={{ fontSize: '13px' }} />,
     pages: [
       { id: 'button',      title: 'Button',     content: ButtonPage,     toc: [{ id: 'btn-variantes', level: 2, label: 'Variantes' }, { id: 'btn-etats', level: 2, label: 'États' }, { id: 'btn-api', level: 2, label: 'API' }] },
       { id: 'svg-pattern', title: 'SvgPattern', content: SvgPatternPage, toc: [{ id: 'svg-registry-config', level: 2, label: 'Registre' }, { id: 'svg-usage-modes', level: 2, label: 'Usages' }, { id: 'svg-api', level: 2, label: 'API' }] },
     ],
   },
   {
-    id: 'svg-integration', title: 'Motifs SVG', icon: <Sun size={13} />,
+    id: 'svg-integration', title: 'Motifs SVG', icon: <i className="pi pi-sun" style={{ fontSize: '13px' }} />,
     pages: [
       { id: 'add-svg', title: 'Ajouter vos SVG', content: AddSvgPage, toc: [{ id: 'step1-place', level: 2, label: 'Étape 1 — Placer' }, { id: 'step2-register', level: 2, label: 'Étape 2 — Registre' }] },
     ],
@@ -848,7 +828,7 @@ export default function DocumentationPage() {
           {/* Search */}
           <div className="p-3 border-b border-avs-accent/9">
             <div className="relative">
-              <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2 text-avs-accent/32" />
+              <i className="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-avs-accent/32" style={{ fontSize: '12px' }} />
               <input
                 type="search"
                 value={search}
@@ -858,7 +838,7 @@ export default function DocumentationPage() {
               />
               {search && (
                 <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-avs-accent/32">
-                  <X size={11} />
+                  <i className="pi pi-times" style={{ fontSize: '11px' }} />
                 </button>
               )}
             </div>
@@ -878,7 +858,7 @@ export default function DocumentationPage() {
                     <span className="flex items-center gap-2 text-[9px] font-black tracking-[0.18em] uppercase">
                       {section.icon} {section.title}
                     </span>
-                    <ChevronDown size={11} className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
+                    <i className={`pi pi-chevron-down transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} style={{ fontSize: '11px' }} />
                   </button>
 
                   <AnimatePresence initial={false}>
@@ -899,7 +879,7 @@ export default function DocumentationPage() {
                                 className={`mx-2 flex w-[calc(100%-1rem)] items-center gap-2 rounded-xl px-3 py-2 text-left text-sm font-medium transition-all duration-150 ${isActive ? 'bg-avs-primary text-avs-secondary font-semibold' : 'text-avs-accent/52'}`}
                                 aria-current={isActive ? 'page' : undefined}
                               >
-                                <ChevronRight size={10} className={`shrink-0 ${isActive ? 'opacity-50' : 'opacity-30'}`} />
+                                <i className={`pi pi-chevron-right shrink-0 ${isActive ? 'opacity-50' : 'opacity-30'}`} style={{ fontSize: '10px' }} />
                                 {page.title}
                               </button>
 
@@ -933,10 +913,10 @@ export default function DocumentationPage() {
           {/* Footer */}
           <div className="space-y-0.5 p-3 border-t border-avs-accent/9">
             {[
-              { href: 'https://github.com/avs-standard', label: 'GitHub',    icon: ExternalLink },
-              { href: '/components',                     label: 'Composants',icon: Layers       },
-              { href: '/icons',                          label: 'Icônes SVG',icon: Sun          },
-            ].map(({ href, label, icon: Icon }) => (
+              { href: 'https://github.com/avs-standard', label: 'GitHub',    icon: 'pi pi-external-link' },
+              { href: '/components',                     label: 'Composants',icon: 'pi pi-layer-group'       },
+              { href: '/icons',                          label: 'Icônes SVG',icon: 'pi pi-sun'          },
+            ].map(({ href, label, icon }) => (
               <a
                 key={href}
                 href={href}
@@ -944,9 +924,9 @@ export default function DocumentationPage() {
                 rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
                 className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium transition-colors text-avs-accent/32 hover:text-avs-primary"
               >
-                <Icon size={12} />
+                <i className={icon} style={{ fontSize: '12px' }} />
                 {label}
-                {href.startsWith('http') && <ExternalLink size={9} className="ml-auto opacity-40" />}
+                {href.startsWith('http') && <i className="pi pi-external-link ml-auto opacity-40" style={{ fontSize: '9px' }} />}
               </a>
             ))}
           </div>
@@ -958,21 +938,21 @@ export default function DocumentationPage() {
           {/* Mobile topbar */}
           <div className="flex h-11 shrink-0 items-center gap-3 px-4 lg:hidden border-b border-avs-accent/9 bg-avs-secondary">
             <button onClick={() => setSidebarOpen(true)} className="rounded-xl p-1.5 transition-colors text-avs-accent/52">
-              <Menu size={17} />
+              <i className="pi pi-bars" style={{ fontSize: '17px' }} />
             </button>
             <div className="flex items-center gap-1.5 overflow-hidden text-xs text-avs-accent/32">
-              <BookOpen size={11} />
+              <i className="pi pi-book" style={{ fontSize: '11px' }} />
               <span className="shrink-0">Docs</span>
-              <ChevronRight size={9} />
+              <i className="pi pi-chevron-right" style={{ fontSize: '9px' }} />
               <span className="truncate font-semibold text-avs-accent">{activePage?.title}</span>
             </div>
           </div>
 
           {/* Desktop breadcrumb */}
           <div className="hidden h-10 shrink-0 items-center gap-1.5 px-8 text-[11px] lg:flex border-b border-avs-accent/9 bg-avs-secondary text-avs-accent/32">
-            <Terminal size={11} />
+            <i className="pi pi-terminal" style={{ fontSize: '11px' }} />
             <span>Docs</span>
-            <ChevronRight size={9} />
+            <i className="pi pi-chevron-right" style={{ fontSize: '9px' }} />
             <span className="font-semibold text-avs-accent">{activePage?.title}</span>
           </div>
 
@@ -1004,7 +984,7 @@ export default function DocumentationPage() {
                       onClick={() => navigate(prevPage.id)}
                       className="group flex max-w-[45%] items-center gap-2.5 rounded-xl px-4 py-3 text-sm font-semibold border border-avs-accent/9 text-avs-accent/52 hover:border-avs-primary hover:text-avs-primary transition-all duration-200"
                     >
-                      <ArrowLeft size={13} className="shrink-0" />
+                      <i className="pi pi-arrow-left shrink-0" style={{ fontSize: '13px' }} />
                       <span className="truncate">{prevPage.title}</span>
                     </button>
                   ) : <div />}
@@ -1015,13 +995,13 @@ export default function DocumentationPage() {
                       className="ml-auto flex max-w-[45%] items-center gap-2.5 rounded-xl px-4 py-3 text-sm font-semibold border border-avs-accent/9 text-avs-accent/52 hover:border-avs-primary hover:text-avs-primary transition-all duration-200"
                     >
                       <span className="truncate">{nextPage.title}</span>
-                      <ArrowRight size={13} className="shrink-0" />
+                      <i className="pi pi-arrow-right shrink-0" style={{ fontSize: '13px' }} />
                     </button>
                   )}
                 </div>
 
                 <p className="mt-8 text-center font-mono text-[10px] text-avs-accent/25">
-                  AVS Documentation · v1.0.0 · Mis à jour avril 2026
+                  Buni Documentation · v1.0.0 · Mis à jour juin 2026
                 </p>
               </motion.article>
             </AnimatePresence>

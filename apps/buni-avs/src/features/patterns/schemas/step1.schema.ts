@@ -1,11 +1,6 @@
 import { z } from 'zod';
 
 export const Step1Schema = z.object({
-  nameFr: z
-    .string()
-    .min(2, 'Minimum 2 caractères')
-    .max(128, 'Maximum 128 caractères'),
-
   nameLocal: z
     .string()
     .min(2, 'Minimum 2 caractères')
@@ -17,7 +12,7 @@ export const Step1Schema = z.object({
     .max(128, 'Maximum 128 caractères'),
 
   patternType: z.enum([
-    'kente', 'bogolan', 'adinkra', 'ndebele', 'ndop', 'wax', 'kuba', 'berber',
+    'kente', 'bogolan', 'adinkra', 'ndebele', 'kuba', 'ndop', 'wax', 'berber',
   ] as const),
 
   region: z.enum([
@@ -39,7 +34,7 @@ export const Step1Schema = z.object({
     .tuple([z.number(), z.number()])
     .optional(),
 
-  license: z.enum(['cc0', 'cc-by', 'cc-by-sa', 'proprietary'] as const).default('cc-by'),
+  license: z.enum(['cc0', 'cc-by', 'cc-by-sa'] as const).default('cc-by'),
 });
 
 export type Step1Schema = z.infer<typeof Step1Schema>;

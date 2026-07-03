@@ -596,10 +596,10 @@ export default function HomePage() {
         </section>
 
         {/* ══ § 8 — CTA (always dark — kente-imposed) ═════════════════════ */}
-        <section aria-labelledby="cta-title" className="avs-pattern-kente-royale relative overflow-hidden">
+        <section aria-labelledby="cta-title" className="avs-pattern-kente-royale relative overflow-hidden ">
           {/* Multi-stop directional gradient — justified inline */}
           <div
-            className="absolute inset-0"
+            className="absolute inset-0 bg-avs-accent"
             style={{ background: 'linear-gradient(135deg,rgba(10,8,6,.97) 0%,rgba(26,18,8,.90) 60%,rgba(50,25,10,.84) 100%)' }}
             aria-hidden
           />
@@ -618,18 +618,7 @@ export default function HomePage() {
           </div>
 
           <div className="relative mx-auto max-w-3xl px-6 py-32 text-center lg:px-8">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.94 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, ease }}
-              className="mb-8 inline-flex items-center gap-2.5 rounded-full border px-5 py-2 bg-avs-primary/10 border-avs-primary/28"
-            >
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-avs-primary" aria-hidden />
-              <span className="font-mono text-[9px] tracking-[.24em] uppercase text-avs-primary">
-                Open Source · CC BY 4.0 · Gratuit
-              </span>
-            </motion.div>
+            
 
             <motion.h2
               id="cta-title"
