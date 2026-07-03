@@ -78,7 +78,7 @@ export function CommandPalette() {
         aria-label="Ouvrir la recherche"
       >
         <i className="pi pi-search text-[13px]" aria-hidden />
-        <span className="flex-1 text-sm">Rechercher un motif, un token, un composant…</span>
+        <span className="flex-1 text-sm">Rechercher…</span>
         <kbd className="rounded-md border border-avs-accent/12 bg-avs-accent/5 px-1.5 py-0.5 font-mono text-[10px] text-avs-accent/40">⌘K</kbd>
       </button>
 

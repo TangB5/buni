@@ -8,7 +8,7 @@ import { CommandPalette } from './command-palette';
 import { ReadingProgress } from './doc-primitives';
 import { DocsSidebar } from './docs-sidebar';
 
-export function DocsShell({ children }: { children: React.ReactNode }) {
+export function DocsShell({ children, showSidebar = true }: { children: React.ReactNode; showSidebar?: boolean }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
   const crumbs = (pathname ?? '').split('/').filter(Boolean);
@@ -16,7 +16,7 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen bg-avs-secondary">
       <ReadingProgress />
-      <DocsSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      {showSidebar && <DocsSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />}
 
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Topbar */}

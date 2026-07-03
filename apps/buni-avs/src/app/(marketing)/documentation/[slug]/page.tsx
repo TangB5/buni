@@ -298,13 +298,15 @@ const IntroductionPage: React.FC = () => (
 
     <div className="my-6 grid gap-3 sm:grid-cols-2">
       {[
-        { icon: '🌍', title: 'Culturellement ancré', desc: 'Chaque token de couleur, motif et composant est documenté avec sa source primaire africaine.' },
-        { icon: '🔓', title: 'Public par défaut', desc: 'Composants, motifs, templates — tout est accessible sans authentification.' },
-        { icon: '⚡', title: 'Copy & Paste', desc: 'Vous possédez votre code. Aucune dépendance lourde. Adaptez, étendez, supprimez.' },
-        { icon: '🎨', title: 'Design System cohérent', desc: 'Palette extraite de pigments naturels africains, tokens CSS, motifs CSS pur.' },
+        { icon: 'pi-globe', title: 'Culturellement ancré', desc: 'Chaque token de couleur, motif et composant est documenté avec sa source primaire africaine.' },
+        { icon: 'pi-unlock', title: 'Public par défaut', desc: 'Composants, motifs, templates — tout est accessible sans authentification.' },
+        { icon: 'pi-bolt', title: 'Copy & Paste', desc: 'Vous possédez votre code. Aucune dépendance lourde. Adaptez, étendez, supprimez.' },
+        { icon: 'pi-palette', title: 'Design System cohérent', desc: 'Palette extraite de pigments naturels africains, tokens CSS, motifs CSS pur.' },
       ].map(({ icon, title, desc }) => (
         <div key={title} className="rounded-xl p-5 transition-colors" style={{ border: '1px solid var(--doc-border)', background: 'var(--doc-surface)' }}>
-          <div className="mb-2 text-2xl">{icon}</div>
+          <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg" style={{ background: 'var(--doc-primary-10)', color: 'var(--doc-primary)' }}>
+            <i className={`pi ${icon}`} style={{ fontSize: '18px' }} />
+          </div>
           <h3 className="mb-1 text-sm font-bold" style={{ color: 'var(--doc-text)', fontFamily: 'var(--font-display, Georgia, serif)' }}>{title}</h3>
           <p className="text-xs leading-relaxed" style={{ color: 'var(--doc-hint)', marginBottom: 0 }}>{desc}</p>
         </div>
@@ -323,17 +325,23 @@ const IntroductionPage: React.FC = () => (
         </thead>
         <tbody>
           {[
-            ['Accès sans compte', '✅', '✅', '✅'],
-            ['Copy & Paste', '✅', '❌', '✅'],
-            ['Design africain', '✅', '❌', '❌'],
-            ['SVG natifs', '✅', '⚠️', '❌'],
-            ['Motifs CSS', '✅', '❌', '❌'],
-            ['Radix UI', '✅', '❌', '✅'],
-            ['TypeScript strict', '✅', '✅', '✅'],
+            ['Accès sans compte', 'check', 'check', 'check'],
+            ['Copy & Paste', 'check', 'times', 'check'],
+            ['Design africain', 'check', 'times', 'times'],
+            ['SVG natifs', 'check', 'exclamation-triangle', 'times'],
+            ['Motifs CSS', 'check', 'times', 'times'],
+            ['Radix UI', 'check', 'times', 'check'],
+            ['TypeScript strict', 'check', 'check', 'check'],
           ].map(([feat, ...vals], i, arr) => (
             <tr key={feat} className="transition-colors hover:bg-[var(--doc-primary-10)]" style={{ borderBottom: i < arr.length - 1 ? '1px solid var(--doc-border)' : 'none' }}>
               <td className="px-4 py-2.5 font-semibold" style={{ color: 'var(--doc-text)' }}>{feat}</td>
-              {vals.map((v, vi) => <td key={vi} className="px-4 py-2.5 text-center">{v}</td>)}
+              {vals.map((v, vi) => (
+                <td key={vi} className="px-4 py-2.5 text-center">
+                  {v === 'check' && <i className="pi pi-check text-emerald-500" style={{ fontSize: '12px' }} />}
+                  {v === 'times' && <i className="pi pi-times text-red-500" style={{ fontSize: '12px' }} />}
+                  {v === 'exclamation-triangle' && <i className="pi pi-exclamation-triangle text-amber-500" style={{ fontSize: '12px' }} />}
+                </td>
+              ))}
             </tr>
           ))}
         </tbody>
