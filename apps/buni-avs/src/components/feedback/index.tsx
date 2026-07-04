@@ -2,7 +2,6 @@
 
 import React, { Component, type ErrorInfo, type ReactNode } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, AlertCircle, Info, XCircle, X, AlertTriangle } from 'lucide-react';
 import { cn } from '@buni/ui';
 
 // =============================================================================
@@ -10,11 +9,11 @@ import { cn } from '@buni/ui';
 // =============================================================================
 type AlertVariant = 'info' | 'success' | 'warning' | 'error';
 
-const ALERT_CONFIG: Record<AlertVariant, { icon: typeof Info; classes: string }> = {
-  info:    { icon: Info,          classes: 'border-avs-indigo/30 bg-avs-indigo/8 text-avs-indigo'    },
-  success: { icon: CheckCircle,   classes: 'border-green-300/50 bg-green-50 text-green-700'          },
-  warning: { icon: AlertTriangle, classes: 'border-amber-300/50 bg-amber-50 text-amber-700'          },
-  error:   { icon: XCircle,       classes: 'border-red-300/50 bg-red-50 text-red-700'                },
+const ALERT_CONFIG: Record<AlertVariant, { icon: string; classes: string }> = {
+  info:    { icon: 'pi-info-circle',  classes: 'border-avs-indigo/30 bg-avs-indigo/8 text-avs-indigo'    },
+  success: { icon: 'pi-check-circle', classes: 'border-green-300/50 bg-green-50 text-green-700'          },
+  warning: { icon: 'pi-exclamation-triangle', classes: 'border-amber-300/50 bg-amber-50 text-amber-700'          },
+  error:   { icon: 'pi-times-circle', classes: 'border-red-300/50 bg-red-50 text-red-700'                },
 };
 
 interface AlertProps {
@@ -26,13 +25,13 @@ interface AlertProps {
 }
 
 export function Alert({ variant = 'info', title, message, className, onClose }: AlertProps) {
-  const { icon: Icon, classes } = ALERT_CONFIG[variant];
+  const { icon, classes } = ALERT_CONFIG[variant];
   return (
     <div
       role="alert"
       className={cn('flex items-start gap-3 rounded-avs border px-4 py-3', classes, className)}
     >
-      <Icon size={16} className="mt-0.5 shrink-0" aria-hidden />
+      <i className={`pi ${icon} mt-0.5 shrink-0`} style={{ fontSize: '16px' }} aria-hidden />
       <div className="flex-1 min-w-0">
         {title && <p className="font-semibold text-sm">{title}</p>}
         <p className={cn('text-sm', title && 'mt-0.5 opacity-85')}>{message}</p>
@@ -43,7 +42,7 @@ export function Alert({ variant = 'info', title, message, className, onClose }: 
           className="shrink-0 opacity-60 hover:opacity-100 transition-opacity"
           aria-label="Fermer l'alerte"
         >
-          <X size={14} />
+          <i className="pi pi-times" style={{ fontSize: '14px' }} />
         </button>
       )}
     </div>
@@ -62,7 +61,7 @@ interface ToastProps {
 }
 
 export function Toast({ id, variant = 'info', title, message, onClose }: ToastProps) {
-  const { icon: Icon, classes } = ALERT_CONFIG[variant];
+  const { icon, classes } = ALERT_CONFIG[variant];
 
   React.useEffect(() => {
     const timer = setTimeout(() => onClose(id), 4500);
@@ -79,11 +78,11 @@ export function Toast({ id, variant = 'info', title, message, onClose }: ToastPr
       role="alert"
       aria-live="polite"
       className={cn(
-        'flex w-80 items-start gap-3 rounded-avs-lg border px-4 py-3.5 shadow-avs-lg',
+        'flex w-80  items-start gap-3 rounded-avs-lg border px-4 py-3.5 shadow-avs-lg',
         classes
       )}
     >
-      <Icon size={16} className="mt-0.5 shrink-0" aria-hidden />
+      <i className={`pi ${icon} mt-0.5 shrink-0`} style={{ fontSize: '16px' }} aria-hidden />
       <div className="flex-1 min-w-0">
         {title && <p className="font-semibold text-sm">{title}</p>}
         <p className={cn('text-sm', title && 'mt-0.5 opacity-85')}>{message}</p>
@@ -93,7 +92,7 @@ export function Toast({ id, variant = 'info', title, message, onClose }: ToastPr
         className="shrink-0 opacity-60 hover:opacity-100 transition-opacity"
         aria-label="Fermer"
       >
-        <X size={13} />
+        <i className="pi pi-times" style={{ fontSize: '13px' }} />
       </button>
     </motion.div>
   );
@@ -181,16 +180,67 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   override render(): ReactNode {
     if (this.state.hasError) {
       return this.props.fallback ?? (
-        <div role="alert" className="rounded-avs-lg border-2 border-avs-primary/30 bg-avs-primary/5 p-8 text-center">
-          <AlertCircle size={32} className="mx-auto mb-3 text-avs-primary" aria-hidden />
-          <p className="font-display font-semibold text-avs-accent">Une erreur est survenue</p>
-          <p className="mt-1 text-sm text-avs-accent/60">{this.state.message}</p>
-          <button
-            onClick={() => this.setState({ hasError: false, message: '' })}
-            className="mt-4 text-xs font-semibold text-avs-primary underline-offset-4 hover:underline"
+        <div 
+          role="alert" 
+          className="flex h-screen flex-col items-center justify-center p-8"
+          style={{ background: 'linear-gradient(135deg, rgba(192,87,62,0.03) 0%, rgba(29,29,27,0.02) 100%)' }}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            className="flex max-w-md flex-col items-center text-center"
           >
-            Réessayer
-          </button>
+            <div 
+              className="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl"
+              style={{ 
+                background: 'linear-gradient(135deg, rgba(192,87,62,0.12) 0%, rgba(192,87,62,0.04) 100%)',
+                border: '1px solid rgba(192,87,62,0.15)'
+              }}
+            >
+              <i className="pi pi-exclamation-circle" style={{ fontSize: '36px', color: '#C0573E' }} aria-hidden />
+            </div>
+            
+            <h2 className="mb-2 font-display text-2xl font-semibold" style={{ color: 'var(--avs-accent, #1D1D1B)' }}>
+              Oups, quelque chose s'est mal passé
+            </h2>
+            
+            <p className="mb-6 text-sm leading-relaxed" style={{ color: 'var(--avs-accent, #1D1D1B)', opacity: 0.65 }}>
+              {this.state.message || "Une erreur inattendue s'est produite. Veuillez réessayer ou contacter le support si le problème persiste."}
+            </p>
+            
+            <div className="flex gap-3">
+              <button
+                onClick={() => window.location.reload()}
+                className="rounded-xl px-5 py-2.5 text-sm font-semibold transition-all hover:scale-105"
+                style={{ 
+                  background: 'var(--doc-primary, #C0573E)',
+                  color: '#fff',
+                  boxShadow: '0 4px 12px rgba(192,87,62,0.25)'
+                }}
+              >
+                <i className="pi pi-refresh mr-2" style={{ fontSize: '12px' }} />
+                Recharger la page
+              </button>
+              
+              <button
+                onClick={() => this.setState({ hasError: false, message: '' })}
+                className="rounded-xl px-5 py-2.5 text-sm font-semibold transition-all hover:scale-105"
+                style={{ 
+                  background: 'transparent',
+                  color: 'var(--doc-primary, #C0573E)',
+                  border: '1px solid rgba(192,87,62,0.2)'
+                }}
+              >
+                Réessayer
+              </button>
+            </div>
+            
+            <div className="mt-8 flex items-center gap-2 text-xs" style={{ color: 'var(--avs-accent, #1D1D1B)', opacity: 0.4 }}>
+              <i className="pi pi-code" style={{ fontSize: '11px' }} />
+              <span>Erreur capturée par ErrorBoundary</span>
+            </div>
+          </motion.div>
         </div>
       );
     }

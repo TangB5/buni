@@ -605,7 +605,7 @@ export function HeroSection() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.28, ease }}
-              className="mt-8 grid grid-cols-2 overflow-hidden rounded-xl sm:grid-cols-4"
+              className="flex"
               style={{ border: '1px solid var(--hp-border)', background: 'var(--hp-faint)' }}
             >
               {FOOTNOTES.map(({ mark, value, label }, i) => (
@@ -623,19 +623,7 @@ export function HeroSection() {
 
           
 
-          {/* ══════════════════════════════════════════
-              FOOTER STRIP — scale + invitation to scroll
-          ══════════════════════════════════════════ */}
-          <div className="mx-auto mt-auto w-full max-w-7xl px-6 lg:px-8">
-            <div className="flex items-center justify-between pb-4">
-              <div className="w-full">
-                <CountryMarquee />
-              </div>
-            </div>
-            <div className="flex justify-end pb-6">
-              <ScrollCue />
-            </div>
-          </div>
+          
         </motion.div>
       </section>
     </>

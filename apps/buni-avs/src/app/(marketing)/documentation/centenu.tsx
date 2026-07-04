@@ -2,28 +2,6 @@
 
 import { useState, useRef, useCallback, useEffect, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  Search,
-  Copy,
-  Check,
-  ChevronRight,
-  Menu,
-  X,
-  ExternalLink,
-  BookOpen,
-  Hash,
-  ArrowLeft,
-  ArrowRight,
-  Sun,
-  Layers,
-  ChevronDown,
-  AlertCircle,
-  Info,
-  Lightbulb,
-  Terminal,
-  Sparkles,
-  FileCode2,
-} from 'lucide-react';
 
 // ══════════════════════════════════════════════════════════════════════════════
 // TYPES
@@ -161,8 +139,8 @@ function CodeBlock({ code, lang = 'tsx', id, title }: { code: string; lang?: str
           className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 font-mono text-[10px] font-semibold text-white/35 opacity-0 transition-all duration-200 group-hover:opacity-100 hover:bg-white/10 hover:text-white/70"
         >
           {copied === id
-            ? <><Check size={10} className="text-emerald-400" /> Copié</>
-            : <><Copy size={10} /> Copier</>}
+            ? <><i className="pi pi-check" style={{ fontSize: '10px', color: '#34d399' }} /> Copié</>
+            : <><i className="pi pi-copy" style={{ fontSize: '10px' }} /> Copier</>}
         </button>
       </div>
 
@@ -179,18 +157,17 @@ function CodeBlock({ code, lang = 'tsx', id, title }: { code: string; lang?: str
 
 function Callout({ type = 'info', title, children }: { type?: 'info' | 'tip' | 'warning' | 'danger'; title?: string; children: React.ReactNode }) {
   const conf = {
-    info:    { bg: 'rgba(42,74,107,0.08)', border: 'var(--doc-indigo)', icon: Info,         tc: 'var(--doc-indigo)',  label: title ?? 'Info' },
-    tip:     { bg: 'rgba(74,103,65,0.08)', border: 'var(--doc-ndop)',   icon: Lightbulb,    tc: 'var(--doc-ndop)',   label: title ?? 'Astuce' },
-    warning: { bg: 'rgba(212,160,23,0.08)', border: 'var(--doc-kente)', icon: AlertCircle,  tc: 'var(--doc-kente)',  label: title ?? 'Attention' },
-    danger:  { bg: 'rgba(192,87,62,0.09)', border: 'var(--doc-primary)', icon: AlertCircle, tc: 'var(--doc-primary)', label: title ?? 'Important' },
+    info:    { bg: 'rgba(42,74,107,0.08)', border: 'var(--doc-indigo)', icon: 'pi-info-circle',         tc: 'var(--doc-indigo)',  label: title ?? 'Info' },
+    tip:     { bg: 'rgba(74,103,65,0.08)', border: 'var(--doc-ndop)',   icon: 'pi-lightbulb',    tc: 'var(--doc-ndop)',   label: title ?? 'Astuce' },
+    warning: { bg: 'rgba(212,160,23,0.08)', border: 'var(--doc-kente)', icon: 'pi-exclamation-triangle',  tc: 'var(--doc-kente)',  label: title ?? 'Attention' },
+    danger:  { bg: 'rgba(192,87,62,0.09)', border: 'var(--doc-primary)', icon: 'pi-exclamation-triangle', tc: 'var(--doc-primary)', label: title ?? 'Important' },
   }[type];
-  const Icon = conf.icon;
   return (
     <div
       className="my-5 flex gap-3.5 rounded-r-xl px-4 py-4"
       style={{ background: conf.bg, borderLeft: `3px solid ${conf.border}`, border: `1px solid ${conf.border}33`, borderLeftWidth: 3 }}
     >
-      <Icon size={15} className="mt-0.5 shrink-0" style={{ color: conf.tc }} aria-hidden />
+      <i className={`pi ${conf.icon} mt-0.5 shrink-0`} style={{ fontSize: '15px', color: conf.tc }} aria-hidden />
       <div>
         <p className="mb-1.5 text-[9px] font-bold tracking-[0.18em] uppercase" style={{ color: conf.tc }}>{conf.label}</p>
         <div className="text-sm leading-relaxed" style={{ color: 'var(--doc-muted)' }}>{children}</div>
@@ -257,7 +234,7 @@ function SectionAnchor({ id, children }: { id: string; children: React.ReactNode
         style={{ color: 'var(--doc-hint)' }}
         aria-label={`Lien vers ${id}`}
       >
-        <Hash size={13} />
+        <i className="pi pi-hashtag" style={{ fontSize: '13px' }} />
       </a>
     </div>
   );
@@ -275,7 +252,7 @@ const IntroductionPage: React.FC = () => (
       <div className="relative px-8 py-10">
         <div className="mb-3 flex items-center gap-2">
           <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[9px] tracking-[0.18em] uppercase font-bold" style={{ background: 'rgba(192,87,62,0.2)', color: '#C0573E', border: '1px solid rgba(192,87,62,0.3)' }}>
-            <Sparkles size={8} /> v1.0 · Open Standard
+            <i className="pi pi-sparkles" style={{ fontSize: '8px' }} /> v1.0 · Open Standard
           </span>
         </div>
         <h1 className="font-display text-3xl font-black leading-tight" style={{ color: '#f5ebe0', letterSpacing: '-0.02em' }}>
@@ -787,7 +764,7 @@ const AddSvgPage: React.FC = () => (
 const DOC_SECTIONS: DocSection[] = [
   {
     id: 'getting-started', title: 'Démarrage',
-    icon: <Sparkles size={13} />,
+    icon: <i className="pi pi-sparkles" style={{ fontSize: '13px' }} />,
     pages: [
       { id: 'introduction', title: 'Introduction', content: IntroductionPage, toc: [{ id: 'philosophie', level: 2, label: 'Philosophie' }, { id: 'comparaison', level: 2, label: 'Comparaison' }] },
       { id: 'installation', title: 'Installation', content: InstallationPage, toc: [{ id: 'methode-cli', level: 2, label: 'CLI' }, { id: 'methode-npm', level: 2, label: 'npm' }, { id: 'methode-cdn', level: 2, label: 'CDN' }, { id: 'configuration', level: 2, label: 'Tailwind config' }, { id: 'globals', level: 2, label: 'globals.css' }] },
@@ -795,7 +772,7 @@ const DOC_SECTIONS: DocSection[] = [
   },
   {
     id: 'design-system', title: 'Design System',
-    icon: <Layers size={13} />,
+    icon: <i className="pi pi-layer-group" style={{ fontSize: '13px' }} />,
     pages: [
       { id: 'design-tokens', title: 'Tokens & Couleurs', content: DesignTokensPage, toc: [{ id: 'palette', level: 2, label: 'Palette' }, { id: 'css-variables', level: 2, label: 'CSS Variables' }, { id: 'typography', level: 2, label: 'Typographie' }] },
       { id: 'css-patterns', title: 'Motifs CSS', content: CssPatternsPage, toc: [{ id: 'patterns-list', level: 2, label: 'Catalogue' }, { id: 'patterns-usage', level: 2, label: 'Usages typiques' }] },
@@ -803,7 +780,7 @@ const DOC_SECTIONS: DocSection[] = [
   },
   {
     id: 'composants', title: 'Composants',
-    icon: <FileCode2 size={13} />,
+    icon: <i className="pi pi-file-code" style={{ fontSize: '13px' }} />,
     pages: [
       { id: 'button', title: 'Button', content: ButtonPage, toc: [{ id: 'btn-variantes', level: 2, label: 'Variantes' }, { id: 'btn-etats', level: 2, label: 'États' }, { id: 'btn-api', level: 2, label: 'API' }] },
       { id: 'svg-pattern', title: 'SvgPattern', content: SvgPatternPage, toc: [{ id: 'svg-registry-config', level: 2, label: 'Registre' }, { id: 'svg-usage-modes', level: 2, label: 'Usages' }, { id: 'svg-api', level: 2, label: 'API' }] },
@@ -811,7 +788,7 @@ const DOC_SECTIONS: DocSection[] = [
   },
   {
     id: 'svg-integration', title: 'Motifs SVG',
-    icon: <Sun size={13} />,
+    icon: <i className="pi pi-sun" style={{ fontSize: '13px' }} />,
     pages: [
       { id: 'add-svg', title: 'Ajouter vos SVG', content: AddSvgPage, toc: [{ id: 'step1-place', level: 2, label: 'Étape 1 — Placer' }, { id: 'step2-register', level: 2, label: 'Étape 2 — Registre' }, { id: 'step3-use', level: 2, label: 'Étape 3 — Utiliser' }] },
     ],
@@ -905,7 +882,7 @@ export default function DocumentationPage() {
           {/* Search */}
           <div className="p-3" style={{ borderBottom: '1px solid var(--doc-border)' }}>
             <div className="relative">
-              <Search size={12} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: 'var(--doc-hint)' }} />
+              <i className="pi pi-search absolute left-3 top-1/2 -translate-y-1/2" style={{ fontSize: '12px', color: 'var(--doc-hint)' }} />
               <input
                 type="search"
                 value={search}
@@ -921,7 +898,7 @@ export default function DocumentationPage() {
               />
               {search && (
                 <button onClick={() => setSearch('')} className="absolute right-2.5 top-1/2 -translate-y-1/2" style={{ color: 'var(--doc-hint)' }}>
-                  <X size={11} />
+                  <i className="pi pi-times" style={{ fontSize: '11px' }} />
                 </button>
               )}
             </div>
@@ -943,7 +920,7 @@ export default function DocumentationPage() {
                       {section.icon}
                       {section.title}
                     </span>
-                    <ChevronDown size={11} className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
+                    <i className={`pi pi-chevron-down transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} style={{ fontSize: '11px' }} />
                   </button>
 
                   <AnimatePresence initial={false}>
@@ -968,7 +945,7 @@ export default function DocumentationPage() {
                                 }
                                 aria-current={isActive ? 'page' : undefined}
                               >
-                                <ChevronRight size={10} className="shrink-0" style={{ opacity: isActive ? 0.5 : 0.3 }} />
+                                <i className="pi pi-chevron-right shrink-0" style={{ fontSize: '10px', opacity: isActive ? 0.5 : 0.3 }} />
                                 {page.title}
                               </button>
 
@@ -1017,9 +994,9 @@ export default function DocumentationPage() {
                 onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--doc-primary)')}
                 onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--doc-hint)')}
               >
-                <Icon size={12} />
+                <i className={`pi ${conf.icon}`} style={{ fontSize: '12px' }} />
                 {label}
-                {href.startsWith('http') && <ExternalLink size={9} className="ml-auto opacity-40" />}
+                {href.startsWith('http') && <i className="pi pi-external-link ml-auto opacity-40" style={{ fontSize: '9px' }} />}
               </a>
             ))}
           </div>
@@ -1040,12 +1017,12 @@ export default function DocumentationPage() {
               className="rounded-xl p-1.5 transition-colors"
               style={{ color: 'var(--doc-muted)' }}
             >
-              <Menu size={17} />
+              <i className="pi pi-bars" style={{ fontSize: '17px' }} />
             </button>
             <div className="flex items-center gap-1.5 overflow-hidden text-xs" style={{ color: 'var(--doc-hint)' }}>
-              <BookOpen size={11} />
+              <i className="pi pi-book" style={{ fontSize: '11px' }} />
               <span className="shrink-0">Docs</span>
-              <ChevronRight size={9} />
+              <i className="pi pi-chevron-right" style={{ fontSize: '9px' }} />
               <span className="truncate font-semibold" style={{ color: 'var(--doc-text)' }}>{activePage?.title}</span>
             </div>
           </div>
@@ -1055,9 +1032,9 @@ export default function DocumentationPage() {
             className="hidden h-10 shrink-0 items-center gap-1.5 px-8 text-[11px] lg:flex"
             style={{ borderBottom: '1px solid var(--doc-border)', color: 'var(--doc-hint)', background: 'var(--doc-sidebar)' }}
           >
-            <Terminal size={11} />
+            <i className="pi pi-terminal" style={{ fontSize: '11px' }} />
             <span>Docs</span>
-            <ChevronRight size={9} />
+            <i className="pi pi-chevron-right" style={{ fontSize: '9px' }} />
             <span className="font-semibold" style={{ color: 'var(--doc-text)' }}>{activePage?.title}</span>
           </div>
 
@@ -1091,7 +1068,7 @@ export default function DocumentationPage() {
                       onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--doc-primary)'; e.currentTarget.style.color = 'var(--doc-primary)'; }}
                       onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--doc-border)'; e.currentTarget.style.color = 'var(--doc-muted)'; }}
                     >
-                      <ArrowLeft size={13} className="shrink-0" />
+                      <i className="pi pi-arrow-left shrink-0" style={{ fontSize: '13px' }} />
                       <span className="truncate">{prevPage.title}</span>
                     </button>
                   ) : <div />}
@@ -1105,7 +1082,7 @@ export default function DocumentationPage() {
                       onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--doc-border)'; e.currentTarget.style.color = 'var(--doc-muted)'; }}
                     >
                       <span className="truncate">{nextPage.title}</span>
-                      <ArrowRight size={13} className="shrink-0" />
+                      <i className="pi pi-arrow-right shrink-0" style={{ fontSize: '13px' }} />
                     </button>
                   )}
                 </div>

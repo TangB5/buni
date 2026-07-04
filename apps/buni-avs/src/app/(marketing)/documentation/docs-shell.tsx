@@ -14,26 +14,27 @@ export function DocsShell({ children, showSidebar = true }: { children: React.Re
   const crumbs = (pathname ?? '').split('/').filter(Boolean);
 
   return (
-    <div className="flex min-h-screen bg-avs-secondary">
+    <div className="flex min-h-screen" style={{ background: 'var(--doc-bg, #f8f6f2)' }}>
       <ReadingProgress />
       {showSidebar && <DocsSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />}
 
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Topbar */}
-        <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center gap-3 border-b border-avs-accent/9 bg-avs-secondary/90 px-4 backdrop-blur lg:px-8">
+        <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center gap-3 px-4 backdrop-blur lg:px-8" style={{ borderBottom: '1px solid var(--doc-border, rgba(29,29,27,0.09))', background: 'var(--doc-surface, #ffffff)' }}>
           <button
             onClick={() => setSidebarOpen(true)}
-            className="rounded-xl p-1.5 text-avs-accent/55 lg:hidden"
+            className="rounded-xl p-1.5 lg:hidden"
+            style={{ color: 'var(--doc-muted, rgba(29,29,27,0.52))' }}
             aria-label="Ouvrir la navigation"
           >
             <i className="pi pi-bars" style={{ fontSize: '17px' }} />
           </button>
 
-          <nav aria-label="Fil d'ariane" className="hidden items-center gap-1.5 text-[11px] text-avs-accent/32 sm:flex">
+          <nav aria-label="Fil d'ariane" className="hidden items-center gap-1.5 text-[11px] sm:flex" style={{ color: 'var(--doc-hint, rgba(29,29,27,0.32))' }}>
             {crumbs.map((c, i) => (
               <span key={i} className="flex items-center gap-1.5">
                 {i > 0 && <i className="pi pi-chevron-right" style={{ fontSize: '8px' }} aria-hidden />}
-                <span className={i === crumbs.length - 1 ? 'font-semibold capitalize text-avs-accent' : 'capitalize'}>
+                <span className={i === crumbs.length - 1 ? 'font-semibold capitalize' : 'capitalize'} style={{ color: i === crumbs.length - 1 ? 'var(--doc-text, #1D1D1B)' : 'inherit' }}>
                   {c.replace(/-/g, ' ')}
                 </span>
               </span>

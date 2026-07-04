@@ -1,5 +1,6 @@
 import { DocPageTemplate } from '../../doc-page-template';
 import { NAV_SPACES } from '../../nav-data';
+import { ReferenceExplanation } from './reference-content';
 
 const space = NAV_SPACES.find(s => s.slug === 'tokens')!;
 
@@ -14,7 +15,7 @@ export default function ReferencePage() {
       space={space}
       title="Référence des tokens"
       summary="Liste complète des design tokens utilisés dans AVS : couleurs, espacements, typographie, etc."
-      explanation={<p>Contenu à venir.</p>}
+      explanation={<ReferenceExplanation/>}
       toc={[]}
     />
   );

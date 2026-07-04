@@ -599,8 +599,8 @@ export default function HomePage() {
         <section aria-labelledby="cta-title" className="avs-pattern-kente-royale relative overflow-hidden ">
           {/* Multi-stop directional gradient — justified inline */}
           <div
-            className="absolute inset-0 bg-avs-accent"
-            style={{ background: 'linear-gradient(135deg,rgba(10,8,6,.97) 0%,rgba(26,18,8,.90) 60%,rgba(50,25,10,.84) 100%)' }}
+            className="absolute inset-0 bg-linear-gradient(to bottom right,rgba(10,8,6,.92) 0%,rgba(10,8,6,.08) 55%,transparent 100%)"
+            
             aria-hidden
           />
 

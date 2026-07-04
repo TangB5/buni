@@ -48,8 +48,8 @@ export function ReadingProgress() {
   const scaleX = useSpring(scrollYProgress, { stiffness: 280, damping: 32, restDelta: 0.001 });
   return (
     <motion.div
-      style={{ scaleX }}
-      className="fixed left-0 right-0 top-0 z-[60] h-[2px] origin-left bg-avs-primary"
+      style={{ scaleX, background: 'var(--doc-primary, #C0573E)' }}
+      className="fixed left-0 right-0 top-0 z-[60] h-[2px] origin-left"
       aria-hidden
     />
   );
@@ -62,28 +62,31 @@ export function ReadingProgress() {
 export function CodeBlock({ code, lang = 'tsx', id, title }: { code: string; lang?: string; id: string; title?: string }) {
   const { copied, copy } = useCopy();
   return (
-    <div className="group my-5 overflow-hidden rounded-xl border border-avs-secondary/6 shadow-avs-md">
-      <div className="flex items-center justify-between bg-avs-accent px-4 py-2.5">
+    <div className="group my-5 overflow-hidden rounded-xl" style={{ border: '1px solid rgba(255,255,255,0.06)', boxShadow: '0 8px 32px rgba(0,0,0,0.18)' }}>
+      <div className="flex items-center justify-between px-4 py-2.5" style={{ background: 'var(--doc-code-header, #1a1a18)' }}>
         <div className="flex items-center gap-3">
           <div className="flex gap-1.5" aria-hidden>
             <span className="h-2.5 w-2.5 rounded-full bg-red-500/70" />
             <span className="h-2.5 w-2.5 rounded-full bg-amber-400/70" />
             <span className="h-2.5 w-2.5 rounded-full bg-emerald-500/70" />
           </div>
-          <span className="font-mono text-[10px] tracking-widest text-avs-secondary/30">{title ?? lang.toUpperCase()}</span>
+          <span className="font-mono text-[10px] tracking-widest text-white/30">
+            {title ?? lang.toUpperCase()}
+          </span>
         </div>
         <button
           onClick={() => void copy(code, id)}
-          className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 font-mono text-[10px] font-semibold text-avs-secondary/35 opacity-0 transition-all duration-200 group-hover:opacity-100 hover:bg-avs-secondary/10 hover:text-avs-secondary/70"
+          className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 font-mono text-[10px] font-semibold text-white/35 opacity-0 transition-all duration-200 group-hover:opacity-100 hover:bg-white/10 hover:text-white/70"
         >
-          {copied === id ? (
-            <><i className="pi pi-check" style={{ fontSize: '10px', color: '#34d399' }} /> Copié</>
-          ) : (
-            <><i className="pi pi-copy" style={{ fontSize: '10px' }} /> Copier</>
-          )}
+          {copied === id
+            ? <><i className="pi pi-check" style={{ fontSize: '10px', color: '#34d399' }} /> Copié</>
+            : <><i className="pi pi-copy" style={{ fontSize: '10px' }} /> Copier</>}
         </button>
       </div>
-      <pre className="doc-scroll overflow-x-auto bg-avs-accent px-5 py-5 font-mono text-[12.5px] leading-[1.8] text-avs-secondary/80">
+      <pre
+        className="doc-scroll overflow-x-auto px-5 py-5 font-mono text-[12.5px] leading-[1.8]"
+        style={{ background: 'var(--doc-code-bg, #141412)', color: 'var(--doc-code-text, #d4d0c8)' }}
+      >
         <code>{code}</code>
       </pre>
     </div>
@@ -95,20 +98,23 @@ export function CodeBlock({ code, lang = 'tsx', id, title }: { code: string; lan
 // ─────────────────────────────────────────────────────────────────────────────
 
 const CALLOUT_CONF = {
-  info:    { bg: 'bg-avs-indigo/8',  border: 'border-avs-indigo',  icon: 'pi pi-info-circle',          text: 'text-avs-indigo',  label: 'Info' },
-  tip:     { bg: 'bg-avs-ndop/8',    border: 'border-avs-ndop',    icon: 'pi pi-lightbulb',            text: 'text-avs-ndop',    label: 'Astuce' },
-  warning: { bg: 'bg-avs-kente/8',   border: 'border-avs-kente',   icon: 'pi pi-exclamation-triangle', text: 'text-avs-kente',   label: 'Attention' },
-  danger:  { bg: 'bg-avs-primary/9', border: 'border-avs-primary', icon: 'pi pi-exclamation-circle',   text: 'text-avs-primary', label: 'Important' },
+  info:    { bg: 'rgba(42,74,107,0.08)', border: 'var(--doc-indigo, #2A4A6B)',  icon: 'pi-info-circle',         tc: 'var(--doc-indigo, #2A4A6B)',  label: 'Info' },
+  tip:     { bg: 'rgba(74,103,65,0.08)', border: 'var(--doc-ndop, #4A6741)',    icon: 'pi-lightbulb',            tc: 'var(--doc-ndop, #4A6741)',    label: 'Astuce' },
+  warning: { bg: 'rgba(212,160,23,0.08)', border: 'var(--doc-kente, #D4A017)',   icon: 'pi-exclamation-triangle', tc: 'var(--doc-kente, #D4A017)',   label: 'Attention' },
+  danger:  { bg: 'rgba(192,87,62,0.09)',  border: 'var(--doc-primary, #C0573E)', icon: 'pi-exclamation-circle',   tc: 'var(--doc-primary, #C0573E)', label: 'Important' },
 } as const;
 
 export function Callout({ type = 'info', title, children }: { type?: keyof typeof CALLOUT_CONF; title?: string; children: React.ReactNode }) {
-  const { bg, border, icon, text, label } = CALLOUT_CONF[type];
+  const { bg, border, icon, tc, label } = CALLOUT_CONF[type];
   return (
-    <div className={`my-5 flex gap-3.5 rounded-r-xl px-4 py-4 ${bg} border border-l-[3px] ${border}`}>
-      <i className={`${icon} mt-0.5 shrink-0 ${text}`} style={{ fontSize: '15px' }} aria-hidden />
+    <div
+      className="my-5 flex gap-3.5 rounded-r-xl px-4 py-4"
+      style={{ background: bg, borderLeft: `3px solid ${border}`, border: `1px solid ${border}33`, borderLeftWidth: 3 }}
+    >
+      <i className={`${icon} mt-0.5 shrink-0`} style={{ fontSize: '15px', color: tc }} aria-hidden />
       <div>
-        <p className={`mb-1.5 text-[9px] font-bold uppercase tracking-[0.18em] ${text}`}>{title ?? label}</p>
-        <div className="text-sm leading-relaxed text-avs-accent/52">{children}</div>
+        <p className="mb-1.5 text-[9px] font-bold uppercase tracking-[0.18em]" style={{ color: tc }}>{title ?? label}</p>
+        <div className="text-sm leading-relaxed" style={{ color: 'var(--doc-muted, rgba(29,29,27,0.52))' }}>{children}</div>
       </div>
     </div>
   );
@@ -120,22 +126,23 @@ export function Callout({ type = 'info', title, children }: { type?: keyof typeo
 
 export function PropTable({ rows }: { rows: [string, string, string, string][] }) {
   return (
-    <div className="my-5 overflow-x-auto rounded-xl border border-avs-accent/9">
+    <div className="my-5 overflow-x-auto rounded-xl" style={{ border: '1px solid var(--doc-border, rgba(29,29,27,0.09))' }}>
       <table className="w-full min-w-[560px] text-xs">
         <thead>
-          <tr className="border-b border-avs-accent/9 bg-avs-primary/10">
+          <tr style={{ borderBottom: '1px solid var(--doc-border, rgba(29,29,27,0.09))', background: 'var(--doc-primary-10, rgba(192,87,62,0.10))' }}>
             {['Prop', 'Type', 'Défaut', 'Description'].map((h) => (
-              <th key={h} className="px-4 py-2.5 text-left text-[9px] font-bold uppercase tracking-wider text-avs-accent/32">{h}</th>
+              <th key={h} className="px-4 py-2.5 text-left font-bold tracking-wider uppercase" style={{ color: 'var(--doc-hint, rgba(29,29,27,0.32))', fontSize: '9px' }}>{h}</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {rows.map(([prop, type, def, desc], i) => (
-            <tr key={prop} className={`transition-colors hover:bg-avs-primary/10 ${i < rows.length - 1 ? 'border-b border-avs-accent/9' : ''}`}>
-              <td className="px-4 py-3 font-mono font-bold text-avs-primary">{prop}</td>
-              <td className="px-4 py-3 font-mono text-[11px] text-avs-indigo">{type}</td>
-              <td className="px-4 py-3 font-mono text-[11px] text-avs-accent/32">{def}</td>
-              <td className="px-4 py-3 text-[12px] leading-snug text-avs-accent/52">{desc}</td>
+            <tr key={prop} style={{ borderBottom: i < rows.length - 1 ? '1px solid var(--doc-border, rgba(29,29,27,0.09))' : 'none' }}
+              className="transition-colors hover:bg-[var(--doc-primary-10,rgba(192,87,62,0.10))]">
+              <td className="px-4 py-3 font-mono font-bold" style={{ color: 'var(--doc-primary, #C0573E)' }}>{prop}</td>
+              <td className="px-4 py-3 font-mono text-[11px]" style={{ color: 'var(--doc-indigo, #2A4A6B)' }}>{type}</td>
+              <td className="px-4 py-3 font-mono text-[11px]" style={{ color: 'var(--doc-hint, rgba(29,29,27,0.32))' }}>{def}</td>
+              <td className="px-4 py-3 text-[12px] leading-snug" style={{ color: 'var(--doc-muted, rgba(29,29,27,0.52))' }}>{desc}</td>
             </tr>
           ))}
         </tbody>
@@ -150,14 +157,18 @@ export function PropTable({ rows }: { rows: [string, string, string, string][] }
 
 export function LiveDemo({ children, label = 'Démonstration live' }: { children: React.ReactNode; label?: string }) {
   return (
-    <div className="my-5 overflow-hidden rounded-xl border border-avs-accent/9">
-      <div className="flex items-center gap-2 border-b border-avs-accent/9 bg-avs-primary/10 px-4 py-2.5">
-        <span className="h-2 w-2 rounded-full bg-avs-primary" aria-hidden />
-        <span className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-avs-accent/32">{label}</span>
+    <div className="my-5 overflow-hidden rounded-xl" style={{ border: '1px solid var(--doc-border, rgba(29,29,27,0.09))' }}>
+      <div className="flex items-center gap-2 px-4 py-2.5" style={{ background: 'var(--doc-primary-10, rgba(192,87,62,0.10))', borderBottom: '1px solid var(--doc-border, rgba(29,29,27,0.09))' }}>
+        <span className="h-2 w-2 rounded-full" style={{ background: 'var(--doc-primary, #C0573E)' }} aria-hidden />
+        <span className="font-mono text-[9px] font-bold uppercase tracking-[0.18em]" style={{ color: 'var(--doc-hint, rgba(29,29,27,0.32))' }}>{label}</span>
       </div>
       <div
-        className="bg-avs-secondary p-8"
-        style={{ backgroundImage: 'radial-gradient(circle, rgba(29,29,27,0.09) 1px, transparent 1px)', backgroundSize: '16px 16px' }}
+        className="p-8"
+        style={{
+          background: 'var(--doc-surface, #ffffff)',
+          backgroundImage: 'radial-gradient(circle, var(--doc-border) 1px, transparent 1px)',
+          backgroundSize: '16px 16px',
+        }}
       >
         {children}
       </div>
@@ -173,7 +184,12 @@ export function SectionAnchor({ id, children }: { id: string; children: React.Re
   return (
     <div id={id} className="group flex scroll-mt-28 items-center gap-2">
       {children}
-      <a href={`#${id}`} className="text-avs-accent/32 opacity-0 transition-opacity group-hover:opacity-100" aria-label={`Lien vers ${id}`}>
+      <a
+        href={`#${id}`}
+        className="opacity-0 transition-opacity group-hover:opacity-100"
+        style={{ color: 'var(--doc-hint, rgba(29,29,27,0.32))' }}
+        aria-label={`Lien vers ${id}`}
+      >
         <i className="pi pi-hashtag" style={{ fontSize: '13px' }} />
       </a>
     </div>

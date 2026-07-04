@@ -74,12 +74,15 @@ export function CommandPalette() {
       {/* Trigger — sits in the topbar / homepage hero */}
       <button
         onClick={() => setOpen(true)}
-        className="flex w-full items-center gap-3 rounded-xl border border-avs-accent/10 bg-avs-secondary px-4 py-2.5 text-left text-avs-accent/40 shadow-sm transition-colors hover:border-avs-primary/30"
+        className="flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-left shadow-sm transition-colors"
+        style={{ border: '1px solid var(--doc-border, rgba(29,29,27,0.09))', background: 'var(--doc-surface, #ffffff)', color: 'var(--doc-hint, rgba(29,29,27,0.32))' }}
+        onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--doc-primary, #C0573E)'; }}
+        onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--doc-border, rgba(29,29,27,0.09))'; }}
         aria-label="Ouvrir la recherche"
       >
-        <i className="pi pi-search text-[13px]" aria-hidden />
+        <i className="pi pi-search" style={{ fontSize: '13px' }} aria-hidden />
         <span className="flex-1 text-sm">Rechercher…</span>
-        <kbd className="rounded-md border border-avs-accent/12 bg-avs-accent/5 px-1.5 py-0.5 font-mono text-[10px] text-avs-accent/40">⌘K</kbd>
+        <kbd className="rounded-md px-1.5 py-0.5 font-mono text-[10px]" style={{ border: '1px solid var(--doc-border, rgba(29,29,27,0.09))', background: 'var(--doc-primary-10, rgba(192,87,62,0.10))', color: 'var(--doc-hint, rgba(29,29,27,0.32))' }}>⌘K</kbd>
       </button>
 
       <AnimatePresence>
@@ -90,7 +93,8 @@ export function CommandPalette() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
-              className="fixed inset-0 z-[90] bg-avs-accent/60 backdrop-blur-sm"
+              className="fixed inset-0 z-[90] backdrop-blur-sm"
+              style={{ background: 'var(--doc-hint, rgba(29,29,27,0.32))' }}
               onClick={() => setOpen(false)}
               aria-hidden
             />
@@ -102,40 +106,43 @@ export function CommandPalette() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -12, scale: 0.98 }}
               transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-              className="fixed left-1/2 top-[14vh] z-[91] w-[92vw] max-w-xl -translate-x-1/2 overflow-hidden rounded-2xl border border-avs-accent/10 bg-avs-secondary shadow-2xl"
+              className="fixed left-1/2 top-[14vh] z-[91] w-[92vw] max-w-xl -translate-x-1/2 overflow-hidden rounded-2xl shadow-2xl"
+              style={{ border: '1px solid var(--doc-border, rgba(29,29,27,0.09))', background: 'var(--doc-surface, #ffffff)' }}
             >
-              <div className="flex items-center gap-3 border-b border-avs-accent/9 px-5 py-4">
-                <i className="pi pi-search text-avs-accent/40" aria-hidden />
+              <div className="flex items-center gap-3 px-5 py-4" style={{ borderBottom: '1px solid var(--doc-border, rgba(29,29,27,0.09))' }}>
+                <i className="pi pi-search" style={{ fontSize: '13px', color: 'var(--doc-hint, rgba(29,29,27,0.32))' }} aria-hidden />
                 <input
                   ref={inputRef}
                   value={query}
                   onChange={(e) => { setQuery(e.target.value); setHighlight(0); }}
                   onKeyDown={onKeyDown}
                   placeholder="Rechercher dans la documentation…"
-                  className="flex-1 bg-transparent text-[15px] text-avs-accent outline-none placeholder:text-avs-accent/30"
+                  className="flex-1 bg-transparent text-[15px] outline-none"
+                  style={{ color: 'var(--doc-text, #1D1D1B)' }}
                 />
-                <kbd className="rounded-md border border-avs-accent/12 px-1.5 py-0.5 font-mono text-[10px] text-avs-accent/40">Esc</kbd>
+                <kbd className="rounded-md px-1.5 py-0.5 font-mono text-[10px]" style={{ border: '1px solid var(--doc-border, rgba(29,29,27,0.09))', background: 'var(--doc-primary-10, rgba(192,87,62,0.10))', color: 'var(--doc-hint, rgba(29,29,27,0.32))' }}>Esc</kbd>
               </div>
 
-              <ul className="doc-scroll max-h-[50vh] overflow-y-auto py-2" role="listbox">
+              <ul className="doc-scroll max-h-[50vh] overflow-y-auto py-2" role="listbox" style={{ scrollbarWidth: 'thin', scrollbarColor: 'var(--doc-border-md, rgba(29,29,27,0.14)) transparent' }}>
                 {results.length === 0 && (
-                  <li className="px-5 py-8 text-center text-sm text-avs-accent/35">Aucun résultat pour « {query} »</li>
+                  <li className="px-5 py-8 text-center text-sm" style={{ color: 'var(--doc-hint, rgba(29,29,27,0.32))' }}>Aucun résultat pour « {query} »</li>
                 )}
                 {results.map((r, i) => (
                   <li key={r.href} role="option" aria-selected={i === highlight}>
                     <button
                       onClick={() => go(r.href)}
                       onMouseEnter={() => setHighlight(i)}
-                      className={`flex w-full items-center gap-3 px-5 py-2.5 text-left transition-colors ${i === highlight ? 'bg-avs-primary/10' : ''}`}
+                      className="flex w-full items-center gap-3 px-5 py-2.5 text-left transition-colors"
+                      style={i === highlight ? { background: 'var(--doc-primary-10, rgba(192,87,62,0.10))' } : {}}
                     >
                       <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg" style={{ background: `${r.color}14`, color: r.color }}>
                         <i className={`pi pi-${r.icon}`} style={{ fontSize: '12px' }} />
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="block truncate text-sm font-medium text-avs-accent">{r.title}</span>
-                        <span className="block truncate text-[11px] text-avs-accent/35">{r.group}</span>
+                        <span className="block truncate text-sm font-medium" style={{ color: 'var(--doc-text, #1D1D1B)' }}>{r.title}</span>
+                        <span className="block truncate text-[11px]" style={{ color: 'var(--doc-hint, rgba(29,29,27,0.32))' }}>{r.group}</span>
                       </span>
-                      <i className="pi pi-arrow-right text-[10px] text-avs-accent/25" aria-hidden />
+                      <i className="pi pi-arrow-right" style={{ fontSize: '10px', color: 'var(--doc-hint, rgba(29,29,27,0.32))' }} aria-hidden />
                     </button>
                   </li>
                 ))}
