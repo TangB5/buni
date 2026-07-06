@@ -21,7 +21,7 @@ export function InstallationExplanation() {
       <h3>Méthode 1 — CLI (recommandé)</h3>
       <p>La méthode CLI est la plus simple pour initialiser AVS dans votre projet.</p>
       <CodeBlock id="cli-init" lang="bash" title="Terminal" code={`# Initialiser AVS dans un projet Next.js existant
-npx @avs/cli init
+npx @buni/cli init
 
 # Répondre aux questions :
 # ✔ Chemin src/ ? › src
@@ -30,12 +30,12 @@ npx @avs/cli init
 # ✔ Ajouter le design system complet ? › Oui`} />
 
       <CodeBlock id="cli-add" lang="bash" title="Terminal" code={`# Ajouter des composants individuellement
-npx @avs/cli add button
-npx @avs/cli add badge
-npx @avs/cli add pattern-card
+npx @buni/cli add button
+npx @buni/cli add badge
+npx @buni/cli add card
 
 # Lister tous les composants disponibles
-npx @avs/cli list`} />
+npx @buni/cli list`} />
 
       <h3>Méthode 2 — Package npm</h3>
       <p>Installez les packages manuellement si vous préférez un contrôle total.</p>
@@ -56,22 +56,21 @@ npx @avs/cli list`} />
         ))}
       </div>
 
-      <CodeBlock id="npm-install" lang="bash" title="Terminal" code={`${cmds[pkgMgr]} @avs/ui @avs/icons
-${cmds[pkgMgr]} @radix-ui/react-slot @radix-ui/react-dialog
-${cmds[pkgMgr]} framer-motion clsx tailwind-merge class-variance-authority`} />
+      <CodeBlock id="npm-install" lang="bash" title="Terminal" code={`${cmds[pkgMgr]} @radix-ui/react-slot @radix-ui/react-dialog
+${cmds[pkgMgr]} framer-motion clsx tailwind-merge class-variance-authority lucide-react`} />
 
       <h3>Méthode 3 — CDN (HTML pur)</h3>
       <p>Pour les projets sans build step, utilisez le CDN.</p>
       <CodeBlock id="cdn" lang="html" title="index.html" code={`<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <link rel="stylesheet" href="https://cdn.avs-standard.com/ui/latest/avs-ui.min.css" />
+  <link rel="stylesheet" href="https://cdn.buni-standard.com/ui/latest/buni-ui.min.css" />
 </head>
 <body>
-  <avs-button variant="primary">Cliquez ici</avs-button>
-  <img src="https://cdn.avs-standard.com/icons/v1/ndop-bamoum.svg"
+  <buni-button variant="primary">Cliquez ici</buni-button>
+  <img src="https://cdn.buni-standard.com/icons/v1/ndop-bamoum.svg"
        alt="Ndop Bamoum" width="64" height="64" />
-  <script src="https://cdn.avs-standard.com/ui/latest/avs-ui.min.js"></script>
+  <script src="https://cdn.buni-standard.com/ui/latest/buni-ui.min.js"></script>
 </body>
 </html>`} />
 
@@ -105,15 +104,7 @@ export default config;`} />
 @tailwind utilities;
 
 @import '../theme/tokens/avs-tokens.css';
-@import '../theme/patterns/patterns.css';
-
-@layer components {
-  .avs-btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-xl
-           bg-avs-primary px-5 py-2.5 text-sm font-bold text-white
-           shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all;
-  }
-}`} />
+@import '../theme/patterns/patterns.css';`} />
     </>
   );
 }

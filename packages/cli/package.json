@@ -1,0 +1,30 @@
+{
+  "name": "@buni/cli",
+  "version": "0.0.1",
+  "description": "CLI for Buni Design System - Copy & Paste components to your project",
+  "type": "module",
+  "bin": {
+    "buni": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "commander": "^12.0.0",
+    "fs-extra": "^11.2.0",
+    "inquirer": "^9.2.0",
+    "ora": "^8.0.0",
+    "chalk": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/inquirer": "^9.0.7",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.4.5"
+  }
+}

@@ -179,42 +179,7 @@ function FormatChip({
   );
 }
 
-function CountryMarquee() {
-  const list = [...COUNTRIES, ...COUNTRIES];
-  return (
-    <div
-      className="relative overflow-hidden border-t"
-      style={{ borderColor: 'var(--hp-border)' }}
-      aria-hidden
-    >
-      <div className="avs-marquee-track flex w-max gap-8 py-3">
-        {list.map((c, i) => (
-          <span
-            key={`${c}-${i}`}
-            className="font-mono text-[10px] uppercase tracking-[.22em] whitespace-nowrap"
-            style={{ color: 'var(--hp-hint)' }}
-          >
-            {c}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-}
 
-function ScrollCue() {
-  return (
-    <div className="flex items-center gap-2" style={{ color: 'var(--hp-hint)' }}>
-      <span className="font-mono text-[9px] uppercase tracking-[.22em]">Scroll</span>
-      <motion.span
-        animate={{ y: [0, 4, 0] }}
-        transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
-      >
-        <MoveDown size={12} />
-      </motion.span>
-    </div>
-  );
-}
 
 // ── Signature element: a live, self-playing inspector of the system itself ──
 function PatternInspector({

@@ -37,7 +37,7 @@ const reveal = {
 function Block({ id, heading, children }: { id: string; heading: string; children: React.ReactNode }) {
   return (
     <motion.section {...reveal} id={id} aria-labelledby={`${id}-h`} className="scroll-mt-24 py-10 first:pt-0" style={{ borderTop: '1px solid var(--doc-border, rgba(29,29,27,0.09))' }}>
-      <h2 id={`${id}-h`} className="font-display mb-4 text-xl font-bold" style={{ letterSpacing: '-0.01em', color: 'var(--doc-text, #1D1D1B)', fontFamily: 'var(--font-display, Georgia, serif)' }}>
+      <h2 id={`${id}-h`} className="font-display mb-4 text-xl font-bold text-avs-accent" style={{ letterSpacing: '-0.01em', fontFamily: 'var(--font-display, Georgia, serif)' }}>
         {heading}
       </h2>
       <div className="avs-prose">{children}</div>
@@ -63,13 +63,13 @@ export function DocPageTemplate({
             {space.label}
           </span>
         </div>
-        <h1 className="font-display font-black leading-tight" style={{ fontSize: 'clamp(1.75rem,3.4vw,2.75rem)', letterSpacing: '-0.02em', color: 'var(--doc-text, #1D1D1B)', fontFamily: 'var(--font-display, Georgia, serif)' }}>
+        <h1 className="font-display font-black leading-tight text-avs-accent" style={{ fontSize: 'clamp(1.75rem,3.4vw,2.75rem)', letterSpacing: '-0.02em', fontFamily: 'var(--font-display, Georgia, serif)' }}>
           {title}
         </h1>
       </motion.div>
 
       {/* ── Résumé ───────────────────────────────────────────────────── */}
-      <motion.p {...reveal} className="mt-5 max-w-2xl text-[15px] leading-relaxed" style={{ color: 'var(--doc-muted, rgba(29,29,27,0.52))' }}>
+      <motion.p {...reveal} className="mt-5 max-w-2xl text-[15px] leading-relaxed text-avs-accent/52" >
         {summary}
       </motion.p>
 

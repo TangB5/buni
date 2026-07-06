@@ -1,6 +1,7 @@
 'use client';
 
-import { LiveDemo, CodeBlock, Callout } from "../doc-primitives";
+import { LiveDemo, CodeBlock, Callout } from "../../doc-primitives";
+
 
 
 

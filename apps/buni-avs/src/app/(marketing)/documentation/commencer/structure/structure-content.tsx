@@ -1,18 +1,24 @@
-export const StructureContent = {
-  Why: () => (
+'use client';
+
+import { CodeBlock } from '../../doc-primitives';
+
+export function StructureWhy() {
+  return (
     <p>
       Une structure de projet bien définie facilite la collaboration, la maintenance et l'évolutivité du design system.
       AVS utilise Nx pour gérer efficacement ses dépendances et builds.
     </p>
-  ),
-  Explanation: () => (
+  );
+}
+
+export function StructureExplanation() {
+  return (
     <>
       <h3>Architecture Monorepo</h3>
       <p>AVS utilise une architecture monorepo avec Nx pour orchestrer les builds, tests et dépendances entre les différents packages.</p>
 
       <h3>Organisation des dossiers</h3>
-      <pre className="bg-avs-accent/5 p-4 rounded-lg text-xs font-mono overflow-x-auto">
-{`buni/
+      <CodeBlock id="folder-structure" lang="bash" code={`buni/
 ├── apps/
 │   └── buni-avs/          # Application Next.js principale
 │       ├── src/
@@ -29,17 +35,29 @@ export const StructureContent = {
 │   ├── utils/             # Utilitaires partagés
 │   ├── config/            # Configuration partagée
 │   └── theme/             # Thème et styles
-└── tools/                 # Scripts et outils de build`}
-      </pre>
+└── tools/                 # Scripts et outils de build`} />
 
       <h3>Principaux packages</h3>
-      <ul>
-        <li><strong>@buni/ui</strong> — Bibliothèque de composants React (Button, Card, Dialog, etc.)</li>
-        <li><strong>@buni/tokens</strong> — Design tokens CSS (couleurs, typographie, espacements)</li>
-        <li><strong>@buni/patterns</strong> — Motifs CSS et SVG africains</li>
-        <li><strong>@buni/auth</strong> — Système d'authentification</li>
-        <li><strong>@buni/api</strong> — Client API avec Axios</li>
-      </ul>
+      <div className="my-5 grid gap-3 sm:grid-cols-2">
+        {[
+          { name: '@buni/ui', desc: 'Bibliothèque de composants React (Button, Card, Dialog, etc.)' },
+          { name: '@buni/tokens', desc: 'Design tokens CSS (couleurs, typographie, espacements)' },
+          { name: '@buni/patterns', desc: 'Motifs CSS et SVG africains' },
+          { name: '@buni/auth', desc: 'Système d\'authentification' },
+          { name: '@buni/api', desc: 'Client API avec Axios' },
+          { name: '@buni/analytics', desc: 'Analytics et tracking' },
+        ].map(({ name, desc }) => (
+          <div key={name} className="rounded-xl p-4 transition-colors" style={{ border: '1px solid var(--doc-border, rgba(29,29,27,0.09))', background: 'var(--doc-surface, #ffffff)' }}>
+            <p className="font-mono text-xs font-bold" style={{ color: 'var(--doc-primary, #C0573E)' }}>{name}</p>
+            <p className="mt-1 text-xs leading-relaxed" style={{ color: 'var(--doc-hint, rgba(29,29,27,0.32))', marginBottom: 0 }}>{desc}</p>
+          </div>
+        ))}
+      </div>
     </>
-  ),
+  );
+}
+
+export const StructureContent = {
+  Why: StructureWhy,
+  Explanation: StructureExplanation,
 };

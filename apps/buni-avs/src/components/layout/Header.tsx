@@ -344,6 +344,16 @@ function NavDropdown({ item, onPremiumClick, onItemClick }: NavDropdownProps) {
 
   if (!item.children) {
     const isActive = pathname.startsWith(item.href!);
+    if (item.available === false) {
+      return (
+        <button
+          onClick={() => onItemClick(item)}
+          className={`relative rounded-xl px-3.5 py-2 text-[13px] font-semibold transition-all duration-200 text-avs-accent/55 hover:text-avs-accent`}
+        >
+          {item.label}
+        </button>
+      );
+    }
     return (
       <Link
         href={item.href! as Route}
@@ -682,6 +692,8 @@ function MobileLink({
   isActive,
   onClick,
   isExternal,
+  available,
+  onUnavailableClick,
 }: {
   href: string;
   icon: typeof Layers;
@@ -689,7 +701,20 @@ function MobileLink({
   isActive?: boolean;
   onClick?: () => void;
   isExternal?: boolean;
+  available?: boolean;
+  onUnavailableClick?: () => void;
 }) {
+  if (available === false && onUnavailableClick) {
+    return (
+      <button
+        onClick={onUnavailableClick}
+        className="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-all duration-150 text-avs-accent/55 hover:bg-avs-accent/4 hover:text-avs-accent"
+      >
+        <Icon size={17} aria-hidden />
+        {label}
+      </button>
+    );
+  }
   const Tag = isExternal ? 'a' : Link;
   return (
     <Tag
@@ -944,11 +969,18 @@ export function Header() {
                       />
                     )}
                     <MobileLink
+                      href="/templates"
+                      icon={Box}
+                      label="Templates"
+                      available={false}
+                      onUnavailableClick={() => handleClick({ href: '/templates', label: 'Templates', available: false, modal: NAV_ITEMS.find(i => i.label === 'Templates')?.modal })}
+                    />
+                    <MobileLink
                       href="/documentation"
                       icon={BookOpen}
                       label="Documentation"
-                      isActive={pathname.startsWith('/documentation')}
-                      onClick={() => setMobileOpen(false)}
+                      available={false}
+                      onUnavailableClick={() => handleClick({ href: '/documentation', label: 'Docs', available: false, modal: NAV_ITEMS.find(i => i.label === 'Docs')?.modal })}
                     />
 
                     <button

@@ -1,5 +1,6 @@
-import { DocPageTemplate } from '../doc-page-template';
-import { NAV_SPACES } from '../nav-data';
+
+import { DocPageTemplate } from '../../doc-page-template';
+import { NAV_SPACES } from '../../nav-data';
 import { MotifsExplanation, MotifsWhy } from './motifs-content';
 
 const space = NAV_SPACES.find(s => s.slug === 'motifs')!;

@@ -62,12 +62,12 @@ export function IntroductionExplanation() {
         ))}
       </div>
 
-      <div className="my-4 overflow-x-auto rounded-xl" style={{ border: '1px solid var(--doc-border, rgba(29,29,27,0.09))' }}>
+      <div className="my-4 overflow-x-auto rounded-xl border border-avs-accent/9" >
         <table className="w-full text-xs">
           <thead>
-            <tr style={{ borderBottom: '1px solid var(--doc-border, rgba(29,29,27,0.09))', background: 'var(--doc-primary-10, rgba(192,87,62,0.10))' }}>
+            <tr className="border-b-1 border-avs-accent/9 bg-avs-primary/10" >
               {['Fonctionnalité', 'AVS', 'PrimeReact', 'Shadcn'].map((h) => (
-                <th key={h} className="px-4 py-2.5 text-left font-bold tracking-wider uppercase" style={{ color: 'var(--doc-hint, rgba(29,29,27,0.32))', fontSize: '9px' }}>{h}</th>
+                <th key={h} className="px-4 py-2.5 text-left font-bold tracking-wider uppercase text-avs-accent text-[9px]" >{h}</th>
               ))}
             </tr>
           </thead>
@@ -81,8 +81,16 @@ export function IntroductionExplanation() {
               ['Radix UI', 'check', 'times', 'check'],
               ['TypeScript strict', 'check', 'check', 'check'],
             ].map(([feat, ...vals], i, arr) => (
-              <tr key={feat} className="transition-colors hover:bg-[var(--doc-primary-10,rgba(192,87,62,0.10))]" style={{ borderBottom: i < arr.length - 1 ? '1px solid var(--doc-border, rgba(29,29,27,0.09))' : 'none' }}>
-                <td className="px-4 py-2.5 font-semibold" style={{ color: 'var(--doc-text, #1D1D1B)' }}>{feat}</td>
+              <tr
+  key={feat}
+  className="
+    border-b border-avs-accent/9
+    transition-colors
+    hover:bg-[var(--doc-primary-10,rgba(192,87,62,0.10))]
+    last:border-b-0
+  "
+>
+                <td className="px-4 py-2.5 font-semibold text-avs-accent">{feat}</td>
                 {vals.map((v, vi) => (
                   <td key={vi} className="px-4 py-2.5 text-center">
                     {v === 'check' && <i className="pi pi-check text-emerald-500" style={{ fontSize: '12px' }} />}

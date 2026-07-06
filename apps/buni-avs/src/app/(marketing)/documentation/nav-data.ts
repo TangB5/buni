@@ -39,6 +39,7 @@ export const NAV_SPACES: NavSpace[] = [
     slug: 'motifs', label: 'Motifs', icon: 'th-large', color: '#D4A017',
     description: "1 248 motifs documentés et sourcés.",
     pages: [
+      { slug: 'intro', title: 'Introduction' },
       { slug: 'ndop-bamoum', title: 'Ndop Bamoum' },
       { slug: 'kente-royale', title: 'Kente Royale' },
       { slug: 'bogolan-fanga', title: 'Bogolan Fanga' },

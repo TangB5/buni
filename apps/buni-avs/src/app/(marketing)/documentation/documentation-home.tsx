@@ -35,7 +35,7 @@ export function DocumentationHome() {
   return (
     <div>
       {/* ── Hero + recherche centrale ─────────────────────────────────── */}
-      <section className="relative overflow-hidden px-4 py-24 sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden px-4 py-24 sm:px-6 lg:px-8 bg-avs-secondary">
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.4]"
           style={{ backgroundImage: 'radial-gradient(circle, rgba(29,29,27,0.06) 1px, transparent 1px)', backgroundSize: '28px 28px' }}
@@ -86,7 +86,7 @@ export function DocumentationHome() {
       </motion.section>
 
       {/* ── Grille des catégories ────────────────────────────────────── */}
-      <section className="px-4 py-20 sm:px-6 lg:px-8">
+      <section className="px-4 py-20 sm:px-6 lg:px-8 bg-avs-secondary/95">
         <div className="mx-auto max-w-6xl">
           <motion.h2 {...reveal} className="font-display mb-8 text-lg font-bold text-avs-accent">Explorer les espaces</motion.h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -115,7 +115,7 @@ export function DocumentationHome() {
       </section>
 
       {/* ── Derniers ajouts / Ressources populaires ──────────────────── */}
-      <section className="border-t border-avs-accent/9 px-4 py-20 sm:px-6 lg:px-8">
+      <section className="border-t border-avs-accent/9 px-4 py-20 sm:px-6 lg:px-8 bg-avs-secondary">
         <div className="mx-auto grid max-w-6xl gap-14 lg:grid-cols-2">
           <motion.div {...reveal}>
             <h2 className="font-display mb-5 text-lg font-bold text-avs-accent">Derniers ajouts</h2>
@@ -150,7 +150,7 @@ export function DocumentationHome() {
       </section>
 
       {/* ── Parcours recommandés ─────────────────────────────────────── */}
-      <section className="border-t border-avs-accent/9 bg-avs-secondary px-4 py-20 sm:px-6 lg:px-8">
+      <section className="border-t border-avs-accent/9 bg-avs-secondary/90 px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <motion.h2 {...reveal} className="font-display mb-8 text-lg font-bold text-avs-accent">Parcours recommandés</motion.h2>
           <div className="grid gap-5 sm:grid-cols-3">

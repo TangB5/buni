@@ -1,5 +1,5 @@
 {
-  "name": "@buni/icons",
+  "name": "@buni/component",
   "version": "0.0.1",
   "private": true,
   "main": "./src/index.ts",
@@ -8,11 +8,10 @@
     ".": {
       "types": "./src/index.ts",
       "default": "./src/index.ts"
-    },
-    "./icons.css": "./src/icons.css"
+    }
   },
   "scripts": { "typecheck": "tsc --noEmit" },
   "dependencies": {
-    "react": "^18.0.0"
+    "@buni/ui": "workspace:*"
   }
 }

@@ -114,7 +114,7 @@ export function Callout({ type = 'info', title, children }: { type?: keyof typeo
       <i className={`${icon} mt-0.5 shrink-0`} style={{ fontSize: '15px', color: tc }} aria-hidden />
       <div>
         <p className="mb-1.5 text-[9px] font-bold uppercase tracking-[0.18em]" style={{ color: tc }}>{title ?? label}</p>
-        <div className="text-sm leading-relaxed" style={{ color: 'var(--doc-muted, rgba(29,29,27,0.52))' }}>{children}</div>
+        <div className="text-sm leading-relaxed text-avs-accent/52" >{children}</div>
       </div>
     </div>
   );
