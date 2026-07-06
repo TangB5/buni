@@ -779,7 +779,7 @@ export function Header() {
     }
 
     if (item.href) {
-      router.push(item.href);
+      router.push(item.href as Route);
     }
   };
   return (
