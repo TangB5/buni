@@ -35,7 +35,15 @@ export function PatternSheet({ pattern }: { pattern: any }) {
     >
       {/* Cover */}
       <div className="bg-avs-secondary-dark relative h-52 overflow-hidden">
-        <div className={`${pattern.cssClass} absolute inset-0`} />
+        {pattern.imgUrl ? (
+          <img
+            src={pattern.imgUrl}
+            alt={pattern.name}
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+        ) : (
+          <div className={`${pattern.cssClass} absolute inset-0`} />
+        )}
         <div className="absolute inset-0 bg-linear-to-b from-black/20 to-black/5" />
 
         {/* Top-left badges */}

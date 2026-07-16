@@ -313,7 +313,7 @@ export function PatternForm({ initialPattern }: PatternFormProps) {
                         </>
                       ) : (
                         <>
-                          <Sparkles size={13} /> Soumettre pour révision
+                          <Sparkles size={13} /> {initialPattern ? 'Mettre à jour le motif' : 'Soumettre pour révision'}
                         </>
                       )}
                     </button>

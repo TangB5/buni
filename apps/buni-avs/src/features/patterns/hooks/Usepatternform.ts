@@ -5,6 +5,7 @@ import { z } from 'zod';
 
 import { Step1Schema, Step2Schema, Step3Schema } from '../schemas/create-pattern.schema';
 import { createPattern, CreatePatternError } from '../usecases/create-pattern.usecase';
+import { updatePattern, UpdatePatternError } from '../usecases/update-pattern.usecase';
 
 import { DEFAULT_COLORS, DEFAULT_SYMBOL } from '../constants/pattern.constants';
 
@@ -261,21 +262,38 @@ export function usePatternForm(initialPattern?: Pattern) {
 
     setLoading(true);
     try {
-      const result = await createPattern(
-        step1 as Step1Data,
-        step2 as Step2Data,
-        step3 as Step3Data,
-        svgFile,
-        step3.symbols ?? []
-      );
+      let result: Pattern;
+      
+      if (initialPattern) {
+        // Update existing pattern
+        result = await updatePattern(
+          initialPattern.id,
+          step1 as Step1Data,
+          step2 as Step2Data,
+          step3 as Step3Data,
+          svgFile,
+          step3.symbols ?? []
+        );
+      } else {
+        // Create new pattern
+        result = await createPattern(
+          step1 as Step1Data,
+          step2 as Step2Data,
+          step3 as Step3Data,
+          svgFile,
+          step3.symbols ?? []
+        );
+      }
 
-      const destination = result.id
-        ? `/patternsDashboard/${result.id}?created=true`
-        : '/patternsDashboard?created=true';
+      const destination = initialPattern
+        ? `/patternsDashboard/${initialPattern.id}?updated=true`
+        : result.id
+          ? `/patternsDashboard/${result.id}?created=true`
+          : '/patternsDashboard?created=true';
 
       router.push(destination as Route);
     } catch (err) {
-      if (err instanceof CreatePatternError) {
+      if (err instanceof CreatePatternError || err instanceof UpdatePatternError) {
         setErrors({ submit: err.message, ...err.fieldErrors });
       } else {
         setErrors({ submit: 'Une erreur inattendue est survenue. Veuillez réessayer.' });
@@ -283,7 +301,7 @@ export function usePatternForm(initialPattern?: Pattern) {
     } finally {
       setLoading(false);
     }
-  }, [step1, step2, step3, svgFile, router]);
+  }, [step1, step2, step3, svgFile, router, initialPattern]);
 
   // ── Return ─────────────────────────────────────────────────────────────────
 

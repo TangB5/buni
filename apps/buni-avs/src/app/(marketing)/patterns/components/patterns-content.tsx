@@ -198,7 +198,15 @@ export function PatternsContent() {
                     <div className="flex items-center gap-3 px-4 py-3.5">
                       <div
                         className={`${p.cssClass} relative h-11 w-11 shrink-0 overflow-hidden rounded-xl ring-1 ring-black/10 transition-transform duration-300 group-hover:scale-105 dark:ring-white/10`}
-                      />
+                      >
+                        {p.imgUrl ? (
+                          <img
+                            src={p.imgUrl}
+                            alt={p.name}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : null}
+                      </div>
 
                       <div className="min-w-0 flex-1">
                         <p

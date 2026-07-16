@@ -1,6 +1,6 @@
 
 
-import { post, put, patch, del, get } from '@buni/api';
+import { post, patch, del, get } from '@buni/api';
 
 import type {
   PatternDto,
@@ -44,7 +44,7 @@ export const patternService = {
     data: unknown
   ) {
 
-    return put<{ data: PatternDto }>(
+    return patch<{ data: PatternDto }>(
       `/api/v1/patterns/${id}`,
       data
     );
@@ -58,30 +58,16 @@ export const patternService = {
   },
 
   async feature(id: string) {
-    return put<{ data: PatternDto }>(
+    return patch<{ data: PatternDto }>(
       `/api/v1/patterns/${id}/featured`,
       { featured: true }
     );
   },
 
   async unfeature(id: string) {
-    return put<{ data: PatternDto }>(
+    return patch<{ data: PatternDto }>(
       `/api/v1/patterns/${id}/featured`,
       { featured: false }
-    );
-  },
-
-  async publish(id: string) {
-    return put<{ data: PatternDto }>(
-      `/api/v1/patterns/${id}/status`,
-      { status: 'PUBLISHED' }
-    );
-  },
-
-  async unpublish(id: string) {
-    return put<{ data: PatternDto }>(
-      `/api/v1/patterns/${id}/status`,
-      { status: 'DRAFT' }
     );
   },
 
