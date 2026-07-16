@@ -40,32 +40,6 @@ const CSS_PATTERN_MAP: Record<string, string> = {
   KUBA:    'avs-pattern-kuba-kasai',
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
-// MOCK DATA
-// ─────────────────────────────────────────────────────────────────────────────
-
-const MOCK_STATS: DashboardStats = {
-  patternsCount: 12,
-  downloadsTotal: 847,
-  viewsTotal: 4200,
-  favoritesCount: 89,
-};
-
-const MOCK_PATTERNS: UserPattern[] = [
-  { id: '1', name: 'Ndop Royal Bamoum',  type: 'NDOP',    status: 'published', viewCount: 1820, downloadCount: 342 },
-  { id: '2', name: 'Kente Ewé',          type: 'KENTE',   status: 'draft',     viewCount: 0,    downloadCount: 0   },
-  { id: '3', name: 'Wax Sénégalais',     type: 'WAX',     status: 'review',    viewCount: 340,  downloadCount: 87  },
-  { id: '4', name: 'Bogolan du Mali',    type: 'BOGOLAN', status: 'published', viewCount: 920,  downloadCount: 156 },
-  { id: '5', name: 'Toghu Bamiléké',     type: 'NDOP',    status: 'draft',     viewCount: 0,    downloadCount: 0   },
-];
-
-const MOCK_ACTIVITY: DashboardActivity[] = [
-  { id: '1', type: 'comment',  action: 'Commentaire sur',       target: 'Ndop Bamoum',    timestamp: new Date(Date.now() - 7200000).toISOString()   },
-  { id: '2', type: 'download', action: 'Téléchargement de',     target: 'Kente Asante',   timestamp: new Date(Date.now() - 18000000).toISOString()  },
-  { id: '3', type: 'review',   action: 'Validation approuvée —',target: 'Bogolan Malien', timestamp: new Date(Date.now() - 86400000).toISOString()  },
-  { id: '4', type: 'favorite', action: 'Favori ajouté sur',     target: 'Wax Congolais',  timestamp: new Date(Date.now() - 259200000).toISOString() },
-  { id: '5', type: 'download', action: 'Téléchargement de',     target: 'Ndop Sultan',    timestamp: new Date(Date.now() - 345600000).toISOString() },
-];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // UTILS
@@ -439,7 +413,7 @@ function ProfileStrip({
               <p className="text-[11px] text-avs-accent/40">{user?.email ?? '—'}</p>
             </div>
             {/* Role badge */}
-            <span className="ml-1 hidden rounded-full border border-avs-primary/25 bg-avs-primary/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.1em] text-avs-primary sm:inline-flex">
+            <span className="ml-1 hidden rounded-full border border-avs-primary/25 bg-avs-primary/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widset text-avs-primary sm:inline-flex">
               {roleLabel}
             </span>
           </div>
@@ -448,7 +422,7 @@ function ProfileStrip({
           <div className="flex items-center gap-6 text-[11px]">
             {user?.createdAt && (
               <div>
-                <p className="font-mono uppercase tracking-[0.1em] text-avs-accent/30">Membre depuis</p>
+                <p className="font-mono uppercase tracking-widset text-avs-accent/30">Membre depuis</p>
                 <p className="mt-0.5 font-semibold text-avs-accent">
                   {new Date(user.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}
                 </p>
@@ -482,7 +456,9 @@ export default function DashboardPage() {
   const [activity, setActivity] = useState<DashboardActivity[]>([]);
   const [loading, setLoading]   = useState(true);
 
-  console.log("isAdmin...........",isAdmin)
+
+  if(!user) return ;
+  
 
   useEffect(() => {
     if (!isHydrated || !isAuthenticated) return;
@@ -494,8 +470,22 @@ export default function DashboardPage() {
           dashboardService.getActivity(6),
         ]);
         setStats(s); setPatterns(p); setActivity(a);
-      } catch {
-        setStats(MOCK_STATS); setPatterns(MOCK_PATTERNS); setActivity(MOCK_ACTIVITY);
+      } catch (error) {
+        console.error('Failed to fetch dashboard data:', error);
+        setStats({
+          patternsCount: 0,
+          downloadsTotal: 0,
+          viewsTotal: 0,
+          favoritesCount: 0,
+          trends: {
+            patternsTrend: '+0 ce mois',
+            downloadsTrend: '+0% vs mois dernier',
+            viewsTrend: '+0 ce mois',
+            favoritesTrend: '+0 nouveaux',
+          },
+        });
+        setPatterns([]);
+        setActivity([]);
       } finally {
         setLoading(false);
       }
@@ -505,6 +495,8 @@ export default function DashboardPage() {
 
   
   if (!isHydrated) return <PageLoader />;
+ 
+
 
   const roleLabel   = isAdmin ? 'Administrateur' : isCurator ? 'Curateur' : 'Contributeur';
   const avatarPattern = isAdmin
@@ -514,19 +506,19 @@ export default function DashboardPage() {
   // ── KPI cards config ────────────────────────────────────────────────────────
   const kpiCards: KpiCardProps[] = [
     {
-      label: 'Mes motifs',     value: stats?.patternsCount  ?? 0, trend: '+2 ce mois',
+      label: 'Mes motifs',     value: stats?.patternsCount  ?? 0, trend: stats?.trends?.patternsTrend ?? '+0 ce mois',
       icon: Layers,   color: '#C0573E', patternCss: 'avs-pattern-kente-royale',  delay: 0.1,
     },
     {
-      label: 'Téléchargements',value: stats?.downloadsTotal ?? 0, trend: '+18% vs mois dernier',
+      label: 'Téléchargements',value: stats?.downloadsTotal ?? 0, trend: stats?.trends?.downloadsTrend ?? '+0% vs mois dernier',
       icon: Download, color: '#4F7CFF', patternCss: 'avs-pattern-ndop-sultan',   delay: 0.17,
     },
     {
-      label: 'Vues totales',   value: stats?.viewsTotal     ?? 0, trend: '+320 ce mois',
+      label: 'Vues totales',   value: stats?.viewsTotal     ?? 0, trend: stats?.trends?.viewsTrend ?? '+0 ce mois',
       icon: Eye,      color: '#8B5CF6', patternCss: 'avs-pattern-bogolan-fanga', delay: 0.24,
     },
     {
-      label: 'Favoris reçus',  value: stats?.favoritesCount ?? 0, trend: '+12 nouveaux',
+      label: 'Favoris reçus',  value: stats?.favoritesCount ?? 0, trend: stats?.trends?.favoritesTrend ?? '+0 nouveaux',
       icon: Star,     color: '#F59E0B', patternCss: 'avs-pattern-adinkra-sankofa', delay: 0.31,
     },
   ];

@@ -51,13 +51,9 @@ export function toCreatePayload(s1: Step1Data, s2: Step2Data, s3: Step3Data): Cr
 
     technique: s2.technique,
 
-    symbolMeaning: s2.symbolMeaning,
-
-    symbolUsage: s2.symbolUsage,
-
     ceremonial: s2.ceremonial,
 
-    symbolKeywords: s2.symbolKeywords,
+    symbolism: s2.symbolism,
 
     // ── Step 3 ──────────────────────────────────────────────────────────────
     colors: s3.colors,
@@ -100,13 +96,9 @@ export function toFormData(
 
     'license',
 
-    'symbolUsage',
-
     'summary',
     'history',
     'technique',
-
-    'symbolMeaning',
 
     'ceremonial',
 
@@ -135,7 +127,9 @@ export function toFormData(
     fd.append('coords', JSON.stringify(payload.coords));
   }
 
-  fd.append('symbolKeywords', JSON.stringify(payload.symbolKeywords));
+  if (payload.symbolism) {
+    fd.append('symbolism', JSON.stringify(payload.symbolism));
+  }
 
   fd.append('colors', JSON.stringify(payload.colors));
 

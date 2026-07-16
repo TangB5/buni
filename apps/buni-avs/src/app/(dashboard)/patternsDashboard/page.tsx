@@ -34,7 +34,7 @@ import { patternService } from '@/features/patterns/services/pattern.service';
 // TYPES
 // ─────────────────────────────────────────────────────────────────────────────
 
-type Status = 'published' | 'draft' | 'review' | 'rejected';
+type Status = 'published' | 'draft' | 'review';
 type SortKey = 'name' | 'views' | 'downloads' | 'updatedAt';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -63,12 +63,6 @@ const STATUS_CFG: Record<
     pill: 'bg-avs-kente/10 text-avs-kente border border-avs-kente/20',
     dot: 'bg-avs-kente',
   },
-  rejected: {
-    label: 'Rejeté',
-    icon: CheckCircle2,
-    pill: 'bg-red-50 text-red-600 border border-red-100',
-    dot: 'bg-red-500',
-  },
 };
 
 const STATUS_FILTERS: { value: Status | 'all'; label: string }[] = [
@@ -76,7 +70,6 @@ const STATUS_FILTERS: { value: Status | 'all'; label: string }[] = [
   { value: 'published', label: 'Publiés' },
   { value: 'draft', label: 'Brouillons' },
   { value: 'review', label: 'En révision' },
-  { value: 'rejected', label: 'Rejetés' },
 ];
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -306,7 +299,6 @@ export default function MyPatternsPage() {
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const featureMutation = useFeaturePattern();
-
   const unfeatureMutation = useUnfeaturePattern();
   const [deleteModal, setDeleteModal] = useState<{
     open: boolean;
@@ -328,9 +320,6 @@ export default function MyPatternsPage() {
 
       case 'REVIEW':
         return 'review';
-
-      case 'REJECTED':
-        return 'rejected';
 
       default:
         return 'draft';
@@ -430,6 +419,7 @@ export default function MyPatternsPage() {
       unfeatureMutation.mutate(id);
     }
   };
+
 
   const toggleSelect = (id: string) =>
     setSelected((prev) => {
@@ -588,15 +578,23 @@ export default function MyPatternsPage() {
 
           <div className="flex items-center gap-1.5">
             <Filter size={12} className="text-avs-accent/30 shrink-0" aria-hidden />
-            {STATUS_FILTERS.map(({ value, label }) => (
-              <button
-                key={value}
-                onClick={() => setStatusF(value)}
-                className={`rounded-xl px-3 py-1.5 font-mono text-[9px] font-black tracking-[0.14em] uppercase transition-all duration-150 ${statusF === value ? 'bg-avs-primary text-avs-secondary shadow-avs' : 'border-avs-accent/15 text-avs-accent/50 hover:border-avs-primary/20 hover:text-avs-primary border'}`}
-              >
-                {label}
-              </button>
-            ))}
+            {STATUS_FILTERS.map(({ value, label }) => {
+              const isActive = statusF === value;
+              const statusConfig = value !== 'all' ? STATUS_CFG[value as Status] : null;
+              const activeStyle = value === 'all' 
+                ? 'bg-avs-primary text-avs-secondary shadow-avs'
+                : statusConfig?.pill || 'bg-avs-primary text-avs-secondary shadow-avs';
+              
+              return (
+                <button
+                  key={value}
+                  onClick={() => setStatusF(value)}
+                  className={`rounded-xl px-3 py-1.5 font-mono text-[9px] font-black tracking-[0.14em] uppercase transition-all duration-150 ${isActive ? activeStyle : 'border-avs-accent/15 text-avs-accent/50 hover:border-avs-primary/20 hover:text-avs-primary border'}`}
+                >
+                  {label}
+                </button>
+              );
+            })}
           </div>
         </div>
 

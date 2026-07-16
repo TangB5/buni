@@ -1,4 +1,4 @@
-import { RegionType, PatternType, PatternColor, ArtisanQuote } from "@buni/patterns";
+import { RegionType, PatternType, PatternColor, ArtisanQuote, PatternSymbolism } from "@buni/patterns";
 import { UploadablePatternSymbol } from "../uploads/pattern.upload";
 import { LicenseType, SymbolUsageType } from "../../constants/pattern.constants";
 
@@ -33,13 +33,11 @@ export interface Step2Data {
 
   technique: string;
 
-  symbolMeaning: string;
-
   ceremonial: string;
 
-  symbolKeywords: string[];
+  symbolism?:PatternSymbolism;
 
-  symbolUsage: SymbolUsageType;
+ 
 }
 
 export interface Step3Data {
@@ -101,13 +99,13 @@ export interface CreatePatternPayload {
 
   technique: string;
 
-  symbolMeaning: string;
-
-  symbolUsage: SymbolUsageType;
-
   ceremonial: string;
 
-  symbolKeywords: string[];
+  symbolism?: {
+    meaning: string;
+    usage: string;
+    keywords?: string[];
+  };
 
   // Step 3
   colors: PatternColor[];

@@ -596,11 +596,10 @@ export default function HomePage() {
         </section>
 
         {/* ══ § 8 — CTA (always dark — kente-imposed) ═════════════════════ */}
-        <section aria-labelledby="cta-title" className="avs-pattern-kente-royale relative overflow-hidden ">
-          {/* Multi-stop directional gradient — justified inline */}
+        <section aria-labelledby="cta-title" className="avs-pattern-kente-royale relative overflow-hidden">
+          {/* Gradient overlay from top-left */}
           <div
-            className="absolute inset-0 bg-linear-gradient(to bottom right,rgba(10,8,6,.92) 0%,rgba(10,8,6,.08) 55%,transparent 100%)"
-            
+            className="absolute inset-0 bg-gradient-to-br from-avs-accent/94 to-avs-accent/72"
             aria-hidden
           />
 

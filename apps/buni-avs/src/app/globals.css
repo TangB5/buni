@@ -38,6 +38,18 @@
     color: var(--color-dark-text);
   }
 
+  /* Couleurs AVS dynamiques pour le mode clair */
+  html {
+    --color-avs-primary: #C0573E;
+    --color-avs-secondary: #F5EBE0;
+    --color-avs-accent: #1D1D1B;
+    --color-avs-kente: #D4A017;
+    --color-avs-ndop: #4A6741;
+    --color-avs-indigo: #3D5D7E;
+    --color-avs-earth: #8B4513;
+    --color-avs-raffia: #C8A96E;
+  }
+
   /* Couleurs AVS dynamiques pour le mode sombre */
   html.dark {
     --color-avs-primary: #E8755C;

@@ -9,7 +9,7 @@
 // =============================================================================
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import type { Pattern } from '../types';
+import type { Pattern, PatternStatus } from '../types';
 import {
   publishPattern,
   unpublishPattern,
@@ -190,4 +190,36 @@ export function useToggleFeature() {
     isError: feature.isError || unfeature.isError,
     error: feature.error || unfeature.error,
   };
+}
+
+/**
+ * Hook pour mettre à jour le statut d'un pattern
+ */
+export function useUpdateStatus() {
+  const qc = useQueryClient();
+  const { updatePatternStatus } = require('../usecases/pattern-actions.usecase');
+
+  return useMutation({
+    mutationFn: ({ id, status }: { id: string; status: PatternStatus }) => updatePatternStatus(id, status),
+    onMutate: async ({ id, status }) => {
+      await qc.cancelQueries({ queryKey: patternKeys.all });
+      const previousPatterns = qc.getQueryData<Pattern[]>(patternKeys.all);
+
+      qc.setQueryData(patternKeys.all, (old: Pattern[] | undefined) =>
+        old?.map((p) =>
+          p.id === id ? { ...p, status, updatedAt: new Date().toISOString() } : p
+        )
+      );
+
+      return { previousPatterns };
+    },
+    onError: (_err, _vars, context) => {
+      if (context?.previousPatterns) {
+        qc.setQueryData(patternKeys.all, context.previousPatterns);
+      }
+    },
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: patternKeys.all });
+    },
+  });
 }

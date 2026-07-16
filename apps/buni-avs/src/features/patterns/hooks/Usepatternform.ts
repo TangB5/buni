@@ -19,13 +19,15 @@ import type { Route } from 'next';
 const INITIAL_S1: Partial<Step1Data> = { license: 'cc-by' };
 
 const INITIAL_S2: Partial<Step2Data> = {
-  symbolKeywords: [],
-  symbolUsage: 'ceremonial',
+  symbolism: {
+    keywords: [],
+    usage: 'ceremonial',
+    meaning: '',
+  },
   summary: '',
   history: '',
   technique: '',
   ceremonial: '',
-  symbolMeaning: '',
 };
 
 const INITIAL_S3: Partial<Step3Data> = {
@@ -68,13 +70,15 @@ export function usePatternForm(initialPattern?: Pattern) {
       });
 
       setStep2({
-        symbolKeywords: initialPattern.symbolism?.keywords || [],
-        symbolUsage: (initialPattern.symbolism?.usage || 'ceremonial') as any,
+        symbolism: {
+          keywords: initialPattern.symbolism?.keywords || [],
+          usage: initialPattern.symbolism?.usage || 'ceremonial',
+          meaning: initialPattern.symbolism?.meaning || '',
+        },
         summary: initialPattern.summary || '',
         history: initialPattern.history || '',
         technique: initialPattern.technique || '',
         ceremonial: initialPattern.ceremonial || '',
-        symbolMeaning: initialPattern.symbolism?.meaning || '',
       });
 
       setStep3({
@@ -106,9 +110,17 @@ export function usePatternForm(initialPattern?: Pattern) {
         return true;
       }
 
-      const fieldErrors: FieldErrors = {};
+            const fieldErrors: FieldErrors = {};
       result.error.issues.forEach((issue) => {
-        if (issue.path[0]) fieldErrors[String(issue.path[0])] = issue.message;
+        if (issue.path.length > 0) {
+          const path = issue.path.join('.');
+          fieldErrors[path] = issue.message;
+
+          const topKey = String(issue.path[0]);
+          if (!fieldErrors[topKey]) {
+            fieldErrors[topKey] = issue.message;
+          }
+        }
       });
       setErrors(fieldErrors);
       return false;
@@ -131,17 +143,28 @@ export function usePatternForm(initialPattern?: Pattern) {
 
   const addKeyword = useCallback(() => {
     const kw = newKeyword.trim().toLowerCase();
-    const existing = step2.symbolKeywords ?? [];
+    const existing = step2.symbolism?.keywords ?? [];
     if (kw && !existing.includes(kw) && existing.length < 10) {
-      setStep2((f) => ({ ...f, symbolKeywords: [...(f.symbolKeywords ?? []), kw] }));
+      setStep2((f) => ({
+        ...f,
+        symbolism: {
+          meaning: f.symbolism?.meaning ?? '',
+          usage: f.symbolism?.usage ?? '',
+          keywords: [...(f.symbolism?.keywords ?? []), kw],
+        },
+      }));
       setNewKeyword('');
     }
-  }, [newKeyword, step2.symbolKeywords]);
+  }, [newKeyword, step2.symbolism?.keywords]);
 
   const removeKeyword = useCallback((kw: string) => {
     setStep2((f) => ({
       ...f,
-      symbolKeywords: (f.symbolKeywords ?? []).filter((k) => k !== kw),
+      symbolism: {
+        meaning: f.symbolism?.meaning ?? '',
+        usage: f.symbolism?.usage ?? '',
+        keywords: (f.symbolism?.keywords ?? []).filter((k) => k !== kw),
+      },
     }));
   }, []);
 

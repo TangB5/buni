@@ -23,8 +23,10 @@ export async function createPattern(
 ): Promise<Pattern> {
   try {
     const payload = toCreatePayload(step1, step2, step3);
+    console.log("payload....................",payload)
     const formData = toFormData(payload, svgFile, symbols);
 
+    console.log("formData....................",JSON.stringify(formData))
     return await patternRepository.create(formData);
   } catch (error) {
     console.error('Failed to create pattern:', error);

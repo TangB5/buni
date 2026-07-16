@@ -22,8 +22,8 @@ export const useAuthStore = create()(devtools((set, get) => ({
     setLoading: (isLoading) => set({ isLoading }, false, 'auth/setLoading'),
     setError: (error) => set({ error }, false, 'auth/setError'),
     setHydrated: () => set({ isHydrated: true }, false, 'auth/setHydrated'),
-    isAdmin: () => get().user?.role === 'admin',
-    isCurator: () => ['admin', 'curator'].includes(get().user?.role ?? ''),
-    canContribute: () => ['admin', 'curator', 'contributor'].includes(get().user?.role ?? ''),
+    isAdmin: () => get().user?.role?.toLowerCase() === 'admin',
+    isCurator: () => ['admin', 'curator'].includes(get().user?.role?.toLowerCase() ?? ''),
+    canContribute: () => ['admin', 'curator', 'contributor'].includes(get().user?.role?.toLowerCase() ?? ''),
 }), { name: 'Buni Auth' }));
 //# sourceMappingURL=useAuthStore.js.map

@@ -1,6 +1,6 @@
 
 
-import { post, put, del, get } from '@buni/api';
+import { post, put, patch, del, get } from '@buni/api';
 
 import type {
   PatternDto,
@@ -58,33 +58,37 @@ export const patternService = {
   },
 
   async feature(id: string) {
+    return put<{ data: PatternDto }>(
+      `/api/v1/patterns/${id}/featured`,
+      { featured: true }
+    );
+  },
 
-  return post<{ data: PatternDto }>(
-    `/api/v1/patterns/${id}/feature`
-  );
-},
+  async unfeature(id: string) {
+    return put<{ data: PatternDto }>(
+      `/api/v1/patterns/${id}/featured`,
+      { featured: false }
+    );
+  },
 
-async unfeature(id: string) {
+  async publish(id: string) {
+    return put<{ data: PatternDto }>(
+      `/api/v1/patterns/${id}/status`,
+      { status: 'PUBLISHED' }
+    );
+  },
 
-  return post<{ data: PatternDto }>(
-    `/api/v1/patterns/${id}/unfeature`
-  );
-},
+  async unpublish(id: string) {
+    return put<{ data: PatternDto }>(
+      `/api/v1/patterns/${id}/status`,
+      { status: 'DRAFT' }
+    );
+  },
 
-async publish(id: string) {
-
-  return post<{ data: PatternDto }>(
-    `/api/v1/patterns/${id}/status`,
-    { status: 'published' }
-  );
-},
-
-async unpublish(id: string) {
-
-  return post<{ data: PatternDto }>(
-    `/api/v1/patterns/${id}/status`,
-    { status: 'draft' }
-  );
-},
-
+  async updateStatus(id: string, status: string) {
+    return patch<{ data: PatternDto }>(
+      `/api/v1/patterns/${id}/status`,
+      { status: status.toUpperCase() }
+    );
+  },
 };

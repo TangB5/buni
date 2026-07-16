@@ -111,4 +111,13 @@ export const patternRepository = {
       response.data
     );
   },
+
+  async updateStatus(id: string, status: string): Promise<Pattern> {
+    const response =
+      await patternService.updateStatus(id, status);
+
+    return mapPatternDtoToModel(
+      response.data
+    );
+  },
 };

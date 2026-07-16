@@ -13,7 +13,7 @@ export interface PatternColor {
 export interface PatternSymbolism {
   meaning: string;
   keywords?: string[];
-  usage: 'ceremonial' | 'daily' | 'royal' | 'spiritual' | 'universal';
+  usage:string ;
 }
 
 export interface PatternSymbol {

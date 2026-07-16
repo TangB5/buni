@@ -219,7 +219,7 @@ const NAV_ITEMS: NavItem[] = [
   {
     href: '/documentation',
     label: 'Docs',
-    available: false,
+    available: true,
     modal: {
       title: 'Documentation en cours de rédaction',
       description: "Nous préparons une documentation complète d'AVS.",

@@ -2,13 +2,14 @@
 
 import { useRouter } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowLeft, ArrowRight, Check, Sparkles } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Check, Sparkles, CheckCircle2, FileText, Hourglass } from 'lucide-react';
 import { useEffect } from 'react';
 
 import { BuniLoader } from '@buni/ui';
 import {CSS_PATTERN_MAP, FALLBACK_PATTERN_CSS } from '@buni/patterns';
 import {  FORM_STEPS } from '../constants/pattern.constants';
 import type { Pattern } from '@buni/patterns';
+import { useUpdateStatus } from '../hooks/usePatternActions';
 
 import { Step1 } from './steps/step1';
 import { Step2 } from './steps/step2';
@@ -78,6 +79,7 @@ interface PatternFormProps {
 export function PatternForm({ initialPattern }: PatternFormProps) {
   const router = useRouter();
   const form   = usePatternForm(initialPattern);
+  const updateStatusMutation = useUpdateStatus();
 
   const {
     currentStep, loading, errors,
@@ -144,7 +146,7 @@ export function PatternForm({ initialPattern }: PatternFormProps) {
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
               <h1 className="font-display text-lg font-black tracking-tight text-avs-accent">
-                Nouveau Motif
+                {initialPattern ? 'Modifier Motif' : 'Nouveau Motif'}
               </h1>
               <AnimatePresence mode="wait">
                 <motion.span
@@ -163,6 +165,47 @@ export function PatternForm({ initialPattern }: PatternFormProps) {
               Étape {currentStep + 1} / {FORM_STEPS.length} — {FORM_STEPS[currentStep]?.desc}
             </p>
           </div>
+
+          {initialPattern && (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => updateStatusMutation.mutate({ id: initialPattern.id, status: 'draft' })}
+                disabled={updateStatusMutation.isPending}
+                className="flex items-center gap-1.5 rounded-lg border border-slate-300 bg-slate-100 px-3 py-1.5 font-mono text-[9px] font-bold uppercase text-slate-700 shadow-sm transition-all duration-150 hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {updateStatusMutation.isPending && updateStatusMutation.variables?.status === 'draft' ? (
+                  <BuniLoader size={11} showText={false} />
+                ) : (
+                  <FileText size={11} />
+                )}
+                Brouillon
+              </button>
+              <button
+                onClick={() => updateStatusMutation.mutate({ id: initialPattern.id, status: 'review' })}
+                disabled={updateStatusMutation.isPending}
+                className="flex items-center gap-1.5 rounded-lg border border-amber-300 bg-amber-100 px-3 py-1.5 font-mono text-[9px] font-bold uppercase text-amber-700 shadow-sm transition-all duration-150 hover:bg-amber-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {updateStatusMutation.isPending && updateStatusMutation.variables?.status === 'review' ? (
+                  <BuniLoader size={11} showText={false} />
+                ) : (
+                  <Hourglass size={11} />
+                )}
+                Révision
+              </button>
+              <button
+                onClick={() => updateStatusMutation.mutate({ id: initialPattern.id, status: 'published' })}
+                disabled={updateStatusMutation.isPending}
+                className="flex items-center gap-1.5 rounded-lg border border-emerald-300 bg-emerald-100 px-3 py-1.5 font-mono text-[9px] font-bold uppercase text-emerald-700 shadow-sm transition-all duration-150 hover:bg-emerald-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {updateStatusMutation.isPending && updateStatusMutation.variables?.status === 'published' ? (
+                  <BuniLoader size={11} showText={false} />
+                ) : (
+                  <CheckCircle2 size={11} />
+                )}
+                Publié
+              </button>
+            </div>
+          )}
         </div>
       </header>
 
@@ -257,16 +300,22 @@ export function PatternForm({ initialPattern }: PatternFormProps) {
                       onClick={() => void submit()}
                       disabled={loading}
                       aria-busy={loading}
-                      className="avs-btn-primary group relative flex items-center gap-2 overflow-hidden disabled:cursor-not-allowed disabled:opacity-60"
+                      className="avs-btn-primary group relative flex items-center gap-2 overflow-hidden disabled:cursor-not-allowed disabled:opacity-70"
                     >
                       <span
                         className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full"
                         aria-hidden
                       />
-                      {loading
-                        ? <><BuniLoader size={16} showText={false} /> Envoi…</>
-                        : <><Sparkles size={13} /> Soumettre pour révision</>
-                      }
+                      {loading ? (
+                        <>
+                          <BuniLoader size={16} showText={false} />
+                          <span className="animate-pulse">Envoi en cours…</span>
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles size={13} /> Soumettre pour révision
+                        </>
+                      )}
                     </button>
                   )}
                 </div>

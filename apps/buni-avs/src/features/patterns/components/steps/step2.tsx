@@ -58,28 +58,27 @@ export function Step2({
         <CharCount value={data.technique ?? ''} max={FIELD_LIMITS.technique} />
       </Field>
 
-      <Field label="Signification symbolique" error={errors['symbolMeaning']} required>
+      <Field label="Signification symbolique" error={errors['symbolism.meaning']} required>
         <textarea
           rows={2}
           className="avs-input resize-none"
-          value={data.symbolMeaning ?? ''}
-          onChange={(e) => onChange({ symbolMeaning: e.target.value })}
+          value={data.symbolism?.meaning ?? ''}
+          onChange={(e) => onChange({ symbolism: { meaning: e.target.value, usage: data.symbolism?.usage ?? '', keywords: data.symbolism?.keywords ?? [] } })}
           placeholder="Royauté, spiritualité, protection contre les mauvais esprits…"
         />
       </Field>
 
-      <Field label="Usage principal" error={errors['symbolUsage']} required>
-        <div className="mt-1 flex flex-wrap gap-2">
-          {SYMBOL_USAGES.map((u) => (
-            <PillBtn
-              key={u}
-              label={u}
-              active={data.symbolUsage === u}
-              onClick={() => onChange({ symbolUsage: u })}
-            />
-          ))}
-        </div>
+      <Field label="Usage principal" error={errors['symbolism.usage']} required>
+        <textarea
+          rows={2}
+          className="avs-input resize-none"
+          value={data.symbolism?.usage ?? ''}
+          onChange={(e) => onChange({ symbolism: { meaning: data.symbolism?.meaning ?? '', usage: e.target.value, keywords: data.symbolism?.keywords ?? [] } })}
+          placeholder="en quel evenement est-ce exactement utiliser…"
+        />
       </Field>
+
+      
 
       <Field label="Usage cérémoniel" error={errors['ceremonial']} required>
         <textarea
@@ -93,7 +92,7 @@ export function Step2({
       </Field>
 
       {/* Keywords */}
-      <Field label={`Mots-clés (1–${FIELD_LIMITS.keywordsMax})`} error={errors['symbolKeywords']} required>
+      <Field label={`Mots-clés (1–${FIELD_LIMITS.keywordsMax})`} error={errors['symbolism.keywords']} required>
         <div className="flex gap-2">
           <input
             className="avs-input flex-1"
@@ -112,14 +111,14 @@ export function Step2({
         </div>
 
         <AnimatePresence>
-          {(data.symbolKeywords ?? []).length > 0 && (
+          {(data.symbolism?.keywords ?? []).length > 0 && (
             <motion.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               className="mt-2.5 flex flex-wrap gap-1.5 overflow-hidden"
             >
-              {(data.symbolKeywords ?? []).map((kw) => (
+              {(data.symbolism?.keywords ?? []).map((kw) => (
                 <span
                   key={kw}
                   className="flex items-center gap-1.5 rounded-lg border border-avs-primary/20 bg-avs-primary/10 px-3 py-1.5 font-mono text-xs font-medium text-avs-primary"
