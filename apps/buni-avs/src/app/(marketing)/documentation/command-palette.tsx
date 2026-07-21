@@ -66,7 +66,7 @@ export function CommandPalette() {
   function onKeyDown(e: React.KeyboardEvent) {
     if (e.key === 'ArrowDown') { e.preventDefault(); setHighlight((h) => Math.min(h + 1, results.length - 1)); }
     if (e.key === 'ArrowUp')   { e.preventDefault(); setHighlight((h) => Math.max(h - 1, 0)); }
-    if (e.key === 'Enter' && results[highlight]) go(results[highlight].href);
+    if (e.key === 'Enter' && results[highlight]) go(results[highlight]!.href);
   }
 
   return (

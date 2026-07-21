@@ -20,7 +20,7 @@ export const PATTERN_STATUS=[
   'published',
   'draft',
   'review',
-  'rejected',
+  
 ] as const;
 
 export type PatternStatus = typeof PATTERN_STATUS[number];

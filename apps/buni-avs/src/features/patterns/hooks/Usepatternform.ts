@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import type { ZodSchema } from 'zod';
 import { z } from 'zod';
+import { useToast } from '@buni/ui';
 
 import { Step1Schema, Step2Schema, Step3Schema } from '../schemas/create-pattern.schema';
 import { createPattern, CreatePatternError } from '../usecases/create-pattern.usecase';
@@ -44,6 +45,7 @@ const INITIAL_S3: Partial<Step3Data> = {
 
 export function usePatternForm(initialPattern?: Pattern) {
   const router = useRouter();
+  const toast = useToast();
 
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
@@ -61,12 +63,14 @@ export function usePatternForm(initialPattern?: Pattern) {
       setStep1({
         patternType: initialPattern.type,
         nameLocal: initialPattern.localName || '',
-        nameEn: initialPattern.nameEn || '',
+        nameEn: initialPattern.name || '',
         region: initialPattern.origin?.region || '',
         country: initialPattern.origin?.country || '',
         people: initialPattern.origin?.people,
         flag: initialPattern.origin?.flag,
         coords: initialPattern.origin?.coords,
+        era: initialPattern.era || '',
+        kingdom: initialPattern.origin?.people,
         license: (initialPattern.license === 'proprietary' ? 'cc-by' : initialPattern.license) as Step1Data['license'],
       });
 
@@ -85,7 +89,10 @@ export function usePatternForm(initialPattern?: Pattern) {
       setStep3({
         colors: initialPattern.colors || [...DEFAULT_COLORS],
         sources: initialPattern.sources || [],
-        symbols: (initialPattern.symbols || []) as any,
+        symbols: (initialPattern.symbols || []).map((sym) => ({
+          ...sym,
+          imageUrl: sym.imageUrl || undefined,
+        })) as any,
         svgPattern: initialPattern.svgPattern || '',
         artisanQuote: initialPattern.artisanQuote,
       });
@@ -263,7 +270,7 @@ export function usePatternForm(initialPattern?: Pattern) {
     setLoading(true);
     try {
       let result: Pattern;
-      
+
       if (initialPattern) {
         // Update existing pattern
         result = await updatePattern(
@@ -272,7 +279,8 @@ export function usePatternForm(initialPattern?: Pattern) {
           step2 as Step2Data,
           step3 as Step3Data,
           svgFile,
-          step3.symbols ?? []
+          step3.symbols ?? [],
+          initialPattern.symbols ?? []
         );
       } else {
         // Create new pattern
@@ -285,12 +293,14 @@ export function usePatternForm(initialPattern?: Pattern) {
         );
       }
 
-      const destination = initialPattern
-        ? `/patternsDashboard/${initialPattern.id}?updated=true`
-        : result.id
-          ? `/patternsDashboard/${result.id}?created=true`
-          : '/patternsDashboard?created=true';
-
+      const destination = `/patterns?pattern=${result.id}`;
+      
+      if (initialPattern) {
+        toast.add({ variant: 'success', title: 'Motif modifié', message: 'Le motif a été mis à jour avec succès' });
+      } else {
+        toast.add({ variant: 'success', title: 'Motif créé', message: 'Le nouveau motif a été créé avec succès' });
+      }
+      
       router.push(destination as Route);
     } catch (err) {
       if (err instanceof CreatePatternError || err instanceof UpdatePatternError) {

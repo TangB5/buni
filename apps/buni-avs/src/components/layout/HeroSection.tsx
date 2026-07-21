@@ -225,14 +225,14 @@ function PatternInspector({
       </div>
 
       {/* header: family tabs, clickable, doubles as navigation */}
-      <div className="flex flex-wrap gap-1.5 px-4 pt-3">
+      <div className="flex flex-wrap gap-1 sm:gap-1.5 px-3 sm:px-4 pt-2 sm:pt-3">
         {PATTERNS.map((p, i) => (
           <button
             key={p.id}
             type="button"
             aria-pressed={i === index}
             onClick={() => onSelect(i)}
-            className="rounded-md px-2 py-1 font-mono text-[8px] font-bold uppercase tracking-widset transition-colors"
+            className="rounded-md px-1.5 sm:px-2 py-0.5 sm:py-1 font-mono text-[7px] sm:text-[8px] font-bold uppercase tracking-widset transition-colors"
             style={{
               color: i === index ? '#F5EBE0' : 'rgba(245,235,224,.4)',
               background: i === index ? 'rgba(192,87,62,.9)' : 'transparent',
@@ -244,7 +244,7 @@ function PatternInspector({
       </div>
 
       {/* main swatch */}
-      <div className="relative m-4 aspect-16/10 overflow-hidden rounded-xl" style={{ border: '1px solid rgba(245,235,224,.08)' }}>
+      <div className="relative m-3 sm:m-4 aspect-16/10 overflow-hidden rounded-xl" style={{ border: '1px solid rgba(245,235,224,.08)' }}>
         <AnimatePresence mode="wait">
           <motion.div
             key={active.id}
@@ -255,34 +255,34 @@ function PatternInspector({
             transition={{ duration: 0.5, ease }}
           />
         </AnimatePresence>
-        <div className="absolute bottom-0 left-0 p-3">
-          <p className="font-mono text-[8px] uppercase tracking-[.2em]" style={{ color: 'rgba(245,235,224,.5)' }}>
+        <div className="absolute bottom-0 left-0 p-2 sm:p-3">
+          <p className="font-mono text-[7px] sm:text-[8px] uppercase tracking-[.2em]" style={{ color: 'rgba(245,235,224,.5)' }}>
             {active.code} · {active.flag}
           </p>
-          <p className="mt-0.5 text-[14px] font-semibold" style={{ color: '#F5EBE0' }}>
+          <p className="mt-0.5 text-[12px] sm:text-[14px] font-semibold" style={{ color: '#F5EBE0' }}>
             {active.name}
           </p>
         </div>
-        <div className="absolute right-3 top-3 rounded-md px-2 py-0.5" style={{ background: 'rgba(0,0,0,.4)', backdropFilter: 'blur(6px)' }}>
-          <p className="font-mono text-[8px] uppercase tracking-[.14em]" style={{ color: '#F5EBE0' }}>
+        <div className="absolute right-2 sm:right-3 top-2 sm:top-3 rounded-md px-1.5 sm:px-2 py-0.5" style={{ background: 'rgba(0,0,0,.4)', backdropFilter: 'blur(6px)' }}>
+          <p className="font-mono text-[7px] sm:text-[8px] uppercase tracking-[.14em]" style={{ color: '#F5EBE0' }}>
             {active.country}
           </p>
         </div>
       </div>
 
       {/* inspector readout — hex tokens (click to copy), symbolism, formats */}
-      <div className="px-4 pb-4">
-        <p className="mb-2 font-mono text-[8px] uppercase tracking-[.18em]" style={{ color: '#C0573E' }}>
+      <div className="px-3 sm:px-4 pb-3 sm:pb-4">
+        <p className="mb-2 font-mono text-[7px] sm:text-[8px] uppercase tracking-[.18em]" style={{ color: '#C0573E' }}>
           Tokens — cliquer pour copier
         </p>
-        <div className="flex gap-1.5">
+        <div className="flex gap-1 sm:gap-1.5">
           {active.colors.map((hex) => (
             <button
               key={hex}
               type="button"
               onClick={() => onCopy(hex)}
               aria-label={`Copier le token ${hex}`}
-              className="group relative h-8 flex-1 overflow-hidden rounded-md transition-transform hover:-translate-y-0.5"
+              className="group relative h-7 sm:h-8 flex-1 overflow-hidden rounded-md transition-transform hover:-translate-y-0.5"
               style={{ background: hex }}
             >
               <span
@@ -290,22 +290,22 @@ function PatternInspector({
                 style={{ background: 'rgba(0,0,0,.35)' }}
               >
                 {copiedHex === hex ? (
-                  <Check size={11} color="#F5EBE0" />
+                  <Check size={10} color="#F5EBE0" />
                 ) : (
-                  <Copy size={11} color="#F5EBE0" />
+                  <Copy size={10} color="#F5EBE0" />
                 )}
               </span>
             </button>
           ))}
         </div>
 
-        <div className="mt-3 flex items-center justify-between">
-          <p className="text-[11px]" style={{ color: 'rgba(245,235,224,.55)' }}>
+        <div className="mt-2 sm:mt-3 flex items-center justify-between">
+          <p className="text-[10px] sm:text-[11px]" style={{ color: 'rgba(245,235,224,.55)' }}>
             {active.symbolism}
           </p>
-          <div className="flex gap-1">
+          <div className="flex gap-0.5 sm:gap-1">
             {['SVG', 'CSS', 'JSON', 'PNG'].map((f) => (
-              <span key={f} className="font-mono text-[7.5px] uppercase tracking-wiset" style={{ color: 'rgba(245,235,224,.35)' }}>
+              <span key={f} className="font-mono text-[6px] sm:text-[7.5px] uppercase tracking-wiset" style={{ color: 'rgba(245,235,224,.35)' }}>
                 {f}
               </span>
             ))}
@@ -406,16 +406,14 @@ export function HeroSection() {
           {/* ══════════════════════════════════════════
               HEADLINE — full width, editorial, footnoted
           ══════════════════════════════════════════ */}
-          <div className="mx-auto w-full max-w-7xl px-6 pt-14 lg:px-8">
-            <div className="w-full flex">
-              <div className="w-1/2">
-              <motion.h1
+          <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 pt-12 sm:pt-14 lg:px-8">
+            <motion.h1
               id="hero-title"
               initial={{ opacity: 0, y: 28 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.75, delay: 0.1, ease }}
               className="font-display leading-[.92] font-black tracking-[-0.03em]"
-              style={{ fontSize: 'clamp(2.75rem,7.5vw,6rem)', color: 'var(--hp-text)' }}
+              style={{ fontSize: 'clamp(2rem,8vw,5rem)', color: 'var(--hp-text)' }}
             >
               <span className="block">
                 Chaque motif
@@ -431,14 +429,14 @@ export function HeroSection() {
             {/* ══════════════════════════════════════════
               ASYMMETRIC ROW — copy left, live system right
           ══════════════════════════════════════════ */}
-          <div className=" w-full  pt-10">
+          <div className="mt-8 sm:mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
             {/* — Left: explanation, CTAs, social proof — */}
-            <div className="lg:col-span-6">
+            <div className="lg:col-span-1 order-2 lg:order-1">
               <motion.p
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.34, ease }}
-                className="max-w-md text-[15px] leading-[1.8]"
+                className="max-w-md text-[14px] sm:text-[15px] leading-[1.7] sm:leading-[1.8]"
                 style={{ color: 'var(--hp-muted)' }}
               >
                 <strong style={{ color: 'var(--hp-text)', fontWeight: 600 }}>312 artisans-conservateurs</strong>{' '}
@@ -451,11 +449,11 @@ export function HeroSection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.42, ease }}
-                className="mt-8 flex flex-wrap gap-3"
+                className="mt-6 sm:mt-8 flex flex-wrap gap-3"
               >
                 <Link
                   href={'/patterns' as Route}
-                  className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl px-7 py-3.5 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5"
+                  className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl px-5 sm:px-7 py-3 sm:py-3.5 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5"
                   style={{ background: '#C0573E', boxShadow: '4px 4px 0 rgba(192,87,62,.38),0 8px 24px rgba(192,87,62,.25)' }}
                 >
                   <span
@@ -468,7 +466,7 @@ export function HeroSection() {
 
                 <Link
                   href={'/components' as Route}
-                  className="inline-flex items-center gap-2 rounded-xl px-7 py-3.5 text-sm font-semibold transition-all duration-200"
+                  className="inline-flex items-center gap-2 rounded-xl px-5 sm:px-7 py-3 sm:py-3.5 text-sm font-semibold transition-all duration-200"
                   style={{ border: '1px solid var(--hp-ghost-border)', color: 'var(--hp-ghost-text)' }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.borderColor = 'var(--hp-ghost-hover-b)';
@@ -488,7 +486,7 @@ export function HeroSection() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7, delay: 0.5, ease }}
-                className="mt-7 flex items-center gap-3"
+                className="mt-6 sm:mt-7 flex items-center gap-3"
               >
                 <div className="flex">
                   {COMMUNITY_AVATARS.map(({ letter, bg }, i) => (
@@ -507,44 +505,24 @@ export function HeroSection() {
               </motion.div>
             </div>
 
-            
-
-            {/* — Mobile fallback: static-ish inspector, tap to cycle — */}
-            <div className="lg:hidden">
-              <PatternInspector
-                active={active!}
-                index={index}
-                onSelect={handleSelect}
-                paused={paused}
-                copiedHex={copiedHex}
-                onCopy={handleCopy}
-                reduceMotion={!!reduceMotion}
-              />
-
-              
-            </div>
-          </div>
-
-              </div>
-              <div className="w-1/2">
-              {/* — Right: the live inspector, offset lower for editorial asymmetry — */}
+            {/* — Right: the live inspector, offset lower for editorial asymmetry — */}
             <motion.div
               initial={{ opacity: 0, x: 28 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.9, delay: 0.3, ease }}
-              className="relative hidden lg:col-span-6 lg:block lg:mt-10"
+              className="relative lg:col-span-1 order-1 lg:order-2 lg:mt-0"
             >
-              {/* floating verified badge */}
+              {/* floating verified badge - desktop only */}
               <motion.div
-                className="avs-chip-float-a absolute -top-6 left-4 z-10"
+                className="avs-chip-float-a absolute -top-4 sm:-top-6 left-2 sm:left-4 z-10 hidden lg:block"
                 style={reduceMotion ? undefined : { x: chipX, y: chipY }}
               >
                 <FormatChip label="Provenance vérifiée" bg="rgba(74,103,65,.9)" />
               </motion.div>
 
-              {/* floating format chips */}
+              {/* floating format chips - desktop only */}
               <motion.div
-                className="avs-chip-float-b absolute -right-3 top-8 z-10 flex flex-col gap-1.5"
+                className="avs-chip-float-b absolute -right-2 sm:-right-3 top-6 sm:top-8 z-10 flex flex-col gap-1.5 hidden lg:flex"
                 style={reduceMotion ? undefined : { x: chipX, y: chipY }}
               >
                 <FormatChip label="Tailwind" bg="rgba(42,74,107,.9)" />
@@ -561,8 +539,7 @@ export function HeroSection() {
                 reduceMotion={!!reduceMotion}
               />
             </motion.div>
-              </div>
-            </div>
+          </div>
             
 
             {/* footnote strip — the "receipts" for the claim above */}
@@ -570,17 +547,17 @@ export function HeroSection() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.28, ease }}
-              className="flex"
+              className="grid grid-cols-2 sm:flex"
               style={{ border: '1px solid var(--hp-border)', background: 'var(--hp-faint)' }}
             >
               {FOOTNOTES.map(({ mark, value, label }, i) => (
-                <div key={mark} className="relative px-4 py-3">
-                  {i > 0 && (
+                <div key={mark} className="relative px-3 sm:px-4 py-3 sm:py-3">
+                  {i > 0 && i % 2 === 0 && (
                     <div className="absolute top-[20%] left-0 hidden h-[60%] w-px sm:block" style={{ background: 'var(--hp-border)' }} aria-hidden />
                   )}
-                  <p className="font-mono text-[9px]" style={{ color: '#C0573E' }}>{mark}</p>
-                  <p className="mt-1 font-display text-xl font-black leading-none" style={{ color: 'var(--hp-text)' }}>{value}</p>
-                  <p className="mt-1 font-mono text-[9px] uppercase leading-tight tracking-widset" style={{ color: 'var(--hp-hint)' }}>{label}</p>
+                  <p className="font-mono text-[8px] sm:text-[9px]" style={{ color: '#C0573E' }}>{mark}</p>
+                  <p className="mt-1 font-display text-lg sm:text-xl font-black leading-none" style={{ color: 'var(--hp-text)' }}>{value}</p>
+                  <p className="mt-1 font-mono text-[8px] sm:text-[9px] uppercase leading-tight tracking-widset" style={{ color: 'var(--hp-hint)' }}>{label}</p>
                 </div>
               ))}
             </motion.div>

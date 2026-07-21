@@ -5,11 +5,32 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Mail, MapPin, MessageSquare, Send,
   CheckCircle2, AlertCircle,
-  ArrowRight, Sparkles,
+  ArrowRight, Sparkles, ChevronRight,
 } from 'lucide-react';
 import Link from 'next/link';
 import { Route } from 'next';
 import { z } from 'zod';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// PANEL WRAPPER
+// ─────────────────────────────────────────────────────────────────────────────
+
+function Panel({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={`rounded-2xl border border-avs-accent/8 bg-avs-secondary overflow-hidden ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+function PanelHeader({ title, patternCss }: { title: string; patternCss: string }) {
+  return (
+    <div className="flex items-center gap-2.5 border-b border-avs-accent/8 px-5 py-4">
+      <div className={`${patternCss} h-5 w-5 overflow-hidden rounded-md opacity-90`} aria-hidden />
+      <h3 className="text-[13px] font-bold text-avs-accent">{title}</h3>
+    </div>
+  );
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // VALIDATION
@@ -240,9 +261,19 @@ export default function ContactPage() {
         {/* ══ CHANNELS ══════════════════════════════════════════════════════ */}
         <section className="px-4 py-12 sm:px-6 lg:px-8 border-b border-avs-accent/9">
           <div className="mx-auto max-w-5xl">
-            <div className="grid gap-4 sm:grid-cols-3">
-              {CONTACT_CHANNELS.map(({ icon: Icon, label, value, href, pattern, accentClass, bgClass }, i) => (
-                <motion.div key={label} {...fadeUp(i * 0.08)}>
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+              className="grid gap-4 sm:grid-cols-3"
+            >
+              {CONTACT_CHANNELS.map(({ icon: Icon, label, value, href, pattern, accentClass, bgClass }) => (
+                <motion.div
+                  key={label}
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35, ease: 'easeOut' }}
+                >
                   {href ? (
                     <a href={href} className="group block">
                       <ChannelCard Icon={Icon} label={label} value={value} pattern={pattern} accentClass={accentClass} bgClass={bgClass} />
@@ -252,7 +283,7 @@ export default function ContactPage() {
                   )}
                 </motion.div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </section>
 
@@ -262,169 +293,137 @@ export default function ContactPage() {
             <div className="grid gap-10 lg:grid-cols-[1fr_340px]">
 
               {/* ── FORM ───────────────────────────────────────────────────── */}
-              <motion.div {...fadeUp(0.1)}>
-                <div className="mb-6">
-                  <div className="mb-3 flex items-center gap-2">
-                    <div className="h-px w-6 bg-avs-primary" aria-hidden />
-                    <span className="font-mono text-[9px] font-bold tracking-[0.24em] uppercase text-avs-primary">Formulaire</span>
+              <motion.div
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.28, ease: [0.22, 1, 0.36, 1] }}
+              >
+                <Panel>
+                  <PanelHeader title="Formulaire de contact" patternCss="avs-pattern-kente-royale" />
+                  <div className="p-7">
+                    {/* Success state */}
+                    <AnimatePresence>
+                      {sent ? (
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.95 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          className="flex flex-col items-center gap-5 rounded-2xl border border-avs-ndop/20 bg-avs-ndop/6 p-12 text-center"
+                        >
+                          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-avs-ndop/12 text-avs-ndop">
+                            <CheckCircle2 size={32} />
+                          </div>
+                          <div>
+                            <h3 className="font-display text-xl font-black text-avs-accent" style={{ letterSpacing: '-0.015em' }}>Message envoyé !</h3>
+                            <p className="mt-2 text-sm text-avs-accent/55">Nous vous répondrons dans les 48h ouvrées.</p>
+                          </div>
+                          <button
+                            onClick={() => { setSent(false); setForm({ name:'', email:'', subject:'', message:'', role:'other' }); }}
+                            className="text-sm font-semibold text-avs-primary underline-offset-3 hover:underline"
+                          >
+                            Envoyer un autre message
+                          </button>
+                        </motion.div>
+                      ) : (
+                        <motion.form
+                          onSubmit={(e) => void handleSubmit(e)}
+                          className="space-y-5"
+                          noValidate
+                        >
+                          <div className="grid gap-5 sm:grid-cols-2">
+                            <Field label="Nom complet" error={errors.name} required>
+                              <input className="ct-input" value={form.name} onChange={set('name')} placeholder="Amara Diop" disabled={sending} />
+                            </Field>
+                            <Field label="Email" error={errors.email} required>
+                              <input type="email" className="ct-input" value={form.email} onChange={set('email')} placeholder="vous@exemple.com" disabled={sending} />
+                            </Field>
+                          </div>
+
+                          <Field label="Vous êtes" error={errors.role} required>
+                            <select className="ct-select" value={form.role} onChange={set('role')} disabled={sending}>
+                              {ROLES.map(({ value, label }) => (
+                                <option key={value} value={value}>{label}</option>
+                              ))}
+                            </select>
+                          </Field>
+
+                          <Field label="Sujet" error={errors.subject} required>
+                            <input className="ct-input" value={form.subject} onChange={set('subject')} placeholder="Partenariat, contribution, question…" disabled={sending} />
+                          </Field>
+
+                          <Field label="Message" error={errors.message} required hint="Minimum 20 caractères">
+                            <textarea className="ct-input" rows={5} value={form.message} onChange={set('message')} placeholder="Décrivez votre demande en détail…" disabled={sending} />
+                            <div className="mt-1.5 flex justify-end">
+                              <span className="font-mono text-[9px] text-avs-accent/35">{form.message.length}/2000</span>
+                            </div>
+                          </Field>
+
+                          <button
+                            type="submit"
+                            disabled={sending}
+                            className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl py-3.5 text-sm font-bold text-avs-secondary bg-avs-primary shadow-avs-md hover:-translate-y-0.5 transition-all duration-300 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
+                            aria-busy={sending}
+                          >
+                            <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" aria-hidden />
+                            {sending
+                              ? <><span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-avs-secondary/30 border-t-avs-secondary" /> Envoi en cours…</>
+                              : <><Send size={14} /> Envoyer le message</>
+                            }
+                          </button>
+                        </motion.form>
+                      )}
+                    </AnimatePresence>
                   </div>
-                  <h2 className="font-display text-2xl font-black text-avs-accent" style={{ letterSpacing: '-0.02em' }}>
-                    Envoyez-nous un message
-                  </h2>
-                </div>
-
-                {/* Success state */}
-                <AnimatePresence>
-                  {sent ? (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="flex flex-col items-center gap-5 rounded-2xl border border-avs-ndop/20 bg-avs-ndop/6 p-12 text-center"
-                    >
-                      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-avs-ndop/12 text-avs-ndop">
-                        <CheckCircle2 size={32} />
-                      </div>
-                      <div>
-                        <h3 className="font-display text-xl font-black text-avs-accent" style={{ letterSpacing: '-0.015em' }}>Message envoyé !</h3>
-                        <p className="mt-2 text-sm text-avs-accent/55">Nous vous répondrons dans les 48h ouvrées.</p>
-                      </div>
-                      <button
-                        onClick={() => { setSent(false); setForm({ name:'', email:'', subject:'', message:'', role:'other' }); }}
-                        className="text-sm font-semibold text-avs-primary underline-offset-3 hover:underline"
-                      >
-                        Envoyer un autre message
-                      </button>
-                    </motion.div>
-                  ) : (
-                    <motion.form
-                      onSubmit={(e) => void handleSubmit(e)}
-                      className="space-y-5 rounded-2xl border border-avs-accent/9 bg-avs-secondary p-7"
-                      noValidate
-                    >
-                      {/* Accent stripe */}
-                      <div className="avs-pattern-kente-royale -mx-7 -mt-7 mb-7 h-1 rounded-t-2xl" aria-hidden />
-
-                      <div className="grid gap-5 sm:grid-cols-2">
-                        <Field label="Nom complet" error={errors.name} required>
-                          <input className="ct-input" value={form.name} onChange={set('name')} placeholder="Amara Diop" disabled={sending} />
-                        </Field>
-                        <Field label="Email" error={errors.email} required>
-                          <input type="email" className="ct-input" value={form.email} onChange={set('email')} placeholder="vous@exemple.com" disabled={sending} />
-                        </Field>
-                      </div>
-
-                      <Field label="Vous êtes" error={errors.role} required>
-                        <select className="ct-select" value={form.role} onChange={set('role')} disabled={sending}>
-                          {ROLES.map(({ value, label }) => (
-                            <option key={value} value={value}>{label}</option>
-                          ))}
-                        </select>
-                      </Field>
-
-                      <Field label="Sujet" error={errors.subject} required>
-                        <input className="ct-input" value={form.subject} onChange={set('subject')} placeholder="Partenariat, contribution, question…" disabled={sending} />
-                      </Field>
-
-                      <Field label="Message" error={errors.message} required hint="Minimum 20 caractères">
-                        <textarea className="ct-input" rows={5} value={form.message} onChange={set('message')} placeholder="Décrivez votre demande en détail…" disabled={sending} />
-                        <div className="mt-1.5 flex justify-end">
-                          <span className="font-mono text-[9px] text-avs-accent/35">{form.message.length}/2000</span>
-                        </div>
-                      </Field>
-
-                      <button
-                        type="submit"
-                        disabled={sending}
-                        className="group relative flex w-full items-center justify-center gap-2 overflow-hidden rounded-xl py-3.5 text-sm font-bold text-avs-secondary bg-avs-primary shadow-avs-md hover:-translate-y-0.5 transition-all duration-300 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
-                        aria-busy={sending}
-                      >
-                        <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" aria-hidden />
-                        {sending
-                          ? <><span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-avs-secondary/30 border-t-avs-secondary" /> Envoi en cours…</>
-                          : <><Send size={14} /> Envoyer le message</>
-                        }
-                      </button>
-                    </motion.form>
-                  )}
-                </AnimatePresence>
+                </Panel>
               </motion.div>
 
               {/* ── SIDEBAR ────────────────────────────────────────────────── */}
               <div className="space-y-6">
 
                 {/* FAQ */}
-                <motion.div {...fadeUp(0.2)}>
-                  <div className="mb-4">
-                    <div className="mb-2 flex items-center gap-2">
-                      <div className="h-px w-5 bg-avs-primary" aria-hidden />
-                      <span className="font-mono text-[9px] font-bold tracking-[0.24em] uppercase text-avs-primary">FAQ</span>
+                <motion.div
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <Panel>
+                    <PanelHeader title="Questions fréquentes" patternCss="avs-pattern-adinkra-sankofa" />
+                    <div className="divide-y divide-avs-accent/6">
+                      {FAQS.map(({ q, a }, i) => (
+                        <div key={i} className="overflow-hidden">
+                          <button
+                            type="button"
+                            onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                            className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left text-sm font-semibold text-avs-accent hover:text-avs-primary transition-colors"
+                          >
+                            {q}
+                            <ChevronRight size={14} className={`shrink-0 transition-transform duration-200 text-avs-accent/35 ${openFaq === i ? 'rotate-90' : ''}`} />
+                          </button>
+                          <AnimatePresence initial={false}>
+                            {openFaq === i && (
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: 'auto', opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                                className="overflow-hidden"
+                              >
+                                <p className="border-t border-avs-accent/9 px-5 py-4 text-xs leading-relaxed text-avs-accent/55">{a}</p>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      ))}
                     </div>
-                    <h2 className="font-display text-lg font-black text-avs-accent" style={{ letterSpacing: '-0.015em' }}>
-                      Questions fréquentes
-                    </h2>
-                  </div>
-
-                  <div className="space-y-2">
-                    {FAQS.map(({ q, a }, i) => (
-                      <div key={i} className="overflow-hidden rounded-xl border border-avs-accent/9 bg-avs-secondary">
-                        <button
-                          type="button"
-                          onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                          className="flex w-full items-center justify-between gap-3 px-4 py-3.5 text-left text-sm font-semibold text-avs-accent hover:text-avs-primary transition-colors"
-                        >
-                          {q}
-                          <span className={`shrink-0 transition-transform duration-200 text-avs-accent/35 ${openFaq === i ? 'rotate-180' : ''}`}>
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9"/></svg>
-                          </span>
-                        </button>
-                        <AnimatePresence initial={false}>
-                          {openFaq === i && (
-                            <motion.div
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: 'auto', opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              transition={{ duration: 0.2 }}
-                              className="overflow-hidden"
-                            >
-                              <p className="border-t border-avs-accent/9 px-4 py-3.5 text-xs leading-relaxed text-avs-accent/55">{a}</p>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-
-                {/* Social links */}
-                <motion.div {...fadeUp(0.3)} className="rounded-xl border border-avs-accent/9 bg-avs-secondary p-5">
-                  <p className="mb-4 font-mono text-[9px] font-bold tracking-[0.2em] uppercase text-avs-accent/35">Réseaux</p>
-                  <div className="flex flex-col gap-2">
-                    {[
-                      { href: 'https://github.com/avs-standard', icon: "pi pi-Github",  label: 'GitHub',    sub: 'Code source & issues' },
-                      { href: 'https://x.com/avs_standard',      icon: "pi pi-Twitter", label: 'Twitter/X', sub: 'Actualités AVS'       },
-                    ].map(({ href, icon: Icon, label, sub }) => (
-                      <a
-                        key={href}
-                        href={href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group flex items-center gap-3 rounded-xl px-3.5 py-3 border border-avs-accent/9 hover:border-avs-primary/20 hover:bg-avs-primary/4 transition-all duration-150"
-                      >
-                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-avs-accent/4 text-avs-accent/55 group-hover:text-avs-primary transition-colors">
-                          {/* <Icon size={15} /> */}
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-sm font-semibold text-avs-accent group-hover:text-avs-primary transition-colors">{label}</p>
-                          <p className="text-[10px] text-avs-accent/35">{sub}</p>
-                        </div>
-                        <ArrowRight size={12} className="ml-auto shrink-0 text-avs-accent/20 group-hover:text-avs-primary transition-colors group-hover:translate-x-0.5 transition-transform" />
-                      </a>
-                    ))}
-                  </div>
+                  </Panel>
                 </motion.div>
 
                 {/* Response time badge */}
-                <motion.div {...fadeUp(0.35)} className="flex items-center gap-3 rounded-xl border border-avs-kente/20 bg-avs-kente/6 px-4 py-3.5">
+                <motion.div
+                  initial={{ opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                  className="flex items-center gap-3 rounded-2xl border border-avs-kente/20 bg-avs-kente/6 px-5 py-4"
+                >
                   <span className="flex h-2 w-2 shrink-0 items-center">
                     <span className="h-2 w-2 animate-ping rounded-full bg-avs-kente opacity-75 absolute" />
                     <span className="h-2 w-2 rounded-full bg-avs-kente relative" />
@@ -481,10 +480,10 @@ function ChannelCard({ Icon, label, value, pattern, accentClass, bgClass }: {
   pattern: string; accentClass: string; bgClass: string;
 }) {
   return (
-    <div className="group overflow-hidden rounded-2xl border border-avs-accent/9 bg-avs-secondary transition-all duration-300 hover:-translate-y-1 hover:border-avs-primary/20">
-      <div className={`${pattern} h-1.5 w-full`} aria-hidden />
+    <div className="group overflow-hidden rounded-2xl border border-avs-accent/8 bg-avs-secondary transition-all duration-300 hover:-translate-y-0.5 hover:border-avs-primary/20">
+      <div className={`${pattern} h-1 w-full`} aria-hidden />
       <div className="p-5">
-        <div className={`mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl ${bgClass} ${accentClass}`}>
+        <div className={`mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl ${bgClass} ${accentClass} transition-transform duration-300 group-hover:scale-110`}>
           <Icon size={18} aria-hidden />
         </div>
         <p className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-avs-accent/35">{label}</p>

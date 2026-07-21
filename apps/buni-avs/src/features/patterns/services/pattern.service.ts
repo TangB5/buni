@@ -1,6 +1,5 @@
 
-
-import { post, patch, del, get } from '@buni/api';
+import { post, patch, del, get, download } from '@buni/api';
 
 import type {
   PatternDto,
@@ -76,5 +75,9 @@ export const patternService = {
       `/api/v1/patterns/${id}/status`,
       { status: status.toUpperCase() }
     );
+  },
+
+  async download(id: string) {
+    return download(`/api/v1/patterns/${id}/download`);
   },
 };

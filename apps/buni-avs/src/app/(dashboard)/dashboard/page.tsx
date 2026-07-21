@@ -5,13 +5,15 @@ import Link from 'next/link';
 import { motion, useMotionValue, useTransform, AnimatePresence } from 'framer-motion';
 import {
   Layers, Download, Eye, Heart, Plus, ArrowRight, ArrowUpRight,
-  TrendingUp, MessageSquare, Check, Palette, User, ChevronRight,
-  Sparkles, Zap, BarChart2, Clock, Star,
+  TrendingUp, MessageSquare, Check, Palette, User, Users, ChevronRight,
+  Sparkles, Zap, BarChart2, Clock, Star, Activity,
 } from 'lucide-react';
 import { useAuth, useLogout } from '@buni/auth';
+import { timeAgo, formatNumber, formatDate } from '@buni/utils';
 
 import { Route } from 'next';
 import { DashboardStats, UserPattern, DashboardActivity, dashboardService } from '@/features/dashboard/services/dashboard.service';
+import { userService } from '@/features/user/services/user.service';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TYPES & CONFIG
@@ -40,18 +42,6 @@ const CSS_PATTERN_MAP: Record<string, string> = {
   KUBA:    'avs-pattern-kuba-kasai',
 };
 
-
-// ─────────────────────────────────────────────────────────────────────────────
-// UTILS
-// ─────────────────────────────────────────────────────────────────────────────
-
-function timeAgo(iso: string): string {
-  const diff = Date.now() - new Date(iso).getTime();
-  if (diff < 3600000)   return `${Math.round(diff / 60000)}min`;
-  if (diff < 86400000)  return `${Math.round(diff / 3600000)}h`;
-  if (diff < 604800000) return `${Math.round(diff / 86400000)}j`;
-  return new Date(iso).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SKELETON
@@ -126,7 +116,7 @@ function KpiCard({ label, value, trend, trendUp = true, icon: Icon, color, patte
           className="font-display text-4xl font-black tabular-nums leading-none text-avs-accent"
           style={{ fontVariantNumeric: 'tabular-nums' }}
         >
-          {count.toLocaleString('fr-FR')}
+          {formatNumber(count)}
         </p>
         <p className="mt-2 flex items-center gap-1.5 text-[11px] font-semibold" style={{ color }}>
           <TrendingUp size={10} aria-hidden />
@@ -248,8 +238,8 @@ function PatternRow({ pattern, index }: { pattern: UserPattern; index: number })
 
       {/* Stats */}
       <div className="hidden sm:flex items-center gap-4 text-[11px] text-avs-accent/35 tabular-nums">
-        <span className="flex items-center gap-1"><Eye size={10} aria-hidden />{pattern.viewCount.toLocaleString('fr-FR')}</span>
-        <span className="flex items-center gap-1"><Download size={10} aria-hidden />{pattern.downloadCount.toLocaleString('fr-FR')}</span>
+        <span className="flex items-center gap-1"><Eye size={10} aria-hidden />{formatNumber(pattern.viewCount)}</span>
+        <span className="flex items-center gap-1"><Download size={10} aria-hidden />{formatNumber(pattern.downloadCount)}</span>
       </div>
 
       {/* Status badge */}
@@ -424,7 +414,7 @@ function ProfileStrip({
               <div>
                 <p className="font-mono uppercase tracking-widset text-avs-accent/30">Membre depuis</p>
                 <p className="mt-0.5 font-semibold text-avs-accent">
-                  {new Date(user.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}
+                  {formatDate(user.createdAt)}
                 </p>
               </div>
             )}
@@ -455,27 +445,53 @@ export default function DashboardPage() {
   const [patterns, setPatterns] = useState<UserPattern[]>([]);
   const [activity, setActivity] = useState<DashboardActivity[]>([]);
   const [loading, setLoading]   = useState(true);
+  const [platformStats, setPlatformStats] = useState<any>(null);
 
 
   if(!user) return ;
-  
+
 
   useEffect(() => {
     if (!isHydrated || !isAuthenticated) return;
     const fetchData = async () => {
       try {
-        const [s, p, a] = await Promise.all([
-          dashboardService.getStats(),
-          dashboardService.getRecentPatterns(5),
-          dashboardService.getActivity(6),
-        ]);
-        setStats(s); setPatterns(p); setActivity(a);
+        if (isAdmin) {
+          // Fetch platform-wide stats for admins
+          const [pStats, p, a] = await Promise.all([
+            userService.getPlatformStats(),
+            dashboardService.getRecentPatterns(5),
+            dashboardService.getActivity(6),
+          ]);
+          setPlatformStats(pStats);
+          setPatterns(p);
+          setActivity(a);
+          setStats({
+            patternsCreated: pStats.totalPatterns,
+            downloadsTotal: pStats.totalDownloads,
+            totalViews: pStats.totalViews,
+            favoritesCount: 0,
+            trends: {
+              patternsTrend: '+0 ce mois',
+              downloadsTrend: '+0% vs mois dernier',
+              viewsTrend: '+0 ce mois',
+              favoritesTrend: '+0 nouveaux',
+            },
+          });
+        } else {
+          // Fetch user-specific stats for regular users
+          const [s, p, a] = await Promise.all([
+            dashboardService.getStats(),
+            dashboardService.getRecentPatterns(5),
+            dashboardService.getActivity(6),
+          ]);
+          setStats(s); setPatterns(p); setActivity(a);
+        }
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
         setStats({
-          patternsCount: 0,
+          patternsCreated: 0,
           downloadsTotal: 0,
-          viewsTotal: 0,
+          totalViews: 0,
           favoritesCount: 0,
           trends: {
             patternsTrend: '+0 ce mois',
@@ -491,7 +507,7 @@ export default function DashboardPage() {
       }
     };
     void fetchData();
-  }, [isHydrated, isAuthenticated]);
+  }, [isHydrated, isAuthenticated, isAdmin]);
 
   
   if (!isHydrated) return <PageLoader />;
@@ -504,9 +520,26 @@ export default function DashboardPage() {
     : isCurator ? 'avs-pattern-kente-royale' : 'avs-pattern-wax-dakar';
 
   // ── KPI cards config ────────────────────────────────────────────────────────
-  const kpiCards: KpiCardProps[] = [
+  const kpiCards: KpiCardProps[] = isAdmin && platformStats ? [
     {
-      label: 'Mes motifs',     value: stats?.patternsCount  ?? 0, trend: stats?.trends?.patternsTrend ?? '+0 ce mois',
+      label: 'Total utilisateurs', value: platformStats.totalUsers, trend: '+0 ce mois',
+      icon: Users, color: '#C0573E', patternCss: 'avs-pattern-kente-royale', delay: 0.1,
+    },
+    {
+      label: 'Total motifs', value: platformStats.totalPatterns, trend: '+0 ce mois',
+      icon: Layers, color: '#4F7CFF', patternCss: 'avs-pattern-ndop-sultan', delay: 0.17,
+    },
+    {
+      label: 'Téléchargements', value: platformStats.totalDownloads, trend: '+0% vs mois dernier',
+      icon: Download, color: '#8B5CF6', patternCss: 'avs-pattern-bogolan-fanga', delay: 0.24,
+    },
+    {
+      label: 'Vues totales', value: platformStats.totalViews, trend: '+0 ce mois',
+      icon: Eye, color: '#F59E0B', patternCss: 'avs-pattern-adinkra-sankofa', delay: 0.31,
+    },
+  ] : [
+    {
+      label: 'Mes motifs',     value: stats?.patternsCreated  ?? 0, trend: stats?.trends?.patternsTrend ?? '+0 ce mois',
       icon: Layers,   color: '#C0573E', patternCss: 'avs-pattern-kente-royale',  delay: 0.1,
     },
     {
@@ -514,7 +547,7 @@ export default function DashboardPage() {
       icon: Download, color: '#4F7CFF', patternCss: 'avs-pattern-ndop-sultan',   delay: 0.17,
     },
     {
-      label: 'Vues totales',   value: stats?.viewsTotal     ?? 0, trend: stats?.trends?.viewsTrend ?? '+0 ce mois',
+      label: 'Vues totales',   value: stats?.totalViews     ?? 0, trend: stats?.trends?.viewsTrend ?? '+0 ce mois',
       icon: Eye,      color: '#8B5CF6', patternCss: 'avs-pattern-bogolan-fanga', delay: 0.24,
     },
     {
@@ -523,6 +556,7 @@ export default function DashboardPage() {
     },
   ];
 
+  
   return (
     <div className="min-h-screen bg-avs-secondary">
       <div className="mx-auto max-w-7xl space-y-5 px-5 py-7 lg:px-8">
@@ -552,8 +586,44 @@ export default function DashboardPage() {
           )}
         </section>
 
+        {/* ══ ADMIN STATS PANEL ═════════════════════════════════════════ */}
+        {isAdmin && platformStats && (
+          <motion.section
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.22, ease: [0.22, 1, 0.36, 1] }}
+            aria-label="Statistiques plateforme"
+          >
+            <Panel>
+              <PanelHeader title="Statistiques plateforme" patternCss="avs-pattern-kuba-kasai" />
+              <div className="grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="rounded-xl border border-avs-accent/6 bg-avs-accent/[0.02] p-4">
+                  <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-avs-accent/40">Utilisateurs vérifiés</p>
+                  <p className="mt-2 font-display text-2xl font-black text-avs-accent">{formatNumber(platformStats.verifiedUsers)}</p>
+                  <p className="mt-1 text-xs text-avs-accent/35">sur {formatNumber(platformStats.totalUsers)} total</p>
+                </div>
+                <div className="rounded-xl border border-avs-accent/6 bg-avs-accent/[0.02] p-4">
+                  <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-avs-accent/40">Administrateurs</p>
+                  <p className="mt-2 font-display text-2xl font-black text-avs-accent">{formatNumber(platformStats.admins)}</p>
+                  <p className="mt-1 text-xs text-avs-accent/35">Curateurs: {formatNumber(platformStats.curators)}</p>
+                </div>
+                <div className="rounded-xl border border-avs-accent/6 bg-avs-accent/[0.02] p-4">
+                  <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-avs-accent/40">Contributeurs</p>
+                  <p className="mt-2 font-display text-2xl font-black text-avs-accent">{formatNumber(platformStats.contributors)}</p>
+                  <p className="mt-1 text-xs text-avs-accent/35">Actifs sur la plateforme</p>
+                </div>
+                <div className="rounded-xl border border-avs-accent/6 bg-avs-accent/[0.02] p-4">
+                  <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-avs-accent/40">Motifs publiés</p>
+                  <p className="mt-2 font-display text-2xl font-black text-avs-accent">{formatNumber(platformStats.patternsByStatus.published)}</p>
+                  <p className="mt-1 text-xs text-avs-accent/35">En révision: {formatNumber(platformStats.patternsByStatus.review)}</p>
+                </div>
+              </div>
+            </Panel>
+          </motion.section>
+        )}
+
         {/* ══ 3. HERO BANNER ════════════════════════════════════════════ */}
-        <HeroBanner patternsCount={stats?.patternsCount ?? 0} />
+        <HeroBanner patternsCount={stats?.patternsCreated ?? 0} />
 
         {/* ══ 4. PATTERNS + ACTIVITY — layout 3/5 + 2/5 ════════════════ */}
         <div className="grid gap-5 lg:grid-cols-5">
@@ -658,8 +728,12 @@ export default function DashboardPage() {
             <div className="grid grid-cols-2 gap-3 p-4 sm:grid-cols-4">
               <QuickAction href="/patternsDashboard/new" icon={Plus}    label="Nouveau motif"  sub="Soumettre au catalogue" accent />
               <QuickAction href="/patterns"              icon={Layers}  label="Bibliothèque"   sub="Explorer les motifs" />
-              <QuickAction href="/dashboard/profile"    icon={User}    label="Mon profil"     sub="Gérer le compte" />
+              <QuickAction href="/profile"    icon={User}    label="Mon profil"     sub="Gérer le compte" />
+              <QuickAction href="/activity"    icon={Activity} label="Mon activité" sub="Historique" />
               <QuickAction href="/colors"               icon={Palette} label="Palettes"       sub="Couleurs & thèmes" />
+              {isAdmin && (
+                <QuickAction href="/users" icon={Users} label="Utilisateurs" sub="Gérer les comptes" />
+              )}
             </div>
           </Panel>
         </motion.section>

@@ -176,48 +176,12 @@ export default function LoginPage() {
             aria-hidden
           />
 
-          {/* Floating pattern collage */}
-          <div className="absolute inset-0">
-            {PATTERN_CARDS.map((card, i) => (
-              <motion.div
-                key={card.name}
-                className="absolute overflow-hidden rounded-2xl"
-                style={{
-                  ...card.style,
-                  rotate: card.rotate,
-                  border: '1px solid rgba(245,235,224,0.07)',
-                  boxShadow: '0 24px 64px rgba(0,0,0,0.65)',
-                }}
-                animate={{ y: [0, -8, 0], rotate: [parseFloat(card.rotate), parseFloat(card.rotate) + 0.6, parseFloat(card.rotate)] }}
-                transition={{ duration: 5.5 + i * 1.2, repeat: Infinity, ease: 'easeInOut', delay: i * 1.1 }}
-              >
-                <div className={`${card.css} h-full w-full`} />
-                {/* Bottom gradient — justified inline */}
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,8,6,0.88) 0%, transparent 55%)' }} />
-                <div className="absolute bottom-0 left-0 right-0 p-3">
-                  <p className="font-mono text-[8px] tracking-[0.2em] uppercase text-avs-primary">{card.name}</p>
-                  <p className="text-[9px] text-avs-secondary/50">{card.origin}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+         
 
           {/* Content layer */}
-          <div className="relative flex h-full flex-col justify-between p-12">
+          <div className="relative flex h-full items-center justify-between p-12">
             {/* Logo */}
-            <motion.div initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, ease }}>
-              <Link href="/" className="inline-flex items-center gap-2.5">
-                <div className="avs-pattern-kente-royale relative h-9 w-9 overflow-hidden rounded-xl ring-1 ring-avs-secondary/10">
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                    <span className="font-display text-base font-black text-avs-secondary drop-shadow">A</span>
-                  </div>
-                </div>
-                <div className="flex flex-col leading-tight">
-                  <span className="font-display text-[15px] font-black text-avs-secondary" style={{ letterSpacing: '-0.02em' }}>AVS</span>
-                  <span className="font-mono text-[9px] font-bold tracking-[0.18em] uppercase text-avs-primary">Standard</span>
-                </div>
-              </Link>
-            </motion.div>
+           
 
             {/* Blockquote */}
             <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2, ease }}>
@@ -225,7 +189,7 @@ export default function LoginPage() {
               <blockquote className="font-display text-2xl font-bold leading-snug text-avs-secondary" style={{ letterSpacing: '-0.015em' }}>
                 L&apos;identité d&apos;un peuple<br />se lit dans ses motifs.
               </blockquote>
-              <p className="mt-3 text-sm text-avs-secondary/45">— Dr. Amara Diop, fondateur AVS</p>
+              <p className="mt-3 text-sm text-avs-secondary/45"> — NDOH yannick TANG, fondateur AVS</p>
 
               <div className="mt-8 space-y-3">
                 {TESTIMONIALS_MINI.map(({ pattern, initial, text }) => (
@@ -241,13 +205,7 @@ export default function LoginPage() {
               </div>
             </motion.div>
 
-            {/* Pattern swatches */}
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8, delay: 0.4 }} className="flex items-center gap-3">
-              {['avs-pattern-kente-royale','avs-pattern-ndop-sultan','avs-pattern-bogolan-fanga','avs-pattern-adinkra-sankofa'].map((p) => (
-                <div key={p} className={`${p} h-10 w-10 rounded-xl ring-1 ring-avs-secondary/8 transition-transform duration-300 hover:scale-110`} aria-hidden />
-              ))}
-              <span className="ml-1 font-mono text-[9px] tracking-[0.18em] uppercase text-avs-secondary/30">+1 244</span>
-            </motion.div>
+            
           </div>
         </div>
 
@@ -414,7 +372,7 @@ export default function LoginPage() {
                 <Link href={'/privacy' as Route} className="underline underline-offset-3 text-avs-accent/38">confidentialité</Link>.
               </p>
               <span className="shrink-0 rounded-lg px-2.5 py-1 font-mono text-[9px] font-bold tracking-wide uppercase bg-avs-primary/8 text-avs-primary border border-avs-primary/20">
-                CC BY 4.0
+                Apache 2.0 + Commons Clause
               </span>
             </div>
           </motion.div>

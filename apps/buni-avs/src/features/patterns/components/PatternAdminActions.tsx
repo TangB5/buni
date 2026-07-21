@@ -7,7 +7,8 @@
 // =============================================================================
 
 import React from 'react';
-import { useTogglePublish, useToggleFeature } from '../hooks/usePatternActions';
+import { formatDate } from '@buni/utils';
+import { useToggleFeature } from '../hooks/usePatternActions';
 import type { Pattern } from '../types';
 
 interface PatternAdminActionsProps {
@@ -25,18 +26,7 @@ export function PatternAdminActions({
   onActionStart,
   onActionComplete,
 }: PatternAdminActionsProps) {
-  const publishToggle = useTogglePublish();
   const featureToggle = useToggleFeature();
-
-  const handleTogglePublish = async () => {
-    onActionStart?.();
-    try {
-      publishToggle.mutate(pattern.id, !pattern.status);
-      // Le callback onSuccess du hook gère l'invalidation des queries
-    } finally {
-      onActionComplete?.();
-    }
-  };
 
   const handleToggleFeature = async () => {
     onActionStart?.();
@@ -47,8 +37,8 @@ export function PatternAdminActions({
     }
   };
 
-  const isLoading = publishToggle.isLoading || featureToggle.isLoading;
-  const hasError = publishToggle.isError || featureToggle.isError;
+  const isLoading = featureToggle.isLoading;
+  const hasError = featureToggle.isError;
 
   return (
     <div className="space-y-3 rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
@@ -59,22 +49,7 @@ export function PatternAdminActions({
       </div>
 
       {/* Actions Grid */}
-      <div className="grid grid-cols-2 gap-3">
-        {/* Publish Toggle */}
-        <button
-          onClick={handleTogglePublish}
-          disabled={isLoading}
-          className={`flex items-center justify-center gap-2 rounded-lg px-3 py-2 font-medium transition-all ${
-            pattern.status === 'published'
-              ? 'bg-green-100 text-green-700 hover:bg-green-200'
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-          } disabled:opacity-50 disabled:cursor-not-allowed`}
-          title={pattern.status === 'published' ? 'Cliquer pour dépublier' : 'Cliquer pour publier'}
-        >
-          <span>{pattern.status === 'published' ? '✓' : '○'}</span>
-          <span className="text-sm">{pattern.status === 'published' ? 'Publié' : 'Brouillon'}</span>
-        </button>
-
+      <div className="grid grid-cols-1 gap-3">
         {/* Feature Toggle */}
         <button
           onClick={handleToggleFeature}
@@ -102,14 +77,14 @@ export function PatternAdminActions({
         <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
           <p className="font-medium">Une erreur est survenue</p>
           <p className="mt-1 text-red-600">
-            {publishToggle.error?.message || featureToggle.error?.message || 'Veuillez réessayer'}
+            {featureToggle.error?.message || 'Veuillez réessayer'}
           </p>
         </div>
       )}
 
       {/* Last updated */}
       <div className="text-xs text-gray-400">
-        Mis à jour le {new Date(pattern.updatedAt || new Date()).toLocaleDateString('fr-FR')}
+        Mis à jour le {formatDate(pattern.updatedAt || new Date().toISOString())}
       </div>
     </div>
   );

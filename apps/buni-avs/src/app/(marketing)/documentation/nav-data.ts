@@ -40,6 +40,7 @@ export const NAV_SPACES: NavSpace[] = [
     description: "1 248 motifs documentés et sourcés.",
     pages: [
       { slug: 'intro', title: 'Introduction' },
+      { slug: 'utiliser-patterns-code', title: 'Utiliser dans votre code' },
       { slug: 'ndop-bamoum', title: 'Ndop Bamoum' },
       { slug: 'kente-royale', title: 'Kente Royale' },
       { slug: 'bogolan-fanga', title: 'Bogolan Fanga' },
@@ -48,7 +49,13 @@ export const NAV_SPACES: NavSpace[] = [
   {
     slug: 'couleurs', label: 'Couleurs', icon: 'palette', color: '#8B4513',
     description: 'Palettes extraites de pigments naturels africains.',
-    pages: [{ slug: 'palette-principale', title: 'Palette principale' }],
+    pages: [
+      { slug: 'introduction', title: 'Introduction' },
+      { slug: 'color-picker', title: 'Color Picker' },
+      { slug: 'integration', title: 'Intégration' },
+      { slug: 'design-system', title: 'Design System' },
+      { slug: 'palette-principale', title: 'Palette principale' },
+    ],
   },
   {
     slug: 'tokens', label: 'Design Tokens', icon: 'sliders-h', color: '#4A6741',

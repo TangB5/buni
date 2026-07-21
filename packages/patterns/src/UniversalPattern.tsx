@@ -19,7 +19,7 @@ interface UniversalPatternProps {
 }
 
 /**
- * Universal Pattern Component
+ * Universal Pattern Component (CSS-based)
  *
  * Usage:
  * <pattern type="KENTE" className="my-class" />
@@ -49,6 +49,57 @@ export function pattern({
       tabIndex={onClick ? 0 : undefined}
     >
       {children}
+    </Component>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Pattern Component (SVG-based with Supabase support)
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface PatternProps {
+  /** Pattern slug for fetching from Supabase */
+  slug: string;
+  /** Additional CSS classes */
+  className?: string;
+  /** Color class (e.g., "text-avs-kente", "text-avs-primary") */
+  color?: string;
+  /** Opacity (0-100) */
+  opacity?: number;
+  /** Children content */
+  children?: React.ReactNode;
+  /** HTML tag to render */
+  as?: keyof JSX.IntrinsicElements;
+}
+
+/**
+ * Pattern Component - Loads SVG from Supabase
+ *
+ * Usage:
+ * <Pattern slug="ndop-sultan" className="opacity-30" color="text-avs-kente" />
+ * <Pattern slug="kente-royale" className="opacity-20 mix-blend-multiply" />
+ */
+export function Pattern({
+  slug,
+  className = '',
+  color = 'text-avs-accent',
+  opacity = 20,
+  children,
+  as: Component = 'div',
+}: PatternProps) {
+  // Construct Supabase URL - you may need to adjust this based on your setup
+  const svgUrl = `https://zexnfalycvlfsyrtdqxu.supabase.co/storage/v1/object/public/patterns/${slug}.svg`;
+
+  return (
+    <Component className={`relative overflow-hidden ${className}`}>
+      <img
+        src={svgUrl}
+        alt={`Pattern ${slug}`}
+        className={`absolute inset-0 w-full h-full object-cover ${color}`}
+        style={{ opacity: opacity / 100 }}
+        aria-hidden="true"
+      />
+      {children && <div className="relative z-10">{children}</div>}
     </Component>
   );
 }

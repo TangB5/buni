@@ -3,6 +3,7 @@ import type { NextConfig } from 'next';
 const config: NextConfig = {
   output: 'standalone',
   typedRoutes: true,
+  allowedDevOrigins: ['192.168.1.190'],
   images: {
     remotePatterns: [
       {

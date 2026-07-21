@@ -2,6 +2,16 @@
 
 **Monorepo NX** · 7 apps Next.js 14 · 9 packages partagés · Radix UI + CVA + Tailwind
 
+## License
+
+This project is licensed under the **Apache License 2.0 with Commons Clause (Non-Commercial)**.
+
+- **Personal & Educational Use**: Free to use, modify, and distribute for personal and educational purposes
+- **Non-Commercial**: Commercial use requires explicit written permission from AVS Standard
+- **Attribution**: You must include the original license and copyright notice in any redistribution
+
+For the full license text, see the [LICENSE](./LICENSE) file.
+
 ## Applications
 
 | App | Rôle | Domaine |

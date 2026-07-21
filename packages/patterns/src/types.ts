@@ -55,7 +55,6 @@ export interface Pattern {
 
   name: string;
   localName?: string;
-  nameEn?: string;
 
   imgUrl: string;
   type: PatternType;

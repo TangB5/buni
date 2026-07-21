@@ -980,7 +980,7 @@ export function Header() {
                       icon={BookOpen}
                       label="Documentation"
                       available={false}
-                      onUnavailableClick={() => handleClick({ href: '/documentation', label: 'Docs', available: false, modal: NAV_ITEMS.find(i => i.label === 'Docs')?.modal })}
+                      onUnavailableClick={() => handleClick({ href: '/documentation', label: 'Docs', available: true, modal: NAV_ITEMS.find(i => i.label === 'Docs')?.modal })}
                     />
 
                     <button

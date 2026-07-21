@@ -92,25 +92,6 @@ export const patternRepository = {
     await patternService.delete(id);
   },
 
-  async publish(id: string): Promise<Pattern> {
-
-    const response =
-      await patternService.publish(id);
-
-    return mapPatternDtoToModel(
-      response.data
-    );
-  },
-
-  async unpublish(id: string): Promise<Pattern> {
-
-    const response =
-      await patternService.unpublish(id);
-
-    return mapPatternDtoToModel(
-      response.data
-    );
-  },
 
   async updateStatus(id: string, status: string): Promise<Pattern> {
     const response =
@@ -119,5 +100,9 @@ export const patternRepository = {
     return mapPatternDtoToModel(
       response.data
     );
+  },
+
+  async download(id: string): Promise<Blob> {
+    return patternService.download(id);
   },
 };

@@ -2,9 +2,9 @@ import { get } from '@buni/api';
 
 
 export interface DashboardStats {
-  patternsCount: number;
+  patternsCreated: number;
   downloadsTotal: number;
-  viewsTotal: number;
+  totalViews: number;
   favoritesCount: number;
   trends: {
     patternsTrend: string;
@@ -39,9 +39,9 @@ class DashboardService {
     } catch (error) {
       console.error('Failed to fetch stats:', error);
       return {
-        patternsCount: 0,
+        patternsCreated: 0,
         downloadsTotal: 0,
-        viewsTotal: 0,
+        totalViews: 0,
         favoritesCount: 0,
         trends: {
           patternsTrend: '+0 ce mois',

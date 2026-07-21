@@ -17,14 +17,15 @@ import {
   Layers,
   EyeOff,
   Filter,
-  ArrowLeft,
-  FileText,
+  ArrowLeft,FileText,
   Hourglass,
   BarChart3,
   X,
 } from 'lucide-react';
+import { formatDate, formatNumber } from '@buni/utils';
+
 import { Route } from 'next';
-import { Pattern, PatternSymbol } from '@buni/patterns';
+import type { Pattern, PatternStatus, PatternSymbol } from '@buni/patterns';
 import { useFeaturePattern, useToggleFeature, useUnfeaturePattern } from '@/features/patterns/hooks/usePatternActions';
 import { mapPatternDtoToModel } from '@/features/patterns/mappers/pattern.mapper';
 import { patternService } from '@/features/patterns/services/pattern.service';
@@ -34,7 +35,7 @@ import { patternService } from '@/features/patterns/services/pattern.service';
 // TYPES
 // ─────────────────────────────────────────────────────────────────────────────
 
-type Status = 'published' | 'draft' | 'review';
+
 type SortKey = 'name' | 'views' | 'downloads' | 'updatedAt';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -42,7 +43,7 @@ type SortKey = 'name' | 'views' | 'downloads' | 'updatedAt';
 // ─────────────────────────────────────────────────────────────────────────────
 
 const STATUS_CFG: Record<
-  Status,
+  PatternStatus,
   { label: string; icon: typeof CheckCircle2; pill: string; dot: string }
 > = {
   published: {
@@ -65,7 +66,7 @@ const STATUS_CFG: Record<
   },
 };
 
-const STATUS_FILTERS: { value: Status | 'all'; label: string }[] = [
+const STATUS_FILTERS: { value: PatternStatus | 'all'; label: string }[] = [
   { value: 'all', label: 'Tous' },
   { value: 'published', label: 'Publiés' },
   { value: 'draft', label: 'Brouillons' },
@@ -123,7 +124,7 @@ function StatCard({
           className="font-display text-avs-accent mt-2 text-3xl leading-none font-black"
           style={{ letterSpacing: '-0.025em' }}
         >
-          {typeof value === 'number' ? value.toLocaleString('fr-FR') : value}
+          {typeof value === 'number' ? formatNumber(value) : value}
         </p>
         {sub && <p className="text-avs-accent/35 mt-1.5 text-[11px]">{sub}</p>}
       </div>
@@ -135,8 +136,8 @@ function StatCard({
 // STATUS BADGE
 // ─────────────────────────────────────────────────────────────────────────────
 
-function StatusBadge({ status }: { status: Status }) {
-  const normalizedStatus = status?.toLowerCase() as Status;
+function StatusBadge({ status }: { status: PatternStatus }) {
+  const normalizedStatus = status?.toLowerCase() as PatternStatus;
 
   const { label, dot, pill } = STATUS_CFG[normalizedStatus];
   return (
@@ -294,7 +295,7 @@ function EmptyState({ search }: { search: string }) {
 export default function MyPatternsPage() {
   const [patterns, setPatterns] = useState<Pattern[]>([]);
   const [search, setSearch] = useState('');
-  const [statusF, setStatusF] = useState<Status | 'all'>('all');
+  const [statusF, setStatusF] = useState<PatternStatus | 'all'>('all');
   const [sortKey, setSortKey] = useState<SortKey>('updatedAt');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('desc');
   const [selected, setSelected] = useState<Set<string>>(new Set());
@@ -310,7 +311,7 @@ export default function MyPatternsPage() {
     patternName: '',
   });
 
-  const normalizeStatus = (status?: string): Status => {
+  const normalizeStatus = (status?: string): PatternStatus => {
     switch (status?.toUpperCase()) {
       case 'PUBLISHED':
         return 'published';
@@ -580,7 +581,7 @@ export default function MyPatternsPage() {
             <Filter size={12} className="text-avs-accent/30 shrink-0" aria-hidden />
             {STATUS_FILTERS.map(({ value, label }) => {
               const isActive = statusF === value;
-              const statusConfig = value !== 'all' ? STATUS_CFG[value as Status] : null;
+              const statusConfig = value !== 'all' ? STATUS_CFG[value as PatternStatus] : null;
               const activeStyle = value === 'all' 
                 ? 'bg-avs-primary text-avs-secondary shadow-avs'
                 : statusConfig?.pill || 'bg-avs-primary text-avs-secondary shadow-avs';
@@ -702,17 +703,14 @@ export default function MyPatternsPage() {
                   <StatusBadge status={p.status} />
 
                   <p className="text-avs-accent/60 text-sm font-medium tabular-nums">
-                    {p.views.toLocaleString('fr-FR')}
+                    {formatNumber(p.views)}
                   </p>
                   <p className="text-avs-accent/60 text-sm font-medium tabular-nums">
-                    {p.downloads.toLocaleString('fr-FR')}
+                    {formatNumber(p.downloads)}
                   </p>
                   <p className="text-avs-accent/35 font-mono text-[10px]">
                     {p.updatedAt
-                      ? new Date(p.updatedAt).toLocaleDateString('fr-FR', {
-                          day: '2-digit',
-                          month: 'short',
-                        })
+                      ? formatDate(p.updatedAt, 'fr-FR')
                       : '—'}
                   </p>
 

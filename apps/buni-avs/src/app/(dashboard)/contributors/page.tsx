@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Search, Star, Award, Layers, Shield,
   TrendingUp, MapPin, ExternalLink,
   Trophy, Medal, Check, X, ArrowRight,
 } from 'lucide-react';
+import { useAuth } from '@buni/auth';
+import { userService } from '@/features/user/services/user.service';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TYPES
@@ -27,17 +29,6 @@ interface Contributor {
 // ─────────────────────────────────────────────────────────────────────────────
 // DATA
 // ─────────────────────────────────────────────────────────────────────────────
-
-const CONTRIBUTORS: Contributor[] = [
-  { id:'1', name:'Njoya Hamidou',      role:'curator',     origin:'Foumban, Cameroun',    country:'CM', specialty:'Ndop & Tissu Bamoum',  patterns:47, views:28400, score:98,  verified:true,  featured:true,  github:'njoya-h',     avatarCSS:'avs-pattern-ndop-sultan',    joinedYear:2021, badges:['Fondateur','50 motifs','Artisan vérifié'] },
-  { id:'2', name:'Ama Asantewaa',      role:'curator',     origin:'Kumasi, Ghana',        country:'GH', specialty:'Kente & Adinkra',       patterns:63, views:41200, score:100, verified:true,  featured:true,  github:'ama-asante',  avatarCSS:'avs-pattern-kente-royale',   joinedYear:2021, badges:['Top Contributeur','100 motifs','Or AVS'] },
-  { id:'3', name:'Fatoumata Coulibaly',role:'contributor', origin:'Ségou, Mali',          country:'ML', specialty:'Bogolan naturel',       patterns:38, views:19800, score:89,  verified:true,  featured:false, github:'fatou-art',   avatarCSS:'avs-pattern-bogolan-fanga',  joinedYear:2022, badges:['Artisan vérifié','25 motifs'] },
-  { id:'4', name:'Jean-Paul Kamdem',   role:'admin',       origin:'Yaoundé, Cameroun',    country:'CM', specialty:'Toghu & Architecture',  patterns:12, views:4200,  score:95,  verified:true,  featured:false, github:'jpkamdem',    avatarCSS:'avs-pattern-adinkra-sankofa',joinedYear:2021, badges:['Fondateur','Admin','Ingénierie'] },
-  { id:'5', name:'Sipho Dlamini',      role:'contributor', origin:'Mpumalanga, Afr. Sud', country:'ZA', specialty:'Peinture Ndebele',      patterns:29, views:14500, score:82,  verified:false, featured:false, github:undefined,     avatarCSS:'avs-pattern-wax-dakar',      joinedYear:2023, badges:['10 motifs'] },
-  { id:'6', name:'Kofi Mensah',        role:'curator',     origin:'Accra, Ghana',         country:'GH', specialty:'Symbolisme Adinkra',    patterns:85, views:52000, score:97,  verified:true,  featured:true,  github:'kofi-symbols',avatarCSS:'avs-pattern-kente-royale',   joinedYear:2022, badges:['Chercheur','100 motifs','Or AVS'] },
-  { id:'7', name:'Mariama Bah',        role:'artisan',     origin:'Conakry, Guinée',      country:'GN', specialty:'Tissu Peul',            patterns:31, views:9800,  score:78,  verified:false, featured:false, github:undefined,     avatarCSS:'avs-pattern-kuba-kasai',     joinedYear:2023, badges:['25 motifs'] },
-  { id:'8', name:'Dr. Amara Diop',     role:'admin',       origin:'Dakar, Sénégal',       country:'SN', specialty:'Ethnographie',          patterns:22, views:18000, score:99,  verified:true,  featured:true,  github:'amara-diop',  avatarCSS:'avs-pattern-wax-dakar',      joinedYear:2021, badges:['Fondateur','Directeur','Chercheur'] },
-];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ROLE CONFIG — accentHex kept only for dynamic bg/border tints per role
@@ -333,11 +324,28 @@ function ContributorRow({ c, rank }: { c: Contributor; rank: number }) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function ContributorsPage() {
+  const { isAuthenticated } = useAuth();
   const [search, setSearch] = useState('');
   const [role,   setRole]   = useState<ContributorRole | 'all'>('all');
   const [sortBy, setSortBy] = useState<SortKey>('score');
+  const [contributors, setContributors] = useState<Contributor[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filtered = CONTRIBUTORS
+  useEffect(() => {
+    const fetchContributors = async () => {
+      try {
+        const data = await userService.getContributors();
+        setContributors(data);
+      } catch (error) {
+        console.error('Failed to fetch contributors:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchContributors();
+  }, []);
+
+  const filtered = contributors
     .filter((c) => {
       const q = search.toLowerCase();
       const matchS = !q || c.name.toLowerCase().includes(q) || c.specialty.toLowerCase().includes(q) || c.origin.toLowerCase().includes(q);
@@ -351,10 +359,10 @@ export default function ContributorsPage() {
       return b.score - a.score;
     });
 
-  const topThree      = [...CONTRIBUTORS].sort((a, b) => b.score - a.score).slice(0, 3);
-  const totalPatterns = CONTRIBUTORS.reduce((s, c) => s + c.patterns, 0);
-  const totalViews    = CONTRIBUTORS.reduce((s, c) => s + c.views, 0);
-  const verifiedCount = CONTRIBUTORS.filter((c) => c.verified).length;
+  const topThree      = [...contributors].sort((a, b) => b.score - a.score).slice(0, 3);
+  const totalPatterns = contributors.reduce((s, c) => s + c.patterns, 0);
+  const totalViews    = contributors.reduce((s, c) => s + c.views, 0);
+  const verifiedCount = contributors.filter((c) => c.verified).length;
 
   return (
     <>
@@ -377,7 +385,7 @@ export default function ContributorsPage() {
                 Contributeurs
               </h1>
               <p className="mt-1 text-sm text-avs-accent/35">
-                {CONTRIBUTORS.length} membres actifs du monde entier
+                {loading ? 'Chargement...' : `${contributors.length} membres actifs du monde entier`}
               </p>
             </div>
 
@@ -394,12 +402,23 @@ export default function ContributorsPage() {
         <div className="mx-auto max-w-5xl space-y-8 px-4 py-8 sm:px-6 lg:px-8">
 
           {/* ══ COMMUNITY STATS ═════════════════════════════════════════════ */}
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <StatCard value={String(CONTRIBUTORS.length)}                       label="Membres"        icon={Shield}    />
-            <StatCard value={String(totalPatterns)}                             label="Motifs total"   icon={Layers}    />
-            <StatCard value={`${(totalViews / 1000).toFixed(0)}k`}              label="Vues cumulées"  icon={TrendingUp} />
-            <StatCard value={String(verifiedCount)}                             label="Vérifiés"       icon={Award}     />
-          </div>
+          {loading ? (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="rounded-2xl border border-avs-accent/9 bg-avs-secondary p-5 animate-pulse">
+                  <div className="h-4 w-16 bg-avs-accent/6 rounded" />
+                  <div className="mt-2 h-6 w-12 bg-avs-accent/6 rounded" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              <StatCard value={String(contributors.length)}                       label="Membres"        icon={Shield}    />
+              <StatCard value={String(totalPatterns)}                             label="Motifs total"   icon={Layers}    />
+              <StatCard value={`${(totalViews / 1000).toFixed(0)}k`}              label="Vues cumulées"  icon={TrendingUp} />
+              <StatCard value={String(verifiedCount)}                             label="Vérifiés"       icon={Award}     />
+            </div>
+          )}
 
           {/* ══ HALL OF FAME — Podium top 3 ═════════════════════════════════ */}
           <section>
@@ -409,9 +428,20 @@ export default function ContributorsPage() {
                 Hall of Fame
               </h2>
             </div>
-            <div className="grid gap-4 sm:grid-cols-3">
-              {topThree.map((c, i) => <PodiumCard key={c.id} c={c} rank={i + 1} />)}
-            </div>
+            {loading ? (
+              <div className="grid gap-4 sm:grid-cols-3">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="rounded-2xl border border-avs-accent/9 bg-avs-secondary p-6 animate-pulse">
+                    <div className="mx-auto h-16 w-16 rounded-2xl bg-avs-accent/6" />
+                    <div className="mt-4 h-4 w-24 mx-auto bg-avs-accent/6 rounded" />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="grid gap-4 sm:grid-cols-3">
+                {topThree.map((c, i) => <PodiumCard key={c.id} c={c} rank={i + 1} />)}
+              </div>
+            )}
           </section>
 
           {/* ══ FULL LEADERBOARD ════════════════════════════════════════════ */}
@@ -473,7 +503,23 @@ export default function ContributorsPage() {
 
             {/* List */}
             <AnimatePresence mode="wait">
-              {filtered.length > 0 ? (
+              {loading ? (
+                <motion.div
+                  initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                  className="space-y-2"
+                >
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <div key={i} className="flex items-center gap-4 rounded-2xl border border-avs-accent/9 bg-avs-secondary p-4 animate-pulse">
+                      <div className="h-8 w-8 rounded-full bg-avs-accent/6" />
+                      <div className="h-11 w-11 rounded-xl bg-avs-accent/6" />
+                      <div className="flex-1 space-y-2">
+                        <div className="h-4 w-32 bg-avs-accent/6 rounded" />
+                        <div className="h-3 w-24 bg-avs-accent/6 rounded" />
+                      </div>
+                    </div>
+                  ))}
+                </motion.div>
+              ) : filtered.length > 0 ? (
                 <motion.div
                   key={`${search}-${role}-${sortBy}`}
                   initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -543,7 +589,7 @@ export default function ContributorsPage() {
               </div>
 
               <p className="mt-6 font-mono text-[9px] uppercase tracking-[0.16em] text-avs-secondary/22">
-                {CONTRIBUTORS.length} membres · {totalPatterns} motifs · Open Source
+                {contributors.length} membres · {totalPatterns} motifs · Open Source
               </p>
             </div>
           </section>

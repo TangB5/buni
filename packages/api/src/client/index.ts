@@ -47,3 +47,8 @@ export async function del<T>(url: string): Promise<T> {
   const res = await apiClient.delete<T>(url);
   return res.data;
 }
+
+export async function download(url: string): Promise<Blob> {
+  const res = await apiClient.get(url, { responseType: 'blob' });
+  return res.data;
+}

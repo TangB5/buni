@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { CodeBlock, LiveDemo, PropTable, Callout } from '../../doc-primitives';
+import { CodeBlock, LiveDemo, PropTable, Callout } from '../doc-primitives';
+
 
 export function BoutonWhy() {
   return (

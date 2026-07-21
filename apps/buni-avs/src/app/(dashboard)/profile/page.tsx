@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { redirect } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -8,8 +8,12 @@ import {
   ArrowLeft, AlertCircle, User, Layers, Eye, Calendar, LogOut,
 } from 'lucide-react';
 import { useAuth, useLogout } from '@buni/auth';
+import { formatDate } from '@buni/utils';
 import { z } from 'zod';
 import Link from 'next/link';
+import { useProfile, useStats, useUpdateProfile, useUploadAvatar } from '@/features/user/hooks/useUser';
+import type { UserProfile, UserStats } from '@/features/user/types/user.types';
+import { useToast } from '@/components/feedback';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SCHEMA
@@ -25,7 +29,7 @@ const ProfileSchema = z.object({
   specialty: z.string().max(64).optional(),
 });
 type ProfileForm = z.infer<typeof ProfileSchema>;
-type FieldErrors = Partial<Record<keyof ProfileForm, string>>;
+type FieldErrors = Partial<Record<keyof ProfileForm | 'submit', string>>;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MINIMAL STYLES — only what Tailwind can't express
@@ -197,6 +201,13 @@ function SocialRow({ icon, platform, prefix, value, onChange, maxLength, placeho
 export default function ProfilePage() {
   const { user, isAuthenticated, isHydrated } = useAuth();
   const logout = useLogout();
+  const { add: addToast, ToastContainer } = useToast();
+
+  // React Query hooks
+  const { data: profile, isLoading: profileLoading } = useProfile();
+  const { data: stats } = useStats();
+  const updateProfile = useUpdateProfile();
+  const uploadAvatar = useUploadAvatar();
 
   const [form, setForm] = useState<ProfileForm>({
     name: user?.name || '', bio: '', location: '', website: '',
@@ -204,8 +215,52 @@ export default function ProfilePage() {
   });
   const [errors,    setErrors]    = useState<FieldErrors>({});
   const [saving,    setSaving]    = useState(false);
-  const [saved,     setSaved]     = useState(false);
+  const [uploading, setUploading]  = useState(false);
   const [activeTab, setActiveTab] = useState<TabId>('infos');
+
+  // Update form when profile data is loaded
+  useEffect(() => {
+    if (profile) {
+      setForm({
+        name: profile.name || '',
+        bio: profile.bio || '',
+        location: profile.location || '',
+        website: profile.website || '',
+        github: profile.github || '',
+        twitter: profile.twitter || '',
+        specialty: profile.specialty || '',
+      });
+    }
+  }, [profile]);
+
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file size (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      addToast({ variant: 'error', title: 'Fichier trop volumineux', message: 'L\'image ne doit pas dépasser 5MB' });
+      return;
+    }
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
+      addToast({ variant: 'error', title: 'Format non supporté', message: 'Seuls JPEG, PNG, WebP et GIF sont acceptés' });
+      return;
+    }
+
+    setUploading(true);
+    try {
+      await uploadAvatar.mutateAsync(file);
+      addToast({ variant: 'success', title: 'Avatar mis à jour', message: 'Votre photo de profil a été changée avec succès' });
+    } catch (error) {
+      console.error('Failed to upload avatar:', error);
+      addToast({ variant: 'error', title: 'Erreur', message: 'Impossible de télécharger l\'avatar. Veuillez réessayer.' });
+    } finally {
+      setUploading(false);
+    }
+  };
 
   // Hydration guard
   if (!isHydrated) {
@@ -223,6 +278,19 @@ export default function ProfilePage() {
 
   if (!isAuthenticated) redirect('/auth/login');
 
+  if (profileLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-avs-secondary">
+        <div className="flex flex-col items-center gap-4">
+          <div className="avs-pattern-kente-royale h-12 w-12 animate-spin rounded-full opacity-70" style={{ animationDuration: '2s' }} />
+          <p className="font-mono text-[10px] tracking-[0.2em] uppercase animate-pulse text-avs-accent/35">
+            Chargement des données…
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   const roleKey = (user?.role || 'viewer').toLowerCase();
   const role    = ROLE_CONFIG[roleKey] ?? ROLE_CONFIG['viewer']!;
   const set     = (key: keyof ProfileForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
@@ -234,23 +302,32 @@ export default function ProfilePage() {
       const fe: FieldErrors = {};
       result.error.issues.forEach((e) => { if (e.path[0]) fe[e.path[0] as keyof ProfileForm] = e.message; });
       setErrors(fe);
+      addToast({ variant: 'error', title: 'Erreur de validation', message: 'Veuillez vérifier les champs du formulaire' });
       return;
     }
     setErrors({});
     setSaving(true);
-    await new Promise((r) => setTimeout(r, 1200));
-    setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    try {
+      await updateProfile.mutateAsync(form);
+      addToast({ variant: 'success', title: 'Profil mis à jour', message: 'Vos modifications ont été enregistrées avec succès' });
+    } catch (error) {
+      console.error('Failed to save profile:', error);
+      addToast({ variant: 'error', title: 'Erreur', message: 'Impossible de sauvegarder le profil. Veuillez réessayer.' });
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const memberSince = user?.createdAt
-    ? new Date(user.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })
+  const memberSince = profile?.createdAt
+    ? formatDate(profile.createdAt)
+    : user?.createdAt
+    ? formatDate(user.createdAt)
     : 'N/A';
 
   return (
     <>
       <style>{PAGE_STYLES}</style>
+      <ToastContainer />
 
       <div className="min-h-screen bg-avs-secondary-dark">
 
@@ -280,22 +357,11 @@ export default function ProfilePage() {
               onClick={() => void save()}
               disabled={saving}
               whileTap={{ scale: 0.97 }}
-              className={`group relative flex items-center gap-2 overflow-hidden rounded-xl px-5 py-2.5 text-sm font-bold text-avs-secondary transition-all duration-300 hover:-translate-y-0.5 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 ${saved ? 'bg-emerald-500 shadow-emerald-500/25' : 'bg-avs-primary shadow-avs-md'}`}
+              className="group relative flex items-center gap-2 overflow-hidden rounded-xl px-5 py-2.5 text-sm font-bold text-avs-secondary transition-all duration-300 hover:-translate-y-0.5 disabled:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60 bg-avs-primary shadow-avs-md"
               aria-busy={saving}
             >
               <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" aria-hidden />
-              <AnimatePresence mode="wait">
-                <motion.span
-                  key={saving ? 'saving' : saved ? 'saved' : 'idle'}
-                  initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 6 }}
-                  transition={{ duration: 0.15 }}
-                  className="flex items-center gap-2"
-                >
-                  {saving ? <><Loader2 size={13} className="animate-spin" /> Sauvegarde…</>
-                  : saved  ? <><CheckCircle2 size={13} /> Sauvegardé !</>
-                  :          <><Save size={13} /> Enregistrer</>}
-                </motion.span>
-              </AnimatePresence>
+              {saving ? <><Loader2 size={13} className="animate-spin" /> Sauvegarde…</> : <><Save size={13} /> Enregistrer</>}
             </motion.button>
           </div>
         </div>
@@ -319,11 +385,24 @@ export default function ProfilePage() {
                   <div
                     className={`${role.pattern} relative h-24 w-24 overflow-hidden rounded-2xl ring-[3px] ring-avs-secondary shadow-avs-md`}
                   >
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/25">
-                      <span className="font-display text-3xl font-black text-avs-secondary drop-shadow-lg">
-                        {user?.name?.charAt(0)?.toUpperCase() ?? 'U'}
-                      </span>
-                    </div>
+                    {profile?.avatar ? (
+                      <img
+                        src={profile.avatar}
+                        alt="Avatar"
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/25">
+                        <span className="font-display text-3xl font-black text-avs-secondary drop-shadow-lg">
+                          {user?.name?.charAt(0)?.toUpperCase() ?? 'U'}
+                        </span>
+                      </div>
+                    )}
+                    {uploading && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/50">
+                        <Loader2 size={24} className="animate-spin text-white" />
+                      </div>
+                    )}
                   </div>
                   <span className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-emerald-500 ring-2 ring-avs-secondary" aria-label="En ligne" />
                 </div>
@@ -350,9 +429,20 @@ export default function ProfilePage() {
                 </div>
 
                 {/* Avatar change button */}
-                <button className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold border border-avs-accent/16 text-avs-accent/55 hover:border-avs-primary/20 hover:text-avs-primary transition-all duration-200">
-                  <Camera size={14} /> Modifier l&apos;avatar
-                </button>
+                <input
+                  type="file"
+                  id="avatar-upload"
+                  accept="image/jpeg,image/jpg,image/png,image/webp,image/gif"
+                  onChange={handleAvatarUpload}
+                  disabled={uploading}
+                  className="hidden"
+                />
+                <label
+                  htmlFor="avatar-upload"
+                  className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold border border-avs-accent/16 text-avs-accent/55 hover:border-avs-primary/20 hover:text-avs-primary transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <Camera size={14} /> {uploading ? 'Téléchargement...' : 'Modifier l\'avatar'}
+                </label>
               </div>
             </div>
           </section>
@@ -470,9 +560,9 @@ export default function ProfilePage() {
               {activeTab === 'stats' && (
                 <div className="space-y-5">
                   <div className="grid gap-4 sm:grid-cols-3">
-                    <StatCard label="Motifs créés"  value="0"                              sub="À développer"    icon={Layers}   color="#C0573E" />
-                    <StatCard label="Vues totales"  value="0"                              sub="À développer"    icon={Eye}      color="#2A4A6B" />
-                    <StatCard label="Membre depuis" value={memberSince.split(' ')[2] ?? 'N/A'} sub={memberSince} icon={Calendar} color="#4A6741" />
+                    <StatCard label="Motifs créés"  value={stats?.patternsCreated?.toString() ?? '0'}  sub="Total créé"      icon={Layers}   color="#C0573E" />
+                    <StatCard label="Vues totales"  value={stats?.totalViews?.toString() ?? '0'}      sub="Cumul des vues"  icon={Eye}      color="#2A4A6B" />
+                    <StatCard label="Membre depuis" value={stats?.memberSince?.split(' ')[2] ?? 'N/A'} sub={stats?.memberSince ?? 'N/A'} icon={Calendar} color="#4A6741" />
                   </div>
 
                   {/* Contribution level */}

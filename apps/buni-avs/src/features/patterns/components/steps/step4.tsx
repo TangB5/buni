@@ -1,7 +1,6 @@
 'use client';
 
 import type { Step1Data, Step2Data, Step3Data, FieldErrors } from '../../types';
-import { REGIONS } from '../../constants/pattern.constants';
 import { StepTitle } from '../Patternform.primitives';
 
 interface Step4Props {
@@ -21,9 +20,9 @@ export function Step4({ step1, step2, step3, errors }: Step4Props) {
     { label: 'Peuple',    value: step1.people },
     { label: 'Royaume',   value: step1.kingdom },
     { label: 'Époque',    value: step1.era },
-    { label: 'Usage',     value: step2.symbolUsage },
+    { label: 'Usage',     value: step2.symbolism?.usage },
     { label: 'Licence',   value: step1.license?.toUpperCase() },
-    { label: 'Mots-clés', value: (step2.symbolKeywords ?? []).join(', ') },
+    { label: 'Mots-clés', value: (step2.symbolism?.keywords ?? []).join(', ') },
   ].filter((r) => r.value);
 
   return (

@@ -9,7 +9,6 @@ import { BuniLoader } from '@buni/ui';
 import {CSS_PATTERN_MAP, FALLBACK_PATTERN_CSS } from '@buni/patterns';
 import {  FORM_STEPS } from '../constants/pattern.constants';
 import type { Pattern } from '@buni/patterns';
-import { useUpdateStatus } from '../hooks/usePatternActions';
 
 import { Step1 } from './steps/step1';
 import { Step2 } from './steps/step2';
@@ -79,7 +78,6 @@ interface PatternFormProps {
 export function PatternForm({ initialPattern }: PatternFormProps) {
   const router = useRouter();
   const form   = usePatternForm(initialPattern);
-  const updateStatusMutation = useUpdateStatus();
 
   const {
     currentStep, loading, errors,
@@ -166,46 +164,6 @@ export function PatternForm({ initialPattern }: PatternFormProps) {
             </p>
           </div>
 
-          {initialPattern && (
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => updateStatusMutation.mutate({ id: initialPattern.id, status: 'draft' })}
-                disabled={updateStatusMutation.isPending}
-                className="flex items-center gap-1.5 rounded-lg border border-slate-300 bg-slate-100 px-3 py-1.5 font-mono text-[9px] font-bold uppercase text-slate-700 shadow-sm transition-all duration-150 hover:bg-slate-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {updateStatusMutation.isPending && updateStatusMutation.variables?.status === 'draft' ? (
-                  <BuniLoader size={11} showText={false} />
-                ) : (
-                  <FileText size={11} />
-                )}
-                Brouillon
-              </button>
-              <button
-                onClick={() => updateStatusMutation.mutate({ id: initialPattern.id, status: 'review' })}
-                disabled={updateStatusMutation.isPending}
-                className="flex items-center gap-1.5 rounded-lg border border-amber-300 bg-amber-100 px-3 py-1.5 font-mono text-[9px] font-bold uppercase text-amber-700 shadow-sm transition-all duration-150 hover:bg-amber-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {updateStatusMutation.isPending && updateStatusMutation.variables?.status === 'review' ? (
-                  <BuniLoader size={11} showText={false} />
-                ) : (
-                  <Hourglass size={11} />
-                )}
-                Révision
-              </button>
-              <button
-                onClick={() => updateStatusMutation.mutate({ id: initialPattern.id, status: 'published' })}
-                disabled={updateStatusMutation.isPending}
-                className="flex items-center gap-1.5 rounded-lg border border-emerald-300 bg-emerald-100 px-3 py-1.5 font-mono text-[9px] font-bold uppercase text-emerald-700 shadow-sm transition-all duration-150 hover:bg-emerald-200 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {updateStatusMutation.isPending && updateStatusMutation.variables?.status === 'published' ? (
-                  <BuniLoader size={11} showText={false} />
-                ) : (
-                  <CheckCircle2 size={11} />
-                )}
-                Publié
-              </button>
-            </div>
-          )}
         </div>
       </header>
 
@@ -330,6 +288,8 @@ export function PatternForm({ initialPattern }: PatternFormProps) {
             step2={step2}
             step3={step3}
             previewCSS={previewCSS}
+            svgFile={svgFile}
+            initialPattern={initialPattern}
           />
         </div>
       </div>

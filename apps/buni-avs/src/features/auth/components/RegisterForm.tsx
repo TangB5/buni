@@ -5,6 +5,7 @@ import { Button } from '@buni/ui';
 import { Input } from '@buni/ui';
 import Link from 'next/link';
 import { useRegister } from '../hooks/useRegister';
+import { useToast, BuniLoader } from '@buni/ui';
 
 export function RegisterForm() {
   const { mutate, isPending, error } = useRegister();
@@ -14,10 +15,26 @@ export function RegisterForm() {
     name: '',
     role: 'viewer' as const,
   });
+  const { add } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    mutate(formData);
+    mutate(formData, {
+      onSuccess: () => {
+        add({ 
+          variant: 'success', 
+          title: 'Compte créé', 
+          message: 'Votre compte a été créé avec succès. Bienvenue dans la communauté AVS !' 
+        });
+      },
+      onError: () => {
+        add({ 
+          variant: 'error', 
+          title: 'Échec de la création', 
+          message: 'Une erreur est survenue lors de la création du compte. Veuillez réessayer.' 
+        });
+      }
+    });
   };
 
   return (
@@ -81,7 +98,14 @@ export function RegisterForm() {
         {error && <p className="text-sm text-red-500">{error}</p>}
 
         <Button type="submit" className="w-full" disabled={isPending}>
-          {isPending ? 'Creating account...' : 'Create Account'}
+          {isPending ? (
+            <div className="flex items-center gap-2">
+              <BuniLoader size={16} showText={false} />
+              <span>Création...</span>
+            </div>
+          ) : (
+            'Create Account'
+          )}
         </Button>
       </form>
 

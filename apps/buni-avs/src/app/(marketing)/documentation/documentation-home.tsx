@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 
 import { CommandPalette } from './command-palette';
 import { NAV_SPACES } from './nav-data';
+import { Route } from 'next';
 
 const LATEST = [
   { title: 'Ndop Bamoum', space: 'Motifs', date: '28 juin 2026' },
@@ -99,7 +100,7 @@ export function DocumentationHome() {
                 transition={{ duration: 0.4, delay: i * 0.03, ease: [0.22, 1, 0.36, 1] }}
               >
                 <Link
-                  href={`/documentation/${space.slug}`}
+                  href={`/documentation/${space.slug}` as Route}
                   className="group flex h-full flex-col rounded-2xl border border-avs-accent/9 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-avs-primary/30"
                 >
                   <span className="mb-4 flex h-9 w-9 items-center justify-center rounded-lg transition-transform duration-300 group-hover:scale-110" style={{ background: `${space.color}14`, color: space.color }}>
@@ -192,7 +193,7 @@ export function DocumentationHome() {
             {NAV_SPACES.map((s) => (
               <Link
                 key={s.slug}
-                href={`/documentation/${s.slug}`}
+                href={`/documentation/${s.slug}` as Route}
                 className="rounded-full border border-avs-secondary/15 px-4 py-2 text-[12px] font-semibold text-avs-secondary/70 transition-all hover:border-avs-primary hover:text-avs-primary"
               >
                 {s.label}

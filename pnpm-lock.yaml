@@ -237,7 +237,11 @@ importers:
 
   packages/analytics: {}
 
-  packages/api: {}
+  packages/api:
+    dependencies:
+      '@buni/auth':
+        specifier: workspace:*
+        version: link:../auth
 
   packages/auth: {}
 

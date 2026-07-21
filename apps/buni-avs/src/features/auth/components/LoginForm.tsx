@@ -5,14 +5,31 @@ import { Button } from '@buni/ui';
 import { Input } from '@buni/ui';
 import Link from 'next/link';
 import { useLogin } from '../hooks/useLogin';
+import { useToast, BuniLoader } from '@buni/ui';
 
 export function LoginForm() {
   const { mutate, isPending, error } = useLogin();
   const [formData, setFormData] = useState({ email: '', password: '' });
+  const { add } = useToast();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    mutate(formData);
+    mutate(formData, {
+      onSuccess: () => {
+        add({ 
+          variant: 'success', 
+          title: 'Connexion réussie', 
+          message: 'Bienvenue ! Vous êtes maintenant connecté.' 
+        });
+      },
+      onError: () => {
+        add({ 
+          variant: 'error', 
+          title: 'Échec de la connexion', 
+          message: 'Email ou mot de passe incorrect. Veuillez réessayer.' 
+        });
+      }
+    });
   };
 
   return (
@@ -56,7 +73,14 @@ export function LoginForm() {
         {error && <p className="text-sm text-red-500">{error.message}</p>}
 
         <Button type="submit" className="w-full" disabled={isPending}>
-          {isPending ? 'Signing in...' : 'Sign In'}
+          {isPending ? (
+            <div className="flex items-center gap-2">
+              <BuniLoader size={16} showText={false} />
+              <span>Connexion...</span>
+            </div>
+          ) : (
+            'Sign In'
+          )}
         </Button>
       </form>
 

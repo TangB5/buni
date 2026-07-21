@@ -11,10 +11,12 @@ interface LivePreviewSidebarProps {
   step2: Partial<Step2Data>;
   step3: Partial<Step3Data>;
   previewCSS: string;
+  svgFile?: File | null;
+  initialPattern?: any;
 }
 
 export function LivePreviewSidebar({
-  currentStep, step1, step2, step3, previewCSS,
+  currentStep, step1, step2, step3, previewCSS, svgFile, initialPattern,
 }: LivePreviewSidebarProps) {
   return (
     <div className="space-y-3 lg:sticky lg:top-24 lg:self-start">
@@ -24,15 +26,39 @@ export function LivePreviewSidebar({
         {/* Pattern thumbnail */}
         <div className="relative h-36 overflow-hidden bg-avs-secondary-dark">
           <AnimatePresence mode="wait">
-            <motion.div
-              key={previewCSS}
-              initial={{ opacity: 0, scale: 1.04 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.97 }}
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              className={`${previewCSS} absolute inset-0`}
-              aria-hidden
-            />
+            {svgFile ? (
+              <motion.img
+                key="new-file"
+                initial={{ opacity: 0, scale: 1.04 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.97 }}
+                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                src={URL.createObjectURL(svgFile)}
+                alt="Pattern preview"
+                className="absolute inset-0 object-cover"
+              />
+            ) : initialPattern?.imgUrl ? (
+              <motion.img
+                key="existing-image"
+                initial={{ opacity: 0, scale: 1.04 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.97 }}
+                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                src={initialPattern.imgUrl}
+                alt="Pattern preview"
+                className="absolute inset-0 object-cover"
+              />
+            ) : (
+              <motion.div
+                key={previewCSS}
+                initial={{ opacity: 0, scale: 1.04 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.97 }}
+                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                className={`${previewCSS} absolute inset-0`}
+                aria-hidden
+              />
+            )}
           </AnimatePresence>
 
           {/* Color swatches */}
@@ -80,9 +106,9 @@ export function LivePreviewSidebar({
             )}
           </p>
 
-          {(step2.symbolKeywords ?? []).length > 0 && (
+          {(step2.symbolism?.keywords ?? []).length > 0 && (
             <div className="mt-3 flex flex-wrap gap-1">
-              {(step2.symbolKeywords ?? []).slice(0, 4).map((kw) => (
+              {(step2.symbolism?.keywords ?? []).slice(0, 4).map((kw) => (
                 <span
                   key={kw}
                   className="rounded-md bg-avs-primary/10 px-2 py-0.5 font-mono text-[9px] font-medium text-avs-primary"

@@ -71,44 +71,45 @@ export function PatternsContent() {
   return (
     <div className="bg-avs-secondary flex h-screen flex-col overflow-hidden">
       {/* TOPBAR */}
-      <div className="bg-avs-secondary border-avs-accent/10 relative shrink-0 overflow-hidden border-b px-5 py-5 backdrop-blur-xl">
+      <div className="bg-avs-secondary border-avs-accent/10 relative shrink-0 overflow-hidden border-b px-4 sm:px-6 py-4 sm:py-5 backdrop-blur-xl">
         <div
           className="avs-pattern-wax-dakar pointer-events-none absolute inset-0 opacity-[0.03]"
           aria-hidden
         />
 
-        <div className="relative flex flex-col gap-4">
-          <div className="flex items-end justify-between gap-4">
-            <div>
+        <div className="relative flex flex-col gap-4 sm:gap-5">
+          {/* Header section */}
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3">
+            <div className="flex-1">
               <div className="mb-2 flex items-center gap-2">
-                <div className="bg-avs-primary h-px w-6" aria-hidden />
-                <span className="text-avs-primary font-mono text-[9px] font-bold tracking-[0.24em] uppercase">
+                <div className="bg-avs-primary h-px w-4 sm:w-6" aria-hidden />
+                <span className="text-avs-primary font-mono text-[8px] sm:text-[9px] font-bold tracking-[0.24em] uppercase">
                   Documentation culturelle · {patterns.length} motifs
                 </span>
               </div>
-              <h1 className="font-display text-avs-accent text-4xl leading-none font-black tracking-tight">
+              <h1 className="font-display text-avs-accent text-2xl sm:text-4xl leading-none font-black tracking-tight">
                 Encyclopédie des Motifs
               </h1>
             </div>
-            <p className="text-avs-accent/50 hidden max-w-xs text-right text-xs leading-relaxed sm:block">
+            <p className="text-avs-accent/50 max-w-xs text-xs leading-relaxed">
               Fiches ethnographiques complètes — symboles constitutifs, histoire, technique, sources
               primaires.
             </p>
           </div>
 
           {/* Search + type filters */}
-          <div className="flex flex-wrap items-center gap-3">
-            <div className="relative min-w-55 flex-1">
+          <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3">
+            <div className="relative flex-1 min-w-0">
               <i
-                className="pi pi-search text-avs-accent/40 absolute top-1/2 left-3.5 -translate-y-1/2"
-                style={{ fontSize: '13px' }}
+                className="pi pi-search text-avs-accent/40 absolute top-1/2 left-3 sm:left-3.5 -translate-y-1/2"
+                style={{ fontSize: '12px' }}
                 aria-hidden
               />
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Motif, peuple, symbole, pays…"
-                className="avs-input focus:border-avs-primary pr-9 pl-9"
+                className="avs-input focus:border-avs-primary pr-9 pl-9 text-sm"
               />
               <AnimatePresence>
                 {search && (
@@ -120,7 +121,7 @@ export function PatternsContent() {
                     className="text-avs-accent/40 hover:text-avs-accent absolute top-1/2 right-3 -translate-y-1/2 rounded-lg p-0.5 transition-colors"
                     aria-label="Effacer"
                   >
-                    <i className="pi pi-times" style={{ fontSize: '13px' }} />
+                    <i className="pi pi-times" style={{ fontSize: '12px' }} />
                   </motion.button>
                 )}
               </AnimatePresence>
@@ -131,7 +132,7 @@ export function PatternsContent() {
                 <button
                   key={t}
                   onClick={() => setActiveType(t)}
-                  className={`shrink-0 rounded-xl px-3 py-1.5 font-mono text-[9px] font-black tracking-[0.14em] uppercase transition-all duration-150 ${
+                  className={`shrink-0 rounded-lg px-2.5 sm:px-3 py-1.5 font-mono text-[8px] sm:text-[9px] font-black tracking-[0.14em] uppercase transition-all duration-150 ${
                     activeType === t
                       ? 'bg-avs-primary text-avs-secondary shadow-avs-sm'
                       : 'border-avs-accent/15 text-avs-accent/50 bg-avs-secondary hover:border-avs-primary/20 hover:text-avs-primary border'
@@ -149,10 +150,10 @@ export function PatternsContent() {
       <div className="flex flex-1 overflow-hidden">
         {/* SIDEBAR */}
         <aside
-          className={`bg-avs-secondary border-avs-accent/10 flex w-74 shrink-0 flex-col overflow-hidden border-r ${mobileDoc ? 'hidden lg:flex' : 'flex'} `}
+          className={`bg-avs-secondary border-avs-accent/10 flex w-full sm:w-72 lg:w-80 shrink-0 flex-col overflow-hidden border-r ${mobileDoc ? 'hidden lg:flex' : 'flex'} `}
         >
-          <div className="border-avs-accent/10 flex items-center justify-between border-b px-4 py-3">
-            <p className="text-avs-accent/40 font-mono text-[9px] font-bold tracking-[0.18em] uppercase">
+          <div className="border-avs-accent/10 flex items-center justify-between border-b px-3 sm:px-4 py-2.5 sm:py-3">
+            <p className="text-avs-accent/40 font-mono text-[8px] sm:text-[9px] font-bold tracking-[0.18em] uppercase">
               {filtered.length} motif{filtered.length > 1 ? 's' : ''}
             </p>
             {(search || activeType !== 'ALL') && (
@@ -161,7 +162,7 @@ export function PatternsContent() {
                   setSearch('');
                   setActiveType('ALL');
                 }}
-                className="text-avs-primary font-mono text-[9px] font-bold tracking-wide underline underline-offset-3"
+                className="text-avs-primary font-mono text-[8px] sm:text-[9px] font-bold tracking-wide underline underline-offset-3"
               >
                 Réinitialiser
               </button>
@@ -169,12 +170,15 @@ export function PatternsContent() {
           </div>
 
           {filtered.length === 0 ? (
-            <div className="flex flex-1 flex-col items-center justify-center gap-2 p-8">
+            <div className="flex flex-1 flex-col items-center justify-center gap-4 p-6 sm:p-8">
               <div
-                className="avs-pattern-wax-dakar h-12 w-12 rounded-full opacity-30"
+                className="avs-pattern-wax-dakar h-16 w-16 sm:h-20 sm:w-20 rounded-full opacity-20"
                 aria-hidden
               />
-              <p className="text-avs-accent/40 text-center text-sm">Aucun motif ne correspond.</p>
+              <div className="text-center">
+                <p className="text-avs-accent/40 text-sm font-medium">Aucun motif ne correspond</p>
+                <p className="text-avs-accent/30 mt-1 text-xs">Essayez d'ajuster vos filtres ou votre recherche</p>
+              </div>
             </div>
           ) : (
             <nav
@@ -188,6 +192,7 @@ export function PatternsContent() {
                     key={p.id}
                     onClick={() => handleSelect(p)}
                     whileHover={{ x: 2 }}
+                    whileTap={{ scale: 0.98 }}
                     transition={{ duration: 0.15 }}
                     className={`group border-avs-accent/10 w-full border-b border-l-2 text-left transition-colors duration-100 ${
                       isActive
@@ -195,9 +200,9 @@ export function PatternsContent() {
                         : 'hover:bg-avs-secondary-dark border-l-transparent'
                     } `}
                   >
-                    <div className="flex items-center gap-3 px-4 py-3.5">
+                    <div className="flex items-center gap-2.5 sm:gap-3 px-3 sm:px-4 py-2.5 sm:py-3.5">
                       <div
-                        className={`${p.cssClass} relative h-11 w-11 shrink-0 overflow-hidden rounded-xl ring-1 ring-black/10 transition-transform duration-300 group-hover:scale-105 dark:ring-white/10`}
+                        className={`${p.cssClass} relative h-10 w-10 sm:h-11 sm:w-11 shrink-0 overflow-hidden rounded-lg sm:rounded-xl ring-1 ring-black/10 transition-transform duration-300 group-hover:scale-105 dark:ring-white/10`}
                       >
                         {p.imgUrl ? (
                           <img
@@ -214,10 +219,10 @@ export function PatternsContent() {
                         >
                           {p.name}
                         </p>
-                        <p className="text-avs-accent/40 mt-0.5 font-mono text-[9px]">
+                        <p className="text-avs-accent/40 mt-0.5 font-mono text-[8px] sm:text-[9px]">
                           {p.origin.flag} {p.origin.country}
                         </p>
-                        <p className="text-avs-accent/30 mt-0.5 text-[10px]">
+                        <p className="text-avs-accent/30 mt-0.5 text-[9px] sm:text-[10px] line-clamp-1">
                           {p.origin.people}
                         </p>
                       </div>
@@ -236,7 +241,7 @@ export function PatternsContent() {
           ) : (
             <div className="flex h-full items-center justify-center">
               <div className="text-center">
-                <div className="avs-pattern-wax-dakar mx-auto mb-4 h-20 w-20 rounded-full opacity-20" />
+                <div className="avs-pattern-wax-dakar mx-auto mb-4 h-16 w-16 sm:h-20 sm:w-20 rounded-full opacity-20" />
                 <p className="text-avs-accent/40 text-sm">
                   Sélectionnez un motif pour voir sa documentation
                 </p>
@@ -253,7 +258,7 @@ export function PatternsContent() {
               setSelected(null);
               router.push('/patterns', { scroll: false });
             }}
-            className="lg:hidden fixed bottom-6 right-6 bg-avs-primary text-avs-secondary shadow-avs-md flex h-12 w-12 items-center justify-center rounded-full"
+            className="lg:hidden fixed bottom-6 right-6 bg-avs-primary text-avs-secondary shadow-avs-md flex h-12 w-12 items-center justify-center rounded-full z-50"
             aria-label="Fermer"
           >
             <i className="pi pi-times" style={{ fontSize: '16px' }} />

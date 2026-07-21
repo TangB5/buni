@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { MapPin, Download, Eye } from 'lucide-react';
+import { formatNumber } from '@buni/utils';
 
 import type { Pattern } from '../types';
 import { Badge, cn } from '@/components/ui';
@@ -68,10 +69,10 @@ export function PatternCard({ pattern, index = 0, featured = false, className }:
           {/* Stats hover */}
           <div className="absolute bottom-3 right-3 flex gap-2 opacity-0 transition-opacity group-hover:opacity-100">
             <span className="flex items-center gap-1 rounded-avs bg-avs-accent/70 px-2 py-0.5 text-[10px] font-semibold text-avs-secondary backdrop-blur-sm">
-              <Eye size={10} aria-hidden /> {pattern.views.toLocaleString()}
+              <Eye size={10} aria-hidden /> {formatNumber(pattern.views)}
             </span>
             <span className="flex items-center gap-1 rounded-avs bg-avs-accent/70 px-2 py-0.5 text-[10px] font-semibold text-avs-secondary backdrop-blur-sm">
-              <Download size={10} aria-hidden /> {pattern.downloads.toLocaleString()}
+              <Download size={10} aria-hidden /> {formatNumber(pattern.downloads)}
             </span>
           </div>
         </div>

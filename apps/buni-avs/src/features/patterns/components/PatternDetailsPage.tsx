@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { ArrowLeft, Calendar, MapPin, Share2, Download, Eye } from 'lucide-react';
 import Link from 'next/link';
+import { formatDate } from '@buni/utils';
 
 import { usePattern } from '../hooks/usePatterns';
 import { PatternAdminActions } from './PatternAdminActions';
@@ -124,7 +125,7 @@ export default function PatternDetailsPage({ slug }: PatternDetailsPageProps) {
               <div>
                 <p className="mb-2 text-sm text-gray-500">Mis à jour</p>
                 <p className="text-sm font-semibold text-gray-900">
-                  {new Date(pattern.updatedAt || new Date()).toLocaleDateString('fr-FR')}
+                  {formatDate(pattern.updatedAt || new Date().toISOString())}
                 </p>
               </div>
             </div>

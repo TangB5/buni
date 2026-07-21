@@ -27,7 +27,7 @@ export function Step1({ data, errors, onChange }: Step1Props) {
           />
         </Field>
 
-        <Field label="Nom (anglais)" error={errors['nameEn']} required>
+        <Field label="Nom (francais)" error={errors['nameEn']} required>
           <input
             className="avs-input"
             value={data.nameEn ?? ''}

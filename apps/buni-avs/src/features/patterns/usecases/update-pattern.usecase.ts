@@ -1,5 +1,5 @@
 import { patternRepository } from '../repositories/pattern.repository';
-import { toFormData, toCreatePayload } from '../mappers/pattern.mapper';
+import { toFormData, toCreatePayload, toUpdatePayload } from '../mappers/pattern.mapper';
 import type { Pattern, Step1Data, Step2Data, Step3Data} from '../types';
 import { PatternSymbol } from '@buni/patterns';
 
@@ -20,10 +20,11 @@ export async function updatePattern(
   step2: Step2Data,
   step3: Step3Data,
   svgFile: File | null,
-  symbols: PatternSymbol[]
+  symbols: PatternSymbol[],
+  existingSymbols?: PatternSymbol[]
 ): Promise<Pattern> {
   try {
-    const payload = toCreatePayload(step1, step2, step3);
+    const payload = toUpdatePayload(step1, step2, step3, existingSymbols);
     const formData = toFormData(payload, svgFile, symbols);
 
     return await patternRepository.update(id, formData);

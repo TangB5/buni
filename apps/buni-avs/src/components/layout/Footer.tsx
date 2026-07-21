@@ -243,7 +243,7 @@ export function Footer() {
                 style={{ background: 'rgba(245,235,224,0.04)', border: '1px solid rgba(245,235,224,0.08)' }}>
                 <span className="h-1.5 w-1.5 rounded-full" style={{ background: '#4A6741' }} aria-hidden />
                 <span className="font-mono text-[9px] font-bold uppercase tracking-[0.16em]" style={{ color: 'rgba(245,235,224,0.35)' }}>
-                  Open Source · CC BY 4.0
+                  Apache 2.0 + Commons Clause
                 </span>
               </div>
             </div>

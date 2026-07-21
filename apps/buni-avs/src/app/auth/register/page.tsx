@@ -288,39 +288,11 @@ export default function RegisterPage() {
           {/* Fine grid — justified inline */}
           <div className="pointer-events-none absolute inset-0" style={{ backgroundImage: 'linear-gradient(rgba(245,235,224,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(245,235,224,.04) 1px, transparent 1px)', backgroundSize: '48px 48px' }} aria-hidden />
 
-          {/* Floating collage */}
-          <div className="absolute inset-0">
-            {PATTERN_CARDS.map((card, i) => (
-              <motion.div
-                key={card.css}
-                className="absolute overflow-hidden rounded-2xl"
-                style={{ ...card.style, rotate: card.rotate, border: '1px solid rgba(245,235,224,0.07)', boxShadow: '0 24px 64px rgba(0,0,0,0.65)' }}
-                animate={{ y: [0, -8, 0], rotate: [parseFloat(card.rotate), parseFloat(card.rotate) + 0.6, parseFloat(card.rotate)] }}
-                transition={{ duration: 5.5 + i * 1.1, repeat: Infinity, ease: 'easeInOut', delay: i * 1.0 }}
-              >
-                <div className={`${card.css} h-full w-full`} />
-                {/* Bottom fade — justified inline */}
-                <div className="absolute inset-0" style={{ background: 'linear-gradient(to top, rgba(10,8,6,0.85) 0%, transparent 55%)' }} />
-              </motion.div>
-            ))}
-          </div>
+          
 
           {/* Content */}
-          <div className="relative flex h-full flex-col justify-between p-12">
-            {/* Logo */}
-            <motion.div initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, ease }}>
-              <Link href="/" className="inline-flex items-center gap-2.5">
-                <div className="avs-pattern-kente-royale relative h-9 w-9 overflow-hidden rounded-xl ring-1 ring-avs-secondary/10">
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                    <span className="font-display text-base font-black text-avs-secondary drop-shadow">A</span>
-                  </div>
-                </div>
-                <div className="flex flex-col leading-tight">
-                  <span className="font-display text-[15px] font-black text-avs-secondary" style={{ letterSpacing: '-0.02em' }}>AVS</span>
-                  <span className="font-mono text-[9px] font-bold tracking-[0.18em] uppercase text-avs-primary">Standard</span>
-                </div>
-              </Link>
-            </motion.div>
+          <div className="relative flex h-full  justify-between items-center p-12">
+           
 
             {/* Perks */}
             <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.18, ease }}>
@@ -571,7 +543,7 @@ export default function RegisterPage() {
                 <Link href={'/privacy' as Route} className="underline underline-offset-3 text-avs-accent/38">confidentialité</Link>.
               </p>
               <span className="shrink-0 rounded-lg px-2.5 py-1 font-mono text-[9px] font-bold tracking-wide uppercase bg-avs-primary/8 text-avs-primary border border-avs-primary/20">
-                CC BY 4.0
+                Apache 2.0 + Commons Clause
               </span>
             </div>
           </motion.div>

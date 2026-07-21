@@ -11,18 +11,18 @@ export function IntroductionWhy() {
         <div className="relative px-8 py-10">
           <div className="mb-3 flex items-center gap-2">
             <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 font-mono text-[9px] tracking-[0.18em] uppercase font-bold" style={{ background: 'rgba(192,87,62,0.2)', color: '#C0573E', border: '1px solid rgba(192,87,62,0.3)' }}>
-              <i className="pi pi-sparkles" style={{ fontSize: '8px' }} /> v1.0 · Open Standard
+              <i className="pi pi-sparkles" style={{ fontSize: '8px' }} /> v1.0 · Tailwind CSS v4
             </span>
           </div>
           <h1 className="font-display text-3xl font-black leading-tight" style={{ color: '#f5ebe0', letterSpacing: '-0.02em' }}>
             AVS — African Visual Standard
           </h1>
           <p className="mt-3 max-w-lg text-sm leading-relaxed" style={{ color: 'rgba(245,235,224,0.60)' }}>
-            Bibliothèque de composants UI open-source construite avec React, Radix UI et Tailwind CSS.
-            Inspirée du patrimoine visuel africain. Aucun compte requis.
+            Design system open-source inspiré du patrimoine visuel africain.
+            Compatible Tailwind CSS v4. Installation en 30 secondes.
           </p>
           <div className="mt-5 flex flex-wrap gap-2">
-            {['React 18+', 'Next.js 14+', 'TypeScript', 'Tailwind CSS', 'Radix UI', 'Framer Motion'].map((t) => (
+            {['React 18+', 'Next.js 14+', 'TypeScript', 'Tailwind CSS v4', 'Radix UI', 'Framer Motion'].map((t) => (
               <span key={t} className="rounded-lg px-2.5 py-1 font-mono text-[10px] font-semibold" style={{ background: 'rgba(245,235,224,0.08)', color: 'rgba(245,235,224,0.55)', border: '1px solid rgba(245,235,224,0.10)' }}>{t}</span>
             ))}
           </div>
@@ -30,8 +30,8 @@ export function IntroductionWhy() {
       </div>
 
       <p>
-        La plupart des design systems actuels sont basés sur des esthétiques occidentales. AVS change la donne en proposant
-        une identité visuelle authentiquement africaine, documentée et accessible à tous les développeurs.
+        AVS est le premier design system africain moderne. Intégrez des couleurs, motifs et composants
+        authentiques dans votre projet avec une seule commande. Aucun compte, aucune configuration complexe.
       </p>
     </>
   );
@@ -41,16 +41,16 @@ export function IntroductionExplanation() {
   return (
     <>
       <p>
-        AVS adopte l&apos;approche <strong>Copy &amp; Paste</strong> popularisée par Shadcn/UI : vous copiez les composants
-        dans votre projet, ils vous appartiennent entièrement. Pas de dépendance opaque, pas de lock-in.
+        AVS est conçu pour être <strong>ultra-simple à intégrer</strong>. Pas de configuration complexe,
+        pas de dépendances lourdes. Juste une commande et vous avez accès à :
       </p>
 
       <div className="my-6 grid gap-3 sm:grid-cols-2">
         {[
-          { icon: 'pi-globe', title: 'Culturellement ancré', desc: 'Chaque token de couleur, motif et composant est documenté avec sa source primaire africaine.' },
-          { icon: 'pi-unlock', title: 'Public par défaut', desc: 'Composants, motifs, templates — tout est accessible sans authentification.' },
-          { icon: 'pi-bolt', title: 'Copy & Paste', desc: 'Vous possédez votre code. Aucune dépendance lourde. Adaptez, étendez, supprimez.' },
-          { icon: 'pi-palette', title: 'Design System cohérent', desc: 'Palette extraite de pigments naturels africains, tokens CSS, motifs CSS pur.' },
+          { icon: 'pi-palette', title: 'Couleurs africaines', desc: 'Palette extraite de pigments naturels (terre rouge, or kente, indigo bogolan).' },
+          { icon: 'pi-image', title: 'Motifs SVG & CSS', desc: 'Motifs traditionnels (kente, ndop, adinkra) prêts à l\'emploi.' },
+          { icon: 'pi-cube', title: 'Composants UI', desc: 'Boutons, cartes, formulaires avec design africain moderne.' },
+          { icon: 'pi-bolt', title: 'Installation 30s', desc: 'Une seule commande pour tout configurer automatiquement.' },
         ].map(({ icon, title, desc }) => (
           <div key={title} className="rounded-xl p-5 transition-colors" style={{ border: '1px solid var(--doc-border, rgba(29,29,27,0.09))', background: 'var(--doc-surface, #ffffff)' }}>
             <div className="mb-2 flex h-10 w-10 items-center justify-center rounded-lg" style={{ background: 'var(--doc-primary-10, rgba(192,87,62,0.10))', color: 'var(--doc-primary, #C0573E)' }}>
@@ -62,6 +62,21 @@ export function IntroductionExplanation() {
         ))}
       </div>
 
+      <h3>Installation ultra-simple</h3>
+      <p>Une seule commande pour tout configurer :</p>
+
+      <div className="my-4 rounded-xl border border-avs-accent/9 bg-avs-primary/5 p-6">
+        <code className="font-mono text-sm" style={{ color: '#C0573E' }}>
+          npx @buni/cli init
+        </code>
+      </div>
+
+      <p>
+        Cette commande détecte automatiquement votre configuration (Next.js, Vite, etc.) et installe
+        Tailwind CSS v4 avec les couleurs AVS, les motifs et les composants nécessaires.
+      </p>
+
+      <h3>Pourquoi AVS ?</h3>
       <div className="my-4 overflow-x-auto rounded-xl border border-avs-accent/9" >
         <table className="w-full text-xs">
           <thead>
@@ -73,12 +88,12 @@ export function IntroductionExplanation() {
           </thead>
           <tbody>
             {[
-              ['Accès sans compte', 'check', 'check', 'check'],
-              ['Copy & Paste', 'check', 'times', 'check'],
+              ['Installation 30s', 'check', 'times', 'times'],
               ['Design africain', 'check', 'times', 'times'],
-              ['SVG natifs', 'check', 'exclamation-triangle', 'times'],
+              ['Tailwind CSS v4', 'check', 'check', 'check'],
               ['Motifs CSS', 'check', 'times', 'times'],
-              ['Radix UI', 'check', 'times', 'check'],
+              ['SVG natifs', 'check', 'exclamation-triangle', 'times'],
+              ['Copy & Paste', 'check', 'times', 'check'],
               ['TypeScript strict', 'check', 'check', 'check'],
             ].map(([feat, ...vals], i, arr) => (
               <tr
@@ -104,9 +119,11 @@ export function IntroductionExplanation() {
         </table>
       </div>
 
-      <Callout type="tip" title="Bonne pratique">
-        Commencez par lire la section Installation, puis explorez les{' '}
-        <a href="/components">Composants</a> qui proposent des previews live interactives.
+      <Callout type="tip" title="Commencez maintenant">
+        Lancez <code className="font-mono text-xs">npx @buni/cli init</code> dans votre projet pour
+        installer AVS en 30 secondes. Ensuite, explorez les{' '}
+        <a href="/documentation/motifs/utiliser-patterns-code">motifs</a> et{' '}
+        <a href="/documentation/composants">composants</a>.
       </Callout>
     </>
   );

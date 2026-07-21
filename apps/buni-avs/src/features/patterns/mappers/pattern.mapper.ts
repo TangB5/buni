@@ -8,7 +8,7 @@ import type {
   Pattern,
   PatternDto,
 } from '../types';
-import { CSS_PATTERN_MAP, PatternOrigin, PatternSymbolism } from '@buni/patterns';
+import { CSS_PATTERN_MAP, PatternOrigin, PatternSymbolism, PatternSymbol } from '@buni/patterns';
 import type { UploadablePatternSymbol } from '../types/uploads/pattern.upload';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -64,9 +64,43 @@ export function toCreatePayload(s1: Step1Data, s2: Step2Data, s3: Step3Data): Cr
 
     artisanQuote: s3.artisanQuote,
 
-    // Remove File before serialization
-    symbols: s3.symbols.map(({ image: _image, ...rest }) => rest),
+    // Remove File and blob URLs before serialization
+    symbols: s3.symbols.map(({ image: _image, imageUrl: _imageUrl, ...rest }) => {
+      // Only keep imageUrl if it's a valid Supabase URL (not blob, not empty)
+      const validImageUrl = _imageUrl && !_imageUrl.startsWith('blob:') && _imageUrl.trim() !== '' ? _imageUrl : undefined;
+      return validImageUrl ? { ...rest, imageUrl: validImageUrl } : rest;
+    }),
   };
+}
+
+/**
+ * Converts validated form steps into
+ * a typed CreatePatternPayload for update,
+ * preserving existing symbol URLs.
+ */
+export function toUpdatePayload(
+  s1: Step1Data,
+  s2: Step2Data,
+  s3: Step3Data,
+  existingSymbols?: PatternSymbol[]
+): CreatePatternPayload {
+  const payload = toCreatePayload(s1, s2, s3);
+
+  // Preserve existing symbol URLs if no new image is provided
+  if (existingSymbols && existingSymbols.length > 0) {
+    payload.symbols = payload.symbols.map((symbol, index) => {
+      const existingSymbol = existingSymbols[index];
+      if (existingSymbol && existingSymbol.imageUrl) {
+        
+        if (!symbol.imageUrl || symbol.imageUrl.startsWith('blob:')) {
+          return { ...symbol, imageUrl: existingSymbol.imageUrl };
+        }
+      }
+      return symbol;
+    });
+  }
+
+  return payload;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
