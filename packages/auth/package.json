@@ -12,5 +12,8 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@react-oauth/google": "^0.13.5"
   }
 }

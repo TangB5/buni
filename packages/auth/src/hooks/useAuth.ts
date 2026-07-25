@@ -2,9 +2,7 @@
 
 import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { useMutation } from '@tanstack/react-query';
 import { useAuthStore } from '../store/useAuthStore';
-import type { LoginDto, RegisterDto } from '../types';
 
 // Main auth hook - state from store
 export function useAuth() {

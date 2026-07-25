@@ -3,21 +3,22 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "dev":       "next dev",
-    "build":     "next build",
-    "start":     "next start",
-    "lint":      "next lint",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@buni/ui":        "workspace:*",
-    "@buni/tokens":    "workspace:*",
-    "@buni/patterns":  "workspace:*",
-    "@buni/auth":      "workspace:*",
-    "@buni/api":       "workspace:*",
     "@buni/analytics": "workspace:*",
-    "@buni/utils":     "workspace:*",
-    "@buni/config":    "workspace:*",
-    "@buni/theme":     "workspace:*"
+    "@buni/api": "workspace:*",
+    "@buni/auth": "workspace:*",
+    "@buni/config": "workspace:*",
+    "@buni/patterns": "workspace:*",
+    "@buni/theme": "workspace:*",
+    "@buni/tokens": "workspace:*",
+    "@buni/ui": "workspace:*",
+    "@buni/utils": "workspace:*",
+    "@react-oauth/google": "^0.13.5"
   }
 }
