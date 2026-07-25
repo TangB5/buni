@@ -4,9 +4,8 @@ import { useMutation } from '@tanstack/react-query';
 import { useAuthStore } from '@buni/auth';
 import { useRouter } from 'next/navigation';
 import { authService } from '../services/auth.service';
-import type { LoginDto } from '../types';
 
-interface LoginResponse {
+interface GoogleLoginResponse {
   success: boolean;
   data: {
     user: any;
@@ -18,19 +17,19 @@ interface LoginResponse {
   };
 }
 
-export const useLogin = () => {
+export const useGoogleLogin = () => {
   const { setUser, setToken } = useAuthStore();
   const router = useRouter();
 
   const mutation = useMutation({
-    mutationFn: async (data: LoginDto) => {
-      const response = await authService.login(data);
+    mutationFn: async (accessToken: string) => {
+      const response = await authService.googleLogin(accessToken);
 
       if (!response.success) {
-        throw new Error('Login failed');
+        throw new Error('Google login failed');
       }
 
-      return response as LoginResponse;
+      return response as GoogleLoginResponse;
     },
     onSuccess: (data) => {
       setUser(data.data.user);

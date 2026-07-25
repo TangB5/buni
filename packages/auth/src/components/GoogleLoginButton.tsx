@@ -1,38 +1,26 @@
 "use client";
 
 import { useGoogleLogin } from "@react-oauth/google";
-import { useGoogleAuth } from "../hooks/useGoogleAuth";
-
-
 
 type GoogleLoginButtonProps = {
   disabled?: boolean;
-
   onSuccess?: (accessToken: string) => void;
-
   onError?: () => void;
 };
-
-
 
 export function GoogleLoginButton({
   disabled,
   onSuccess,
-  onError
+  onError,
 }: GoogleLoginButtonProps) {
-
-  
   const login = useGoogleLogin({
-
-    onSuccess(tokenResponse){
-
+    onSuccess(tokenResponse) {
+      onSuccess?.(tokenResponse.access_token);
     },
-
-    onError(){
-
-    }
-
-});
+    onError() {
+      onError?.();
+    },
+  });
 
   return (
     <button

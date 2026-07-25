@@ -37,6 +37,14 @@ export const authService = {
     }
   },
 
+  async googleLogin(accessToken: string) {
+    return post<AuthResponse>('/api/v1/auth/google', { accessToken });
+  },
+
+  async githubLogin(accessToken: string) {
+    return post<AuthResponse>('/api/v1/auth/github', { accessToken });
+  },
+
   async getMe() {
     return get<UserResponse>('/api/v1/users/me');
   },
