@@ -8,7 +8,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 import { z } from 'zod';
 
-export const UserRoleEnum = z.enum(['viewer', 'contributor', 'curator', 'admin']);
+export const UserRoleEnum = z.enum(['viewer', 'contributor', 'curator', 'admin', 'super_admin']);
 export type UserRole = z.infer<typeof UserRoleEnum>;
 
 export const UserSchema = z.object({
@@ -27,7 +27,7 @@ export const LoginSchema = z.object({
 });
 export type LoginDto = z.infer<typeof LoginSchema>;
 
-export const RegisterSchema = z.object({
+export const RegisterSchemaInput = z.object({
   name: z.string().min(2, 'Minimum 2 caractères').max(64),
   email: z.string().email('Email invalide'),
   password: z
@@ -35,9 +35,14 @@ export const RegisterSchema = z.object({
     .min(8, 'Minimum 8 caractères')
     .regex(/[A-Z]/, 'Une majuscule requise')
     .regex(/[0-9]/, 'Un chiffre requis'),
-  role: UserRoleEnum.default('viewer'),
 });
-export type RegisterDto = z.infer<typeof RegisterSchema>;
+
+export const RegisterSchema = RegisterSchemaInput.transform((data) => ({
+  ...data,
+  role: 'viewer' as const,
+}));
+
+export type RegisterDto = z.infer<typeof RegisterSchemaInput>;
 
 export interface AuthState {
   user: User | null;

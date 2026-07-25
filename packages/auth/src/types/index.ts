@@ -8,7 +8,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 import { z } from 'zod';
 
-export const UserRoleEnum = z.enum(['viewer', 'contributor', 'curator', 'admin']);
+export const UserRoleEnum = z.enum(['viewer', 'contributor', 'curator', 'admin', 'super_admin']);
 export type UserRole = z.infer<typeof UserRoleEnum>;
 
 export const UserSchema = z.object({
@@ -17,6 +17,7 @@ export const UserSchema = z.object({
   name: z.string().nullable().optional(),
   role: UserRoleEnum,
   avatar: z.string().nullable().optional(),
+  verified: z.boolean(),
   createdAt: z.string().datetime(),
 });
 export type User = z.infer<typeof UserSchema>;

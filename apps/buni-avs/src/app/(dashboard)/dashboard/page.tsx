@@ -6,7 +6,7 @@ import { motion, useMotionValue, useTransform, AnimatePresence } from 'framer-mo
 import {
   Layers, Download, Eye, Heart, Plus, ArrowRight, ArrowUpRight,
   TrendingUp, MessageSquare, Check, Palette, User, Users, ChevronRight,
-  Sparkles, Zap, BarChart2, Clock, Star, Activity,
+  Sparkles, Zap, BarChart2, Clock, Star, Activity, CheckCircle2, AlertCircle,
 } from 'lucide-react';
 import { useAuth, useLogout } from '@buni/auth';
 import { timeAgo, formatNumber, formatDate } from '@buni/utils';
@@ -14,6 +14,8 @@ import { timeAgo, formatNumber, formatDate } from '@buni/utils';
 import { Route } from 'next';
 import { DashboardStats, UserPattern, DashboardActivity, dashboardService } from '@/features/dashboard/services/dashboard.service';
 import { userService } from '@/features/user/services/user.service';
+import ViewerDashboard from './viewer-dashboard';
+import CuratorModal from '@/components/curator-modal';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TYPES & CONFIG
@@ -215,44 +217,46 @@ function PatternRow({ pattern, index }: { pattern: UserPattern; index: number })
   const patCss = CSS_PATTERN_MAP[pattern.type] ?? 'avs-pattern-wax-dakar';
 
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -8 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.35, delay: index * 0.06, ease: 'easeOut' }}
-      className="group flex items-center gap-4 px-5 py-3.5 transition-colors duration-150 hover:bg-avs-accent/3 cursor-pointer"
-    >
-      {/* Thumbnail pattern */}
-      <div className={`${patCss} relative h-10 w-10 shrink-0 rounded-lg overflow-hidden ring-1 ring-avs-accent/10`}>
-        <div className="absolute inset-0 bg-avs-accent/10" />
-      </div>
-
-      {/* Name + type */}
-      <div className="min-w-0 flex-1">
-        <p className="truncate text-[13px] font-semibold text-avs-accent transition-colors duration-150 group-hover:text-avs-primary">
-          {pattern.name}
-        </p>
-        <p className="mt-0.5 text-[10px] font-mono font-medium uppercase tracking-[0.1em] text-avs-accent/35">
-          {pattern.type}
-        </p>
-      </div>
-
-      {/* Stats */}
-      <div className="hidden sm:flex items-center gap-4 text-[11px] text-avs-accent/35 tabular-nums">
-        <span className="flex items-center gap-1"><Eye size={10} aria-hidden />{formatNumber(pattern.viewCount)}</span>
-        <span className="flex items-center gap-1"><Download size={10} aria-hidden />{formatNumber(pattern.downloadCount)}</span>
-      </div>
-
-      {/* Status badge */}
-      <div
-        className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold"
-        style={{ background: status.ring, color: status.text }}
+    <Link href={`/patternsDashboard/${pattern.slug || pattern.id}` as any}>
+      <motion.div
+        initial={{ opacity: 0, x: -8 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.35, delay: index * 0.06, ease: 'easeOut' }}
+        className="group flex items-center gap-4 px-5 py-3.5 transition-colors duration-150 hover:bg-avs-accent/3 cursor-pointer"
       >
-        <span className="h-1.5 w-1.5 rounded-full" style={{ background: status.dot }} aria-hidden />
-        {status.label}
-      </div>
+        {/* Thumbnail pattern */}
+        <div className={`${patCss} relative h-10 w-10 shrink-0 rounded-lg overflow-hidden ring-1 ring-avs-accent/10`}>
+          <div className="absolute inset-0 bg-avs-accent/10" />
+        </div>
 
-      <ChevronRight size={13} className="shrink-0 text-avs-accent/20 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-avs-primary" aria-hidden />
-    </motion.div>
+        {/* Name + type */}
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-[13px] font-semibold text-avs-accent transition-colors duration-150 group-hover:text-avs-primary">
+            {pattern.name}
+          </p>
+          <p className="mt-0.5 text-[10px] font-mono font-medium uppercase tracking-[0.1em] text-avs-accent/35">
+            {pattern.type}
+          </p>
+        </div>
+
+        {/* Stats */}
+        <div className="hidden sm:flex items-center gap-4 text-[11px] text-avs-accent/35 tabular-nums">
+          <span className="flex items-center gap-1"><Eye size={10} aria-hidden />{formatNumber(pattern.viewCount)}</span>
+          <span className="flex items-center gap-1"><Download size={10} aria-hidden />{formatNumber(pattern.downloadCount)}</span>
+        </div>
+
+        {/* Status badge */}
+        <div
+          className="flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold"
+          style={{ background: status.ring, color: status.text }}
+        >
+          <span className="h-1.5 w-1.5 rounded-full" style={{ background: status.dot }} aria-hidden />
+          {status.label}
+        </div>
+
+        <ChevronRight size={13} className="shrink-0 text-avs-accent/20 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-avs-primary" aria-hidden />
+      </motion.div>
+    </Link>
   );
 }
 
@@ -406,6 +410,16 @@ function ProfileStrip({
             <span className="ml-1 hidden rounded-full border border-avs-primary/25 bg-avs-primary/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widset text-avs-primary sm:inline-flex">
               {roleLabel}
             </span>
+            {/* Verification badge */}
+            {user?.verified ? (
+              <span className="ml-1 hidden sm:inline-flex items-center gap-1 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widset text-emerald-500">
+                <CheckCircle2 size={10} aria-hidden /> Vérifié
+              </span>
+            ) : (
+              <span className="ml-1 hidden sm:inline-flex items-center gap-1 rounded-full border border-amber-500/25 bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widset text-amber-500">
+                <AlertCircle size={10} aria-hidden /> Non vérifié
+              </span>
+            )}
           </div>
 
           {/* Meta info */}
@@ -438,7 +452,7 @@ function ProfileStrip({
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function DashboardPage() {
-  const { user, isAuthenticated, isHydrated, isAdmin, isCurator } = useAuth();
+  const { user, isAuthenticated, isHydrated, isAdmin, isCurator, canContribute } = useAuth();
   const logout = useLogout();
 
   const [stats, setStats]       = useState<DashboardStats | null>(null);
@@ -446,7 +460,7 @@ export default function DashboardPage() {
   const [activity, setActivity] = useState<DashboardActivity[]>([]);
   const [loading, setLoading]   = useState(true);
   const [platformStats, setPlatformStats] = useState<any>(null);
-
+  const [isCuratorModalOpen, setIsCuratorModalOpen] = useState(false);
 
   if(!user) return ;
 
@@ -457,14 +471,8 @@ export default function DashboardPage() {
       try {
         if (isAdmin) {
           // Fetch platform-wide stats for admins
-          const [pStats, p, a] = await Promise.all([
-            userService.getPlatformStats(),
-            dashboardService.getRecentPatterns(5),
-            dashboardService.getActivity(6),
-          ]);
+          const pStats = await userService.getPlatformStats();
           setPlatformStats(pStats);
-          setPatterns(p);
-          setActivity(a);
           setStats({
             patternsCreated: pStats.totalPatterns,
             downloadsTotal: pStats.totalDownloads,
@@ -477,14 +485,28 @@ export default function DashboardPage() {
               favoritesTrend: '+0 nouveaux',
             },
           });
-        } else {
-          // Fetch user-specific stats for regular users
+          
+          // Fetch global patterns and activity for admins
+          const [p, a] = await Promise.all([
+            dashboardService.getGlobalRecentPatterns(5),
+            dashboardService.getGlobalActivity(6),
+          ]);
+          setPatterns(p);
+          setActivity(a);
+        } else if (canContribute) {
+          // Fetch user-specific stats, patterns and activity for curators/contributors
           const [s, p, a] = await Promise.all([
             dashboardService.getStats(),
             dashboardService.getRecentPatterns(5),
             dashboardService.getActivity(6),
           ]);
-          setStats(s); setPatterns(p); setActivity(a);
+          setStats(s);
+          setPatterns(p);
+          setActivity(a);
+        } else {
+          // For viewers, just fetch platform stats
+          const pStats = await userService.getPlatformStats();
+          setPlatformStats(pStats);
         }
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
@@ -507,15 +529,34 @@ export default function DashboardPage() {
       }
     };
     void fetchData();
-  }, [isHydrated, isAuthenticated, isAdmin]);
+  }, [isHydrated, isAuthenticated, isAdmin, canContribute]);
 
   
   if (!isHydrated) return <PageLoader />;
- 
 
+  // Show viewer dashboard for VIEWER role
+  if (user?.role?.toLowerCase() === 'viewer') {
+    return (
+      <>
+        <ViewerDashboard 
+          onOpenCuratorModal={() => setIsCuratorModalOpen(true)}
+        />
+        <CuratorModal
+          isOpen={isCuratorModalOpen}
+          onClose={() => setIsCuratorModalOpen(false)}
+          onSuccess={() => {
+            // Refresh user data after becoming curator
+            window.location.reload();
+          }}
+        />
+      </>
+    );
+  }
 
-  const roleLabel   = isAdmin ? 'Administrateur' : isCurator ? 'Curateur' : 'Contributeur';
-  const avatarPattern = isAdmin
+  const roleLabel = user?.role?.toLowerCase() === 'super_admin' ? 'Super Administrateur' : isAdmin ? 'Administrateur' : isCurator ? 'Curateur' : 'Contributeur';
+  const avatarPattern = user?.role?.toLowerCase() === 'super_admin'
+    ? 'avs-pattern-kente-royale'
+    : isAdmin
     ? 'avs-pattern-ndop-sultan'
     : isCurator ? 'avs-pattern-kente-royale' : 'avs-pattern-wax-dakar';
 
@@ -623,7 +664,7 @@ export default function DashboardPage() {
         )}
 
         {/* ══ 3. HERO BANNER ════════════════════════════════════════════ */}
-        <HeroBanner patternsCount={stats?.patternsCreated ?? 0} />
+        {!isAdmin && <HeroBanner patternsCount={stats?.patternsCreated ?? 0} />}
 
         {/* ══ 4. PATTERNS + ACTIVITY — layout 3/5 + 2/5 ════════════════ */}
         <div className="grid gap-5 lg:grid-cols-5">

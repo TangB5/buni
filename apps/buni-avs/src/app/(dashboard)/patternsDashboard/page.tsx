@@ -23,6 +23,7 @@ import {
   X,
 } from 'lucide-react';
 import { formatDate, formatNumber } from '@buni/utils';
+import { useAuth } from '@buni/auth';
 
 import { Route } from 'next';
 import type { Pattern, PatternStatus, PatternSymbol } from '@buni/patterns';
@@ -184,13 +185,19 @@ function ActionMenu({
   pattern,
   onDelete,
   onToggleFeatured,
+  isAdmin,
+  isCurator,
 }: {
   pattern: Pattern;
   onDelete: (id: string) => void;
   onToggleFeatured: (id: string, shouldFeature: boolean) => void;
+  isAdmin: boolean;
+  isCurator: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const featureToggle = useToggleFeature();
+
+  const canManageStatus = isAdmin;
 
   return (
     <div className="relative">
@@ -221,30 +228,32 @@ function ActionMenu({
                 <Edit2 size={13} /> Modifier
               </Link>
               <Link
-                href={`/patterns/${pattern.slug}` as Route}
+                href={`/patternsDashboard/${pattern.slug}` as Route}
                 onClick={() => setOpen(false)}
                 className="text-avs-accent/70 hover:bg-avs-primary/5 hover:text-avs-primary flex items-center gap-2.5 px-4 py-2.5 text-sm"
               >
-                <Eye size={13} /> Voir public
+                <Eye size={13} /> Voir détails
               </Link>
-              <button
-                onClick={() => {
-                  featureToggle.mutate(pattern.id, !pattern.featured);
-                  setOpen(false);
-                }}
-                disabled={featureToggle.isLoading}
-                className="text-avs-accent/70 hover:bg-avs-primary/5 hover:text-avs-primary flex w-full items-center gap-2.5 px-4 py-2.5 text-sm transition-opacity disabled:opacity-50"
-              >
-                {pattern.featured ? (
-                  <>
-                    <EyeOff size={13} /> Retirer vedette
-                  </>
-                ) : (
-                  <>
-                    <Star size={13} /> Mettre en vedette
-                  </>
-                )}
-              </button>
+              {canManageStatus && (
+                <button
+                  onClick={() => {
+                    featureToggle.mutate(pattern.id, !pattern.featured);
+                    setOpen(false);
+                  }}
+                  disabled={featureToggle.isLoading}
+                  className="text-avs-accent/70 hover:bg-avs-primary/5 hover:text-avs-primary flex w-full items-center gap-2.5 px-4 py-2.5 text-sm transition-opacity disabled:opacity-50"
+                >
+                  {pattern.featured ? (
+                    <>
+                      <EyeOff size={13} /> Retirer vedette
+                    </>
+                  ) : (
+                    <>
+                      <Star size={13} /> Mettre en vedette
+                    </>
+                  )}
+                </button>
+              )}
               <div className="bg-avs-accent/8 mx-3 my-1 h-px" />
               <button
                 onClick={() => {
@@ -284,7 +293,7 @@ function EmptyState({ search }: { search: string }) {
           <Plus size={14} /> Nouveau motif
         </Link>
       )}
-    </div>
+    </div> 
   );
 }
 
@@ -293,6 +302,7 @@ function EmptyState({ search }: { search: string }) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function MyPatternsPage() {
+  const { user, isAdmin, isCurator } = useAuth();
   const [patterns, setPatterns] = useState<Pattern[]>([]);
   const [search, setSearch] = useState('');
   const [statusF, setStatusF] = useState<PatternStatus | 'all'>('all');
@@ -330,7 +340,9 @@ export default function MyPatternsPage() {
     const loadPatterns = async () => {
       try {
         const response = await patternService.list();
-        const patterns = response.data.data.map((p: any) => {
+        const rawData = response.data.data;
+        
+        let allPatterns = rawData.map((p: any) => {
           const pattern = mapPatternDtoToModel(p);
 
           return {
@@ -339,7 +351,15 @@ export default function MyPatternsPage() {
           };
         });
 
-        setPatterns(patterns);
+        // Filtrer par utilisateur si pas admin
+        if (!isAdmin && user) {
+          allPatterns = allPatterns.filter((_: any, index: number) => {
+            const createdById = rawData[index]?.createdById;
+            return createdById === user.id;
+          });
+        }
+
+        setPatterns(allPatterns);
       } catch (error) {
         console.error(error);
         // setPatterns(PATTERNS);
@@ -347,7 +367,7 @@ export default function MyPatternsPage() {
     };
 
     loadPatterns();
-  }, []);
+  }, [isAdmin, isCurator, user]);
 
   const stats = useMemo(
     () => ({
@@ -534,17 +554,19 @@ export default function MyPatternsPage() {
 
       <div className="mx-auto max-w-5xl space-y-6 px-4 py-8 sm:px-6 lg:px-8">
         {/* ══ STAT CARDS — même patron que profil ════════════════════════════ */}
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <StatCard label="Publiés" value={stats.published} icon={CheckCircle2} color="#4A6741" />
-          <StatCard label="Brouillons" value={stats.drafts} icon={FileText} color="#1D1D1B" />
-          <StatCard label="En révision" value={stats.review} icon={Hourglass} color="#D4A017" />
-          <StatCard
-            label="Vues totales"
-            value={stats.totalViews}
-            icon={BarChart3}
-            color="#C0573E"
-          />
-        </div>
+        {(isAdmin ) && (
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <StatCard label="Publiés" value={stats.published} icon={CheckCircle2} color="#4A6741" />
+            <StatCard label="Brouillons" value={stats.drafts} icon={FileText} color="#1D1D1B" />
+            <StatCard label="En révision" value={stats.review} icon={Hourglass} color="#D4A017" />
+            <StatCard
+              label="Vues totales"
+              value={stats.totalViews}
+              icon={BarChart3}
+              color="#C0573E"
+            />
+          </div>
+        )}
 
         {/* ══ FILTERS ═════════════════════════════════════════════════════════ */}
         <div className="flex flex-wrap items-center gap-3">
@@ -577,26 +599,28 @@ export default function MyPatternsPage() {
             </AnimatePresence>
           </div>
 
-          <div className="flex items-center gap-1.5">
-            <Filter size={12} className="text-avs-accent/30 shrink-0" aria-hidden />
-            {STATUS_FILTERS.map(({ value, label }) => {
-              const isActive = statusF === value;
-              const statusConfig = value !== 'all' ? STATUS_CFG[value as PatternStatus] : null;
-              const activeStyle = value === 'all' 
-                ? 'bg-avs-primary text-avs-secondary shadow-avs'
-                : statusConfig?.pill || 'bg-avs-primary text-avs-secondary shadow-avs';
-              
-              return (
-                <button
-                  key={value}
-                  onClick={() => setStatusF(value)}
-                  className={`rounded-xl px-3 py-1.5 font-mono text-[9px] font-black tracking-[0.14em] uppercase transition-all duration-150 ${isActive ? activeStyle : 'border-avs-accent/15 text-avs-accent/50 hover:border-avs-primary/20 hover:text-avs-primary border'}`}
-                >
-                  {label}
-                </button>
-              );
-            })}
-          </div>
+          {(isAdmin ) && (
+            <div className="flex items-center gap-1.5">
+              <Filter size={12} className="text-avs-accent/30 shrink-0" aria-hidden />
+              {STATUS_FILTERS.map(({ value, label }) => {
+                const isActive = statusF === value;
+                const statusConfig = value !== 'all' ? STATUS_CFG[value as PatternStatus] : null;
+                const activeStyle = value === 'all' 
+                  ? 'bg-avs-primary text-avs-secondary shadow-avs'
+                  : statusConfig?.pill || 'bg-avs-primary text-avs-secondary shadow-avs';
+                
+                return (
+                  <button
+                    key={value}
+                    onClick={() => setStatusF(value)}
+                    className={`rounded-xl px-3 py-1.5 font-mono text-[9px] font-black tracking-[0.14em] uppercase transition-all duration-150 ${isActive ? activeStyle : 'border-avs-accent/15 text-avs-accent/50 hover:border-avs-primary/20 hover:text-avs-primary border'}`}
+                  >
+                    {label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* ══ BULK BAR ════════════════════════════════════════════════════════ */}
@@ -718,6 +742,8 @@ export default function MyPatternsPage() {
                     pattern={p}
                     onDelete={handleDelete}
                     onToggleFeatured={handleToggleFeatured}
+                    isAdmin={isAdmin}
+                    isCurator={isCurator}
                   />
                 </motion.div>
               ))}

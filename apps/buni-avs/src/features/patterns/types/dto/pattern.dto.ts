@@ -70,4 +70,6 @@ export interface PatternDto {
   createdAt?: string;
 
   updatedAt?: string;
+
+  createdById?: string;
 }

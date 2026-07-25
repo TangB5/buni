@@ -1,4 +1,9 @@
-export interface UserProfile {
+// ─────────────────────────────────────────────────────────────
+// BACKEND DTO
+// Représente EXACTEMENT la réponse backend
+// ─────────────────────────────────────────────────────────────
+
+export interface UserDto {
   id: string;
   email: string;
   name: string | null;
@@ -15,7 +20,7 @@ export interface UserProfile {
   updatedAt: string;
 }
 
-export interface UserStats {
+export interface UserStatsDto {
   patternsCreated: number;
   totalViews: number;
   memberSince: string;
@@ -30,32 +35,21 @@ export interface UserStats {
   };
 }
 
-export interface UserPattern {
+export interface UserPatternDto {
   id: string;
   name: string;
   slug: string;
   type: string;
-  status: 'published' | 'draft' | 'review';
+  status: string;
   views: number;
   downloads: number;
   imgUrl: string;
 }
 
-export interface UserActivity {
+export interface UserActivityDto {
   id: string;
   action: string;
   target: string;
   timestamp: string;
-  type: 'comment' | 'download' | 'review' | 'favorite';
-}
-
-export interface UpdateProfileData {
-  name?: string;
-  bio?: string;
-  location?: string;
-  website?: string;
-  github?: string;
-  twitter?: string;
-  specialty?: string;
-  avatar?: string;
+  type?: string;
 }

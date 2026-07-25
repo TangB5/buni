@@ -4,16 +4,18 @@ import { useState, useEffect } from 'react';
 import { redirect } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Camera, Save, Loader2, CheckCircle2, MapPin, Globe,
-  ArrowLeft, AlertCircle, User, Layers, Eye, Calendar, LogOut,
+  Camera, Save, Loader2, MapPin, Globe,
+  ArrowLeft, AlertCircle, Users, Layers, Eye, Calendar, LogOut, Shield,
+  ArrowRight,
 } from 'lucide-react';
 import { useAuth, useLogout } from '@buni/auth';
 import { formatDate } from '@buni/utils';
 import { z } from 'zod';
 import Link from 'next/link';
 import { useProfile, useStats, useUpdateProfile, useUploadAvatar } from '@/features/user/hooks/useUser';
-import type { UserProfile, UserStats } from '@/features/user/types/user.types';
+import type { User, UserStats } from '@/features/user/types';
 import { useToast } from '@/components/feedback';
+import CuratorModal from '@/components/curator-modal';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // SCHEMA
@@ -95,9 +97,8 @@ const ROLE_CONFIG: Record<string, { label: string; color: string; accentClass: s
 };
 
 const TABS = [
-  { id: 'infos',  label: 'Informations',    icon: User    },
+  { id: 'infos',  label: 'Informations',    icon: Users    },
   { id: 'social', label: 'Réseaux sociaux', icon: Globe   },
-  { id: 'stats',  label: 'Statistiques',    icon: Layers  },
 ] as const;
 type TabId = typeof TABS[number]['id'];
 
@@ -199,13 +200,12 @@ function SocialRow({ icon, platform, prefix, value, onChange, maxLength, placeho
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function ProfilePage() {
-  const { user, isAuthenticated, isHydrated } = useAuth();
+  const { user, isAuthenticated, isHydrated, canContribute } = useAuth();
   const logout = useLogout();
   const { add: addToast, ToastContainer } = useToast();
 
   // React Query hooks
   const { data: profile, isLoading: profileLoading } = useProfile();
-  const { data: stats } = useStats();
   const updateProfile = useUpdateProfile();
   const uploadAvatar = useUploadAvatar();
 
@@ -217,6 +217,7 @@ export default function ProfilePage() {
   const [saving,    setSaving]    = useState(false);
   const [uploading, setUploading]  = useState(false);
   const [activeTab, setActiveTab] = useState<TabId>('infos');
+  const [isCuratorModalOpen, setIsCuratorModalOpen] = useState(false);
 
   // Update form when profile data is loaded
   useEffect(() => {
@@ -420,6 +421,18 @@ export default function ProfilePage() {
                       <span className="h-1.5 w-1.5 rounded-full" style={{ background: role.color }} aria-hidden />
                       {role.label}
                     </span>
+                    {/* Verification badge */}
+                    {user?.verified ? (
+                      <span className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 font-mono text-[9px] font-black uppercase tracking-[0.16em] bg-emerald-500/10 text-emerald-500 border border-emerald-500/25">
+                        <Shield size={10} aria-hidden />
+                        Vérifié
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 font-mono text-[9px] font-black uppercase tracking-[0.16em] bg-amber-500/10 text-amber-500 border border-amber-500/25">
+                        <AlertCircle size={10} aria-hidden />
+                        Non vérifié
+                      </span>
+                    )}
                   </div>
                   <p className="mt-1 text-sm text-avs-accent/55">{user?.email}</p>
                   <p className="mt-1 flex items-center gap-1.5 text-xs text-avs-accent/35">
@@ -480,139 +493,140 @@ export default function ProfilePage() {
               {/* ── TAB: INFOS ─────────────────────────────────────────────── */}
               {activeTab === 'infos' && (
                 <section className="space-y-5 rounded-2xl border border-avs-accent/9 bg-avs-secondary p-6">
-                  <div className="grid gap-5 sm:grid-cols-2">
-                    <Field label="Nom complet" error={errors.name}>
-                      <input type="text" value={form.name} onChange={set('name')} className="prf-input" placeholder="Amara Diop" />
-                    </Field>
-                    <Field label="Spécialité" hint="Votre domaine d'expertise (Ndop, Bogolan…)" error={errors.specialty}>
-                      <input type="text" value={form.specialty} onChange={set('specialty')} className="prf-input" placeholder="Tisserand Ndop" />
-                    </Field>
-                  </div>
-
-                  <Field label="Bio" hint="Décrivez-vous en 280 caractères ou moins" error={errors.bio}>
-                    <textarea
-                      value={form.bio} onChange={set('bio')} maxLength={280} rows={3}
-                      className="prf-input"
-                      placeholder="Tisserand de tradition, je documente les motifs Ndop depuis 20 ans…"
-                    />
-                    <div className="mt-1.5 flex justify-end">
-                      <span className="font-mono text-[9px] text-avs-accent/35">{form.bio?.length ?? 0}/280</span>
+                  {!canContribute ? (
+                    // Viewer restricted view
+                    <div className="flex flex-col items-center justify-center gap-4 py-12 text-center">
+                      <div className="avs-pattern-adinkra-sankofa h-16 w-16 rounded-full opacity-40" aria-hidden />
+                      <div>
+                        <p className="font-display text-lg font-bold text-avs-accent">Édition restreinte</p>
+                        <p className="mt-2 text-sm text-avs-accent/40 max-w-md">
+                          En tant qu'Explorateur, vous ne pouvez pas modifier votre profil. Devenez Curateur pour accéder à toutes les fonctionnalités d'édition.
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => setIsCuratorModalOpen(true)}
+                        className="inline-flex items-center gap-2 rounded-xl bg-avs-primary px-6 py-3 text-sm font-bold text-avs-secondary shadow-lg shadow-avs-primary/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-avs-primary/30"
+                      >
+                        Devenir Curateur
+                        <ArrowRight size={14} aria-hidden />
+                      </button>
                     </div>
-                  </Field>
+                  ) : (
+                    // Curator/Contributor/Admin edit form
+                    <>
+                      <div className="grid gap-5 sm:grid-cols-2">
+                        <Field label="Nom complet" error={errors.name}>
+                          <input type="text" value={form.name} onChange={set('name')} className="prf-input" placeholder="Amara Diop" />
+                        </Field>
+                        <Field label="Spécialité" hint="Votre domaine d'expertise (Ndop, Bogolan…)" error={errors.specialty}>
+                          <input type="text" value={form.specialty} onChange={set('specialty')} className="prf-input" placeholder="Tisserand Ndop" />
+                        </Field>
+                      </div>
 
-                  <Field label="Localisation" error={errors.location}>
-                    <div className="prf-input-icon">
-                      <MapPin size={14} className="text-avs-accent/30 shrink-0" aria-hidden />
-                      <input type="text" value={form.location} onChange={set('location')} placeholder="Foumban, Cameroun" />
-                    </div>
-                  </Field>
+                      <Field label="Bio" hint="Décrivez-vous en 280 caractères ou moins" error={errors.bio}>
+                        <textarea
+                          value={form.bio} onChange={set('bio')} maxLength={280} rows={3}
+                          className="prf-input"
+                          placeholder="Tisserand de tradition, je documente les motifs Ndop depuis 20 ans…"
+                        />
+                        <div className="mt-1.5 flex justify-end">
+                          <span className="font-mono text-[9px] text-avs-accent/35">{form.bio?.length ?? 0}/280</span>
+                        </div>
+                      </Field>
 
-                  <Field label="Site web" error={errors.website}>
-                    <div className="prf-input-icon">
-                      <Globe size={14} className="text-avs-accent/30 shrink-0" aria-hidden />
-                      <input type="url" value={form.website} onChange={set('website')} placeholder="https://exemple.com" />
-                    </div>
-                  </Field>
+                      <Field label="Localisation" error={errors.location}>
+                        <div className="prf-input-icon">
+                          <MapPin size={14} className="text-avs-accent/30 shrink-0" aria-hidden />
+                          <input type="text" value={form.location} onChange={set('location')} placeholder="Foumban, Cameroun" />
+                        </div>
+                      </Field>
+
+                      <Field label="Site web" error={errors.website}>
+                        <div className="prf-input-icon">
+                          <Globe size={14} className="text-avs-accent/30 shrink-0" aria-hidden />
+                          <input type="url" value={form.website} onChange={set('website')} placeholder="https://exemple.com" />
+                        </div>
+                      </Field>
+                    </>
+                  )}
                 </section>
               )}
 
               {/* ── TAB: SOCIAL ────────────────────────────────────────────── */}
               {activeTab === 'social' && (
                 <section className="space-y-5 rounded-2xl border border-avs-accent/9 bg-avs-secondary p-6">
-                  <SocialRow
-                    icon={<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>}
-                    platform="GitHub" prefix="github.com/"
-                    value={form.github ?? ''} onChange={(v) => setForm((f) => ({ ...f, github: v }))}
-                    maxLength={39} placeholder="username"
-                  />
-
-                  <SocialRow
-                    icon={<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.259 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>}
-                    platform="Twitter / X" prefix="x.com/"
-                    value={form.twitter ?? ''} onChange={(v) => setForm((f) => ({ ...f, twitter: v }))}
-                    maxLength={15} placeholder="username"
-                  />
-
-                  {/* Preview links */}
-                  {(form.github || form.twitter) && (
-                    <div className="rounded-xl p-4 bg-avs-accent/4 border border-avs-accent/9">
-                      <p className="mb-3 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-avs-accent/35">Aperçu des liens</p>
-                      <div className="flex flex-wrap gap-2">
-                        {form.github && (
-                          <a href={`https://github.com/${form.github}`} target="_blank" rel="noopener noreferrer"
-                            className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium bg-avs-secondary border border-avs-accent/16 text-avs-accent/55 hover:text-avs-primary transition-colors">
-                            github.com/{form.github}
-                          </a>
-                        )}
-                        {form.twitter && (
-                          <a href={`https://x.com/${form.twitter}`} target="_blank" rel="noopener noreferrer"
-                            className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium bg-avs-secondary border border-avs-accent/16 text-avs-accent/55 hover:text-avs-primary transition-colors">
-                            x.com/{form.twitter}
-                          </a>
-                        )}
+                  {!canContribute ? (
+                    // Viewer restricted view
+                    <div className="flex flex-col items-center justify-center gap-4 py-12 text-center">
+                      <div className="avs-pattern-adinkra-sankofa h-16 w-16 rounded-full opacity-40" aria-hidden />
+                      <div>
+                        <p className="font-display text-lg font-bold text-avs-accent">Édition restreinte</p>
+                        <p className="mt-2 text-sm text-avs-accent/40 max-w-md">
+                          En tant qu'Explorateur, vous ne pouvez pas modifier vos réseaux sociaux. Devenez Curateur pour accéder à toutes les fonctionnalités d'édition.
+                        </p>
                       </div>
+                      <button
+                        onClick={() => setIsCuratorModalOpen(true)}
+                        className="inline-flex items-center gap-2 rounded-xl bg-avs-primary px-6 py-3 text-sm font-bold text-avs-secondary shadow-lg shadow-avs-primary/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-avs-primary/30"
+                      >
+                        Devenir Curateur
+                        <ArrowRight size={14} aria-hidden />
+                      </button>
                     </div>
+                  ) : (
+                    // Curator/Contributor/Admin edit form
+                    <>
+                      <SocialRow
+                        icon={<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>}
+                        platform="GitHub" prefix="github.com/"
+                        value={form.github ?? ''} onChange={(v) => setForm((f) => ({ ...f, github: v }))}
+                        maxLength={39} placeholder="username"
+                      />
+
+                      <SocialRow
+                        icon={<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.259 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>}
+                        platform="Twitter / X" prefix="x.com/"
+                        value={form.twitter ?? ''} onChange={(v) => setForm((f) => ({ ...f, twitter: v }))}
+                        maxLength={15} placeholder="username"
+                      />
+
+                      {/* Preview links */}
+                      {(form.github || form.twitter) && (
+                        <div className="rounded-xl p-4 bg-avs-accent/4 border border-avs-accent/9">
+                          <p className="mb-3 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-avs-accent/35">Aperçu des liens</p>
+                          <div className="flex flex-wrap gap-2">
+                            {form.github && (
+                              <a href={`https://github.com/${form.github}`} target="_blank" rel="noopener noreferrer"
+                                className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium bg-avs-secondary border border-avs-accent/16 text-avs-accent/55 hover:text-avs-primary transition-colors">
+                                github.com/{form.github}
+                              </a>
+                            )}
+                            {form.twitter && (
+                              <a href={`https://x.com/${form.twitter}`} target="_blank" rel="noopener noreferrer"
+                                className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium bg-avs-secondary border border-avs-accent/16 text-avs-accent/55 hover:text-avs-primary transition-colors">
+                                x.com/{form.twitter}
+                              </a>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </>
                   )}
                 </section>
-              )}
-
-              {/* ── TAB: STATS ─────────────────────────────────────────────── */}
-              {activeTab === 'stats' && (
-                <div className="space-y-5">
-                  <div className="grid gap-4 sm:grid-cols-3">
-                    <StatCard label="Motifs créés"  value={stats?.patternsCreated?.toString() ?? '0'}  sub="Total créé"      icon={Layers}   color="#C0573E" />
-                    <StatCard label="Vues totales"  value={stats?.totalViews?.toString() ?? '0'}      sub="Cumul des vues"  icon={Eye}      color="#2A4A6B" />
-                    <StatCard label="Membre depuis" value={stats?.memberSince?.split(' ')[2] ?? 'N/A'} sub={stats?.memberSince ?? 'N/A'} icon={Calendar} color="#4A6741" />
-                  </div>
-
-                  {/* Contribution level */}
-                  <div className="overflow-hidden rounded-2xl border border-avs-accent/9 bg-avs-secondary">
-                    <div className={`${role.pattern} h-1.5`} aria-hidden />
-                    <div className="p-5">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-avs-accent/35">Niveau de contribution</p>
-                          <p className="mt-1 font-display text-lg font-black text-avs-accent" style={{ letterSpacing: '-0.015em' }}>{role.label}</p>
-                        </div>
-                        {/* Dynamic role badge — inline justified */}
-                        <span
-                          className="rounded-xl px-3.5 py-2 font-mono text-sm font-black"
-                          style={{ background: `${role.color}12`, color: role.color, border: `1px solid ${role.color}25` }}
-                        >
-                          {roleKey.charAt(0).toUpperCase() + roleKey.slice(1)}
-                        </span>
-                      </div>
-
-                      <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-avs-accent/8">
-                        <motion.div
-                          initial={{ width: 0 }}
-                          animate={{ width: roleKey === 'admin' ? '100%' : roleKey === 'curator' ? '66%' : roleKey === 'contributor' ? '33%' : '10%' }}
-                          transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                          className="h-full rounded-full"
-                          style={{ background: role.color }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Danger zone */}
-                  <div className="rounded-2xl border border-avs-accent/9 bg-avs-secondary p-5">
-                    <p className="mb-4 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-avs-accent/35">
-                      Actions de compte
-                    </p>
-                    <button
-                      onClick={() => void logout()}
-                      className="flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold border border-red-500/30 text-red-500 bg-red-500/6 hover:bg-red-500/12 hover:border-red-500/45 transition-all duration-200"
-                    >
-                      <LogOut size={14} /> Déconnexion
-                    </button>
-                  </div>
-                </div>
               )}
             </motion.div>
           </AnimatePresence>
         </div>
       </div>
+
+      <CuratorModal
+        isOpen={isCuratorModalOpen}
+        onClose={() => setIsCuratorModalOpen(false)}
+        onSuccess={() => {
+          // Refresh user data after becoming curator
+          window.location.reload();
+        }}
+      />
     </>
   );
 }

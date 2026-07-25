@@ -745,15 +745,19 @@ export function Header() {
   const [premiumOpen, setPremiumOpen] = useState(false);
   const [, startTransition] = useTransition();
   const [comingSoon, setComingSoon] = useState<ModalData | null>(null);
+  const [authState, setAuthState] = useState({ isAuthenticated, user });
+
+  useEffect(() => {
+    setAuthState({ isAuthenticated, user });
+  }, [isAuthenticated, user]);
+
   const handleLogout = async () => {
     try {
       await authService.logout();
     } catch (err) {
       console.error('Logout error:', err);
-    } finally {
-      storeLogout();
-      router.push('/');
     }
+    await storeLogout();
   };
 
   useLayoutEffect(() => {
@@ -848,9 +852,9 @@ export function Header() {
             {/* Auth area */}
             {!isHydrated ? (
               <div className="bg-avs-accent/4 h-9 w-28 animate-pulse rounded-xl" />
-            ) : isAuthenticated && user ? (
+            ) : authState.isAuthenticated && authState.user ? (
               <UserMenu
-                user={user as { name: string; email: string; role: string }}
+                user={authState.user as { name: string; email: string; role: string }}
                 onLogout={handleLogout}
               />
             ) : (
@@ -959,7 +963,7 @@ export function Header() {
                   </MobileSection>
 
                   <MobileSection title="Outils">
-                    {isAuthenticated && user && (
+                    {authState.isAuthenticated && authState.user && (
                       <MobileLink
                         href="/dashboard"
                         icon={LayoutDashboard}
@@ -1000,22 +1004,22 @@ export function Header() {
                   <div className="border-avs-accent/9 space-y-2 border-t pt-1">
                     {!isHydrated ? (
                       <div className="bg-avs-accent/4 h-10 animate-pulse rounded-xl" />
-                    ) : isAuthenticated && user ? (
+                    ) : authState.isAuthenticated && authState.user ? (
                       <>
                         <div className="bg-avs-primary/8 border-avs-primary/20 flex items-center gap-3 rounded-xl border p-3.5">
                           <div className="avs-pattern-kente-royale relative h-9 w-9 shrink-0 overflow-hidden rounded-full">
                             <div className="absolute inset-0 flex items-center justify-center bg-black/25">
                               <span className="font-display text-avs-secondary text-sm font-black">
-                                {(user.name || '?').charAt(0).toUpperCase()}
+                                {(authState.user.name || '?').charAt(0).toUpperCase()}
                               </span>
                             </div>
                           </div>
                           <div className="min-w-0">
                             <p className="text-avs-accent truncate text-sm font-bold">
-                              {user.name || 'User'}
+                              {authState.user.name || 'User'}
                             </p>
                             <p className="text-avs-accent/35 truncate text-xs capitalize">
-                              {user.role}
+                              {authState.user.role}
                             </p>
                           </div>
                           <span className="ml-auto h-2 w-2 shrink-0 rounded-full bg-emerald-500" />

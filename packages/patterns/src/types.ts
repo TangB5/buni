@@ -91,6 +91,7 @@ export interface Pattern {
 
   createdAt?: string;
   updatedAt?: string;
+  createdById?: string;
 }
 
 // ─────────────────────────────────────────────────────────────

@@ -19,11 +19,11 @@ import { ArrowRight, Check, Command, Copy, MoveDown } from 'lucide-react';
 // ─────────────────────────────────────────────────────────────────────────────
 type PatternFamily = {
   id: string;
-  css: string;        // texture class already defined in the global pattern stylesheet
-  code: string;        // short mono code, e.g. KENTE
-  name: string;        // display name
+  css: string; // texture class already defined in the global pattern stylesheet
+  code: string; // short mono code, e.g. KENTE
+  name: string; // display name
   country: string;
-  flag: string;        // ISO-ish 2-letter tag used as a mono label
+  flag: string; // ISO-ish 2-letter tag used as a mono label
   symbolism: string;
   colors: readonly [string, string, string, string];
 };
@@ -112,10 +112,10 @@ const PATTERNS: readonly PatternFamily[] = [
 ] as const;
 
 const FOOTNOTES = [
-  { mark: '01', value: '1 248', label: 'motifs documentés' },
-  { mark: '02', value: '54', label: 'pays représentés' },
-  { mark: '03', value: '312', label: 'artisans-conservateurs' },
-  { mark: '04', value: '0', label: 'motif sans provenance vérifiée' },
+  { index: 0,  value: '1 248', label: 'motifs documentés' },
+  { index: 1,  value: '54', label: 'pays représentés' },
+  { index: 2,  value: '312', label: 'artisans-conservateurs' },
+  { index: 3,  value: '0', label: 'motif sans provenance vérifiée' },
 ] as const;
 
 const COMMUNITY_AVATARS = [
@@ -127,8 +127,18 @@ const COMMUNITY_AVATARS = [
 ] as const;
 
 const COUNTRIES = [
-  'Ghana', 'Mali', 'Nigéria', 'Sénégal', 'Cameroun', 'Kenya',
-  'Afrique du Sud', 'RD Congo', 'Éthiopie', 'Maroc', "Côte d'Ivoire", 'Tanzanie',
+  'Ghana',
+  'Mali',
+  'Nigéria',
+  'Sénégal',
+  'Cameroun',
+  'Kenya',
+  'Afrique du Sud',
+  'RD Congo',
+  'Éthiopie',
+  'Maroc',
+  "Côte d'Ivoire",
+  'Tanzanie',
 ] as const;
 
 const AUTO_ADVANCE_MS = 4200;
@@ -167,11 +177,19 @@ const HERO_STYLES = `
 // SMALL REUSABLE PIECES
 // ─────────────────────────────────────────────────────────────────────────────
 function FormatChip({
-  label, bg, className, style,
-}: { label: string; bg: string; className?: string; style?: React.CSSProperties }) {
+  label,
+  bg,
+  className,
+  style,
+}: {
+  label: string;
+  bg: string;
+  className?: string;
+  style?: React.CSSProperties;
+}) {
   return (
     <span
-      className={`rounded-lg px-2.5 py-1 font-mono text-[8.5px] font-bold uppercase tracking-[.12em] text-white ${className ?? ''}`}
+      className={`rounded-lg px-2.5 py-1 font-mono text-[8.5px] font-bold tracking-[.12em] text-white uppercase ${className ?? ''}`}
       style={{ background: bg, backdropFilter: 'blur(8px)', ...style }}
     >
       {label}
@@ -179,11 +197,15 @@ function FormatChip({
   );
 }
 
-
-
 // ── Signature element: a live, self-playing inspector of the system itself ──
 function PatternInspector({
-  active, index, onSelect, paused, copiedHex, onCopy, reduceMotion,
+  active,
+  index,
+  onSelect,
+  paused,
+  copiedHex,
+  onCopy,
+  reduceMotion,
 }: {
   active: PatternFamily;
   index: number;
@@ -206,7 +228,11 @@ function PatternInspector({
       {/* progress rail — shows the autoplay countdown, like a stories UI */}
       <div className="flex gap-1 px-4 pt-4" aria-hidden>
         {PATTERNS.map((p, i) => (
-          <div key={p.id} className="h-0.5 flex-1 overflow-hidden rounded-full" style={{ background: 'rgba(245,235,224,.14)' }}>
+          <div
+            key={p.id}
+            className="h-0.5 flex-1 overflow-hidden rounded-full"
+            style={{ background: 'rgba(245,235,224,.14)' }}
+          >
             {i === index && !paused && !reduceMotion && (
               <motion.div
                 key={`${p.id}-${paused}`}
@@ -225,14 +251,14 @@ function PatternInspector({
       </div>
 
       {/* header: family tabs, clickable, doubles as navigation */}
-      <div className="flex flex-wrap gap-1 sm:gap-1.5 px-3 sm:px-4 pt-2 sm:pt-3">
+      <div className="flex flex-wrap gap-1 px-3 pt-2 sm:gap-1.5 sm:px-4 sm:pt-3">
         {PATTERNS.map((p, i) => (
           <button
             key={p.id}
             type="button"
             aria-pressed={i === index}
             onClick={() => onSelect(i)}
-            className="rounded-md px-1.5 sm:px-2 py-0.5 sm:py-1 font-mono text-[7px] sm:text-[8px] font-bold uppercase tracking-widset transition-colors"
+            className="tracking-widset rounded-md px-1.5 py-0.5 font-mono text-[7px] font-bold uppercase transition-colors sm:px-2 sm:py-1 sm:text-[8px]"
             style={{
               color: i === index ? '#F5EBE0' : 'rgba(245,235,224,.4)',
               background: i === index ? 'rgba(192,87,62,.9)' : 'transparent',
@@ -244,7 +270,10 @@ function PatternInspector({
       </div>
 
       {/* main swatch */}
-      <div className="relative m-3 sm:m-4 aspect-16/10 overflow-hidden rounded-xl" style={{ border: '1px solid rgba(245,235,224,.08)' }}>
+      <div
+        className="relative m-3 aspect-16/10 overflow-hidden rounded-xl sm:m-4"
+        style={{ border: '1px solid rgba(245,235,224,.08)' }}
+      >
         <AnimatePresence mode="wait">
           <motion.div
             key={active.id}
@@ -256,23 +285,38 @@ function PatternInspector({
           />
         </AnimatePresence>
         <div className="absolute bottom-0 left-0 p-2 sm:p-3">
-          <p className="font-mono text-[7px] sm:text-[8px] uppercase tracking-[.2em]" style={{ color: 'rgba(245,235,224,.5)' }}>
+          <p
+            className="font-mono text-[7px] tracking-[.2em] uppercase sm:text-[8px]"
+            style={{ color: 'rgba(245,235,224,.5)' }}
+          >
             {active.code} · {active.flag}
           </p>
-          <p className="mt-0.5 text-[12px] sm:text-[14px] font-semibold" style={{ color: '#F5EBE0' }}>
+          <p
+            className="mt-0.5 text-[12px] font-semibold sm:text-[14px]"
+            style={{ color: '#F5EBE0' }}
+          >
             {active.name}
           </p>
         </div>
-        <div className="absolute right-2 sm:right-3 top-2 sm:top-3 rounded-md px-1.5 sm:px-2 py-0.5" style={{ background: 'rgba(0,0,0,.4)', backdropFilter: 'blur(6px)' }}>
-          <p className="font-mono text-[7px] sm:text-[8px] uppercase tracking-[.14em]" style={{ color: '#F5EBE0' }}>
+        <div
+          className="absolute top-2 right-2 rounded-md px-1.5 py-0.5 sm:top-3 sm:right-3 sm:px-2"
+          style={{ background: 'rgba(0,0,0,.4)', backdropFilter: 'blur(6px)' }}
+        >
+          <p
+            className="font-mono text-[7px] tracking-[.14em] uppercase sm:text-[8px]"
+            style={{ color: '#F5EBE0' }}
+          >
             {active.country}
           </p>
         </div>
       </div>
 
       {/* inspector readout — hex tokens (click to copy), symbolism, formats */}
-      <div className="px-3 sm:px-4 pb-3 sm:pb-4">
-        <p className="mb-2 font-mono text-[7px] sm:text-[8px] uppercase tracking-[.18em]" style={{ color: '#C0573E' }}>
+      <div className="px-3 pb-3 sm:px-4 sm:pb-4">
+        <p
+          className="mb-2 font-mono text-[7px] tracking-[.18em] uppercase sm:text-[8px]"
+          style={{ color: '#C0573E' }}
+        >
           Tokens — cliquer pour copier
         </p>
         <div className="flex gap-1 sm:gap-1.5">
@@ -282,7 +326,7 @@ function PatternInspector({
               type="button"
               onClick={() => onCopy(hex)}
               aria-label={`Copier le token ${hex}`}
-              className="group relative h-7 sm:h-8 flex-1 overflow-hidden rounded-md transition-transform hover:-translate-y-0.5"
+              className="group relative h-7 flex-1 overflow-hidden rounded-md transition-transform hover:-translate-y-0.5 sm:h-8"
               style={{ background: hex }}
             >
               <span
@@ -299,13 +343,17 @@ function PatternInspector({
           ))}
         </div>
 
-        <div className="mt-2 sm:mt-3 flex items-center justify-between">
+        <div className="mt-2 flex items-center justify-between sm:mt-3">
           <p className="text-[10px] sm:text-[11px]" style={{ color: 'rgba(245,235,224,.55)' }}>
             {active.symbolism}
           </p>
           <div className="flex gap-0.5 sm:gap-1">
             {['SVG', 'CSS', 'JSON', 'PNG'].map((f) => (
-              <span key={f} className="font-mono text-[6px] sm:text-[7.5px] uppercase tracking-wiset" style={{ color: 'rgba(245,235,224,.35)' }}>
+              <span
+                key={f}
+                className="tracking-wiset font-mono text-[6px] uppercase sm:text-[7.5px]"
+                style={{ color: 'rgba(245,235,224,.35)' }}
+              >
                 {f}
               </span>
             ))}
@@ -363,12 +411,15 @@ export function HeroSection() {
   const chipX = useTransform(smx, (v) => v * 14);
   const chipY = useTransform(smy, (v) => v * 14);
 
-  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLElement>) => {
-    if (reduceMotion) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    mx.set((e.clientX - rect.left) / rect.width - 0.5);
-    my.set((e.clientY - rect.top) / rect.height - 0.5);
-  }, [mx, my, reduceMotion]);
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLElement>) => {
+      if (reduceMotion) return;
+      const rect = e.currentTarget.getBoundingClientRect();
+      mx.set((e.clientX - rect.left) / rect.width - 0.5);
+      my.set((e.clientY - rect.top) / rect.height - 0.5);
+    },
+    [mx, my, reduceMotion]
+  );
 
   const active = PATTERNS[index];
 
@@ -394,179 +445,399 @@ export function HeroSection() {
           }}
         />
         <div
-          className="pointer-events-none absolute -top-[10%] -right-[5%] h-150 w-150rounded-full"
+          className="w-150rounded-full pointer-events-none absolute -top-[10%] -right-[5%] h-150"
           aria-hidden
           style={{ background: 'radial-gradient(circle,rgba(192,87,62,.13) 0%,transparent 65%)' }}
         />
-        <div className="avs-pattern-kente-royale pointer-events-none absolute inset-0 opacity-[.02]" aria-hidden />
+        <div
+          className="avs-pattern-kente-royale pointer-events-none absolute inset-0 opacity-[.02]"
+          aria-hidden
+        />
 
-        <motion.div style={{ opacity: heroOpacity, y: heroTranslate }} className="relative flex min-h-screen flex-col">
-         
-
-          {/* ══════════════════════════════════════════
-              HEADLINE — full width, editorial, footnoted
+        {/* ══════════════════════════════════════════
+             Version ordinateur
           ══════════════════════════════════════════ */}
-          <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 pt-12 sm:pt-14 lg:px-8">
-            <motion.h1
-              id="hero-title"
-              initial={{ opacity: 0, y: 28 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.75, delay: 0.1, ease }}
-              className="font-display leading-[.92] font-black tracking-[-0.03em]"
-              style={{ fontSize: 'clamp(2rem,8vw,5rem)', color: 'var(--hp-text)' }}
-            >
-              <span className="block">
-                Chaque motif
-              </span>
-              <span className="block" style={{ color: '#C0573E' }}>
-                a une histoire
-              </span>
-              <span className="block">
-                Nous l&rsquo;avons codée.
-              </span>
-            </motion.h1>
-
-            {/* ══════════════════════════════════════════
-              ASYMMETRIC ROW — copy left, live system right
-          ══════════════════════════════════════════ */}
-          <div className="mt-8 sm:mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-            {/* — Left: explanation, CTAs, social proof — */}
-            <div className="lg:col-span-1 order-2 lg:order-1">
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
+        <div className="mx-auto hidden w-full px-4 pt-12 sm:px-6 sm:pt-14 md:flex lg:px-8">
+          <div className="flex w-full justify-center">
+            <div className="w-[60%]">
+              <motion.h1
+                id="hero-title"
+                initial={{ opacity: 0, y: 28 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.34, ease }}
-                className="max-w-md text-[14px] sm:text-[15px] leading-[1.7] sm:leading-[1.8]"
-                style={{ color: 'var(--hp-muted)' }}
+                transition={{ duration: 0.75, delay: 0.1, ease }}
+                className="font-display w-full leading-[.92] font-black tracking-[-0.03em]"
+                style={{ fontSize: 'clamp(2rem,8vw,5rem)', color: 'var(--hp-text)' }}
               >
-                <strong style={{ color: 'var(--hp-text)', fontWeight: 600 }}>312 artisans-conservateurs</strong>{' '}
-                vérifient<sup className="avs-footnote-mark">04</sup> l&rsquo;origine, la symbolique et les droits
-                d&rsquo;usage de chaque motif avant qu&rsquo;il ne devienne un token — prêt pour la production,
-                sans compte requis.
-              </motion.p>
+                <span className="block">Chaque motif</span>
+                <span className="block" style={{ color: '#C0573E' }}>
+                  a une histoire
+                </span>
+                <span className="block">Nous l&rsquo;avons codée.</span>
+              </motion.h1>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.42, ease }}
-                className="mt-6 sm:mt-8 flex flex-wrap gap-3"
-              >
-                <Link
-                  href={'/patterns' as Route}
-                  className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl px-5 sm:px-7 py-3 sm:py-3.5 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5"
-                  style={{ background: '#C0573E', boxShadow: '4px 4px 0 rgba(192,87,62,.38),0 8px 24px rgba(192,87,62,.25)' }}
-                >
-                  <span
-                    className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full"
-                    aria-hidden
-                  />
-                  Explorer le système
-                  <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
-                </Link>
+              <div className="mt-8 sm:mt-10">
+                <div className="order-2 w-full lg:order-1 lg:col-span-1">
+                  <motion.p
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, delay: 0.34, ease }}
+                    className="text-[14px] leading-[1.7] sm:text-[15px] sm:leading-[1.8]"
+                    style={{ color: 'var(--hp-muted)' }}
+                  >
+                    <strong style={{ color: 'var(--hp-text)', fontWeight: 600 }}>
+                      312 artisans-conservateurs
+                    </strong>{' '}
+                    vérifient<sup className="avs-footnote-mark">04</sup> l&rsquo;origine, la
+                    symbolique et les droits d&rsquo;usage de chaque motif avant qu&rsquo;il ne
+                    devienne un token — prêt pour la production, sans compte requis.
+                  </motion.p>
 
-                <Link
-                  href={'/components' as Route}
-                  className="inline-flex items-center gap-2 rounded-xl px-5 sm:px-7 py-3 sm:py-3.5 text-sm font-semibold transition-all duration-200"
-                  style={{ border: '1px solid var(--hp-ghost-border)', color: 'var(--hp-ghost-text)' }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--hp-ghost-hover-b)';
-                    e.currentTarget.style.color = 'var(--hp-ghost-hover-t)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'var(--hp-ghost-border)';
-                    e.currentTarget.style.color = 'var(--hp-ghost-text)';
-                  }}
-                >
-                  <Command size={13} />
-                  Voir la documentation
-                </Link>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.5, ease }}
-                className="mt-6 sm:mt-7 flex items-center gap-3"
-              >
-                <div className="flex">
-                  {COMMUNITY_AVATARS.map(({ letter, bg }, i) => (
-                    <div
-                      key={letter}
-                      className="relative flex h-7 w-7 items-center justify-center overflow-hidden rounded-full font-display text-[11px] font-black text-white"
-                      style={{ background: bg, border: '2px solid var(--hp-bg)', marginLeft: i > 0 ? '-8px' : 0, zIndex: 5 - i }}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, delay: 0.42, ease }}
+                    className="mt-6 flex gap-3 sm:mt-8"
+                  >
+                    <Link
+                      href={'/patterns' as Route}
+                      className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl px-5 py-3 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 sm:px-7 sm:py-3.5"
+                      style={{
+                        background: '#C0573E',
+                        boxShadow: '4px 4px 0 rgba(192,87,62,.38),0 8px 24px rgba(192,87,62,.25)',
+                      }}
                     >
-                      {letter}
+                      <span
+                        className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full"
+                        aria-hidden
+                      />
+                      Explorer le système
+                      <ArrowRight
+                        size={14}
+                        className="transition-transform group-hover:translate-x-1"
+                      />
+                    </Link>
+
+                    <Link
+                      href={'/documentation' as Route}
+                      className="inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition-all duration-200 sm:px-7 sm:py-3.5"
+                      style={{
+                        border: '1px solid var(--hp-ghost-border)',
+                        color: 'var(--hp-ghost-text)',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--hp-ghost-hover-b)';
+                        e.currentTarget.style.color = 'var(--hp-ghost-hover-t)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--hp-ghost-border)';
+                        e.currentTarget.style.color = 'var(--hp-ghost-text)';
+                      }}
+                    >
+                      <Command size={13} />
+                      Voir la documentation
+                    </Link>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, delay: 0.5, ease }}
+                    className="mt-6 flex items-center gap-3 sm:mt-7"
+                  >
+                    <div className="flex">
+                      {COMMUNITY_AVATARS.map(({ letter, bg }, i) => (
+                        <div
+                          key={letter}
+                          className="font-display relative flex h-7 w-7 items-center justify-center overflow-hidden rounded-full text-[11px] font-black text-white"
+                          style={{
+                            background: bg,
+                            border: '2px solid var(--hp-bg)',
+                            marginLeft: i > 0 ? '-8px' : 0,
+                            zIndex: 5 - i,
+                          }}
+                        >
+                          {letter}
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                    <p className="text-[11px]" style={{ color: 'var(--hp-hint)' }}>
+                      <span style={{ color: 'var(--hp-muted)', fontWeight: 600 }}>
+                        +312 artisans
+                      </span>{' '}
+                      vérifient chaque motif
+                    </p>
+                  </motion.div>
                 </div>
-                <p className="text-[11px]" style={{ color: 'var(--hp-hint)' }}>
-                  <span style={{ color: 'var(--hp-muted)', fontWeight: 600 }}>+312 artisans</span> vérifient chaque motif
-                </p>
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.28, ease }}
+                className="grid grid-cols-2 sm:flex"
+                style={{ border: '1px solid var(--hp-border)', background: 'var(--hp-faint)' }}
+              >
+                {FOOTNOTES.map(({ index, value, label }, i) => (
+                  <div key={index} className="relative px-3 py-3 sm:px-4 sm:py-3">
+                    {i > 0 && i % 2 === 0 && (
+                      <div
+                        className="absolute top-[20%] left-0 hidden h-[60%] w-px sm:block"
+                        style={{ background: 'var(--hp-border)' }}
+                        aria-hidden
+                      />
+                    )}
+                    
+                    <p
+                      className="font-display mt-1 text-lg leading-none font-black sm:text-xl"
+                      style={{ color: 'var(--hp-text)' }}
+                    >
+                      {value}
+                    </p>
+                    <p
+                      className="tracking-widset mt-1 font-mono text-[8px] leading-tight uppercase sm:text-[9px]"
+                      style={{ color: 'var(--hp-hint)' }}
+                    >
+                      {label}
+                    </p>
+                  </div>
+                ))}
               </motion.div>
             </div>
 
-            {/* — Right: the live inspector, offset lower for editorial asymmetry — */}
-            <motion.div
-              initial={{ opacity: 0, x: 28 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.9, delay: 0.3, ease }}
-              className="relative lg:col-span-1 order-1 lg:order-2 lg:mt-0"
-            >
-              {/* floating verified badge - desktop only */}
+            <div className="w-[40%]">
               <motion.div
-                className="avs-chip-float-a absolute -top-4 sm:-top-6 left-2 sm:left-4 z-10 hidden lg:block"
-                style={reduceMotion ? undefined : { x: chipX, y: chipY }}
+                initial={{ opacity: 0, x: 28 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.9, delay: 0.3, ease }}
+                className="relative order-1 lg:order-2 lg:col-span-1 lg:mt-0"
               >
-                <FormatChip label="Provenance vérifiée" bg="rgba(74,103,65,.9)" />
-              </motion.div>
+                {/* floating verified badge - desktop only */}
+                <motion.div
+                  className="avs-chip-float-a absolute -top-4 left-2 z-10 hidden sm:-top-6 sm:left-4 lg:block"
+                  style={reduceMotion ? undefined : { x: chipX, y: chipY }}
+                >
+                  <FormatChip label="Provenance vérifiée" bg="rgba(74,103,65,.9)" />
+                </motion.div>
 
-              {/* floating format chips - desktop only */}
-              <motion.div
-                className="avs-chip-float-b absolute -right-2 sm:-right-3 top-6 sm:top-8 z-10 flex flex-col gap-1.5 hidden lg:flex"
-                style={reduceMotion ? undefined : { x: chipX, y: chipY }}
-              >
-                <FormatChip label="Tailwind" bg="rgba(42,74,107,.9)" />
-                <FormatChip label="Figma" bg="rgba(212,160,23,.9)" />
-              </motion.div>
+                {/* floating format chips - desktop only */}
+                <motion.div
+                  className="avs-chip-float-b absolute top-6 -right-2 z-10 flex hidden flex-col gap-1.5 sm:top-8 sm:-right-3 lg:flex"
+                  style={reduceMotion ? undefined : { x: chipX, y: chipY }}
+                >
+                  <FormatChip label="Tailwind" bg="rgba(42,74,107,.9)" />
+                  <FormatChip label="Figma" bg="rgba(212,160,23,.9)" />
+                </motion.div>
 
-              <PatternInspector
-                active={active!}
-                index={index}
-                onSelect={handleSelect}
-                paused={paused}
-                copiedHex={copiedHex}
-                onCopy={handleCopy}
-                reduceMotion={!!reduceMotion}
-              />
-            </motion.div>
+                <PatternInspector
+                  active={active!}
+                  index={index}
+                  onSelect={handleSelect}
+                  paused={paused}
+                  copiedHex={copiedHex}
+                  onCopy={handleCopy}
+                  reduceMotion={!!reduceMotion}
+                />
+              </motion.div>
+            </div>
           </div>
-            
+          {/* ══════════════════════════════════════════
+              Version mobile
+          ══════════════════════════════════════════ */}
+        </div>
+        <div className="flex md:hidden">
+          <motion.div
+            style={{ opacity: heroOpacity, y: heroTranslate }}
+            className="relative flex min-h-screen flex-col"
+          >
+            {/* ══════════════════════════════════════════
+              HEADLINE — full width, editorial, footnoted
+          ══════════════════════════════════════════ */}
+            <div className="mx-auto w-full max-w-7xl px-4 pt-12 sm:px-6 sm:pt-14 lg:px-8">
+              <motion.h1
+                id="hero-title"
+                initial={{ opacity: 0, y: 28 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.75, delay: 0.1, ease }}
+                className="font-display leading-[.92] font-black tracking-[-0.03em]"
+                style={{ fontSize: 'clamp(2rem,8vw,5rem)', color: 'var(--hp-text)' }}
+              >
+                <span className="block">Chaque motif</span>
+                <span className="block" style={{ color: '#C0573E' }}>
+                  a une histoire
+                </span>
+                <span className="block">Nous l&rsquo;avons codée.</span>
+              </motion.h1>
 
-            {/* footnote strip — the "receipts" for the claim above */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7, delay: 0.28, ease }}
-              className="grid grid-cols-2 sm:flex"
-              style={{ border: '1px solid var(--hp-border)', background: 'var(--hp-faint)' }}
-            >
-              {FOOTNOTES.map(({ mark, value, label }, i) => (
-                <div key={mark} className="relative px-3 sm:px-4 py-3 sm:py-3">
-                  {i > 0 && i % 2 === 0 && (
-                    <div className="absolute top-[20%] left-0 hidden h-[60%] w-px sm:block" style={{ background: 'var(--hp-border)' }} aria-hidden />
-                  )}
-                  <p className="font-mono text-[8px] sm:text-[9px]" style={{ color: '#C0573E' }}>{mark}</p>
-                  <p className="mt-1 font-display text-lg sm:text-xl font-black leading-none" style={{ color: 'var(--hp-text)' }}>{value}</p>
-                  <p className="mt-1 font-mono text-[8px] sm:text-[9px] uppercase leading-tight tracking-widset" style={{ color: 'var(--hp-hint)' }}>{label}</p>
+              {/* ══════════════════════════════════════════
+              ASYMMETRIC ROW — copy left, live system right
+          ══════════════════════════════════════════ */}
+              <div className="mt-8 grid grid-cols-1 gap-8 sm:mt-10 lg:grid-cols-2 lg:gap-12">
+                {/* — Left: explanation, CTAs, social proof — */}
+                <div className="order-2 lg:order-1 lg:col-span-1">
+                  <motion.p
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, delay: 0.34, ease }}
+                    className="max-w-md text-[14px] leading-[1.7] sm:text-[15px] sm:leading-[1.8]"
+                    style={{ color: 'var(--hp-muted)' }}
+                  >
+                    <strong style={{ color: 'var(--hp-text)', fontWeight: 600 }}>
+                      312 artisans-conservateurs
+                    </strong>{' '}
+                    vérifient<sup className="avs-footnote-mark">04</sup> l&rsquo;origine, la
+                    symbolique et les droits d&rsquo;usage de chaque motif avant qu&rsquo;il ne
+                    devienne un token — prêt pour la production, sans compte requis.
+                  </motion.p>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, delay: 0.42, ease }}
+                    className="mt-6 flex flex-wrap gap-3 sm:mt-8"
+                  >
+                    <Link
+                      href={'/patterns' as Route}
+                      className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl px-5 py-3 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-0.5 sm:px-7 sm:py-3.5"
+                      style={{
+                        background: '#C0573E',
+                        boxShadow: '4px 4px 0 rgba(192,87,62,.38),0 8px 24px rgba(192,87,62,.25)',
+                      }}
+                    >
+                      <span
+                        className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full"
+                        aria-hidden
+                      />
+                      Explorer le système
+                      <ArrowRight
+                        size={14}
+                        className="transition-transform group-hover:translate-x-1"
+                      />
+                    </Link>
+
+                    <Link
+                      href={'/components' as Route}
+                      className="inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition-all duration-200 sm:px-7 sm:py-3.5"
+                      style={{
+                        border: '1px solid var(--hp-ghost-border)',
+                        color: 'var(--hp-ghost-text)',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--hp-ghost-hover-b)';
+                        e.currentTarget.style.color = 'var(--hp-ghost-hover-t)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.borderColor = 'var(--hp-ghost-border)';
+                        e.currentTarget.style.color = 'var(--hp-ghost-text)';
+                      }}
+                    >
+                      <Command size={13} />
+                      Voir la documentation
+                    </Link>
+                  </motion.div>
+
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7, delay: 0.5, ease }}
+                    className="mt-6 flex items-center gap-3 sm:mt-7"
+                  >
+                    <div className="flex">
+                      {COMMUNITY_AVATARS.map(({ letter, bg }, i) => (
+                        <div
+                          key={letter}
+                          className="font-display relative flex h-7 w-7 items-center justify-center overflow-hidden rounded-full text-[11px] font-black text-white"
+                          style={{
+                            background: bg,
+                            border: '2px solid var(--hp-bg)',
+                            marginLeft: i > 0 ? '-8px' : 0,
+                            zIndex: 5 - i,
+                          }}
+                        >
+                          {letter}
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-[11px]" style={{ color: 'var(--hp-hint)' }}>
+                      <span style={{ color: 'var(--hp-muted)', fontWeight: 600 }}>
+                        +312 artisans
+                      </span>{' '}
+                      vérifient chaque motif
+                    </p>
+                  </motion.div>
                 </div>
-              ))}
-            </motion.div>
-          </div>
 
-          
+                {/* — Right: the live inspector, offset lower for editorial asymmetry — */}
+                <motion.div
+                  initial={{ opacity: 0, x: 28 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.9, delay: 0.3, ease }}
+                  className="relative order-1 lg:order-2 lg:col-span-1 lg:mt-0"
+                >
+                  {/* floating verified badge - desktop only */}
+                  <motion.div
+                    className="avs-chip-float-a absolute -top-4 left-2 z-10 hidden sm:-top-6 sm:left-4 lg:block"
+                    style={reduceMotion ? undefined : { x: chipX, y: chipY }}
+                  >
+                    <FormatChip label="Provenance vérifiée" bg="rgba(74,103,65,.9)" />
+                  </motion.div>
 
-          
-        </motion.div>
+                  {/* floating format chips - desktop only */}
+                  <motion.div
+                    className="avs-chip-float-b absolute top-6 -right-2 z-10 flex hidden flex-col gap-1.5 sm:top-8 sm:-right-3 lg:flex"
+                    style={reduceMotion ? undefined : { x: chipX, y: chipY }}
+                  >
+                    <FormatChip label="Tailwind" bg="rgba(42,74,107,.9)" />
+                    <FormatChip label="Figma" bg="rgba(212,160,23,.9)" />
+                  </motion.div>
+
+                  <PatternInspector
+                    active={active!}
+                    index={index}
+                    onSelect={handleSelect}
+                    paused={paused}
+                    copiedHex={copiedHex}
+                    onCopy={handleCopy}
+                    reduceMotion={!!reduceMotion}
+                  />
+                </motion.div>
+              </div>
+
+              {/* footnote strip — the "receipts" for the claim above */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.7, delay: 0.28, ease }}
+                className="grid grid-cols-2 sm:flex"
+                style={{ border: '1px solid var(--hp-border)', background: 'var(--hp-faint)' }}
+              >
+                {FOOTNOTES.map(({ index, value, label }, i) => (
+                  <div key={index} className="relative px-3 py-3 sm:px-4 sm:py-3">
+                    {i > 0 && i % 2 === 0 && (
+                      <div
+                        className="absolute top-[20%] left-0 hidden h-[60%] w-px sm:block"
+                        style={{ background: 'var(--hp-border)' }}
+                        aria-hidden
+                      />
+                    )}
+                    
+                    <p
+                      className="font-display mt-1 text-lg leading-none font-black sm:text-xl"
+                      style={{ color: 'var(--hp-text)' }}
+                    >
+                      {value}
+                    </p>
+                    <p
+                      className="tracking-widset mt-1 font-mono text-[8px] leading-tight uppercase sm:text-[9px]"
+                      style={{ color: 'var(--hp-hint)' }}
+                    >
+                      {label}
+                    </p>
+                  </div>
+                ))}
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
       </section>
     </>
   );

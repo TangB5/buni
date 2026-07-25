@@ -127,14 +127,16 @@ function KpiCard({ label, value, icon: Icon, color, patternCss, delay }: KpiCard
 // ─────────────────────────────────────────────────────────────────────────────
 
 const ROLE_CONFIG = {
+  super_admin: { label: 'Super Admin',  icon: ShieldAlert, color: 'avs-kente'  },
   admin:       { label: 'Admin',        icon: ShieldAlert, color: 'avs-kente'  },
   curator:     { label: 'Curateur',     icon: ShieldCheck, color: 'avs-indigo' },
-  contributor: { label: 'Contributeur', icon: Shield,      color: 'avs-earth'  },
+  contributor: { label: 'Curateur',     icon: ShieldCheck, color: 'avs-indigo' },
   viewer:      { label: 'Visiteur',     icon: Shield,      color: 'avs-accent' },
 } as const;
 
 function RoleBadge({ role }: { role: string }) {
-  const cfg = ROLE_CONFIG[role as keyof typeof ROLE_CONFIG] ?? ROLE_CONFIG.viewer;
+  const normalizedRole = role?.toLowerCase() || 'viewer';
+  const cfg = ROLE_CONFIG[normalizedRole as keyof typeof ROLE_CONFIG] ?? ROLE_CONFIG.viewer;
   const Icon = cfg.icon;
   return (
     <span
@@ -177,7 +179,7 @@ function Avatar({ name, email }: { name?: string | null; email: string }) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function UsersManagementPage() {
-  const { user: currentUser } = useAuth();
+  const { user: currentUser, isAdmin } = useAuth();
   const qc = useQueryClient();
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState<string>('all');
@@ -190,7 +192,12 @@ export default function UsersManagementPage() {
 
   const updateRoleMutation = useMutation({
     mutationFn: ({ userId, role }: { userId: string; role: string }) => userService.updateUserRole(userId, role),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['users'] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['users'] });
+    },
+    onError: (error) => {
+      console.error('Erreur lors de la mise à jour du rôle:', error);
+    },
   });
 
   const toggleVerificationMutation = useMutation({
@@ -202,14 +209,17 @@ export default function UsersManagementPage() {
     const matchesSearch =
       user.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesRole = roleFilter === 'all' || user.role === roleFilter;
+    const userRole = user.role?.toLowerCase() || 'viewer';
+    const matchesRole = roleFilter === 'all' || 
+      (roleFilter === 'contributor' && (userRole === 'curator' || userRole === 'contributor')) ||
+      userRole === roleFilter;
     return matchesSearch && matchesRole;
   });
 
   const stats = {
     total: users.length,
     verified: users.filter((u) => u.verified).length,
-    admins: users.filter((u) => u.role.toLowerCase() === 'admin').length,
+    admins: users.filter((u) => u.role.toLowerCase() === 'admin' || u.role.toLowerCase() === 'super_admin').length,
     newThisMonth: users.filter((u) => {
       const createdAt = new Date(u.createdAt);
       const now = new Date();
@@ -228,7 +238,7 @@ export default function UsersManagementPage() {
 
   const role = currentUser.role.toLowerCase();
 
-  if (role !== 'admin') {
+  if (role !== 'admin' && role !== 'super_admin') {
     return (
       <div className="flex min-h-[400px] items-center justify-center px-4">
         <div className="text-center">
@@ -347,9 +357,10 @@ export default function UsersManagementPage() {
                 className="rounded-xl border border-avs-accent/12 bg-avs-secondary px-3.5 py-2.5 text-sm font-medium text-avs-accent outline-none transition-all focus:border-avs-primary/40 focus:ring-2 focus:ring-avs-primary/10"
               >
                 <option value="all">Tous les rôles</option>
+                <option value="super_admin">Super Admin</option>
                 <option value="admin">Admin</option>
                 <option value="curator">Curateur</option>
-                <option value="contributor">Contributeur</option>
+                <option value="contributor">Curateur</option>
                 <option value="viewer">Visiteur</option>
               </select>
             </div>
@@ -399,10 +410,10 @@ export default function UsersManagementPage() {
                 <table className="w-full min-w-[720px]">
                   <thead className="border-b border-avs-accent/9 bg-avs-accent/[0.02]">
                     <tr>
-                      {['Utilisateur', 'Rôle', 'Statut', 'Membre depuis', ''].map((h, i) => (
+                      {['Utilisateur', 'Statut', 'Membre depuis', 'Rôle'].map((h, i) => (
                         <th
                           key={h || i}
-                          className={`px-5 py-3.5 font-mono text-[9px] font-bold uppercase tracking-wider text-avs-accent/40 ${i === 4 ? 'text-right' : 'text-left'}`}
+                          className={`px-5 py-3.5 font-mono text-[9px] font-bold uppercase tracking-wider text-avs-accent/40 ${i === 3 ? 'text-right' : 'text-left'}`}
                         >
                           {h}
                         </th>
@@ -427,7 +438,6 @@ export default function UsersManagementPage() {
                             </div>
                           </div>
                         </td>
-                        <td className="px-5 py-3.5"><RoleBadge role={user.role} /></td>
                         <td className="px-5 py-3.5"><VerifiedBadge verified={user.verified} /></td>
                         <td className="px-5 py-3.5">
                           <div className="flex items-center gap-1.5 whitespace-nowrap text-xs text-avs-accent/45">
@@ -435,16 +445,15 @@ export default function UsersManagementPage() {
                             {new Date(user.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
                           </div>
                         </td>
-                        <td className="px-5 py-3.5">
+                        <td className="px-5 py-3.5 text-right">
                           <div className="flex items-center justify-end gap-2">
                             <select
-                              value={user.role}
+                              value={user.role?.toLowerCase() || 'viewer'}
                               onChange={(e) => updateRoleMutation.mutate({ userId: user.id, role: e.target.value })}
                               disabled={user.id === currentUser.id || updateRoleMutation.isPending}
                               className="rounded-lg border border-avs-accent/12 bg-avs-secondary px-2.5 py-2 text-xs font-medium text-avs-accent outline-none transition-all focus:border-avs-primary/40 focus:ring-2 focus:ring-avs-primary/10 disabled:cursor-not-allowed disabled:opacity-40"
                             >
                               <option value="viewer">Visiteur</option>
-                              <option value="contributor">Contributeur</option>
                               <option value="curator">Curateur</option>
                               <option value="admin">Admin</option>
                             </select>
@@ -491,7 +500,7 @@ export default function UsersManagementPage() {
                       <p className="truncate text-xs text-avs-accent/45">{user.email}</p>
                     </div>
                   </div>
-                  <div className="shrink-0"><RoleBadge role={user.role} /></div>
+                  <div className="shrink-0"><VerifiedBadge verified={user.verified} /></div>
                 </div>
 
                 <div className="mb-4 flex items-center gap-1.5 text-xs text-avs-accent/45">
@@ -499,32 +508,28 @@ export default function UsersManagementPage() {
                   Membre depuis {new Date(user.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
                 </div>
 
-                <div className="flex flex-wrap items-center justify-between gap-2 border-t border-avs-accent/8 pt-4">
-                  <VerifiedBadge verified={user.verified} />
-                  <div className="flex items-center gap-2">
-                    <select
-                      value={user.role}
-                      onChange={(e) => updateRoleMutation.mutate({ userId: user.id, role: e.target.value })}
-                      disabled={user.id === currentUser.id || updateRoleMutation.isPending}
-                      className="rounded-lg border border-avs-accent/12 bg-avs-secondary px-2.5 py-2 text-xs font-medium text-avs-accent outline-none transition-all focus:border-avs-primary/40 focus:ring-2 focus:ring-avs-primary/10 disabled:cursor-not-allowed disabled:opacity-40"
-                    >
-                      <option value="viewer">Visiteur</option>
-                      <option value="contributor">Contributeur</option>
-                      <option value="curator">Curateur</option>
-                      <option value="admin">Admin</option>
-                    </select>
-                    <button
-                      onClick={() => toggleVerificationMutation.mutate({ userId: user.id, verified: !user.verified })}
-                      disabled={toggleVerificationMutation.isPending}
-                      className={`whitespace-nowrap rounded-lg px-3 py-2 text-xs font-semibold transition-all disabled:opacity-40 ${
-                        user.verified
-                          ? 'border border-avs-golden/25 bg-avs-golden/10 text-avs-golden hover:bg-avs-golden/15'
-                          : 'border border-avs-ndop/25 bg-avs-ndop/10 text-avs-ndop hover:bg-avs-ndop/15'
-                      }`}
-                    >
-                      {user.verified ? 'Révoquer' : 'Vérifier'}
-                    </button>
-                  </div>
+                <div className="flex items-center justify-end gap-2 border-t border-avs-accent/8 pt-4">
+                  <select
+                    value={user.role?.toLowerCase() || 'viewer'}
+                    onChange={(e) => updateRoleMutation.mutate({ userId: user.id, role: e.target.value })}
+                    disabled={user.id === currentUser.id || updateRoleMutation.isPending}
+                    className="rounded-lg border border-avs-accent/12 bg-avs-secondary px-2.5 py-2 text-xs font-medium text-avs-accent outline-none transition-all focus:border-avs-primary/40 focus:ring-2 focus:ring-avs-primary/10 disabled:cursor-not-allowed disabled:opacity-40"
+                  >
+                    <option value="viewer">Visiteur</option>
+                    <option value="curator">Curateur</option>
+                    <option value="admin">Admin</option>
+                  </select>
+                  <button
+                    onClick={() => toggleVerificationMutation.mutate({ userId: user.id, verified: !user.verified })}
+                    disabled={toggleVerificationMutation.isPending}
+                    className={`whitespace-nowrap rounded-lg px-3 py-2 text-xs font-semibold transition-all disabled:opacity-40 ${
+                      user.verified
+                        ? 'border border-avs-golden/25 bg-avs-golden/10 text-avs-golden hover:bg-avs-golden/15'
+                        : 'border border-avs-ndop/25 bg-avs-ndop/10 text-avs-ndop hover:bg-avs-ndop/15'
+                    }`}
+                  >
+                    {user.verified ? 'Révoquer' : 'Vérifier'}
+                  </button>
                 </div>
               </motion.div>
             ))}

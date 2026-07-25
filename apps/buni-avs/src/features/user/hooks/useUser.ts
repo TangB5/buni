@@ -1,6 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { getProfileUseCase } from '../usecases/get-profile.usecase';
+import { updateProfileUseCase } from '../usecases/update-profile.usecase';
+import { becomeCuratorUseCase } from '../usecases/become-curator.usecase';
+import { getStatsUseCase } from '../usecases/get-stats.usecase';
+import { getPatternsUseCase } from '../usecases/get-patterns.usecase';
+import { getActivityUseCase } from '../usecases/get-activity.usecase';
 import { userService } from '../services/user.service';
-import type { UserProfile, UserStats, UserPattern, UserActivity, UpdateProfileData } from '../types/user.types';
+import type { User, UserStats, UserPattern, UserActivity, UpdateProfileForm, BecomeCuratorForm } from '../types';
 
 export const userKeys = {
   all: ['user'] as const,
@@ -13,7 +19,7 @@ export const userKeys = {
 export function useProfile() {
   return useQuery({
     queryKey: userKeys.profile(),
-    queryFn: () => userService.getProfile(),
+    queryFn: () => getProfileUseCase(),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
@@ -21,7 +27,7 @@ export function useProfile() {
 export function useStats() {
   return useQuery({
     queryKey: userKeys.stats(),
-    queryFn: () => userService.getStats(),
+    queryFn: () => getStatsUseCase(),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
@@ -29,7 +35,7 @@ export function useStats() {
 export function usePatterns(limit: number = 5) {
   return useQuery({
     queryKey: [...userKeys.patterns(), limit],
-    queryFn: () => userService.getPatterns(limit),
+    queryFn: () => getPatternsUseCase(limit),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
@@ -37,7 +43,7 @@ export function usePatterns(limit: number = 5) {
 export function useActivity(limit: number = 6) {
   return useQuery({
     queryKey: [...userKeys.activity(), limit],
-    queryFn: () => userService.getActivity(limit),
+    queryFn: () => getActivityUseCase(limit),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
@@ -46,7 +52,7 @@ export function useUpdateProfile() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: UpdateProfileData) => userService.updateProfile(data),
+    mutationFn: (data: UpdateProfileForm) => updateProfileUseCase(data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: userKeys.profile() });
     },
@@ -71,6 +77,17 @@ export function useDeleteAccount() {
     mutationFn: () => userService.deleteAccount(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: userKeys.all });
+    },
+  });
+}
+
+export function useBecomeCurator() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: BecomeCuratorForm) => becomeCuratorUseCase(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: userKeys.profile() });
     },
   });
 }

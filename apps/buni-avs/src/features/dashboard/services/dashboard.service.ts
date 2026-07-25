@@ -29,6 +29,7 @@ export interface UserPattern {
   status: 'published' | 'draft' | 'review';
   viewCount: number;
   downloadCount: number;
+  slug?: string;
 }
 
 class DashboardService {
@@ -63,6 +64,7 @@ class DashboardService {
         status: p.status,
         viewCount: p.views || 0,
         downloadCount: p.downloads || 0,
+        slug: p.slug,
       }));
     } catch (error) {
       console.error('Failed to fetch patterns:', error);
@@ -76,6 +78,34 @@ class DashboardService {
       return response.data || [];
     } catch (error) {
       console.error('Failed to fetch activity:', error);
+      return [];
+    }
+  }
+
+  async getGlobalRecentPatterns(limit: number = 5): Promise<UserPattern[]> {
+    try {
+      const response = await get<{ success: boolean; data: any[] }>(`/api/v1/patterns/recent/global?limit=${limit}`);
+      return (response.data || []).map((p: any) => ({
+        id: p.id,
+        name: p.name,
+        type: p.type,
+        status: p.status?.toLowerCase() as 'published' | 'draft' | 'review',
+        viewCount: p.views || 0,
+        downloadCount: p.downloads || 0,
+        slug: p.slug,
+      }));
+    } catch (error) {
+      console.error('Failed to fetch global recent patterns:', error);
+      return [];
+    }
+  }
+
+  async getGlobalActivity(limit: number = 6): Promise<DashboardActivity[]> {
+    try {
+      const response = await get<{ success: boolean; data: DashboardActivity[] }>(`/api/v1/activities/global?perPage=${limit}`);
+      return response.data || [];
+    } catch (error) {
+      console.error('Failed to fetch global activity:', error);
       return [];
     }
   }

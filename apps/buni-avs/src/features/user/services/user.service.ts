@@ -1,39 +1,33 @@
 import { apiClient } from "@buni/api";
-import type {
-  UserProfile,
-  UserStats,
-  UserPattern,
-  UserActivity,
-  UpdateProfileData,
-} from '../types/user.types';
+import type { UserDto, UserStatsDto, UserPatternDto, UserActivityDto } from '../types';
 
 class UserService {
   private readonly baseUrl = '/api/v1/users';
 
-  async getProfile(): Promise<UserProfile> {
-    const response = await apiClient.get<{ data: UserProfile; success: boolean }>(`${this.baseUrl}/me`);
+  async getProfile(): Promise<UserDto> {
+    const response = await apiClient.get<{ data: UserDto; success: boolean }>(`${this.baseUrl}/me`);
     return response.data.data;
   }
 
-  async updateProfile(data: UpdateProfileData): Promise<UserProfile> {
-    const response = await apiClient.patch<{ data: UserProfile; success: boolean }>(`${this.baseUrl}/me`, data);
+  async updateProfile(data: any): Promise<UserDto> {
+    const response = await apiClient.patch<{ data: UserDto; success: boolean }>(`${this.baseUrl}/me`, data);
     return response.data.data;
   }
 
-  async getStats(): Promise<UserStats> {
-    const response = await apiClient.get<{ data: UserStats; success: boolean }>(`${this.baseUrl}/me/stats`);
+  async getStats(): Promise<UserStatsDto> {
+    const response = await apiClient.get<{ data: UserStatsDto; success: boolean }>(`${this.baseUrl}/me/stats`);
     return response.data.data;
   }
 
-  async getPatterns(limit: number = 5): Promise<UserPattern[]> {
-    const response = await apiClient.get<{ data: UserPattern[]; success: boolean }>(`${this.baseUrl}/me/patterns`, {
+  async getPatterns(limit: number = 5): Promise<UserPatternDto[]> {
+    const response = await apiClient.get<{ data: UserPatternDto[]; success: boolean }>(`${this.baseUrl}/me/patterns`, {
       params: { limit },
     });
     return response.data.data;
   }
 
-  async getActivity(limit: number = 6): Promise<UserActivity[]> {
-    const response = await apiClient.get<{ data: UserActivity[]; success: boolean }>(`${this.baseUrl}/me/activity`, {
+  async getActivity(limit: number = 6): Promise<UserActivityDto[]> {
+    const response = await apiClient.get<{ data: UserActivityDto[]; success: boolean }>(`${this.baseUrl}/me/activity`, {
       params: { limit },
     });
     return response.data.data;
@@ -43,11 +37,11 @@ class UserService {
     await apiClient.delete(`${this.baseUrl}/me`);
   }
 
-  async uploadAvatar(file: File): Promise<UserProfile> {
+  async uploadAvatar(file: File): Promise<UserDto> {
     const formData = new FormData();
     formData.append('avatar', file);
 
-    const response = await apiClient.post<{ data: UserProfile; success: boolean }>(
+    const response = await apiClient.post<{ data: UserDto; success: boolean }>(
       `${this.baseUrl}/me/avatar`,
       formData,
       {
@@ -60,50 +54,44 @@ class UserService {
   }
 
   // Admin methods
-  async getAllUsers(params?: { search?: string; role?: string }): Promise<UserProfile[]> {
-    const response = await apiClient.get<{ data: UserProfile[]; success: boolean }>(`${this.baseUrl}/admin`, {
+  async getAllUsers(params?: { search?: string; role?: string }): Promise<UserDto[]> {
+    const response = await apiClient.get<{ data: UserDto[]; success: boolean }>(`${this.baseUrl}/admin`, {
       params,
     });
     return response.data.data;
   }
 
-  async updateUserRole(userId: string, role: string): Promise<UserProfile> {
-    const response = await apiClient.patch<{ data: UserProfile; success: boolean }>(
+  async updateUserRole(userId: string, role: string): Promise<UserDto> {
+    const response = await apiClient.patch<{ data: UserDto; success: boolean }>(
       `${this.baseUrl}/admin/${userId}/role`,
       { role }
     );
     return response.data.data;
   }
 
-  async toggleUserVerification(userId: string, verified: boolean): Promise<UserProfile> {
-    const response = await apiClient.patch<{ data: UserProfile; success: boolean }>(
+  async toggleUserVerification(userId: string, verified: boolean): Promise<UserDto> {
+    const response = await apiClient.patch<{ data: UserDto; success: boolean }>(
       `${this.baseUrl}/admin/${userId}/verification`,
       { verified }
     );
     return response.data.data;
   }
 
-  async getPlatformStats(): Promise<{
-    totalUsers: number;
-    totalPatterns: number;
-    totalDownloads: number;
-    totalViews: number;
-    verifiedUsers: number;
-    admins: number;
-    curators: number;
-    contributors: number;
-    patternsByStatus: {
-      published: number;
-      draft: number;
-      review: number;
-    };
-  }> {
+  async getPlatformStats(): Promise<any> {
     const response = await apiClient.get<{ data: any; success: boolean }>(`${this.baseUrl}/admin/stats`);
     return response.data.data;
   }
 
   async getContributors(): Promise<any[]> {
     const response = await apiClient.get<{ data: any; success: boolean }>(`${this.baseUrl}/contributors`);
+    return response.data.data;
+  }
+
+  async becomeCurator(data: any): Promise<UserDto> {
+    const response = await apiClient.post<{ data: UserDto; success: boolean }>(
+      `${this.baseUrl}/become-curator`,
+      data
+    );
     return response.data.data;
   }
 }

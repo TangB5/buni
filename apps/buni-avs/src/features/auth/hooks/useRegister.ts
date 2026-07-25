@@ -2,7 +2,8 @@
 
 import { useMutation } from '@tanstack/react-query';
 import { useAuthStore } from '@buni/auth';
-import type { RegisterDto } from '../types';
+import { RegisterSchema } from '../types';
+import { z } from 'zod';
 
 interface RegisterResponse {
   success: boolean;
@@ -15,11 +16,12 @@ export const useRegister = () => {
   const { setUser } = useAuthStore();
 
   const mutation = useMutation({
-    mutationFn: async (data: RegisterDto) => {
+    mutationFn: async (data: { name: string; email: string; password: string }) => {
+      const validatedData = RegisterSchema.parse(data);
       const res = await fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        body: JSON.stringify(validatedData),
         credentials: 'include',
       });
 

@@ -13,7 +13,6 @@ export function RegisterForm() {
     email: '',
     password: '',
     name: '',
-    role: 'viewer' as const,
   });
   const { add } = useToast();
 

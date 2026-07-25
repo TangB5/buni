@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Eye, EyeOff, AlertCircle, Check, ArrowRight, User, Mail, Lock, ChevronDown } from 'lucide-react';
+import { Eye, EyeOff, AlertCircle, Check, ArrowRight, User, Mail, Lock } from 'lucide-react';
 import { BuniLoader } from '@buni/ui';
 import { z } from 'zod';
 import { Route } from 'next';
@@ -14,8 +14,6 @@ import { useRegister } from '@/features/auth/hooks/useRegister';
 // VALIDATION
 // ─────────────────────────────────────────────────────────────────────────────
 
-const roles = ['viewer', 'contributor', 'curator', 'admin'] as const;
-
 const RegisterSchema = z.object({
   name:     z.string().min(2, 'Minimum 2 caractères'),
   email:    z.string().email('Email invalide'),
@@ -23,11 +21,12 @@ const RegisterSchema = z.object({
     .min(8, 'Minimum 8 caractères')
     .regex(/[A-Z]/, 'Une majuscule requise')
     .regex(/[0-9]/, 'Un chiffre requis'),
-  role: z.enum(roles, { message: 'Rôle invalide' }),
 });
 
 type RegisterForm = z.infer<typeof RegisterSchema>;
 type FieldErrors  = Partial<Record<keyof RegisterForm, string>>;
+
+// Le rôle sera automatiquement défini à 'viewer' par le backend
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MINIMAL STYLES — only what Tailwind can't express
@@ -36,27 +35,6 @@ type FieldErrors  = Partial<Record<keyof RegisterForm, string>>;
 const PAGE_STYLES = `
   ::placeholder { color: rgba(29,29,27,0.38) !important; opacity: 1; }
   .dark ::placeholder { color: rgba(236,232,225,0.32) !important; }
-
-  .role-select {
-    appearance: none;
-    -webkit-appearance: none;
-    background: var(--avs-secondary);
-    color: var(--avs-accent);
-    border: 1.5px solid rgba(29,29,27,0.16);
-    border-radius: 0.75rem;
-    width: 100%;
-    padding: 0.75rem 2.5rem 0.75rem 1rem;
-    font-size: 0.875rem;
-    outline: none;
-    transition: border-color 0.18s, box-shadow 0.18s;
-    cursor: pointer;
-    font-family: inherit;
-  }
-  .role-select:focus {
-    border-color: var(--avs-primary);
-    box-shadow: 0 0 0 3px rgba(192,87,62,0.10);
-  }
-  .role-select option { background: var(--avs-secondary); color: var(--avs-accent); }
 
   .oauth-btn {
     background: var(--avs-secondary);
@@ -72,18 +50,6 @@ const PAGE_STYLES = `
     background: rgba(192,87,62,0.08);
   }
 `;
-
-// ─────────────────────────────────────────────────────────────────────────────
-// DATA
-// ─────────────────────────────────────────────────────────────────────────────
-
-// accentHex kept for dynamic inline role badge bg/border — unknown at build time
-const ROLE_CONFIG: Record<typeof roles[number], { label: string; desc: string; accentHex: string }> = {
-  viewer:      { label: 'Visiteur',     desc: 'Accès lecture & téléchargement',      accentHex: '#2A4A6B' },
-  contributor: { label: 'Contributeur', desc: 'Soumission de motifs',                accentHex: '#4A6741' },
-  curator:     { label: 'Curateur',     desc: 'Validation & curation éditoriale',    accentHex: '#D4A017' },
-  admin:       { label: 'Admin',        desc: 'Accès complet & gestion des membres', accentHex: '#C0573E' },
-};
 
 const PERKS = [
   'Accès à 1 248 motifs haute résolution',
@@ -201,7 +167,7 @@ function Field({ id, label, error, children }: {
 export default function RegisterPage() {
   const { mutate, isPending, error } = useRegister();
 
-  const [form,    setForm]    = useState<RegisterForm>({ name: '', email: '', password: '', role: 'contributor' });
+  const [form,    setForm]    = useState<RegisterForm>({ name: '', email: '', password: '' });
   const [errors,  setErrors]  = useState<FieldErrors>({});
   const [showPwd, setShowPwd] = useState(false);
   const [focused, setFocused] = useState<string | null>(null);
@@ -224,10 +190,7 @@ export default function RegisterPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    mutate({
-      ...form,
-      role: form.role.toUpperCase() as any,
-    });
+    mutate(form);
   };
 
   // Input border/shadow driven by focus + error — dynamic, can't be Tailwind
@@ -253,7 +216,6 @@ export default function RegisterPage() {
     width:         '100%',
   });
 
-  const roleConf = ROLE_CONFIG[form.role];
 
   return (
     <>
@@ -457,41 +419,6 @@ export default function RegisterPage() {
                 <PasswordStrength pwd={form.password} />
               </Field>
 
-              {/* Role */}
-              <Field id="role" label="Rôle" error={errors.role}>
-                <div className="relative">
-                  <select
-                    id="role"
-                    value={form.role}
-                    onChange={(e) => setForm((f) => ({ ...f, role: e.target.value as RegisterForm['role'] }))}
-                    disabled={isPending}
-                    className="role-select"
-                    aria-describedby={errors.role ? 'role-error' : undefined}
-                  >
-                    {roles.map((r) => (
-                      <option key={r} value={r}>{ROLE_CONFIG[r].label} — {ROLE_CONFIG[r].desc}</option>
-                    ))}
-                  </select>
-                  <ChevronDown size={14} className="pointer-events-none absolute right-3.5 top-1/2 -translate-y-1/2 text-avs-accent/32" aria-hidden />
-                </div>
-
-                {/* Role badge — accentHex justified inline: dynamic per-role */}
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={form.role}
-                    initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.18, ease }}
-                    className="mt-2 inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5"
-                    style={{ background: `${roleConf.accentHex}12`, border: `1px solid ${roleConf.accentHex}28` }}
-                  >
-                    <span className="h-1.5 w-1.5 rounded-full" style={{ background: roleConf.accentHex }} aria-hidden />
-                    <span className="font-mono text-[9px] font-bold tracking-[0.16em] uppercase" style={{ color: roleConf.accentHex }}>
-                      {roleConf.label}
-                    </span>
-                    <span className="text-[10px] text-avs-accent/38">— {roleConf.desc}</span>
-                  </motion.div>
-                </AnimatePresence>
-              </Field>
 
               {/* Submit */}
               <button
