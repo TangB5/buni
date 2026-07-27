@@ -12,8 +12,26 @@ export function SegmentationFilters({
   onFilterChange: (type: FilterType, value: FilterValue) => void;
 }) {
   const regions = Array.from(new Set(combos.map((c) => c.region).filter((val): val is string => Boolean(val))));
-  const cultures = Array.from(new Set(combos.map((c) => c.culture).filter((val): val is string => Boolean(val))));
-  const themes = Array.from(new Set(combos.map((c) => c.theme).filter((val): val is string => Boolean(val))));
+  
+  // Filter cultures based on selected region
+  const cultures = Array.from(
+    new Set(
+      combos
+        .filter((c) => !activeFilters.region || c.region === activeFilters.region)
+        .map((c) => c.culture)
+        .filter((val): val is string => Boolean(val))
+    )
+  );
+  
+  // Filter themes based on selected region and culture
+  const themes = Array.from(
+    new Set(
+      combos
+        .filter((c) => (!activeFilters.region || c.region === activeFilters.region) && (!activeFilters.culture || c.culture === activeFilters.culture))
+        .map((c) => c.theme)
+        .filter((val): val is string => Boolean(val))
+    )
+  );
 
   const FilterGroup = ({
     type,
@@ -24,7 +42,7 @@ export function SegmentationFilters({
     options: string[];
     label: string;
   }) => (
-    <label className="flex flex-col gap-2 text-sm text-avs-accent/70 sm:min-w-45">
+    <label className="flex flex-col gap-2 text-sm text-avs-accent/70 flex-1 min-w-[140px]">
       <span className="font-mono text-[9px] font-bold uppercase tracking-[0.22em] text-avs-accent/40">
         {label}
       </span>

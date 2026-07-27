@@ -861,7 +861,7 @@ export function Header() {
               <div className="hidden items-center gap-2 sm:flex">
                 <Link
                   href={'/auth/login' as Route}
-                  className="text-avs-accent/55 hover:text-avs-accent hover:bg-avs-accent/4 rounded-xl px-4 py-2 text-[13px] font-semibold transition-all duration-200"
+                  className="border-2 border-[var(--color-light-border)] px-4 py-2 text-[13px] font-semibold text-[var(--color-light-text)] transition-all duration-200 hover:border-[var(--color-avs-primary)] hover:text-[var(--color-avs-primary)] rounded-xl"
                 >
                   Connexion
                 </Link>
@@ -940,10 +940,10 @@ export function Header() {
                   <MobileSection title="Communauté">
                     {[
                       {
-                        href: '/contributors',
-                        icon: Award,
-                        label: 'Classement',
-                        isActive: pathname === '/contributors',
+                        href: '/patterns',
+                        icon: Layers,
+                        label: 'Motif culturel',
+                        isActive: pathname === '/patterns',
                       },
                       {
                         href: '/colors',
@@ -952,14 +952,45 @@ export function Header() {
                         isActive: pathname === '/colors',
                       },
                       {
-                        href: '/patterns',
-                        icon: Users,
-                        label: 'Motif culturel',
-                        isActive: pathname === '/patterns',
+                        href: '/contributors',
+                        icon: Award,
+                        label: 'Classement',
+                        isActive: pathname === '/contributors',
                       },
                     ].map((item) => (
                       <MobileLink key={item.href} {...item} onClick={() => setMobileOpen(false)} />
                     ))}
+                  </MobileSection>
+
+                  <MobileSection title="Navigation">
+                    <MobileLink
+                      href="/templates"
+                      icon={Box}
+                      label="Templates"
+                      available={false}
+                      onUnavailableClick={() => handleClick({ href: '/templates', label: 'Templates', available: false, modal: NAV_ITEMS.find(i => i.label === 'Templates')?.modal })}
+                    />
+                    <MobileLink
+                      href="/documentation"
+                      icon={BookOpen}
+                      label="Documentation"
+                      available={true}
+                      onClick={() => setMobileOpen(false)}
+                    />
+                    <MobileLink
+                      href="/about"
+                      icon={User}
+                      label="À propos"
+                      isActive={pathname === '/about'}
+                      onClick={() => setMobileOpen(false)}
+                    />
+                    <MobileLink
+                      href="/contact"
+                      icon={Settings}
+                      label="Nous contacter"
+                      isActive={pathname === '/contact'}
+                      onClick={() => setMobileOpen(false)}
+                    />
                   </MobileSection>
 
                   <MobileSection title="Outils">
@@ -972,21 +1003,6 @@ export function Header() {
                         onClick={() => setMobileOpen(false)}
                       />
                     )}
-                    <MobileLink
-                      href="/templates"
-                      icon={Box}
-                      label="Templates"
-                      available={false}
-                      onUnavailableClick={() => handleClick({ href: '/templates', label: 'Templates', available: false, modal: NAV_ITEMS.find(i => i.label === 'Templates')?.modal })}
-                    />
-                    <MobileLink
-                      href="/documentation"
-                      icon={BookOpen}
-                      label="Documentation"
-                      available={false}
-                      onUnavailableClick={() => handleClick({ href: '/documentation', label: 'Docs', available: true, modal: NAV_ITEMS.find(i => i.label === 'Docs')?.modal })}
-                    />
-
                     <button
                       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                       className="text-avs-accent/55 hover:bg-avs-accent/4 hover:text-avs-accent flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-all duration-150"

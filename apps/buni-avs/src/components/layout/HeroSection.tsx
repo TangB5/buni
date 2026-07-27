@@ -519,19 +519,7 @@ export function HeroSection() {
 
                     <Link
                       href={'/documentation' as Route}
-                      className="inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition-all duration-200 sm:px-7 sm:py-3.5"
-                      style={{
-                        border: '1px solid var(--hp-ghost-border)',
-                        color: 'var(--hp-ghost-text)',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = 'var(--hp-ghost-hover-b)';
-                        e.currentTarget.style.color = 'var(--hp-ghost-hover-t)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor = 'var(--hp-ghost-border)';
-                        e.currentTarget.style.color = 'var(--hp-ghost-text)';
-                      }}
+                      className="inline-flex items-center gap-2 rounded-xl border-2 border-[var(--color-light-border)] px-5 py-3 text-sm font-semibold text-[var(--color-light-text)] transition-all duration-200 hover:border-[var(--color-avs-primary)] hover:text-[var(--color-avs-primary)] sm:px-7 sm:py-3.5"
                     >
                       <Command size={13} />
                       Voir la documentation
@@ -716,19 +704,7 @@ export function HeroSection() {
 
                     <Link
                       href={'/components' as Route}
-                      className="inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-semibold transition-all duration-200 sm:px-7 sm:py-3.5"
-                      style={{
-                        border: '1px solid var(--hp-ghost-border)',
-                        color: 'var(--hp-ghost-text)',
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.borderColor = 'var(--hp-ghost-hover-b)';
-                        e.currentTarget.style.color = 'var(--hp-ghost-hover-t)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.borderColor = 'var(--hp-ghost-border)';
-                        e.currentTarget.style.color = 'var(--hp-ghost-text)';
-                      }}
+                      className="inline-flex items-center gap-2 rounded-xl border-2 border-[var(--color-light-border)] px-5 py-3 text-sm font-semibold text-[var(--color-light-text)] transition-all duration-200 hover:border-[var(--color-avs-primary)] hover:text-[var(--color-avs-primary)] sm:px-7 sm:py-3.5"
                     >
                       <Command size={13} />
                       Voir la documentation

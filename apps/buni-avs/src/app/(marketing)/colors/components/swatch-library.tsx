@@ -23,7 +23,7 @@ export function SwatchLibrary({ onPick }: { onPick: (hex: string, name: string) 
           </button>
         ))}
       </div>
-      <div className="grid grid-cols-6 gap-1.5">
+      <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 gap-1.5">
         {active.swatches.map((s) => (
           <button
             key={s.hex}

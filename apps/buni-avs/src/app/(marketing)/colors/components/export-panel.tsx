@@ -42,7 +42,7 @@ export function ExportPanel({ combo }: { combo: Combo }) {
         </div>
       </div>
 
-      <div className="relative">
+      <div className="relative w-full">
         <div className="flex items-center justify-between px-4 py-2.5 bg-avs-accent/90">
           <div className="flex gap-1.5" aria-hidden>
             <span className="h-2.5 w-2.5 rounded-full bg-red-500/65" />
@@ -56,7 +56,7 @@ export function ExportPanel({ combo }: { combo: Combo }) {
             {copied ? <><Check size={9} className="text-emerald-400" /> Copié</> : <><Copy size={9} /> Copier</>}
           </button>
         </div>
-        <pre className="overflow-x-auto px-5 py-5 font-mono text-[11px] leading-[1.8] bg-avs-accent text-avs-secondary/80">
+        <pre className="overflow-x-auto w-full px-5 py-5 font-mono text-[11px] leading-[1.8] bg-avs-accent text-avs-secondary/80">
           <code>{code}</code>
         </pre>
       </div>

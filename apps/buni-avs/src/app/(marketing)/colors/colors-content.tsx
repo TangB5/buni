@@ -53,18 +53,27 @@ export function ColorsContent() {
   };
 
   const handleFilterChange = (type: FilterType, value: FilterValue) => {
-    setActiveFilters((prev) => ({
-      ...prev,
-      [type]: value || undefined,
-    }));
+    setActiveFilters((prev) => {
+      const newFilters = { ...prev, [type]: value || undefined };
+      
+      // Reset dependent filters when a parent filter changes
+      if (type === 'region') {
+        delete newFilters.culture;
+        delete newFilters.theme;
+      } else if (type === 'culture') {
+        delete newFilters.theme;
+      }
+      
+      return newFilters;
+    });
     setActiveCombo('');
   };
 
   return (
-    <div className="min-h-screen bg-avs-secondary-dark">
+    <div className="min-h-screen w-full bg-avs-secondary-dark overflow-x-hidden">
 
       {/* ══ HERO ══════════════════════════════════════════════════════════ */}
-      <div className="relative overflow-hidden px-4 py-16 sm:px-6 lg:px-8 border-b border-avs-accent/9">
+      <div className="relative w-full overflow-hidden px-4 py-16 sm:px-6 lg:px-8 border-b border-avs-accent/9">
         <div className="avs-pattern-wax-dakar absolute inset-0 opacity-[0.04] dark:opacity-[0.06]" aria-hidden />
         <div
           className="pointer-events-none absolute inset-0"
@@ -72,8 +81,8 @@ export function ColorsContent() {
           aria-hidden
         />
 
-        <div className="relative mx-auto max-w-7xl">
-          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+        <div className="relative mx-auto w-full max-w-7xl">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between w-full">
             <div>
               <div className="mb-4 flex items-center gap-3">
                 <div className="h-px w-8 bg-avs-primary" aria-hidden />
@@ -91,7 +100,7 @@ export function ColorsContent() {
               </p>
             </div>
 
-            <div className="flex shrink-0 gap-3">
+            <div className="flex shrink-0 gap-3 overflow-x-auto pb-2 sm:pb-0 sm:overflow-visible">
               {[
                 { v: `${allCombos.length}`,                                         l: 'combos'   },
                 { v: `${allCombos.reduce((a, c) => a + c.colors.length, 0)}`,       l: 'couleurs' },
@@ -99,7 +108,7 @@ export function ColorsContent() {
                 { v: `${new Set(allCombos.map(c => c.culture).filter(Boolean)).size}`, l: 'cultures' },
                 { v: '3',                                                            l: 'formats'  },
               ].map(({ v, l }) => (
-                <div key={l} className="rounded-xl px-4 py-3 text-center bg-avs-secondary border border-avs-accent/9">
+                <div key={l} className="rounded-xl px-4 py-3 text-center bg-avs-secondary border border-avs-accent/9 shrink-0">
                   <p className="font-display text-2xl font-black leading-none text-avs-accent" style={{ letterSpacing: '-0.02em' }}>{v}</p>
                   <p className="mt-1 font-mono text-[9px] tracking-wide uppercase text-avs-accent/35">{l}</p>
                 </div>
@@ -110,7 +119,7 @@ export function ColorsContent() {
       </div>
 
       {/* ══ COMBO PICKER ══════════════════════════════════════════════════ */}
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         {/* ══ SEGMENTATION FILTERS ══════════════════════════════════════ */}
         <div className="mb-8">
           <p className="mb-3 font-mono text-[9px] font-bold tracking-[0.22em] uppercase text-avs-accent/40">
@@ -137,7 +146,7 @@ export function ColorsContent() {
               </button>
             )}
           </div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 w-full">
             {filteredCombos.map((c) => {
               const active = c.id === activeCombo && !isBuilderOpen;
               return (
@@ -205,7 +214,7 @@ export function ColorsContent() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            className="grid gap-8 lg:grid-cols-[1fr_320px]"
+            className="grid gap-8 grid-cols-1 lg:grid-cols-[1fr_auto] xl:grid-cols-[1fr_380px]"
           >
             {/* Gauche — swatches + bannière */}
             <div>
