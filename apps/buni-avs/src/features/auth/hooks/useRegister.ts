@@ -16,12 +16,14 @@ export const useRegister = () => {
   const { setUser } = useAuthStore();
 
   const mutation = useMutation({
-    mutationFn: async (data: { name: string; email: string; password: string }) => {
-      const validatedData = RegisterSchema.parse(data);
+    mutationFn: async (data: { name: string; email: string; password: string; confirmPassword: string }) => {
+      // Remove confirmPassword before sending to backend
+      const { confirmPassword, ...registerData } = data;
+      const validatedData = RegisterSchema.parse(registerData);
       const response = await authService.register(validatedData);
 
       if (!response.success) {
-        throw new Error('Registration failed');
+        throw new Error(response.message || 'Registration failed');
       }
 
       return response as RegisterResponse;
@@ -34,7 +36,7 @@ export const useRegister = () => {
   return {
     mutate: mutation.mutate,
     isPending: mutation.isPending,
-    error: mutation.error?.message,
+    error: mutation.error,
     isSuccess: mutation.isSuccess,
   };
 };

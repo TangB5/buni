@@ -5,6 +5,7 @@ import type { LoginDto, RegisterDto, User } from '../types';
 
 export interface AuthResponse {
   success: boolean;
+  message?: string;
   data: {
     user: User;
     tokens: {

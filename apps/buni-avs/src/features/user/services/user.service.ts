@@ -1,5 +1,6 @@
 import { apiClient } from "@buni/api";
 import type { UserDto, UserStatsDto, UserPatternDto, UserActivityDto } from '../types';
+import type { UserSettings, UpdateSettingsDto, ChangePasswordDto } from '../types/dto/settings.dto';
 
 class UserService {
   private readonly baseUrl = '/api/v1/users';
@@ -93,6 +94,47 @@ class UserService {
       data
     );
     return response.data.data;
+  }
+
+  // Settings methods
+  async getSettings(): Promise<UserSettings> {
+    const response = await apiClient.get<{ data: UserSettings; success: boolean }>(`${this.baseUrl}/me/settings`);
+    return response.data.data;
+  }
+
+  async updateSettings(data: UpdateSettingsDto): Promise<UserDto> {
+    const response = await apiClient.patch<{ data: UserDto; success: boolean }>(`${this.baseUrl}/me/settings`, data);
+    return response.data.data;
+  }
+
+  async changePassword(data: ChangePasswordDto): Promise<void> {
+    await apiClient.post<{ data: null; success: boolean }>(`${this.baseUrl}/me/change-password`, data);
+  }
+
+  // Session methods
+  async getSessions(): Promise<Array<{
+    id: string;
+    device: string;
+    location: string;
+    lastSeen: string;
+    current: boolean;
+  }>> {
+    const response = await apiClient.get<{ data: Array<{
+      id: string;
+      device: string;
+      location: string;
+      lastSeen: string;
+      current: boolean;
+    }>; success: boolean }>(`${this.baseUrl}/me/sessions`);
+    return response.data.data;
+  }
+
+  async revokeSession(sessionId: string): Promise<void> {
+    await apiClient.delete(`${this.baseUrl}/me/sessions/${sessionId}`);
+  }
+
+  async revokeAllSessions(currentSessionId?: string): Promise<void> {
+    await apiClient.post(`${this.baseUrl}/me/sessions/revoke-all`, { currentSessionId });
   }
 }
 

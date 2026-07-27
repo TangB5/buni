@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Eye, EyeOff, Mail, AlertCircle, ArrowRight } from 'lucide-react';
 import { BuniLoader } from '@buni/ui';
+import { useToast } from '@buni/ui';
 import { z } from 'zod';
 import { useAuthStore } from '@buni/auth';
 import { Route } from 'next';
@@ -147,6 +148,7 @@ function Field({
 export default function LoginPage() {
   const user = useAuthStore((s) => s.user);
   const { mutate, isPending, error } = useLogin();
+  const { add } = useToast();
 
   const [form, setForm] = useState<LoginForm>({ email: '', password: '' });
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -189,7 +191,22 @@ export default function LoginPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    mutate(form);
+    mutate(form, {
+      onSuccess: () => {
+        add({
+          variant: 'success',
+          title: 'Connexion réussie',
+          message: 'Bienvenue ! Vous êtes maintenant connecté.'
+        });
+      },
+      onError: (err) => {
+        add({
+          variant: 'error',
+          title: 'Échec de la connexion',
+          message: err?.message || 'Email ou mot de passe incorrect. Veuillez réessayer.'
+        });
+      }
+    });
   };
 
   // Input border/shadow driven by focus + error state — dynamic, can't be Tailwind

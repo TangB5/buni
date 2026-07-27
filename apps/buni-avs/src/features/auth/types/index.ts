@@ -40,7 +40,7 @@ export const RegisterSchemaInput = z.object({
 
 export const RegisterSchema = RegisterSchemaInput.transform((data) => ({
   ...data,
-  role: 'viewer' as const,
+  role: 'VIEWER' as const,
 }));
 
 export type RegisterDto = z.infer<typeof RegisterSchemaInput>;

@@ -4,8 +4,8 @@ import { useGoogleLogin } from "@react-oauth/google";
 
 export function useGoogleAuth() {
   return useGoogleLogin({
-    onSuccess(token) {
-      console.log(token);
+    onSuccess(tokenResponse) {
+      console.log("Google token received:", tokenResponse.access_token);
     },
 
     onError() {

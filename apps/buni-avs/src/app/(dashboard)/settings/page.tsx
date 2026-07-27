@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Bell, Lock, Trash2, Eye, EyeOff, Save,
@@ -8,6 +8,8 @@ import {
   AlertCircle, Monitor, Smartphone, ArrowRight,
 } from 'lucide-react';
 import { z } from 'zod';
+import { userService } from '@/features/user/services/user.service';
+import type { UserSettings } from '@/features/user/types/dto/settings.dto';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TYPES & CONFIG
@@ -174,6 +176,8 @@ function PwdField({ id, label, value, onChange, show, onToggle, error, autoCompl
 
 export default function SettingsPage() {
   const [section, setSection] = useState<Section>('notifications');
+  const [loading, setLoading] = useState(true);
+  const [savingSettings, setSavingSettings] = useState(false);
 
   const [notifs, setNotifs] = useState({
     emailComments: true, emailDownloads: false, emailValidations: true, emailNewsletter: false,
@@ -185,18 +189,114 @@ export default function SettingsPage() {
   const [pwdErrors, setPwdErrors] = useState<Record<string, string>>({});
   const [savingPwd, setSavingPwd] = useState(false);
   const [pwdSaved,  setPwdSaved]  = useState(false);
+  const [pwdError, setPwdError] = useState<string | null>(null);
   const [twoFA, setTwoFA] = useState(false);
 
-  const sessions = [
-    { id: '1', device: 'Chrome · macOS',     icon: Monitor,    location: 'Yaoundé, CM', current: true,  lastSeen: 'Maintenant'       },
-    { id: '2', device: 'Firefox · Ubuntu',   icon: Monitor,    location: 'Douala, CM',  current: false, lastSeen: 'Il y a 2j'        },
-    { id: '3', device: 'Safari · iPhone 15', icon: Smartphone, location: 'Paris, FR',   current: false, lastSeen: 'Il y a 1 semaine' },
-  ];
+  const [sessions, setSessions] = useState<Array<{
+    id: string;
+    device: string;
+    location: string;
+    lastSeen: string;
+    current: boolean;
+  }>>([]);
+  const [loadingSessions, setLoadingSessions] = useState(false);
 
   const [privacy, setPrivacy] = useState({
     profilePublic: true, showEmail: false, showLocation: true,
     allowIndexing: true, shareAnalytics: false,
   });
+
+  // Load settings on mount
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const settings = await userService.getSettings();
+
+        setNotifs(settings.notifications);
+        setPrivacy(settings.privacy);
+        setTwoFA(settings.security.twoFAEnabled);
+      } catch (error) {
+        console.error('Failed to load settings:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadSettings();
+  }, []);
+
+  // Load sessions when security section is active
+  useEffect(() => {
+    if (section === 'security') {
+      const loadSessions = async () => {
+        setLoadingSessions(true);
+        try {
+          const sessionData = await userService.getSessions();
+          setSessions(sessionData);
+        } catch (error) {
+          console.error('Failed to load sessions:', error);
+        } finally {
+          setLoadingSessions(false);
+        }
+      };
+
+      loadSessions();
+    }
+  }, [section]);
+
+  // Update notification settings
+  const updateNotificationSetting = async (key: keyof typeof notifs, value: boolean) => {
+    setNotifs(prev => ({ ...prev, [key]: value }));
+    
+    try {
+      await userService.updateSettings({ 
+        [key]: value,
+      });
+    } catch (error) {
+      console.error('Failed to update notification setting:', error);
+      // Revert on error
+      setNotifs(prev => ({ ...prev, [key]: !value }));
+    }
+  };
+
+  // Update privacy settings
+  const updatePrivacySetting = async (key: keyof typeof privacy, value: boolean) => {
+    setPrivacy(prev => ({ ...prev, [key]: value }));
+    
+    try {
+      await userService.updateSettings({
+        [key]: value,
+      });
+    } catch (error) {
+      console.error('Failed to update privacy setting:', error);
+      // Revert on error
+      setPrivacy(prev => ({ ...prev, [key]: !value }));
+    }
+  };
+
+  // Update 2FA setting
+  const update2FASetting = async (value: boolean) => {
+    setTwoFA(value);
+
+    try {
+      await userService.updateSettings({ twoFAEnabled: value });
+    } catch (error) {
+      console.error('Failed to update 2FA setting:', error);
+      setTwoFA(!value);
+    }
+  };
+
+  // Revoke a specific session
+  const handleRevokeSession = async (sessionId: string) => {
+    try {
+      await userService.revokeSession(sessionId);
+      // Refresh sessions
+      const sessionData = await userService.getSessions();
+      setSessions(sessionData);
+    } catch (error) {
+      console.error('Failed to revoke session:', error);
+    }
+  };
 
   const changePwd = async () => {
     const r = PwdSchema.safeParse(pwd);
@@ -207,12 +307,22 @@ export default function SettingsPage() {
       return;
     }
     setPwdErrors({});
+    setPwdError(null);
     setSavingPwd(true);
-    await new Promise((res) => setTimeout(res, 1200));
-    setSavingPwd(false);
-    setPwdSaved(true);
-    setPwd({ current: '', next: '', confirm: '' });
-    setTimeout(() => setPwdSaved(false), 3000);
+    
+    try {
+      await userService.changePassword({
+        currentPassword: pwd.current,
+        newPassword: pwd.next,
+      });
+      setSavingPwd(false);
+      setPwdSaved(true);
+      setPwd({ current: '', next: '', confirm: '' });
+      setTimeout(() => setPwdSaved(false), 3000);
+    } catch (error: any) {
+      setSavingPwd(false);
+      setPwdError(error.message || 'Failed to change password');
+    }
   };
 
   return (
@@ -303,25 +413,25 @@ export default function SettingsPage() {
                   <>
                     <SectionCard title="Notifications Email" icon={Bell}>
                       <SettingRow label="Commentaires" desc="Recevoir un email quand quelqu'un commente vos motifs">
-                        <Toggle checked={notifs.emailComments}    onChange={(v) => setNotifs((n) => ({ ...n, emailComments: v }))}    label="Notifications commentaires" />
+                        <Toggle checked={notifs.emailComments}    onChange={(v) => updateNotificationSetting('emailComments', v)}    label="Notifications commentaires" />
                       </SettingRow>
                       <SettingRow label="Téléchargements" desc="Notifier à chaque téléchargement d'un de vos motifs">
-                        <Toggle checked={notifs.emailDownloads}   onChange={(v) => setNotifs((n) => ({ ...n, emailDownloads: v }))}   label="Notifications téléchargements" />
+                        <Toggle checked={notifs.emailDownloads}   onChange={(v) => updateNotificationSetting('emailDownloads', v)}   label="Notifications téléchargements" />
                       </SettingRow>
                       <SettingRow label="Validations" desc="Recevoir le résultat des révisions de vos soumissions">
-                        <Toggle checked={notifs.emailValidations} onChange={(v) => setNotifs((n) => ({ ...n, emailValidations: v }))} label="Notifications validations" />
+                        <Toggle checked={notifs.emailValidations} onChange={(v) => updateNotificationSetting('emailValidations', v)} label="Notifications validations" />
                       </SettingRow>
                       <SettingRow label="Newsletter AVS" desc="Actualités, nouvelles fonctionnalités et événements">
-                        <Toggle checked={notifs.emailNewsletter}  onChange={(v) => setNotifs((n) => ({ ...n, emailNewsletter: v }))}  label="Newsletter" />
+                        <Toggle checked={notifs.emailNewsletter}  onChange={(v) => updateNotificationSetting('emailNewsletter', v)}  label="Newsletter" />
                       </SettingRow>
                     </SectionCard>
 
                     <SectionCard title="Notifications Navigateur" icon={Monitor}>
                       <SettingRow label="Push actives" desc="Autoriser les notifications push du navigateur">
-                        <Toggle checked={notifs.pushBrowser}     onChange={(v) => setNotifs((n) => ({ ...n, pushBrowser: v }))}     label="Push navigateur" />
+                        <Toggle checked={notifs.pushBrowser}     onChange={(v) => updateNotificationSetting('pushBrowser', v)}     label="Push navigateur" />
                       </SettingRow>
                       <SettingRow label="Résultats de révision" desc="Notification immédiate à la validation d'un motif">
-                        <Toggle checked={notifs.pushValidations} onChange={(v) => setNotifs((n) => ({ ...n, pushValidations: v }))} label="Push validations" />
+                        <Toggle checked={notifs.pushValidations} onChange={(v) => updateNotificationSetting('pushValidations', v)} label="Push validations" />
                       </SettingRow>
                     </SectionCard>
                   </>
@@ -335,6 +445,18 @@ export default function SettingsPage() {
                         <PwdField id="current" label="Mot de passe actuel"  value={pwd.current} onChange={(v) => setPwd((p) => ({ ...p, current: v }))} show={showPwd.current} onToggle={() => setShowPwd((s) => ({ ...s, current: !s.current }))} error={pwdErrors['current']} autoComplete="current-password" />
                         <PwdField id="next"    label="Nouveau mot de passe" value={pwd.next}    onChange={(v) => setPwd((p) => ({ ...p, next: v }))}    show={showPwd.next}    onToggle={() => setShowPwd((s) => ({ ...s, next: !s.next }))}       error={pwdErrors['next']}    autoComplete="new-password" />
                         <PwdField id="confirm" label="Confirmer le nouveau" value={pwd.confirm} onChange={(v) => setPwd((p) => ({ ...p, confirm: v }))} show={showPwd.confirm} onToggle={() => setShowPwd((s) => ({ ...s, confirm: !s.confirm }))} error={pwdErrors['confirm']} autoComplete="new-password" />
+
+                        <AnimatePresence>
+                          {pwdError && (
+                            <motion.p
+                              initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }}
+                              role="alert"
+                              className="flex items-center gap-1.5 overflow-hidden text-xs font-medium text-red-500"
+                            >
+                              <AlertCircle size={11} aria-hidden /> {pwdError}
+                            </motion.p>
+                          )}
+                        </AnimatePresence>
 
                         <button
                           onClick={() => void changePwd()}
@@ -365,7 +487,7 @@ export default function SettingsPage() {
                         <p className="text-sm leading-relaxed text-avs-accent/55">
                           Ajoutez une couche de sécurité via une application TOTP (Google Authenticator, Authy).
                         </p>
-                        <Toggle checked={twoFA} onChange={setTwoFA} label="Activer 2FA" />
+                        <Toggle checked={twoFA} onChange={update2FASetting} label="Activer 2FA" />
                       </div>
                       <AnimatePresence>
                         {twoFA && (
@@ -388,16 +510,21 @@ export default function SettingsPage() {
                     {/* Active sessions */}
                     <SectionCard title="Sessions actives" icon={Monitor}>
                       <div className="space-y-2.5">
-                        {sessions.map((s) => {
-                          const DevIcon = s.icon;
-                          return (
+                        {loadingSessions ? (
+                          <div className="flex items-center justify-center py-8">
+                            <Loader2 size={20} className="animate-spin text-avs-accent/35" />
+                          </div>
+                        ) : sessions.length === 0 ? (
+                          <p className="text-sm text-avs-accent/35 py-4 text-center">Aucune session active</p>
+                        ) : (
+                          sessions.map((s) => (
                             <div
                               key={s.id}
                               className={`flex items-center justify-between rounded-xl p-3.5 border ${s.current ? 'bg-avs-primary/8 border-avs-primary/20' : 'bg-avs-accent/4 border-avs-accent/9'}`}
                             >
                               <div className="flex items-center gap-3">
                                 <div className={`flex h-8 w-8 items-center justify-center rounded-lg ${s.current ? 'bg-avs-primary/20 text-avs-primary' : 'bg-avs-accent/9 text-avs-accent/35'}`}>
-                                  <DevIcon size={14} aria-hidden />
+                                  <Monitor size={14} aria-hidden />
                                 </div>
                                 <div>
                                   <div className="flex items-center gap-2">
@@ -412,13 +539,16 @@ export default function SettingsPage() {
                                 </div>
                               </div>
                               {!s.current && (
-                                <button className="text-xs font-semibold text-red-500/70 hover:text-red-500 transition-colors">
+                                <button
+                                  onClick={() => void handleRevokeSession(s.id)}
+                                  className="text-xs font-semibold text-red-500/70 hover:text-red-500 transition-colors"
+                                >
                                   Révoquer
                                 </button>
                               )}
                             </div>
-                          );
-                        })}
+                          ))
+                        )}
                       </div>
                     </SectionCard>
                   </>
@@ -429,22 +559,22 @@ export default function SettingsPage() {
                   <>
                     <SectionCard title="Profil Public" icon={Globe}>
                       <SettingRow label="Profil visible" desc="Votre profil est accessible à tous les utilisateurs AVS">
-                        <Toggle checked={privacy.profilePublic}  onChange={(v) => setPrivacy((p) => ({ ...p, profilePublic: v }))}  label="Profil public" />
+                        <Toggle checked={privacy.profilePublic}  onChange={(v) => updatePrivacySetting('profilePublic', v)}  label="Profil public" />
                       </SettingRow>
                       <SettingRow label="Afficher l'email" desc="Visible sur votre page profil publique">
-                        <Toggle checked={privacy.showEmail}      onChange={(v) => setPrivacy((p) => ({ ...p, showEmail: v }))}      label="Email public" />
+                        <Toggle checked={privacy.showEmail}      onChange={(v) => updatePrivacySetting('showEmail', v)}      label="Email public" />
                       </SettingRow>
                       <SettingRow label="Afficher la localisation" desc="Pays et ville sur votre profil">
-                        <Toggle checked={privacy.showLocation}   onChange={(v) => setPrivacy((p) => ({ ...p, showLocation: v }))}   label="Localisation publique" />
+                        <Toggle checked={privacy.showLocation}   onChange={(v) => updatePrivacySetting('showLocation', v)}   label="Localisation publique" />
                       </SettingRow>
                     </SectionCard>
 
                     <SectionCard title="Données & Analytique" icon={Shield} accentClass="text-avs-ndop" iconBgClass="bg-avs-ndop/10">
                       <SettingRow label="Indexation par les moteurs de recherche" desc="Votre profil peut apparaître dans Google/Bing">
-                        <Toggle checked={privacy.allowIndexing}  onChange={(v) => setPrivacy((p) => ({ ...p, allowIndexing: v }))}  label="Indexation SEO" />
+                        <Toggle checked={privacy.allowIndexing}  onChange={(v) => updatePrivacySetting('allowIndexing', v)}  label="Indexation SEO" />
                       </SettingRow>
                       <SettingRow label="Partager les données d'usage" desc="Aidez-nous à améliorer AVS de façon anonyme">
-                        <Toggle checked={privacy.shareAnalytics} onChange={(v) => setPrivacy((p) => ({ ...p, shareAnalytics: v }))} label="Analytique anonyme" />
+                        <Toggle checked={privacy.shareAnalytics} onChange={(v) => updatePrivacySetting('shareAnalytics', v)} label="Analytique anonyme" />
                       </SettingRow>
                       <div className="pt-2">
                         <button className="flex items-center gap-1.5 text-xs font-semibold text-avs-primary underline-offset-3 hover:underline">

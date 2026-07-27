@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+const GITHUB_CLIENT_ID = process.env.NEXT_PUBLIC_GITHUB_CLIENT_ID;
+const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 
 export async function POST(request: NextRequest) {
   try {
@@ -9,12 +11,12 @@ export async function POST(request: NextRequest) {
 
     if (!accessToken) {
       return NextResponse.json(
-        { success: false, message: 'Token Google manquant' },
+        { success: false, message: 'Token GitHub manquant' },
         { status: 400 },
       );
     }
 
-    const response = await fetch(`${BACKEND_URL}/api/v1/auth/google`, {
+    const response = await fetch(`${BACKEND_URL}/api/v1/auth/github`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -26,7 +28,7 @@ export async function POST(request: NextRequest) {
 
     if (!response.ok) {
       return NextResponse.json(
-        { success: false, message: data.message || 'Erreur lors de la connexion Google' },
+        { success: false, message: data.message || 'Erreur lors de la connexion GitHub' },
         { status: response.status },
       );
     }
