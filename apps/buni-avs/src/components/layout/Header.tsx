@@ -54,6 +54,7 @@ type BaseNavItem = {
 
   available?: boolean;
   modal?: ModalData;
+  hidden?: boolean;
 };
 
 type NavChild = BaseNavItem & {
@@ -91,6 +92,7 @@ const NAV_ITEMS: NavItem[] = [
   {
     label: 'Produits',
     isMegaMenu: true,
+    hidden: true,
     children: [
       {
         href: '#',
@@ -183,7 +185,7 @@ const NAV_ITEMS: NavItem[] = [
       {
         href: '/patterns',
         label: 'Motif culturel',
-        icon: 'pi pi-palette',
+        icon: 'pi pi-star',
         desc: 'Découvrez des motifs riches et documentés',
         available: true,
       },
@@ -208,6 +210,7 @@ const NAV_ITEMS: NavItem[] = [
     href: '/templates',
     label: 'Templates',
     available: false,
+    hidden: true,
     modal: {
       title: 'Templates bientôt disponibles',
       description: 'Des centaines de modèles prêts à personnaliser.',
@@ -482,7 +485,7 @@ function NavDropdown({ item, onPremiumClick, onItemClick }: NavDropdownProps) {
                       <div className="bg-avs-primary/8 text-avs-primary mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-xl">
                         <i className={child.icon} />
                       </div>
-                      <div className="min-w-0">
+                      <div className="min-w-0 text-left">
                         <p
                           className={`text-sm font-semibold ${isActive ? 'text-avs-primary' : 'text-avs-accent'}`}
                         >
@@ -832,7 +835,7 @@ export function Header() {
             aria-label="Navigation principale"
             className="hidden flex-1 items-center justify-center gap-0.5 lg:flex"
           >
-            {NAV_ITEMS.map((item) => (
+            {NAV_ITEMS.filter((item) => !item.hidden).map((item) => (
               <NavDropdown
                 key={item.label}
                 item={item}
@@ -921,7 +924,7 @@ export function Header() {
                 aria-label="Navigation mobile"
               >
                 <div className="max-h-[80vh] space-y-5 overflow-y-auto px-4 py-5">
-                  <MobileSection title="Produits">
+                  {/* <MobileSection title="Produits">
                     {[
                       { href: '#', label: 'Components', icon: Puzzle, desc: 'Bibliothèque UI' },
                       { href: '#', label: 'Drop', icon: ShoppingBag, desc: 'E-commerce' },
@@ -935,7 +938,7 @@ export function Header() {
                         onClick={() => setMobileOpen(false)}
                       />
                     ))}
-                  </MobileSection>
+                  </MobileSection> */}
 
                   <MobileSection title="Communauté">
                     {[
@@ -963,13 +966,13 @@ export function Header() {
                   </MobileSection>
 
                   <MobileSection title="Navigation">
-                    <MobileLink
+                    {/* <MobileLink
                       href="/templates"
                       icon={Box}
                       label="Templates"
                       available={false}
                       onUnavailableClick={() => handleClick({ href: '/templates', label: 'Templates', available: false, modal: NAV_ITEMS.find(i => i.label === 'Templates')?.modal })}
-                    />
+                    /> */}
                     <MobileLink
                       href="/documentation"
                       icon={BookOpen}
