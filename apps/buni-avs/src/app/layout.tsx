@@ -9,7 +9,7 @@ import './globals.css';
 import { AuthListener } from '../components/auth/AuthListener';
 import { AuthHydrator } from '../components/auth/AuthHydrator';
 import { ErrorBoundary } from '../components/feedback';
-import localFont from "next/font/local";
+import localFont from "next/font/local';
 
 export const dmSans = localFont({
   src: "../../public/fonts/DM_Sans/DMSans-Regular.ttf",

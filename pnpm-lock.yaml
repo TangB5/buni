@@ -219,6 +219,9 @@ importers:
       '@buni/config':
         specifier: workspace:*
         version: link:../../packages/config
+      '@buni/i18n':
+        specifier: workspace:*
+        version: link:../../packages/i18n
       '@buni/patterns':
         specifier: workspace:*
         version: link:../../packages/patterns

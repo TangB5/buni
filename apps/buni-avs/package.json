@@ -14,6 +14,7 @@
     "@buni/api": "workspace:*",
     "@buni/auth": "workspace:*",
     "@buni/config": "workspace:*",
+    "@buni/i18n": "workspace:*",
     "@buni/patterns": "workspace:*",
     "@buni/theme": "workspace:*",
     "@buni/tokens": "workspace:*",

@@ -32,6 +32,7 @@ import { twMerge } from 'tailwind-merge';
 import { useAuth, useLogout } from '@buni/auth';
 import { Comingsoon } from '@buni/ui';
 import { useTheme, ThemeToggle } from '@buni/theme';
+import { useTranslations } from '@buni/i18n';
 import { Route } from 'next';
 import { authService } from '../../features/auth/services/auth.service';
 
@@ -85,170 +86,172 @@ type NavDropdownProps = {
   onItemClick: (item: BaseNavItem) => void;
 };
 // ══════════════════════════════════════════════════════════════════════════════
-// navigation items
+// navigation items factory
 // ══════════════════════════════════════════════════════════════════════════════
 
-const NAV_ITEMS: NavItem[] = [
-  {
-    label: 'Produits',
-    isMegaMenu: true,
-    hidden: true,
-    children: [
-      {
-        href: '#',
-        label: 'Components',
-        icon: 'pi pi-box',
-        desc: 'Bibliothèque UI PrimeReact',
-        available: false,
-        modal: {
-          title: 'Components bientôt disponibles',
-          description:
-            'Une bibliothèque complète de composants UI inspirés des meilleures pratiques.',
-          details:
-            'Buttons, Cards, Forms, Tables, Modals, Charts et bien plus arriveront prochainement.',
+function getNavItems(t: any): NavItem[] {
+  return [
+    {
+      label: t('nav.products'),
+      isMegaMenu: true,
+      hidden: true,
+      children: [
+        {
+          href: '#',
+          label: 'Components',
           icon: 'pi pi-box',
+          desc: 'Bibliothèque UI PrimeReact',
+          available: false,
+          modal: {
+            title: 'Components bientôt disponibles',
+            description:
+              'Une bibliothèque complète de composants UI inspirés des meilleures pratiques.',
+            details:
+              'Buttons, Cards, Forms, Tables, Modals, Charts et bien plus arriveront prochainement.',
+            icon: 'pi pi-box',
+          },
         },
-      },
-      {
-        href: '#',
-        label: 'Drop',
-        icon: 'pi pi-shopping-bag',
-        desc: 'E-commerce artisans',
-        available: false,
-        modal: {
-          title: 'Drop arrive bientôt',
-          description: 'Notre marketplace mettra en relation artisans africains et acheteurs.',
-          details:
-            'Découvrez des créations authentiques, des éditions limitées et des collections exclusives.',
+        {
+          href: '#',
+          label: 'Drop',
           icon: 'pi pi-shopping-bag',
+          desc: 'E-commerce artisans',
+          available: false,
+          modal: {
+            title: 'Drop arrive bientôt',
+            description: 'Notre marketplace mettra en relation artisans africains et acheteurs.',
+            details:
+              'Découvrez des créations authentiques, des éditions limitées et des collections exclusives.',
+            icon: 'pi pi-shopping-bag',
+          },
         },
-      },
-      {
-        href: '#',
-        label: 'Behance',
-        icon: 'pi pi-image',
-        desc: 'Portfolios créatifs',
-        available: false,
-        modal: {
-          title: 'Behance AVS en préparation',
-          description: 'Exposez vos créations et découvrez celles de la communauté.',
-          details:
-            'Un espace dédié aux designers, illustrateurs, photographes et créateurs africains.',
+        {
+          href: '#',
+          label: 'Behance',
           icon: 'pi pi-image',
+          desc: 'Portfolios créatifs',
+          available: false,
+          modal: {
+            title: 'Behance AVS en préparation',
+            description: 'Exposez vos créations et découvrez celles de la communauté.',
+            details:
+              'Un espace dédié aux designers, illustrateurs, photographes et créateurs africains.',
+            icon: 'pi pi-image',
+          },
         },
-      },
-      {
-        href: '#',
-        label: 'Mode',
-        icon: 'pi pi-palette',
-        desc: 'Configurateur 3D',
-        available: false,
-        modal: {
-          title: 'Configurateur 3D bientôt disponible',
-          description: 'Visualisez vêtements, tissus et motifs en temps réel.',
-          details:
-            'Essayez des combinaisons de couleurs et de motifs directement sur des modèles 3D.',
+        {
+          href: '#',
+          label: 'Mode',
           icon: 'pi pi-palette',
+          desc: 'Configurateur 3D',
+          available: false,
+          modal: {
+            title: 'Configurateur 3D bientôt disponible',
+            description: 'Visualisez vêtements, tissus et motifs en temps réel.',
+            details:
+              'Essayez des combinaisons de couleurs et de motifs directement sur des modèles 3D.',
+            icon: 'pi pi-palette',
+          },
         },
-      },
-      {
-        href: '#',
-        label: 'Icons',
-        icon: 'pi pi-th-large',
-        desc: 'SVG africains',
-        available: false,
-        modal: {
-          title: 'Bibliothèque d’icônes en préparation',
-          description: "Des centaines d'icônes vectorielles inspirées des cultures africaines.",
-          details: 'Téléchargement en SVG, React, Figma et autres formats.',
+        {
+          href: '#',
+          label: 'Icons',
           icon: 'pi pi-th-large',
+          desc: 'SVG africains',
+          available: false,
+          modal: {
+            title: 'Bibliothèque d’icônes en préparation',
+            description: "Des centaines d'icônes vectorielles inspirées des cultures africaines.",
+            details: 'Téléchargement en SVG, React, Figma et autres formats.',
+            icon: 'pi pi-th-large',
+          },
         },
-      },
-    ],
+      ],
 
-    featured: {
-      title: "Envie d'accéder à l'ensemble de nos outils de création ?",
-      buttonText: "Obtenir l'accès premium",
-      href: '#premium',
+      featured: {
+        title: "Envie d'accéder à l'ensemble de nos outils de création ?",
+        buttonText: "Obtenir l'accès premium",
+        href: '#premium',
+      },
+
+      stats: [
+        { value: '5', label: 'Applications puissantes' },
+        { value: '100%', label: 'Africain & libre' },
+        { value: '∞', label: 'Possibilités créatives' },
+      ],
     },
 
-    stats: [
-      { value: '5', label: 'Applications puissantes' },
-      { value: '100%', label: 'Africain & libre' },
-      { value: '∞', label: 'Possibilités créatives' },
-    ],
-  },
-
-  {
-    label: 'Communauté',
-    children: [
-      {
-        href: '/patterns',
-        label: 'Motif culturel',
-        icon: 'pi pi-star',
-        desc: 'Découvrez des motifs riches et documentés',
-        available: true,
-      },
-      {
-        href: '/colors',
-        label: 'Palettes & Token',
-        icon: 'pi pi-palette',
-        desc: 'Découvrez les créateurs',
-        available: true,
-      },
-      {
-        href: '/contributors',
-        label: 'Classement',
-        icon: 'pi pi-trophy',
-        desc: 'Top contributeurs AVS',
-        available: true,
-      },
-    ],
-  },
-
-  {
-    href: '/templates',
-    label: 'Templates',
-    available: false,
-    hidden: true,
-    modal: {
-      title: 'Templates bientôt disponibles',
-      description: 'Des centaines de modèles prêts à personnaliser.',
-      details: 'Landing pages, dashboards, portfolios et interfaces modernes arriveront bientôt.',
-      icon: 'pi pi-file',
+    {
+      label: t('nav.community'),
+      children: [
+        {
+          href: '/patterns',
+          label: 'Motif culturel',
+          icon: 'pi pi-star',
+          desc: 'Découvrez des motifs riches et documentés',
+          available: true,
+        },
+        {
+          href: '/colors',
+          label: 'Palettes & Token',
+          icon: 'pi pi-palette',
+          desc: 'Découvrez les créateurs',
+          available: true,
+        },
+        {
+          href: '/contributors',
+          label: 'Classement',
+          icon: 'pi pi-trophy',
+          desc: 'Top contributeurs AVS',
+          available: true,
+        },
+      ],
     },
-  },
 
-  {
-    href: '/documentation',
-    label: 'Docs',
-    available: true,
-    modal: {
-      title: 'Documentation en cours de rédaction',
-      description: "Nous préparons une documentation complète d'AVS.",
-      details:
-        'Guides, API, composants, design tokens et exemples de code seront disponibles prochainement.',
-      icon: 'pi pi-book',
+    {
+      href: '/templates',
+      label: t('nav.templates'),
+      available: false,
+      hidden: true,
+      modal: {
+        title: 'Templates bientôt disponibles',
+        description: 'Des centaines de modèles prêts à personnaliser.',
+        details: 'Landing pages, dashboards, portfolios et interfaces modernes arriveront bientôt.',
+        icon: 'pi pi-file',
+      },
     },
-  },
 
-  {
-    href: '/about',
-    label: 'À propos',
-    available: true,
-  },
+    {
+      href: '/documentation',
+      label: t('nav.docs'),
+      available: true,
+      modal: {
+        title: 'Documentation en cours de rédaction',
+        description: "Nous préparons une documentation complète d'AVS.",
+        details:
+          'Guides, API, composants, design tokens et exemples de code seront disponibles prochainement.',
+        icon: 'pi pi-book',
+      },
+    },
 
-  {
-    href: '/contact',
-    label: 'Nous contacter',
-    available: true,
-  },
-];
+    {
+      href: '/about',
+      label: t('nav.about'),
+      available: true,
+    },
+
+    {
+      href: '/contact',
+      label: t('nav.contact'),
+      available: true,
+    },
+  ];
+}
 // ══════════════════════════════════════════════════════════════════════════════
 // PREMIUM MODAL
 // ══════════════════════════════════════════════════════════════════════════════
 
-function PremiumModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+function PremiumModal({ isOpen, onClose, t }: { isOpen: boolean; onClose: () => void; t: any }) {
   useEffect(() => {
     if (!isOpen) return;
     const handler = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
@@ -287,7 +290,7 @@ function PremiumModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
                 <button
                   onClick={onClose}
                   className="border-avs-accent/9 text-avs-accent/55 hover:text-avs-accent absolute top-5 right-5 flex h-8 w-8 items-center justify-center rounded-xl border transition-colors"
-                  aria-label="Fermer"
+                  aria-label={t('close')}
                 >
                   <X size={15} />
                 </button>
@@ -313,7 +316,7 @@ function PremiumModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => voi
                   onClick={onClose}
                   className="group text-avs-secondary bg-avs-primary shadow-avs-md hover:shadow-avs-lg flex w-full items-center justify-center gap-2 rounded-2xl px-6 py-3 text-sm font-bold transition-all duration-200 hover:-translate-y-0.5"
                 >
-                  Compris
+                  {t('confirm')}
                   <ArrowRight
                     size={14}
                     className="transition-transform group-hover:translate-x-0.5"
@@ -512,9 +515,13 @@ function NavDropdown({ item, onPremiumClick, onItemClick }: NavDropdownProps) {
 function UserMenu({
   user,
   onLogout,
+  navT,
+  authT,
 }: {
   user: { name: string; email: string; role: string };
   onLogout: () => Promise<void>;
+  navT: any;
+  authT: any;
 }) {
   const [open, setOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -528,9 +535,9 @@ function UserMenu({
   }, [open]);
 
   const menuItems = [
-    { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-    { href: '/profile', icon: User, label: 'Profil' },
-    { href: '/settings', icon: Settings, label: 'Paramètres' },
+    { href: '/dashboard', icon: LayoutDashboard, label: navT('dashboard') },
+    { href: '/profile', icon: User, label: navT('profile') },
+    { href: '/settings', icon: Settings, label: navT('settings') },
   ];
 
   return (
@@ -630,7 +637,7 @@ function UserMenu({
                   <LogOut size={14} />
                 </div>
                 <span className="font-medium">
-                  {isLoggingOut ? 'Déconnexion...' : 'Déconnexion'}
+                  {isLoggingOut ? authT('signingOut') : authT('logout')}
                 </span>
               </button>
             </div>
@@ -743,12 +750,18 @@ export function Header() {
   const { user, isAuthenticated, isHydrated } = useAuth();
   const storeLogout = useLogout();
   const { theme, setTheme } = useTheme();
+  const t = useTranslations('common');
+  const navT = useTranslations('nav');
+  const authT = useTranslations('auth');
+  const themeT = useTranslations('theme');
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [premiumOpen, setPremiumOpen] = useState(false);
   const [, startTransition] = useTransition();
   const [comingSoon, setComingSoon] = useState<ModalData | null>(null);
   const [authState, setAuthState] = useState({ isAuthenticated, user });
+
+  const NAV_ITEMS = getNavItems(navT);
 
   useEffect(() => {
     setAuthState({ isAuthenticated, user });
@@ -859,6 +872,8 @@ export function Header() {
               <UserMenu
                 user={authState.user as { name: string; email: string; role: string }}
                 onLogout={handleLogout}
+                navT={navT}
+                authT={authT}
               />
             ) : (
               <div className="hidden items-center gap-2 sm:flex">
@@ -866,13 +881,13 @@ export function Header() {
                   href={'/auth/login' as Route}
                   className="border-2 border-[var(--color-light-border)] px-4 py-2 text-[13px] font-semibold text-[var(--color-light-text)] transition-all duration-200 hover:border-[var(--color-avs-primary)] hover:text-[var(--color-avs-primary)] rounded-xl"
                 >
-                  Connexion
+                  {authT('login')}
                 </Link>
                 <Link
                   href={'/auth/register' as Route}
                   className="group text-avs-secondary bg-avs-primary shadow-avs hover:shadow-avs-md flex items-center gap-2 rounded-xl px-5 py-2 text-[13px] font-bold transition-all duration-200 hover:-translate-y-0.5"
                 >
-                  S&apos;inscrire
+                  {authT('register')}
                   <ArrowRight
                     size={12}
                     className="transition-transform group-hover:translate-x-0.5"
@@ -1079,7 +1094,7 @@ export function Header() {
         </AnimatePresence>
       </header>
 
-      <PremiumModal isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} />
+      <PremiumModal isOpen={premiumOpen} onClose={() => setPremiumOpen(false)} t={t} />
       <Comingsoon
         isOpen={!!comingSoon}
         onClose={() => setComingSoon(null)}
@@ -1087,7 +1102,7 @@ export function Header() {
         title={comingSoon?.title ?? ''}
         description={comingSoon?.description ?? ''}
         details={comingSoon?.details ?? ''}
-        validation="Compris"
+        validation={t('confirm')}
       />
     </>
   );
