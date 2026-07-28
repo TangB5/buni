@@ -230,11 +230,319 @@
       "license": "Apache 2.0 + Commons Clause"
     }
   },
+  "register": {
+    "loading": "Création du compte…",
+    "perks": {
+      "title": "Pourquoi rejoindre ?",
+      "patterns": "Accès à 1 248 motifs haute résolution",
+      "tokens": "Palette de design tokens prêts à l'emploi",
+      "community": "Communauté de 312 artisans vérifiés",
+      "downloads": "Téléchargement SVG, PNG et JSON illimité"
+    },
+    "stats": {
+      "patterns": "motifs",
+      "artisans": "artisans",
+      "countries": "pays"
+    },
+    "leftFooter": "Gratuit · Open Source · CC BY 4.0",
+    "heading": {
+      "label": "Créer un compte",
+      "title": "Rejoindre AVS",
+      "hasAccount": "Vous avez déjà un compte ?",
+      "loginLink": "Se connecter"
+    },
+    "validation": {
+      "nameTooShort": "Minimum 2 caractères",
+      "invalidEmail": "Email invalide",
+      "passwordTooShort": "Minimum 8 caractères",
+      "passwordUppercase": "Une majuscule requise",
+      "passwordNumber": "Un chiffre requis",
+      "confirmPassword": "Confirmez votre mot de passe",
+      "passwordMismatch": "Les mots de passe ne correspondent pas"
+    },
+    "passwordStrength": {
+      "chars": "8 caractères",
+      "uppercase": "Majuscule",
+      "number": "Chiffre",
+      "tooShort": "Trop court",
+      "weak": "Faible",
+      "medium": "Moyen",
+      "strong": "Fort"
+    },
+    "fields": {
+      "name": {
+        "label": "Nom complet",
+        "placeholder": "Amara Diop"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "vous@exemple.com"
+      },
+      "password": {
+        "label": "Mot de passe",
+        "placeholder": "••••••••",
+        "show": "Afficher le mot de passe",
+        "hide": "Masquer le mot de passe"
+      },
+      "confirmPassword": {
+        "label": "Confirmer le mot de passe",
+        "placeholder": "••••••••",
+        "show": "Afficher le mot de passe",
+        "hide": "Masquer le mot de passe"
+      }
+    },
+    "submit": {
+      "text": "Créer mon compte",
+      "loading": "Création…"
+    },
+    "divider": "ou continuer avec",
+    "toast": {
+      "success": {
+        "title": "Compte créé",
+        "message": "Votre compte a été créé avec succès. Bienvenue dans la communauté AVS !"
+      },
+      "error": {
+        "title": "Échec de la création",
+        "message": "Une erreur est survenue lors de la création du compte. Veuillez réessayer."
+      }
+    },
+    "footer": {
+      "acceptTerms": "En vous inscrivant, vous acceptez nos",
+      "terms": "conditions",
+      "and": "et notre",
+      "privacy": "confidentialité",
+      "license": "Apache 2.0 + Commons Clause"
+    }
+  },
   "errors": {
     "required": "Ce champ est requis",
     "invalidEmail": "Email invalide",
     "passwordTooShort": "Le mot de passe doit contenir au moins 8 caractères",
     "passwordMismatch": "Les mots de passe ne correspondent pas",
     "general": "Une erreur est survenue"
+  },
+  "about": {
+    "metadata": {
+      "title": "À propos — AVS",
+      "description": "La mission, les valeurs et l'équipe derrière le standard visuel africain."
+    },
+    "manifesto": {
+      "title": "Le patrimoine visuel africain",
+      "highlight": "mérite un standard.",
+      "subtitle": "Aussi rigoureux qu'Unicode l'est pour l'écriture. Nous le construisons."
+    },
+    "problem": {
+      "label": "Le constat",
+      "title": "Le patrimoine visuel",
+      "titleHighlight": "le plus riche du monde,",
+      "titleEnd": "documenté nulle part.",
+      "paragraph1": "Chaque designer qui cherche un motif africain tombe sur les mêmes bibliothèques d'images sans source, sans contexte, sans autorisation claire. Le même wax circule sans qu'on sache d'où il vient, ni qui l'a créé.",
+      "paragraph2": "Il n'existe aucune nomenclature partagée, aucune palette de référence, aucun token, aucun standard. Résultat : incohérence visuelle, appropriation involontaire, et un savoir artisanal qui s'efface génération après génération."
+    },
+    "response": {
+      "label": "Notre réponse",
+      "title": "African Visual System n'est pas une bibliothèque.",
+      "highlight": "C'est une infrastructure.",
+      "subtitle": "Sept briques interconnectées, chacune documentée, versionnée et traçable jusqu'à sa source."
+    },
+    "infrastructure": {
+      "motifs": "Motifs",
+      "motifsDetail": "1 248 motifs vectorisés et sourcés",
+      "designTokens": "Design Tokens",
+      "designTokensDetail": "Couleur, espace, rythme — nommés",
+      "palettes": "Palettes",
+      "palettesDetail": "Combinaisons validées par région",
+      "components": "Composants",
+      "componentsDetail": "Figma, Tailwind, React",
+      "svg": "SVG",
+      "svgDetail": "Fichiers sources haute-fidélité",
+      "documentation": "Documentation",
+      "documentationDetail": "Histoire, usage, provenance",
+      "api": "API",
+      "apiDetail": "Accès programmatique au standard"
+    },
+    "method": {
+      "label": "Notre méthode",
+      "title": "Comment un motif devient un standard",
+      "research": "Recherche",
+      "researchDetail": "Terrain, entretiens, cartographie des motifs existants.",
+      "documentation": "Documentation",
+      "documentationDetail": "Origine, région, époque, signification consignées.",
+      "validation": "Validation artisan",
+      "validationDetail": "Relecture par la communauté source — droit de véto.",
+      "digitization": "Numérisation",
+      "digitizationDetail": "Vectorisation fidèle, fichiers sources haute-fidélité.",
+      "designTokens": "Design Tokens",
+      "designTokensDetail": "Couleurs, courbes, espacements extraits et nommés.",
+      "components": "Composants",
+      "componentsDetail": "Intégration Figma, Tailwind, React — prêts à l'usage.",
+      "publication": "Publication",
+      "publicationDetail": "Mise en ligne, licence claire, traçabilité complète."
+    },
+    "principles": {
+      "label": "Principes",
+      "title": "Ce qui n'est jamais négociable",
+      "ethnographicRigor": {
+        "title": "Rigueur ethnographique",
+        "text": "Chaque motif est validé par des artisans de terrain et des chercheurs spécialisés. Pas de romantisation, pas d'appropriation : de la documentation factuelle."
+      },
+      "culturalSovereignty": {
+        "title": "Souveraineté culturelle",
+        "text": "Les communautés sources ont un droit de regard permanent sur leur patrimoine. AVS est un outil de préservation, jamais d'extraction."
+      },
+      "universalAccess": {
+        "title": "Accès universel",
+        "text": "La majorité des ressources est libre et gratuite (CC BY 4.0). Le savoir africain appartient à l'humanité entière, à commencer par les Africains."
+      },
+      "traceability": {
+        "title": "Traçabilité totale",
+        "text": "Chaque token de couleur, chaque motif, chaque symbole porte la trace de sa source : artisan, région, époque, signification documentée."
+      }
+    },
+    "stats": {
+      "label": "Où en est le standard",
+      "title": "Deux ans de terrain, en chiffres",
+      "hero": {
+        "value": "1 248",
+        "label": "Motifs documentés",
+        "detail": "Vectorisés, sourcés, prêts pour la production"
+      },
+      "countries": {
+        "value": "54",
+        "label": "Pays représentés",
+        "detail": "Sur les 54 pays du continent"
+      },
+      "artisans": {
+        "value": "312",
+        "label": "Artisans vérifiés",
+        "detail": "Droit de regard permanent sur leur patrimoine"
+      },
+      "archive": {
+        "value": "5 ans",
+        "label": "D'archive vivante",
+        "detail": "De recherche terrain continue depuis 2024"
+      }
+    },
+    "roadmap": {
+      "label": "Feuille de route 2024–2029",
+      "title": "De Douala au standard continental",
+      "subtitle": "Lancé en 2024 depuis Bonamoussadi, Douala — deux ans de terrain avant la première ligne de code publique. Voici le plan, phase par phase.",
+      "status": {
+        "now": "En cours · Aujourd'hui",
+        "done": "Terminé",
+        "planned": "Prévu"
+      },
+      "phases": {
+        "01": {
+          "title": "Recherche & cadrage",
+          "objective": "Comprendre le besoin réel avant de coder quoi que ce soit.",
+          "metric": "18 mois de recherche terrain",
+          "deliverables": [
+            "Entretiens avec artisans et chercheurs pour cartographier les motifs existants",
+            "Veille ethnographique sur les systèmes de classification africains",
+            "Premiers prototypes techniques — formats SVG, structure de tokens",
+            "Définition du modèle de données et de l'architecture du standard"
+          ]
+        },
+        "02": {
+          "title": "Lancement v1.0",
+          "objective": "Sortir un socle solide, documenté et utilisable en production.",
+          "metric": "1 248 motifs · 312 artisans vérifiés",
+          "deliverables": [
+            "Bibliothèque ouverte de motifs documentés",
+            "Intégrations Figma & Tailwind",
+            "Système de vérification artisan (v1)",
+            "Documentation publique du standard"
+          ]
+        },
+        "03": {
+          "title": "Consolidation",
+          "objective": "Solidifier la qualité et la gouvernance avant d'accélérer.",
+          "deliverables": [
+            "Partenariats avec musées et universités d'Afrique centrale",
+            "API publique pour intégrations tierces",
+            "Programme de certification artisan renforcé",
+            "Premiers revenus récurrents — licences et partenariats"
+          ]
+        },
+        "04": {
+          "title": "Expansion régionale",
+          "objective": "Étendre la couverture géographique et la communauté.",
+          "deliverables": [
+            "Couverture Afrique de l'Ouest et Afrique australe",
+            "Gouvernance communautaire — comité consultatif artisans",
+            "Programme de traduction multilingue du standard",
+            "Outils designers — plugin, CLI, API stable"
+          ]
+        },
+        "05": {
+          "title": "Standard de référence",
+          "objective": "Devenir la référence continentale, reconnue et adoptée.",
+          "deliverables": [
+            "54 pays couverts, gouvernance ouverte et transparente",
+            "Adoption par des institutions culturelles majeures",
+            "Modèle de financement pérenne",
+            "Certification officielle « AVS Verified »"
+          ]
+        }
+      }
+    },
+    "team": {
+      "label": "Les gardiens du patrimoine",
+      "title": "Des visages derrière le standard",
+      "subtitle": "Une équipe distribuée à travers le continent, unie par la même conviction.",
+      "guardians": {
+        "amara": {
+          "name": "Dr. Amara Diop",
+          "role": "Fondateur & Directeur Ethnographique",
+          "origin": "🇸🇳 Dakar",
+          "expertise": "Textiles ouest-africains",
+          "motifName": "Wax Dakar",
+          "quote": "Un motif sans sa source n'est plus qu'un décor. Notre travail commence toujours par le nom du village."
+        },
+        "ngozi": {
+          "name": "Ngozi Okonkwo",
+          "role": "Directrice Design & Standard",
+          "origin": "🇳🇬 Lagos",
+          "expertise": "Systèmes de design",
+          "motifName": "Kente Royale",
+          "quote": "Un standard n'est utile que si les designers l'adoptent sans y penser. C'est là notre exigence."
+        },
+        "jeanPaul": {
+          "name": "Jean-Paul Kamdem",
+          "role": "Lead Ingénierie & Archivage",
+          "origin": "🇨🇲 Yaoundé",
+          "expertise": "Architecture & données",
+          "motifName": "Ndop Sultan",
+          "quote": "Chaque token qu'on publie doit pouvoir être audité dans vingt ans. On construit pour durer."
+        },
+        "aicha": {
+          "name": "Aïcha Ben Salah",
+          "role": "Recherche Afrique du Nord",
+          "origin": "🇹🇳 Tunis",
+          "expertise": "Iconographie berbère",
+          "motifName": "Bogolan Fanga",
+          "quote": "L'Afrique du Nord est souvent absente des récits visuels du continent. Nous corrigeons ça, motif après motif."
+        },
+        "thabo": {
+          "name": "Thabo Mokoena",
+          "role": "Communauté & Partenariats Artisans",
+          "origin": "🇿🇦 Jo'burg",
+          "expertise": "Relations artisans",
+          "motifName": "Adinkra Sankofa",
+          "quote": "Sankofa : revenir chercher ce qu'on a laissé derrière. C'est littéralement notre mission."
+        }
+      }
+    },
+    "vision": {
+      "label": "Vision",
+      "title": "Dans vingt ans, ce standard sera aussi évident qu'Unicode l'est aujourd'hui.",
+      "subtitle": "Chaque motif intégré aujourd'hui protège une pratique, un artisan, une mémoire. AVS n'existe pas pour figer le patrimoine — il existe pour qu'il continue d'être créé, transmis et reconnu, génération après génération."
+    },
+    "cta": {
+      "title": "Rejoignez le standard.",
+      "button": "Contribuer au standard",
+      "footer": "312 artisans · 54 pays · CC BY 4.0 · Gratuit"
+    }
   }
 }

@@ -1,10 +1,15 @@
 import type { Metadata } from 'next';
 import { AboutContent } from './about-content';
+import { getTranslations } from 'next-intl/server';
  
-export const metadata: Metadata = {
-  title: 'À propos — AVS',
-  description: "La mission, les valeurs et l'équipe derrière le standard visuel africain.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('about.metadata');
+  
+  return {
+    title: t('title'),
+    description: t('description'),
+  };
+}
  
 export default function AboutPage() {
   return <AboutContent />;

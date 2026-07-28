@@ -12,26 +12,20 @@ import { useRegister } from '@/features/auth/hooks/useRegister';
 import { GoogleLoginButton, GithubLoginButton } from '@buni/auth';
 import { authService } from '@/features/auth/services/auth.service';
 import { useAuthStore } from '@buni/auth';
+import { useTranslations } from '@buni/i18n';
 
 
 // ─────────────────────────────────────────────────────────────────────────────
 // VALIDATION
 // ─────────────────────────────────────────────────────────────────────────────
 
-const RegisterSchema = z.object({
-  name:            z.string().min(2, 'Minimum 2 caractères'),
-  email:           z.string().email('Email invalide'),
-  password:        z.string()
-    .min(8, 'Minimum 8 caractères')
-    .regex(/[A-Z]/, 'Une majuscule requise')
-    .regex(/[0-9]/, 'Un chiffre requis'),
-  confirmPassword: z.string().min(1, 'Confirmez votre mot de passe'),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: 'Les mots de passe ne correspondent pas',
-  path: ['confirmPassword'],
-});
-
-type RegisterForm = z.infer<typeof RegisterSchema>;
+// Schema will be created inside component to use translations
+type RegisterForm = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
 type FieldErrors  = Partial<Record<keyof RegisterForm, string>>;
 
 // Le rôle sera automatiquement défini à 'viewer' par le backend
@@ -59,13 +53,6 @@ const PAGE_STYLES = `
   }
 `;
 
-const PERKS = [
-  'Accès à 1 248 motifs haute résolution',
-  "Palette de design tokens prêts à l'emploi",
-  'Communauté de 312 artisans vérifiés',
-  'Téléchargement SVG, PNG et JSON illimité',
-] as const;
-
 const PATTERN_CARDS = [
   { css: 'avs-pattern-kente-royale',    rotate: '-2.5deg', style: { top: '7%',    left: '5%',   width: '54%', height: '42%' } },
   { css: 'avs-pattern-adinkra-sankofa', rotate: '2deg',    style: { top: '5%',    right: '3%',  width: '38%', height: '34%' } },
@@ -76,65 +63,8 @@ const PATTERN_CARDS = [
 const ease = [0.22, 1, 0.36, 1] as const;
 
 // ─────────────────────────────────────────────────────────────────────────────
-// PASSWORD STRENGTH
+// PASSWORD STRENGTH (moved inside component for i18n)
 // ─────────────────────────────────────────────────────────────────────────────
-
-function PasswordStrength({ pwd }: { pwd: string }) {
-  const checks = [
-    { label: '8 caractères', ok: pwd.length >= 8 },
-    { label: 'Majuscule',    ok: /[A-Z]/.test(pwd) },
-    { label: 'Chiffre',      ok: /[0-9]/.test(pwd) },
-  ];
-  const score = checks.filter((c) => c.ok).length;
-
-  // Bar color depends on score — dynamic, justified inline
-  const barColor  = score === 0 ? '#ef4444' : score === 1 ? '#f59e0b' : '#22c55e';
-  const scoreLabel = score === 0 ? 'Trop court' : score === 1 ? 'Faible' : score === 2 ? 'Moyen' : 'Fort';
-
-  if (!pwd) return null;
-
-  return (
-    <AnimatePresence>
-      <motion.div
-        initial={{ opacity: 0, height: 0 }}
-        animate={{ opacity: 1, height: 'auto' }}
-        exit={{ opacity: 0, height: 0 }}
-        className="mt-2.5 space-y-2 overflow-hidden"
-      >
-        <div className="flex gap-1.5">
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="h-1 flex-1 overflow-hidden rounded-full bg-avs-accent/16">
-              <motion.div
-                className="h-full rounded-full"
-                initial={{ width: 0 }}
-                animate={{ width: i < score ? '100%' : '0%' }}
-                transition={{ duration: 0.3, delay: i * 0.06, ease }}
-                style={{ background: barColor }}
-              />
-            </div>
-          ))}
-        </div>
-
-        <div className="flex items-center justify-between">
-          <p className="font-mono text-[9px] tracking-wide" style={{ color: barColor, opacity: score === 0 ? 0.5 : 1 }}>
-            {scoreLabel}
-          </p>
-          <div className="flex gap-3">
-            {checks.map(({ label, ok }) => (
-              <span
-                key={label}
-                className={`flex items-center gap-1 font-mono text-[9px] transition-colors duration-200 ${ok ? 'text-emerald-500' : 'text-avs-accent/35'}`}
-              >
-                <Check size={9} strokeWidth={ok ? 3 : 1.5} />
-                {label}
-              </span>
-            ))}
-          </div>
-        </div>
-      </motion.div>
-    </AnimatePresence>
-  );
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // FIELD WRAPPER
@@ -173,6 +103,7 @@ function Field({ id, label, error, children }: {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function RegisterPage() {
+  const t = useTranslations('register');
   const { mutate, isPending, error } = useRegister();
   const { add } = useToast();
 
@@ -182,6 +113,82 @@ export default function RegisterPage() {
   const [showConfirmPwd, setShowConfirmPwd] = useState(false);
   const [focused, setFocused] = useState<string | null>(null);
   const [githubToken, setGithubToken] = useState<string | null>(null);
+
+  const RegisterSchema = z.object({
+    name:            z.string().min(2, t('validation.nameTooShort')),
+    email:           z.string().email(t('validation.invalidEmail')),
+    password:        z.string()
+      .min(8, t('validation.passwordTooShort'))
+      .regex(/[A-Z]/, t('validation.passwordUppercase'))
+      .regex(/[0-9]/, t('validation.passwordNumber')),
+    confirmPassword: z.string().min(1, t('validation.confirmPassword')),
+  }).refine((data) => data.password === data.confirmPassword, {
+    message: t('validation.passwordMismatch'),
+    path: ['confirmPassword'],
+  });
+
+  const PERKS = [
+    t('perks.patterns'),
+    t('perks.tokens'),
+    t('perks.community'),
+    t('perks.downloads'),
+  ] as const;
+
+  function PasswordStrength({ pwd }: { pwd: string }) {
+    const checks = [
+      { label: t('passwordStrength.chars'), ok: pwd.length >= 8 },
+      { label: t('passwordStrength.uppercase'), ok: /[A-Z]/.test(pwd) },
+      { label: t('passwordStrength.number'), ok: /[0-9]/.test(pwd) },
+    ];
+    const score = checks.filter((c) => c.ok).length;
+
+    const barColor = score === 0 ? '#ef4444' : score === 1 ? '#f59e0b' : '#22c55e';
+    const scoreLabel = score === 0 ? t('passwordStrength.tooShort') : score === 1 ? t('passwordStrength.weak') : score === 2 ? t('passwordStrength.medium') : t('passwordStrength.strong');
+
+    if (!pwd) return null;
+
+    return (
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: 'auto' }}
+          exit={{ opacity: 0, height: 0 }}
+          className="mt-2.5 space-y-2 overflow-hidden"
+        >
+          <div className="flex gap-1.5">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className="h-1 flex-1 overflow-hidden rounded-full bg-avs-accent/16">
+                <motion.div
+                  className="h-full rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: i < score ? '100%' : '0%' }}
+                  transition={{ duration: 0.3, delay: i * 0.06, ease }}
+                  style={{ background: barColor }}
+                />
+              </div>
+            ))}
+          </div>
+
+          <div className="flex items-center justify-between">
+            <p className="font-mono text-[9px] tracking-wide" style={{ color: barColor, opacity: score === 0 ? 0.5 : 1 }}>
+              {scoreLabel}
+            </p>
+            <div className="flex gap-3">
+              {checks.map(({ label, ok }) => (
+                <span
+                  key={label}
+                  className={`flex items-center gap-1 font-mono text-[9px] transition-colors duration-200 ${ok ? 'text-emerald-500' : 'text-avs-accent/35'}`}
+                >
+                  <Check size={9} strokeWidth={ok ? 3 : 1.5} />
+                  {label}
+                </span>
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      </AnimatePresence>
+    );
+  }
 
   const validate = (): boolean => {
     const result = RegisterSchema.safeParse(form);
@@ -223,15 +230,15 @@ export default function RegisterPage() {
       onSuccess: () => {
         add({
           variant: 'success',
-          title: 'Compte créé',
-          message: 'Votre compte a été créé avec succès. Bienvenue dans la communauté AVS !'
+          title: t('toast.success.title'),
+          message: t('toast.success.message')
         });
       },
       onError: (err) => {
         add({
           variant: 'error',
-          title: 'Échec de la création',
-          message: err?.message || 'Une erreur est survenue lors de la création du compte. Veuillez réessayer.'
+          title: t('toast.error.title'),
+          message: err?.message || t('toast.error.message')
         });
       }
     });
@@ -275,7 +282,7 @@ export default function RegisterPage() {
             <div className="flex flex-col items-center gap-4 rounded-2xl p-8 bg-avs-secondary border border-avs-accent/9">
               <BuniLoader size={36} showText={false} />
               <p className="font-mono text-[10px] tracking-[0.2em] uppercase animate-pulse text-avs-accent/38">
-                Création du compte…
+                {t('loading')}
               </p>
             </div>
           </motion.div>
@@ -303,7 +310,7 @@ export default function RegisterPage() {
             {/* Perks */}
             <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.18, ease }}>
               <p className="mb-5 font-mono text-[9px] font-bold tracking-[0.22em] uppercase text-avs-primary">
-                Pourquoi rejoindre ?
+                {t('perks.title')}
               </p>
               <div className="space-y-3.5">
                 {PERKS.map((item, i) => (
@@ -324,7 +331,7 @@ export default function RegisterPage() {
 
               {/* Stats pills */}
               <div className="mt-8 flex flex-wrap gap-2">
-                {[{ v: '1 248', l: 'motifs' }, { v: '312', l: 'artisans' }, { v: '54', l: 'pays' }].map(({ v, l }) => (
+                {[{ v: '1 248', l: t('stats.patterns') }, { v: '312', l: t('stats.artisans') }, { v: '54', l: t('stats.countries') }].map(({ v, l }) => (
                   <div key={l} className="rounded-xl px-3.5 py-2 bg-avs-secondary/6 border border-avs-secondary/9">
                     <span className="font-display text-lg font-black text-avs-secondary" style={{ letterSpacing: '-0.02em' }}>{v}</span>
                     <span className="ml-1.5 font-mono text-[9px] text-avs-secondary/40">{l}</span>
@@ -338,7 +345,7 @@ export default function RegisterPage() {
               initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.5 }}
               className="font-mono text-[9px] tracking-[0.16em] uppercase text-avs-secondary/22"
             >
-              Gratuit · Open Source · CC BY 4.0
+              {t('leftFooter')}
             </motion.p>
           </div>
         </div>
@@ -365,15 +372,15 @@ export default function RegisterPage() {
             <div className="mb-8">
               <div className="mb-3 flex items-center gap-2">
                 <div className="h-px w-6 bg-avs-primary" aria-hidden />
-                <span className="font-mono text-[9px] tracking-[0.24em] uppercase text-avs-primary">Créer un compte</span>
+                <span className="font-mono text-[9px] tracking-[0.24em] uppercase text-avs-primary">{t('heading.label')}</span>
               </div>
               <h1 className="font-display font-black leading-none text-avs-accent" style={{ fontSize: 'clamp(1.75rem,4vw,2.5rem)', letterSpacing: '-0.025em' }}>
-                Rejoindre AVS
+                {t('heading.title')}
               </h1>
               <p className="mt-2 text-sm text-avs-accent/55">
-                Vous avez déjà un compte ?{' '}
+                {t('heading.hasAccount')}{' '}
                 <Link href={'/auth/login' as Route} className="font-semibold underline-offset-3 hover:underline text-avs-primary">
-                  Se connecter
+                  {t('heading.loginLink')}
                 </Link>
               </p>
             </div>
@@ -397,7 +404,7 @@ export default function RegisterPage() {
             <form onSubmit={handleSubmit} className="space-y-5" noValidate>
 
               {/* Name */}
-              <Field id="name" label="Nom complet" error={errors.name}>
+              <Field id="name" label={t('fields.name.label')} error={errors.name}>
                 <div className="relative">
                   <User size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-avs-accent/32" aria-hidden />
                   <input
@@ -406,7 +413,7 @@ export default function RegisterPage() {
                     onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
                     onFocus={() => setFocused('name')}
                     onBlur={() => { setFocused(null); validate(); }}
-                    placeholder="Amara Diop"
+                    placeholder={t('fields.name.placeholder')}
                     disabled={isPending}
                     style={{ ...inputStyle('name'), paddingLeft: '2.5rem', paddingRight: '1rem' }}
                     aria-describedby={errors.name ? 'name-error' : undefined}
@@ -416,7 +423,7 @@ export default function RegisterPage() {
               </Field>
 
               {/* Email */}
-              <Field id="email" label="Email" error={errors.email}>
+              <Field id="email" label={t('fields.email.label')} error={errors.email}>
                 <div className="relative">
                   <Mail size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-avs-accent/32" aria-hidden />
                   <input
@@ -425,7 +432,7 @@ export default function RegisterPage() {
                     onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
                     onFocus={() => setFocused('email')}
                     onBlur={() => { setFocused(null); validate(); }}
-                    placeholder="vous@exemple.com"
+                    placeholder={t('fields.email.placeholder')}
                     disabled={isPending}
                     style={{ ...inputStyle('email'), paddingLeft: '2.5rem', paddingRight: '1rem' }}
                     aria-describedby={errors.email ? 'email-error' : undefined}
@@ -435,7 +442,7 @@ export default function RegisterPage() {
               </Field>
 
               {/* Password */}
-              <Field id="password" label="Mot de passe" error={errors.password}>
+              <Field id="password" label={t('fields.password.label')} error={errors.password}>
                 <div className="relative">
                   <Lock size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-avs-accent/32" aria-hidden />
                   <input
@@ -444,7 +451,7 @@ export default function RegisterPage() {
                     onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
                     onFocus={() => setFocused('password')}
                     onBlur={() => { setFocused(null); validate(); }}
-                    placeholder="••••••••"
+                    placeholder={t('fields.password.placeholder')}
                     disabled={isPending}
                     style={{ ...inputStyle('password'), paddingLeft: '2.5rem', paddingRight: '3rem' }}
                     aria-describedby={errors.password ? 'password-error' : undefined}
@@ -455,7 +462,7 @@ export default function RegisterPage() {
                     onClick={() => setShowPwd((v) => !v)}
                     disabled={isPending}
                     className="absolute right-3.5 top-1/2 -translate-y-1/2 text-avs-accent/32 hover:text-avs-accent transition-colors"
-                    aria-label={showPwd ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                    aria-label={showPwd ? t('fields.password.hide') : t('fields.password.show')}
                   >
                     {showPwd ? <EyeOff size={14} /> : <Eye size={14} />}
                   </button>
@@ -464,7 +471,7 @@ export default function RegisterPage() {
               </Field>
 
               {/* Confirm Password */}
-              <Field id="confirmPassword" label="Confirmer le mot de passe" error={errors.confirmPassword}>
+              <Field id="confirmPassword" label={t('fields.confirmPassword.label')} error={errors.confirmPassword}>
                 <div className="relative">
                   <Lock size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-avs-accent/32" aria-hidden />
                   <input
@@ -473,7 +480,7 @@ export default function RegisterPage() {
                     onChange={(e) => setForm((f) => ({ ...f, confirmPassword: e.target.value }))}
                     onFocus={() => setFocused('confirmPassword')}
                     onBlur={() => { setFocused(null); validate(); }}
-                    placeholder="••••••••"
+                    placeholder={t('fields.confirmPassword.placeholder')}
                     disabled={isPending}
                     style={{ ...inputStyle('confirmPassword'), paddingLeft: '2.5rem', paddingRight: '3rem' }}
                     aria-describedby={errors.confirmPassword ? 'confirmPassword-error' : undefined}
@@ -484,7 +491,7 @@ export default function RegisterPage() {
                     onClick={() => setShowConfirmPwd((v) => !v)}
                     disabled={isPending}
                     className="absolute right-3.5 top-1/2 -translate-y-1/2 text-avs-accent/32 hover:text-avs-accent transition-colors"
-                    aria-label={showConfirmPwd ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                    aria-label={showConfirmPwd ? t('fields.confirmPassword.hide') : t('fields.confirmPassword.show')}
                   >
                     {showConfirmPwd ? <EyeOff size={14} /> : <Eye size={14} />}
                   </button>
@@ -502,8 +509,8 @@ export default function RegisterPage() {
                 <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" aria-hidden />
                 <span className="relative flex items-center justify-center gap-2">
                   {isPending
-                    ? <><BuniLoader size={18} showText={false} /> Création…</>
-                    : <>Créer mon compte <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" /></>
+                    ? <><BuniLoader size={18} showText={false} /> {t('submit.loading')}</>
+                    : <>{t('submit.text')} <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" /></>
                   }
                 </span>
               </button>
@@ -511,7 +518,7 @@ export default function RegisterPage() {
               {/* Divider */}
               <div className="flex items-center gap-3">
                 <div className="h-px flex-1 bg-avs-accent/9" />
-                <span className="font-mono text-[9px] tracking-[0.18em] uppercase text-avs-accent/38">ou continuer avec</span>
+                <span className="font-mono text-[9px] tracking-[0.18em] uppercase text-avs-accent/38">{t('divider')}</span>
                 <div className="h-px flex-1 bg-avs-accent/9" />
               </div>
 
@@ -535,13 +542,13 @@ export default function RegisterPage() {
             {/* Trust footer */}
             <div className="mt-8 flex items-center justify-between">
               <p className="text-[11px] leading-relaxed text-avs-accent/38">
-                En vous inscrivant, vous acceptez nos{' '}
-                <Link href={'/terms' as Route} className="underline underline-offset-3 text-avs-accent/38">conditions</Link>
-                {' '}et notre{' '}
-                <Link href={'/privacy' as Route} className="underline underline-offset-3 text-avs-accent/38">confidentialité</Link>.
+                {t('footer.acceptTerms')}{' '}
+                <Link href={'/terms' as Route} className="underline underline-offset-3 text-avs-accent/38">{t('footer.terms')}</Link>
+                {' '}{t('footer.and')}{' '}
+                <Link href={'/privacy' as Route} className="underline underline-offset-3 text-avs-accent/38">{t('footer.privacy')}</Link>.
               </p>
               <span className="shrink-0 rounded-lg px-2.5 py-1 font-mono text-[9px] font-bold tracking-wide uppercase bg-avs-primary/8 text-avs-primary border border-avs-primary/20">
-                Apache 2.0 + Commons Clause
+                {t('footer.license')}
               </span>
             </div>
           </motion.div>

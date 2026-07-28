@@ -230,11 +230,319 @@
       "license": "Apache 2.0 + Commons Clause"
     }
   },
+  "register": {
+    "loading": "Creating account…",
+    "perks": {
+      "title": "Why join?",
+      "patterns": "Access to 1,248 high-resolution patterns",
+      "tokens": "Ready-to-use design token palette",
+      "community": "Community of 312 verified artisans",
+      "downloads": "Unlimited SVG, PNG and JSON downloads"
+    },
+    "stats": {
+      "patterns": "patterns",
+      "artisans": "artisans",
+      "countries": "countries"
+    },
+    "leftFooter": "Free · Open Source · CC BY 4.0",
+    "heading": {
+      "label": "Create account",
+      "title": "Join AVS",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Log in"
+    },
+    "validation": {
+      "nameTooShort": "Minimum 2 characters",
+      "invalidEmail": "Invalid email",
+      "passwordTooShort": "Minimum 8 characters",
+      "passwordUppercase": "One uppercase required",
+      "passwordNumber": "One number required",
+      "confirmPassword": "Confirm your password",
+      "passwordMismatch": "Passwords do not match"
+    },
+    "passwordStrength": {
+      "chars": "8 chars",
+      "uppercase": "Uppercase",
+      "number": "Number",
+      "tooShort": "Too short",
+      "weak": "Weak",
+      "medium": "Medium",
+      "strong": "Strong"
+    },
+    "fields": {
+      "name": {
+        "label": "Full name",
+        "placeholder": "Amara Diop"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "you@example.com"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "••••••••",
+        "show": "Show password",
+        "hide": "Hide password"
+      },
+      "confirmPassword": {
+        "label": "Confirm password",
+        "placeholder": "••••••••",
+        "show": "Show password",
+        "hide": "Hide password"
+      }
+    },
+    "submit": {
+      "text": "Create my account",
+      "loading": "Creating…"
+    },
+    "divider": "or continue with",
+    "toast": {
+      "success": {
+        "title": "Account created",
+        "message": "Your account has been successfully created. Welcome to the AVS community!"
+      },
+      "error": {
+        "title": "Creation failed",
+        "message": "An error occurred while creating the account. Please try again."
+      }
+    },
+    "footer": {
+      "acceptTerms": "By signing up, you accept our",
+      "terms": "terms",
+      "and": "and our",
+      "privacy": "privacy",
+      "license": "Apache 2.0 + Commons Clause"
+    }
+  },
   "errors": {
     "required": "This field is required",
     "invalidEmail": "Invalid email",
     "passwordTooShort": "Password must be at least 8 characters",
     "passwordMismatch": "Passwords do not match",
     "general": "An error occurred"
+  },
+  "about": {
+    "metadata": {
+      "title": "About — AVS",
+      "description": "The mission, values and team behind the African visual standard."
+    },
+    "manifesto": {
+      "title": "African visual heritage",
+      "highlight": "deserves a standard.",
+      "subtitle": "As rigorous as Unicode is for writing. We're building it."
+    },
+    "problem": {
+      "label": "The situation",
+      "title": "The richest visual heritage",
+      "titleHighlight": "in the world,",
+      "titleEnd": "documented nowhere.",
+      "paragraph1": "Every designer looking for an African pattern lands on the same libraries of images without source, without context, without clear permission. The same wax circulates without knowing where it comes from, nor who created it.",
+      "paragraph2": "There is no shared nomenclature, no reference palette, no token, no standard. Result: visual inconsistency, involuntary appropriation, and artisanal knowledge that fades generation after generation."
+    },
+    "response": {
+      "label": "Our response",
+      "title": "African Visual System is not a library.",
+      "highlight": "It's an infrastructure.",
+      "subtitle": "Seven interconnected bricks, each documented, versioned and traceable to its source."
+    },
+    "infrastructure": {
+      "motifs": "Patterns",
+      "motifsDetail": "1,248 vectorized and sourced patterns",
+      "designTokens": "Design Tokens",
+      "designTokensDetail": "Color, space, rhythm — named",
+      "palettes": "Palettes",
+      "palettesDetail": "Validated combinations by region",
+      "components": "Components",
+      "componentsDetail": "Figma, Tailwind, React",
+      "svg": "SVG",
+      "svgDetail": "High-fidelity source files",
+      "documentation": "Documentation",
+      "documentationDetail": "History, usage, provenance",
+      "api": "API",
+      "apiDetail": "Programmatic access to the standard"
+    },
+    "method": {
+      "label": "Our method",
+      "title": "How a pattern becomes a standard",
+      "research": "Research",
+      "researchDetail": "Fieldwork, interviews, mapping of existing patterns.",
+      "documentation": "Documentation",
+      "documentationDetail": "Origin, region, era, meaning recorded.",
+      "validation": "Artisan validation",
+      "validationDetail": "Review by the source community — right of veto.",
+      "digitization": "Digitization",
+      "digitizationDetail": "Faithful vectorization, high-fidelity source files.",
+      "designTokens": "Design Tokens",
+      "designTokensDetail": "Colors, curves, spacings extracted and named.",
+      "components": "Components",
+      "componentsDetail": "Figma, Tailwind, React integration — ready to use.",
+      "publication": "Publication",
+      "publicationDetail": "Online publication, clear license, full traceability."
+    },
+    "principles": {
+      "label": "Principles",
+      "title": "What is never negotiable",
+      "ethnographicRigor": {
+        "title": "Ethnographic rigor",
+        "text": "Each pattern is validated by field artisans and specialized researchers. No romanticization, no appropriation: factual documentation."
+      },
+      "culturalSovereignty": {
+        "title": "Cultural sovereignty",
+        "text": "Source communities have permanent oversight over their heritage. AVS is a preservation tool, never an extraction tool."
+      },
+      "universalAccess": {
+        "title": "Universal access",
+        "text": "Most resources are free and open (CC BY 4.0). African knowledge belongs to all humanity, starting with Africans."
+      },
+      "traceability": {
+        "title": "Total traceability",
+        "text": "Each color token, each pattern, each symbol carries the trace of its source: artisan, region, era, documented meaning."
+      }
+    },
+    "stats": {
+      "label": "Where the standard stands",
+      "title": "Two years of fieldwork, in numbers",
+      "hero": {
+        "value": "1,248",
+        "label": "Documented patterns",
+        "detail": "Vectorized, sourced, ready for production"
+      },
+      "countries": {
+        "value": "54",
+        "label": "Countries represented",
+        "detail": "Out of 54 countries on the continent"
+      },
+      "artisans": {
+        "value": "312",
+        "label": "Verified artisans",
+        "detail": "Permanent oversight over their heritage"
+      },
+      "archive": {
+        "value": "5 years",
+        "label": "Of living archive",
+        "detail": "Continuous field research since 2024"
+      }
+    },
+    "roadmap": {
+      "label": "Roadmap 2024–2029",
+      "title": "From Douala to continental standard",
+      "subtitle": "Launched in 2024 from Bonamoussadi, Douala — two years of fieldwork before the first public line of code. Here is the plan, phase by phase.",
+      "status": {
+        "now": "In progress · Today",
+        "done": "Completed",
+        "planned": "Planned"
+      },
+      "phases": {
+        "01": {
+          "title": "Research & scoping",
+          "objective": "Understand the real need before coding anything.",
+          "metric": "18 months of field research",
+          "deliverables": [
+            "Interviews with artisans and researchers to map existing patterns",
+            "Ethnographic watch on African classification systems",
+            "First technical prototypes — SVG formats, token structure",
+            "Definition of the data model and standard architecture"
+          ]
+        },
+        "02": {
+          "title": "v1.0 launch",
+          "objective": "Release a solid, documented, production-ready foundation.",
+          "metric": "1,248 patterns · 312 verified artisans",
+          "deliverables": [
+            "Open library of documented patterns",
+            "Figma & Tailwind integrations",
+            "Artisan verification system (v1)",
+            "Public documentation of the standard"
+          ]
+        },
+        "03": {
+          "title": "Consolidation",
+          "objective": "Solidify quality and governance before accelerating.",
+          "deliverables": [
+            "Partnerships with museums and universities in Central Africa",
+            "Public API for third-party integrations",
+            "Strengthened artisan certification program",
+            "First recurring revenue — licenses and partnerships"
+          ]
+        },
+        "04": {
+          "title": "Regional expansion",
+          "objective": "Extend geographic coverage and community.",
+          "deliverables": [
+            "Coverage of West Africa and Southern Africa",
+            "Community governance — artisan advisory committee",
+            "Multilingual translation program of the standard",
+            "Designer tools — plugin, CLI, stable API"
+          ]
+        },
+        "05": {
+          "title": "Reference standard",
+          "objective": "Become the continental reference, recognized and adopted.",
+          "deliverables": [
+            "54 countries covered, open and transparent governance",
+            "Adoption by major cultural institutions",
+            "Sustainable funding model",
+            "Official certification « AVS Verified »"
+          ]
+        }
+      }
+    },
+    "team": {
+      "label": "Heritage guardians",
+      "title": "Faces behind the standard",
+      "subtitle": "A distributed team across the continent, united by the same conviction.",
+      "guardians": {
+        "amara": {
+          "name": "Dr. Amara Diop",
+          "role": "Founder & Ethnographic Director",
+          "origin": "🇸🇳 Dakar",
+          "expertise": "West African textiles",
+          "motifName": "Wax Dakar",
+          "quote": "A pattern without its source is just decoration. Our work always starts with the name of the village."
+        },
+        "ngozi": {
+          "name": "Ngozi Okonkwo",
+          "role": "Design & Standard Director",
+          "origin": "🇳🇬 Lagos",
+          "expertise": "Design systems",
+          "motifName": "Kente Royale",
+          "quote": "A standard is only useful if designers adopt it without thinking. That's our requirement."
+        },
+        "jeanPaul": {
+          "name": "Jean-Paul Kamdem",
+          "role": "Lead Engineering & Archiving",
+          "origin": "🇨🇲 Yaoundé",
+          "expertise": "Architecture & data",
+          "motifName": "Ndop Sultan",
+          "quote": "Every token we publish must be auditable in twenty years. We build to last."
+        },
+        "aicha": {
+          "name": "Aïcha Ben Salah",
+          "role": "North Africa Research",
+          "origin": "🇹🇳 Tunis",
+          "expertise": "Berber iconography",
+          "motifName": "Bogolan Fanga",
+          "quote": "North Africa is often absent from the continent's visual narratives. We correct this, pattern by pattern."
+        },
+        "thabo": {
+          "name": "Thabo Mokoena",
+          "role": "Community & Artisan Partnerships",
+          "origin": "🇿🇦 Jo'burg",
+          "expertise": "Artisan relations",
+          "motifName": "Adinkra Sankofa",
+          "quote": "Sankofa: go back and fetch what you left behind. That's literally our mission."
+        }
+      }
+    },
+    "vision": {
+      "label": "Vision",
+      "title": "In twenty years, this standard will be as obvious as Unicode is today.",
+      "subtitle": "Each pattern integrated today protects a practice, an artisan, a memory. AVS does not exist to freeze heritage — it exists for it to continue to be created, transmitted and recognized, generation after generation."
+    },
+    "cta": {
+      "title": "Join the standard.",
+      "button": "Contribute to the standard",
+      "footer": "312 artisans · 54 countries · CC BY 4.0 · Free"
+    }
   }
 }

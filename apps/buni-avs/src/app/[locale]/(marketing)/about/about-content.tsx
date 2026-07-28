@@ -4,6 +4,7 @@ import Link from 'next/link';
 import type { Route } from 'next';
 import { motion } from 'framer-motion';
 import { ArrowRight, ArrowDown } from 'lucide-react';
+import { useTranslations } from '@buni/i18n';
 
 import { PrincipleRow } from './principle-row';
 
@@ -165,6 +166,8 @@ function SectionLabel({ children, tone = 'accent' }: { children: React.ReactNode
 // ─────────────────────────────────────────────────────────────────────────────
 
 export function AboutContent() {
+  const t = useTranslations('about');
+
   return (
     <div className="min-h-screen bg-avs-secondary">
 
@@ -207,8 +210,8 @@ export function AboutContent() {
             className="font-display font-black leading-[.9] tracking-[-0.03em] text-avs-secondary"
             style={{ fontSize: 'clamp(2.75rem,7.5vw,6rem)' }}
           >
-            Le patrimoine visuel africain<br />
-            <span className="text-avs-primary">mérite un standard.</span>
+            {t('manifesto.title')}<br />
+            <span className="text-avs-primary">{t('manifesto.highlight')}</span>
           </motion.h1>
 
           <motion.div
@@ -225,7 +228,7 @@ export function AboutContent() {
             transition={{ duration: 0.7, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
             className="mx-auto mt-8 max-w-xl text-lg leading-relaxed text-avs-secondary/60"
           >
-            Aussi rigoureux qu&apos;Unicode l&apos;est pour l&apos;écriture. Nous le construisons.
+            {t('manifesto.subtitle')}
           </motion.p>
 
           <motion.div
@@ -243,26 +246,22 @@ export function AboutContent() {
       <section aria-labelledby="problem-title" className="relative overflow-hidden border-b border-avs-accent/9 bg-avs-secondary px-4 py-28 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-6xl items-center gap-16 lg:grid-cols-[1fr_0.9fr]">
           <div>
-            <SectionLabel>Le constat</SectionLabel>
+            <SectionLabel>{t('problem.label')}</SectionLabel>
             <motion.h2
               {...fadeUp}
               id="problem-title"
               className="font-display font-black leading-[.95] text-avs-accent"
               style={{ fontSize: 'clamp(2rem,4.2vw,3.5rem)', letterSpacing: '-0.025em' }}
             >
-              Le patrimoine visuel<br />le plus riche du monde,<br />
-              <span className="text-avs-primary/80">documenté nulle part.</span>
+              {t('problem.title')}<br />{t('problem.titleHighlight')}<br />
+              <span className="text-avs-primary/80">{t('problem.titleEnd')}</span>
             </motion.h2>
             <motion.div {...fadeUp} transition={{ ...fadeUp.transition, delay: 0.1 }} className="mt-8 space-y-4 text-[15px] leading-relaxed text-avs-accent/60">
               <p>
-                Chaque designer qui cherche un motif africain tombe sur les mêmes bibliothèques
-                d&apos;images sans source, sans contexte, sans autorisation claire. Le même wax
-                circule sans qu&apos;on sache d&apos;où il vient, ni qui l&apos;a créé.
+                {t('problem.paragraph1')}
               </p>
               <p>
-                Il n&apos;existe aucune nomenclature partagée, aucune palette de référence,
-                aucun token, aucun standard. Résultat : incohérence visuelle, appropriation
-                involontaire, et un savoir artisanal qui s&apos;efface génération après génération.
+                {t('problem.paragraph2')}
               </p>
             </motion.div>
           </div>
@@ -299,18 +298,18 @@ export function AboutContent() {
         />
         <div className="relative mx-auto max-w-6xl">
           <div className="mb-14 max-w-2xl">
-            <SectionLabel>Notre réponse</SectionLabel>
+            <SectionLabel>{t('response.label')}</SectionLabel>
             <motion.h2
               {...fadeUp}
               id="response-title"
               className="font-display font-black leading-[.95] text-avs-secondary"
               style={{ fontSize: 'clamp(2rem,4.2vw,3.5rem)', letterSpacing: '-0.025em' }}
             >
-              African Visual System n&apos;est pas une bibliothèque.<br />
-              <span className="text-avs-primary">C&apos;est une infrastructure.</span>
+              {t('response.title')}<br />
+              <span className="text-avs-primary">{t('response.highlight')}</span>
             </motion.h2>
             <motion.p {...fadeUp} transition={{ ...fadeUp.transition, delay: 0.1 }} className="mt-6 text-[15px] leading-relaxed text-avs-secondary/55">
-              Sept briques interconnectées, chacune documentée, versionnée et traçable jusqu&apos;à sa source.
+              {t('response.subtitle')}
             </motion.p>
           </div>
 
@@ -322,14 +321,14 @@ export function AboutContent() {
       <section aria-labelledby="method-title" className="border-b border-avs-accent/9 bg-avs-secondary px-4 py-28 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="mb-16 text-center">
-            <SectionLabel>Notre méthode</SectionLabel>
+            <SectionLabel>{t('method.label')}</SectionLabel>
             <motion.h2
               {...fadeUp}
               id="method-title"
               className="font-display font-black leading-[.95] text-avs-accent"
               style={{ fontSize: 'clamp(2rem,4.2vw,3.5rem)', letterSpacing: '-0.025em' }}
             >
-              Comment un motif devient un standard
+              {t('method.title')}
             </motion.h2>
           </div>
 
@@ -341,14 +340,14 @@ export function AboutContent() {
       <section aria-labelledby="principles-title" className="border-b border-avs-accent/9 bg-avs-secondary px-4 py-28 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl">
           <div className="mb-4">
-            <SectionLabel>Principes</SectionLabel>
+            <SectionLabel>{t('principles.label')}</SectionLabel>
             <motion.h2
               {...fadeUp}
               id="principles-title"
               className="font-display font-black leading-[.95] text-avs-accent"
               style={{ fontSize: 'clamp(2rem,4.2vw,3.5rem)', letterSpacing: '-0.025em' }}
             >
-              Ce qui n&apos;est jamais négociable
+              {t('principles.title')}
             </motion.h2>
           </div>
 
@@ -364,14 +363,14 @@ export function AboutContent() {
       <section aria-labelledby="numbers-title" className="border-b border-avs-accent/9 bg-avs-secondary px-4 py-28 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
           <div className="mb-14 text-center">
-            <SectionLabel>Où en est le standard</SectionLabel>
+            <SectionLabel>{t('stats.label')}</SectionLabel>
             <motion.h2
               {...fadeUp}
               id="numbers-title"
               className="font-display font-black leading-[.95] text-avs-accent"
               style={{ fontSize: 'clamp(2rem,4.2vw,3.5rem)', letterSpacing: '-0.025em' }}
             >
-              Deux ans de terrain, en chiffres
+              {t('stats.title')}
             </motion.h2>
           </div>
 
@@ -389,18 +388,17 @@ export function AboutContent() {
         />
         <div className="relative mx-auto max-w-5xl">
           <div className="mb-6 text-center">
-            <SectionLabel>Feuille de route 2024–2029</SectionLabel>
+            <SectionLabel>{t('roadmap.label')}</SectionLabel>
             <motion.h2
               {...fadeUp}
               id="roadmap-title"
               className="font-display font-black leading-tight text-avs-secondary"
               style={{ fontSize: 'clamp(2rem,4vw,3.25rem)', letterSpacing: '-0.025em' }}
             >
-              De Douala au standard continental
+              {t('roadmap.title')}
             </motion.h2>
             <motion.p {...fadeUp} transition={{ ...fadeUp.transition, delay: 0.1 }} className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-avs-secondary/55">
-              Lancé en 2024 depuis Bonamoussadi, Douala — deux ans de terrain avant la première
-              ligne de code publique. Voici le plan, phase par phase.
+              {t('roadmap.subtitle')}
             </motion.p>
           </div>
 
@@ -412,17 +410,17 @@ export function AboutContent() {
       <section aria-labelledby="team-title" className="bg-avs-secondary px-4 py-28 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="mb-14 text-center">
-            <SectionLabel>Les gardiens du patrimoine</SectionLabel>
+            <SectionLabel>{t('team.label')}</SectionLabel>
             <motion.h2
               {...fadeUp}
               id="team-title"
               className="font-display font-black leading-tight text-avs-accent"
               style={{ fontSize: 'clamp(2rem,4vw,3.25rem)', letterSpacing: '-0.025em' }}
             >
-              Des visages derrière le standard
+              {t('team.title')}
             </motion.h2>
-            <motion.p {...fadeUp} transition={{ ...fadeUp.transition, delay: 0.1 }} className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-avs-accent/55">
-              Une équipe distribuée à travers le continent, unie par la même conviction.
+            <motion.p {...fadeUp} transition={{ ...fadeUp.transition, delay: 0.1 }} className="mx-auto mt-4 max-w-lg text-sm leading-relaxed text-avs-accent/55">
+              {t('team.subtitle')}
             </motion.p>
           </div>
 
@@ -442,19 +440,17 @@ export function AboutContent() {
           aria-hidden
         />
         <div className="relative mx-auto max-w-3xl text-center">
-          <SectionLabel>Vision</SectionLabel>
+          <SectionLabel>{t('vision.label')}</SectionLabel>
           <motion.h2
             {...fadeUp}
             id="vision-title"
             className="font-display font-black leading-[.95] text-avs-secondary"
             style={{ fontSize: 'clamp(2rem,4.5vw,3.75rem)', letterSpacing: '-0.025em' }}
           >
-            Dans vingt ans, ce standard sera aussi évident qu&apos;Unicode l&apos;est aujourd&apos;hui.
+            {t('vision.title')}
           </motion.h2>
           <motion.p {...fadeUp} transition={{ ...fadeUp.transition, delay: 0.12 }} className="mx-auto mt-8 max-w-xl text-[15px] leading-relaxed text-avs-secondary/55">
-            Chaque motif intégré aujourd&apos;hui protège une pratique, un artisan, une mémoire.
-            AVS n&apos;existe pas pour figer le patrimoine — il existe pour qu&apos;il continue d&apos;être
-            créé, transmis et reconnu, génération après génération.
+            {t('vision.subtitle')}
           </motion.p>
         </div>
       </section>
@@ -472,7 +468,7 @@ export function AboutContent() {
             className="font-display font-black leading-[.92] tracking-[-0.025em] text-avs-secondary"
             style={{ fontSize: 'clamp(2.5rem,5.5vw,4.5rem)' }}
           >
-            Rejoignez le standard.
+            {t('cta.title')}
           </h2>
 
           <div className="mt-12 flex justify-center">
@@ -481,13 +477,13 @@ export function AboutContent() {
               className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-avs-primary px-10 py-4 text-sm font-bold text-avs-secondary shadow-avs-md transition-all duration-300 hover:-translate-y-0.5"
             >
               <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" aria-hidden />
-              Contribuer au standard
+              {t('cta.button')}
               <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" aria-hidden />
             </Link>
           </div>
 
           <p className="mt-10 font-mono text-[10px] tracking-[0.16em] uppercase text-avs-secondary/22">
-            312 artisans · 54 pays · CC BY 4.0 · Gratuit
+            {t('cta.footer')}
           </p>
         </motion.div>
       </section>
