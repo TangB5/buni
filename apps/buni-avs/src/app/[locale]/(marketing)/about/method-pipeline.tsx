@@ -3,18 +3,22 @@
 import { motion } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
 import { Search, FileText, UserCheck, ScanLine, Palette, Component, Rocket } from 'lucide-react';
+import { useTranslations } from '@buni/i18n';
 
-const STAGES: { icon: LucideIcon; label: string; detail: string }[] = [
-  { icon: Search,     label: 'Recherche',           detail: 'Terrain, entretiens, cartographie des motifs existants.' },
-  { icon: FileText,   label: 'Documentation',        detail: 'Origine, région, époque, signification consignées.' },
-  { icon: UserCheck,  label: 'Validation artisan',   detail: 'Relecture par la communauté source — droit de véto.' },
-  { icon: ScanLine,   label: 'Numérisation',         detail: 'Vectorisation fidèle, fichiers sources haute-fidélité.' },
-  { icon: Palette,    label: 'Design Tokens',        detail: 'Couleurs, courbes, espacements extraits et nommés.' },
-  { icon: Component,  label: 'Composants',           detail: 'Intégration Figma, Tailwind, React — prêts à l’usage.' },
-  { icon: Rocket,     label: 'Publication',          detail: 'Mise en ligne, licence claire, traçabilité complète.' },
+const getStages = (t: (key: string) => string): { icon: LucideIcon; label: string; detail: string }[] => [
+  { icon: Search,     label: t('method.research'),           detail: t('method.researchDetail') },
+  { icon: FileText,   label: t('method.documentation'),        detail: t('method.documentationDetail') },
+  { icon: UserCheck,  label: t('method.validation'),   detail: t('method.validationDetail') },
+  { icon: ScanLine,   label: t('method.digitization'),         detail: t('method.digitizationDetail') },
+  { icon: Palette,    label: t('method.designTokens'),        detail: t('method.designTokensDetail') },
+  { icon: Component,  label: t('method.components'),           detail: t('method.componentsDetail') },
+  { icon: Rocket,     label: t('method.publication'),          detail: t('method.publicationDetail') },
 ];
 
 export function MethodPipeline() {
+  const t = useTranslations('about');
+  const STAGES = getStages(t);
+
   return (
     <div className="relative mx-auto max-w-2xl">
       {/* Woven thread — the connecting spine, referencing textile lineage */}

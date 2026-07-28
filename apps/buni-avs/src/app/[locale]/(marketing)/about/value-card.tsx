@@ -1,6 +1,7 @@
 'use client';
 
 import { Shield, Heart, Globe, BookOpen } from 'lucide-react';
+import { useTranslations } from '@buni/i18n';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TYPES & CONFIG
@@ -89,7 +90,7 @@ export function ValueCard({ iconName, title, text, color, index }: ValueCardProp
         style={{ background: `${color}10`, color }}
       >
         <span className="h-1 w-1 rounded-full" style={{ background: color }} aria-hidden />
-        En savoir plus
+        Learn more
       </div>
 
       {/* ── Corner glow ──────────────────────────────────────────────────── */}

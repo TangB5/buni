@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useTranslations } from '@buni/i18n';
 
 interface Stat {
   value: string;
@@ -8,15 +9,19 @@ interface Stat {
   detail: string;
 }
 
-const HERO_STAT: Stat = { value: '1 248', label: 'Motifs documentés', detail: 'Vectorisés, sourcés, prêts pour la production' };
-
-const SUPPORTING: Stat[] = [
-  { value: '54',    label: 'Pays représentés', detail: 'Sur les 54 pays du continent' },
-  { value: '312',   label: 'Artisans vérifiés', detail: 'Droit de regard permanent sur leur patrimoine' },
-  { value: '5 ans',  label: "D'archive vivante", detail: 'De recherche terrain continue depuis 2024' },
-];
+const getStats = (t: (key: string) => string) => ({
+  hero: { value: t('stats.hero.value'), label: t('stats.hero.label'), detail: t('stats.hero.detail') },
+  supporting: [
+    { value: t('stats.countries.value'),    label: t('stats.countries.label'), detail: t('stats.countries.detail') },
+    { value: t('stats.artisans.value'),   label: t('stats.artisans.label'), detail: t('stats.artisans.detail') },
+    { value: t('stats.archive.value'),  label: t('stats.archive.label'), detail: t('stats.archive.detail') },
+  ]
+});
 
 export function StatsComposition() {
+  const t = useTranslations('about');
+  const { hero, supporting } = getStats(t);
+
   return (
     <div className="grid gap-4 sm:grid-cols-3 sm:grid-rows-2 sm:gap-5">
       {/* Hero stat — spans full height on the left, the anchor of the composition */}
@@ -32,15 +37,15 @@ export function StatsComposition() {
           className="font-display relative block font-black leading-[0.9] text-avs-accent"
           style={{ fontSize: 'clamp(3rem,7vw,5rem)', letterSpacing: '-0.03em' }}
         >
-          {HERO_STAT.value}
+          {hero.value}
         </span>
         <p className="relative mt-4 font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-avs-primary">
-          {HERO_STAT.label}
+          {hero.label}
         </p>
-        <p className="relative mt-2 max-w-[220px] text-[13px] leading-relaxed text-avs-accent/50">{HERO_STAT.detail}</p>
+        <p className="relative mt-2 max-w-[220px] text-[13px] leading-relaxed text-avs-accent/50">{hero.detail}</p>
       </motion.div>
 
-      {SUPPORTING.map((stat, i) => (
+      {supporting.map((stat, i) => (
         <motion.div
           key={stat.label}
           initial={{ opacity: 0, y: 24 }}

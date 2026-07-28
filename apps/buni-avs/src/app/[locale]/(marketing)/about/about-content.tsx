@@ -18,117 +18,117 @@ import { StatsComposition } from './stats-composition';
 // DATA
 // ─────────────────────────────────────────────────────────────────────────────
 
-const PRINCIPLES = [
+const getPrinciples = (t: (key: string) => string) => [
   {
     iconName: 'shield' as const,
-    title: 'Rigueur ethnographique',
+    title: t('principles.ethnographicRigor.title'),
     color: '#C0573E',
-    text: "Chaque motif est validé par des artisans de terrain et des chercheurs spécialisés. Pas de romantisation, pas d'appropriation : de la documentation factuelle.",
+    text: t('principles.ethnographicRigor.text'),
   },
   {
     iconName: 'heart' as const,
-    title: 'Souveraineté culturelle',
+    title: t('principles.culturalSovereignty.title'),
     color: '#D4A017',
-    text: "Les communautés sources ont un droit de regard permanent sur leur patrimoine. AVS est un outil de préservation, jamais d'extraction.",
+    text: t('principles.culturalSovereignty.text'),
   },
   {
     iconName: 'globe' as const,
-    title: 'Accès universel',
+    title: t('principles.universalAccess.title'),
     color: '#4A6741',
-    text: "La majorité des ressources est libre et gratuite (CC BY 4.0). Le savoir africain appartient à l'humanité entière, à commencer par les Africains.",
+    text: t('principles.universalAccess.text'),
   },
   {
     iconName: 'book' as const,
-    title: 'Traçabilité totale',
+    title: t('principles.traceability.title'),
     color: '#2A4A6B',
-    text: 'Chaque token de couleur, chaque motif, chaque symbole porte la trace de sa source : artisan, région, époque, signification documentée.',
+    text: t('principles.traceability.text'),
   },
 ] as const;
 
-const GUARDIANS = [
+const getGuardians = (t: (key: string) => string) => [
   {
-    name: 'Dr. Amara Diop', role: 'Fondateur & Directeur Ethnographique', origin: '🇸🇳 Dakar',
-    expertise: 'Textiles ouest-africains', motifName: 'Wax Dakar', pattern: 'avs-pattern-wax-dakar',
-    quote: "Un motif sans sa source n'est plus qu'un décor. Notre travail commence toujours par le nom du village.",
+    name: t('team.guardians.amara.name'), role: t('team.guardians.amara.role'), origin: t('team.guardians.amara.origin'),
+    expertise: t('team.guardians.amara.expertise'), motifName: t('team.guardians.amara.motifName'), pattern: 'avs-pattern-wax-dakar',
+    quote: t('team.guardians.amara.quote'),
   },
   {
-    name: 'Ngozi Okonkwo', role: 'Directrice Design & Standard', origin: '🇳🇬 Lagos',
-    expertise: 'Systèmes de design', motifName: 'Kente Royale', pattern: 'avs-pattern-kente-royale',
-    quote: "Un standard n'est utile que si les designers l'adoptent sans y penser. C'est là notre exigence.",
+    name: t('team.guardians.ngozi.name'), role: t('team.guardians.ngozi.role'), origin: t('team.guardians.ngozi.origin'),
+    expertise: t('team.guardians.ngozi.expertise'), motifName: t('team.guardians.ngozi.motifName'), pattern: 'avs-pattern-kente-royale',
+    quote: t('team.guardians.ngozi.quote'),
   },
   {
-    name: 'Jean-Paul Kamdem', role: 'Lead Ingénierie & Archivage', origin: '🇨🇲 Yaoundé',
-    expertise: 'Architecture & données', motifName: 'Ndop Sultan', pattern: 'avs-pattern-ndop-sultan',
-    quote: "Chaque token qu'on publie doit pouvoir être audité dans vingt ans. On construit pour durer.",
+    name: t('team.guardians.jeanPaul.name'), role: t('team.guardians.jeanPaul.role'), origin: t('team.guardians.jeanPaul.origin'),
+    expertise: t('team.guardians.jeanPaul.expertise'), motifName: t('team.guardians.jeanPaul.motifName'), pattern: 'avs-pattern-ndop-sultan',
+    quote: t('team.guardians.jeanPaul.quote'),
   },
   {
-    name: 'Aïcha Ben Salah', role: 'Recherche Afrique du Nord', origin: '🇹🇳 Tunis',
-    expertise: 'Iconographie berbère', motifName: 'Bogolan Fanga', pattern: 'avs-pattern-bogolan-fanga',
-    quote: "L'Afrique du Nord est souvent absente des récits visuels du continent. Nous corrigeons ça, motif après motif.",
+    name: t('team.guardians.aicha.name'), role: t('team.guardians.aicha.role'), origin: t('team.guardians.aicha.origin'),
+    expertise: t('team.guardians.aicha.expertise'), motifName: t('team.guardians.aicha.motifName'), pattern: 'avs-pattern-bogolan-fanga',
+    quote: t('team.guardians.aicha.quote'),
   },
   {
-    name: 'Thabo Mokoena', role: 'Communauté & Partenariats Artisans', origin: "🇿🇦 Jo'burg",
-    expertise: 'Relations artisans', motifName: 'Adinkra Sankofa', pattern: 'avs-pattern-adinkra-sankofa',
-    quote: "Sankofa : revenir chercher ce qu'on a laissé derrière. C'est littéralement notre mission.",
+    name: t('team.guardians.thabo.name'), role: t('team.guardians.thabo.role'), origin: t('team.guardians.thabo.origin'),
+    expertise: t('team.guardians.thabo.expertise'), motifName: t('team.guardians.thabo.motifName'), pattern: 'avs-pattern-adinkra-sankofa',
+    quote: t('team.guardians.thabo.quote'),
   },
 ] as const;
 
-const ROADMAP_PHASES: readonly RoadmapPhase[] = [
+const getRoadmapPhases = (t: (key: string) => string): readonly RoadmapPhase[] => [
   {
     phase: '01', period: '2024 – 2025', status: 'done',
-    title: 'Recherche & cadrage',
-    objective: 'Comprendre le besoin réel avant de coder quoi que ce soit.',
-    metric: '18 mois de recherche terrain',
+    title: t('roadmap.phases.01.title'),
+    objective: t('roadmap.phases.01.objective'),
+    metric: t('roadmap.phases.01.metric'),
     deliverables: [
-      'Entretiens avec artisans et chercheurs pour cartographier les motifs existants',
-      'Veille ethnographique sur les systèmes de classification africains',
-      'Premiers prototypes techniques — formats SVG, structure de tokens',
-      "Définition du modèle de données et de l'architecture du standard",
+      t('roadmap.phases.01.deliverables.0'),
+      t('roadmap.phases.01.deliverables.1'),
+      t('roadmap.phases.01.deliverables.2'),
+      t('roadmap.phases.01.deliverables.3'),
     ],
   },
   {
     phase: '02', period: '2026', status: 'now',
-    title: 'Lancement v1.0',
-    objective: 'Sortir un socle solide, documenté et utilisable en production.',
-    metric: '1 248 motifs · 312 artisans vérifiés',
+    title: t('roadmap.phases.02.title'),
+    objective: t('roadmap.phases.02.objective'),
+    metric: t('roadmap.phases.02.metric'),
     deliverables: [
-      'Bibliothèque ouverte de motifs documentés',
-      'Intégrations Figma & Tailwind',
-      'Système de vérification artisan (v1)',
-      'Documentation publique du standard',
+      t('roadmap.phases.02.deliverables.0'),
+      t('roadmap.phases.02.deliverables.1'),
+      t('roadmap.phases.02.deliverables.2'),
+      t('roadmap.phases.02.deliverables.3'),
     ],
   },
   {
     phase: '03', period: '2027', status: 'planned',
-    title: 'Consolidation',
-    objective: "Solidifier la qualité et la gouvernance avant d'accélérer.",
+    title: t('roadmap.phases.03.title'),
+    objective: t('roadmap.phases.03.objective'),
     deliverables: [
-      "Partenariats avec musées et universités d'Afrique centrale",
-      'API publique pour intégrations tierces',
-      'Programme de certification artisan renforcé',
-      'Premiers revenus récurrents — licences et partenariats',
+      t('roadmap.phases.03.deliverables.0'),
+      t('roadmap.phases.03.deliverables.1'),
+      t('roadmap.phases.03.deliverables.2'),
+      t('roadmap.phases.03.deliverables.3'),
     ],
   },
   {
     phase: '04', period: '2028', status: 'planned',
-    title: 'Expansion régionale',
-    objective: 'Étendre la couverture géographique et la communauté.',
+    title: t('roadmap.phases.04.title'),
+    objective: t('roadmap.phases.04.objective'),
     deliverables: [
-      "Couverture Afrique de l'Ouest et Afrique australe",
-      'Gouvernance communautaire — comité consultatif artisans',
-      'Programme de traduction multilingue du standard',
-      'Outils designers — plugin, CLI, API stable',
+      t('roadmap.phases.04.deliverables.0'),
+      t('roadmap.phases.04.deliverables.1'),
+      t('roadmap.phases.04.deliverables.2'),
+      t('roadmap.phases.04.deliverables.3'),
     ],
   },
   {
     phase: '05', period: '2029', status: 'planned',
-    title: 'Standard de référence',
-    objective: 'Devenir la référence continentale, reconnue et adoptée.',
+    title: t('roadmap.phases.05.title'),
+    objective: t('roadmap.phases.05.objective'),
     deliverables: [
-      '54 pays couverts, gouvernance ouverte et transparente',
-      'Adoption par des institutions culturelles majeures',
-      'Modèle de financement pérenne',
-      'Certification officielle « AVS Verified »',
+      t('roadmap.phases.05.deliverables.0'),
+      t('roadmap.phases.05.deliverables.1'),
+      t('roadmap.phases.05.deliverables.2'),
+      t('roadmap.phases.05.deliverables.3'),
     ],
   },
 ] as const;
@@ -167,6 +167,9 @@ function SectionLabel({ children, tone = 'accent' }: { children: React.ReactNode
 
 export function AboutContent() {
   const t = useTranslations('about');
+  const PRINCIPLES = getPrinciples(t);
+  const GUARDIANS = getGuardians(t);
+  const ROADMAP_PHASES = getRoadmapPhases(t);
 
   return (
     <div className="min-h-screen bg-avs-secondary">

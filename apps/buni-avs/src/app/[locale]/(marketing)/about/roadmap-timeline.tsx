@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useTranslations } from '@buni/i18n';
 
 export interface RoadmapPhase {
   phase: string;
@@ -13,6 +14,8 @@ export interface RoadmapPhase {
 }
 
 export function RoadmapTimeline({ phases }: { phases: readonly RoadmapPhase[] }) {
+  const t = useTranslations('about');
+
   return (
     <>
       {/* — Barre de progression globale — */}
@@ -75,7 +78,7 @@ export function RoadmapTimeline({ phases }: { phases: readonly RoadmapPhase[] })
                       : 'border border-avs-secondary/15 text-avs-secondary/40'
                   }`}
                 >
-                  {status === 'now' ? "En cours · Aujourd'hui" : status === 'done' ? 'Terminé' : 'Prévu'}
+                  {status === 'now' ? t('roadmap.status.now') : status === 'done' ? t('roadmap.status.done') : t('roadmap.status.planned')}
                 </span>
                 {metric && <span className="font-mono text-[10px] tracking-wide text-avs-secondary/40">{metric}</span>}
               </div>

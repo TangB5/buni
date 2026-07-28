@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
 import { Shapes, Sliders, Palette, Component, PenTool, BookMarked, Plug } from 'lucide-react';
+import { useTranslations } from '@buni/i18n';
 
 interface Brick {
   icon: LucideIcon;
@@ -11,17 +12,20 @@ interface Brick {
   span: string; // tailwind col/row span — encodes weight in the infrastructure, not decoration
 }
 
-const BRICKS: Brick[] = [
-  { icon: Shapes,     label: 'Motifs',         detail: '1 248 motifs vectorisés et sourcés',       span: 'sm:col-span-2 sm:row-span-2' },
-  { icon: Sliders,    label: 'Design Tokens',  detail: 'Couleur, espace, rythme — nommés',          span: 'sm:col-span-1' },
-  { icon: Palette,    label: 'Palettes',       detail: 'Combinaisons validées par région',          span: 'sm:col-span-1' },
-  { icon: Component,  label: 'Composants',     detail: 'Figma, Tailwind, React',                    span: 'sm:col-span-1' },
-  { icon: PenTool,    label: 'SVG',            detail: 'Fichiers sources haute-fidélité',            span: 'sm:col-span-1' },
-  { icon: BookMarked, label: 'Documentation',  detail: 'Histoire, usage, provenance',                span: 'sm:col-span-2' },
-  { icon: Plug,       label: 'API',            detail: 'Accès programmatique au standard',           span: 'sm:col-span-2' },
+const getBricks = (t: (key: string) => string): Brick[] => [
+  { icon: Shapes,     label: t('infrastructure.motifs'),         detail: t('infrastructure.motifsDetail'),       span: 'sm:col-span-2 sm:row-span-2' },
+  { icon: Sliders,    label: t('infrastructure.designTokens'),  detail: t('infrastructure.designTokensDetail'),          span: 'sm:col-span-1' },
+  { icon: Palette,    label: t('infrastructure.palettes'),       detail: t('infrastructure.palettesDetail'),          span: 'sm:col-span-1' },
+  { icon: Component,  label: t('infrastructure.components'),     detail: t('infrastructure.componentsDetail'),                    span: 'sm:col-span-1' },
+  { icon: PenTool,    label: t('infrastructure.svg'),            detail: t('infrastructure.svgDetail'),            span: 'sm:col-span-1' },
+  { icon: BookMarked, label: t('infrastructure.documentation'),  detail: t('infrastructure.documentationDetail'),                span: 'sm:col-span-2' },
+  { icon: Plug,       label: t('infrastructure.api'),            detail: t('infrastructure.apiDetail'),           span: 'sm:col-span-2' },
 ];
 
 export function InfrastructureGrid() {
+  const t = useTranslations('about');
+  const BRICKS = getBricks(t);
+
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
       {BRICKS.map(({ icon: Icon, label, detail, span }, i) => (
