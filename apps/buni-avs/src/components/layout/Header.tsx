@@ -20,6 +20,7 @@ import {
   ImageIcon,
   Wand2,
   Box,
+  Languages,
   Moon,
   Sun,
   Settings,
@@ -32,7 +33,7 @@ import { twMerge } from 'tailwind-merge';
 import { useAuth, useLogout } from '@buni/auth';
 import { Comingsoon } from '@buni/ui';
 import { useTheme, ThemeToggle } from '@buni/theme';
-import { useTranslations } from '@buni/i18n';
+import { useTranslations, LocaleToggle, locales } from '@buni/i18n';
 import { Route } from 'next';
 import { authService } from '../../features/auth/services/auth.service';
 
@@ -92,7 +93,7 @@ type NavDropdownProps = {
 function getNavItems(t: any): NavItem[] {
   return [
     {
-      label: t('nav.products'),
+      label: t('products'),
       isMegaMenu: true,
       hidden: true,
       children: [
@@ -182,7 +183,7 @@ function getNavItems(t: any): NavItem[] {
     },
 
     {
-      label: t('nav.community'),
+      label: t('community'),
       children: [
         {
           href: '/patterns',
@@ -210,7 +211,7 @@ function getNavItems(t: any): NavItem[] {
 
     {
       href: '/templates',
-      label: t('nav.templates'),
+      label: t('templates'),
       available: false,
       hidden: true,
       modal: {
@@ -223,7 +224,7 @@ function getNavItems(t: any): NavItem[] {
 
     {
       href: '/documentation',
-      label: t('nav.docs'),
+      label: t('docs'),
       available: true,
       modal: {
         title: 'Documentation en cours de rédaction',
@@ -236,13 +237,13 @@ function getNavItems(t: any): NavItem[] {
 
     {
       href: '/about',
-      label: t('nav.about'),
+      label: t('about'),
       available: true,
     },
 
     {
       href: '/contact',
-      label: t('nav.contact'),
+      label: t('contact'),
       available: true,
     },
   ];
@@ -865,6 +866,11 @@ export function Header() {
               <ThemeToggle />
             </div>
 
+            {/* Locale toggle */}
+            <div className="hidden md:block">
+              <LocaleToggle />
+            </div>
+
             {/* Auth area */}
             {!isHydrated ? (
               <div className="bg-avs-accent/4 h-9 w-28 animate-pulse rounded-xl" />
@@ -1030,7 +1036,25 @@ export function Header() {
                       ) : (
                         <Moon size={17} aria-hidden />
                       )}
-                      {theme === 'dark' ? 'Mode clair' : 'Mode sombre'}
+                      {theme === 'dark' ? themeT('light') : themeT('dark')}
+                    </button>
+                    <button
+                      onClick={() => {
+                        const newLocale = pathname.includes('/fr') ? 'en' : 'fr';
+                        const segments = pathname.split('/');
+                        if (locales.includes(segments[1] as any)) {
+                          segments[1] = newLocale;
+                          router.push(segments.join('/'));
+                        } else {
+                          segments.splice(1, 0, newLocale);
+                          router.push(segments.join('/'));
+                        }
+                        setMobileOpen(false);
+                      }}
+                      className="text-avs-accent/55 hover:bg-avs-accent/4 hover:text-avs-accent flex w-full items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold transition-all duration-150"
+                    >
+                      <Languages size={17} aria-hidden />
+                      {pathname.includes('/fr') ? 'English' : 'Français'}
                     </button>
                   </MobileSection>
 
@@ -1065,7 +1089,7 @@ export function Header() {
                           }}
                           className="text-avs-secondary bg-avs-primary flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all duration-200 hover:opacity-90"
                         >
-                          <LogOut size={15} /> Déconnexion
+                          <LogOut size={15} /> {authT('logout')}
                         </button>
                       </>
                     ) : (
@@ -1075,14 +1099,14 @@ export function Header() {
                           onClick={() => setMobileOpen(false)}
                           className="border-avs-accent/16 text-avs-accent flex w-full items-center justify-center rounded-xl border py-3 text-sm font-bold transition-all duration-200"
                         >
-                          Se connecter
+                          {authT('login')}
                         </Link>
                         <Link
                           href={'/auth/register' as Route}
                           onClick={() => setMobileOpen(false)}
                           className="text-avs-secondary bg-avs-primary flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all duration-200 hover:opacity-90"
                         >
-                          Créer un compte <ArrowRight size={14} />
+                          {authT('register')} <ArrowRight size={14} />
                         </Link>
                       </>
                     )}

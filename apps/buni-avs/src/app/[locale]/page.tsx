@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useRef, useEffect, useState } from 'react';
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { motion,  useMotionValue,  } from 'framer-motion';
 import {
   ArrowRight,
   ArrowUpRight,
@@ -11,154 +11,16 @@ import {
   Users,
   BookOpen,
   Check,
-  Star,
-  Sparkles,
   Download,
 } from 'lucide-react';
 import { cn } from '@buni/ui';
 import { Route } from 'next';
-import { HeroSection } from '../components/layout/HeroSection';
+import { HeroSection } from '../../components/layout/HeroSection';
+import { useTranslations } from '@buni/i18n';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// DATA
+// DATA (moved inside component for i18n)
 // ─────────────────────────────────────────────────────────────────────────────
-
-const STATS = [
-  { value: 1248, display: '1 248', label: 'Motifs',   sub: 'vectorisés'  },
-  { value: 54,   display: '54',    label: 'Pays',     sub: 'représentés' },
-  { value: 312,  display: '312',   label: 'Artisans', sub: 'vérifiés'    },
-  { value: 98,   display: '98k',   label: 'DL',       sub: 'ce mois'     },
-] as const;
-
-const MARQUEE_ITEMS = [
-  'KENTE','NDOP','BOGOLAN','ADINKRA','WAX','KUBA',
-  'NDEBELE','BERBER','TOGHU','RAPHIA','MAASAI','ANKARA',
-];
-
-
-const GALLERY = [
-  { cssClass: 'avs-pattern-ndop-sultan',       type: 'NDOP',    name: 'Ndop Sultan',    origin: 'Foumban · CM', slug: 'ndop-bamoum',      cls: 'lg:col-span-3 lg:row-span-2' },
-  { cssClass: 'avs-pattern-kente-royale',      type: 'KENTE',   name: 'Kente Royale',   origin: 'Kumasi · GH',  slug: 'kente-asante',     cls: 'lg:col-span-2'               },
-  { cssClass: 'avs-pattern-adinkra-sankofa',   type: 'ADINKRA', name: 'Adinkra Sankofa',origin: 'Akan · GH',    slug: 'adinkra-akan', cls: ''                            },
-  { cssClass: 'avs-pattern-kuba-kasai',        type: 'KUBA',    name: 'Kuba Kasai',     origin: 'Kasai · CD',   slug: 'kuba-kasai',      cls: ''                            },
-  { cssClass: 'avs-pattern-bogolan-fanga',     type: 'BOGOLAN', name: 'Bogolan Fanga',  origin: 'Ségou · ML',   slug: 'bogolan-malien',   cls: 'lg:col-span-2'               },
-] as const;
-
-// Features use AVS tokens via inline accentClass/bgClass to avoid hardcoded hex
-const FEATURES = [
-  {
-    num: '01', Icon: Layers,   title: 'Bibliothèque de motifs',
-    desc: '+1 200 motifs par région, époque et symbolisme. SVG, PNG, JSON, CSS.',
-    href: '/patterns',
-    accentClass: 'text-avs-primary',  bgClass: 'bg-avs-primary/8',
-  },
-  {
-    num: '02', Icon: Palette,  title: 'Design tokens culturels',
-    desc: 'Palettes de pigments naturels africains. Tailwind, Figma, CSS Variables.',
-    href: '/colors',
-    accentClass: 'text-avs-kente',    bgClass: 'bg-avs-kente/8',
-  },
-  {
-    num: '03', Icon: Users,    title: "Communauté d'artisans",
-    desc: '312 artisans vérifiés valident chaque entrée. La source primaire, toujours.',
-    href: '/artisans',
-    accentClass: 'text-avs-ndop',     bgClass: 'bg-avs-ndop/8',
-  },
-  {
-    num: '04', Icon: BookOpen, title: 'Composants & Documentation',
-    desc: 'Bibliothèque UI React, templates, icônes SVG. Copy & Paste. Sans compte.',
-    href: '/documentation',
-    accentClass: 'text-avs-indigo',   bgClass: 'bg-avs-indigo/8',
-  },
-] as const;
-
-// Stat numbers for the dark pivot section — use token classes
-const PIVOT_STATS = [
-  { num: '1 248', label: 'Motifs documentés',    accentClass: 'text-avs-primary' },
-  { num: '54',    label: 'Pays représentés',     accentClass: 'text-avs-kente'   },
-  { num: '312',   label: 'Artisans vérifiés',    accentClass: 'text-avs-ndop'    },
-  { num: '98k',   label: 'Téléchargements/mois', accentClass: 'text-avs-indigo'  },
-] as const;
-
-const BENTO = [
-  {
-    css: 'avs-pattern-ndop-sultan',
-    overlay: 'from-avs-accent/94 to-avs-accent/72',
-    span: 'lg:col-span-2',
-    minH: '220px',
-    eyebrow: 'Copy & Paste · Shadcn style',
-    eyeClass: 'text-avs-raffia',
-    titleClass: 'text-avs-secondary',
-    title: 'Vous possédez\nvotre code',
-    desc: 'Copiez les composants, motifs et tokens. Aucune dépendance opaque. Adaptez sans permission.',
-    descClass: 'text-avs-secondary/50',
-    chips: ['Button', 'PatternCard', 'SvgPattern', 'Toast'],
-    chipClass: 'text-avs-raffia border-avs-raffia/30 bg-avs-raffia/8',
-  },
-  {
-    solidClass: 'bg-avs-primary',
-    span: '',
-    minH: '220px',
-    eyebrow: 'Formats · Licences',
-    eyeClass: 'text-avs-secondary/65',
-    titleClass: 'text-avs-secondary',
-    title: 'SVG · PNG\nJSON · CSS',
-    desc: 'Chaque motif dans 4 formats. CC BY 4.0 — usage libre.',
-    descClass: 'text-avs-secondary/55',
-    bigNum: '4×',
-  },
-  {
-    solidClass: 'bg-avs-accent',
-    span: '',
-    minH: '200px',
-    eyebrow: 'Accès public',
-    eyeClass: 'text-avs-secondary/60',
-    titleClass: 'text-avs-secondary',
-    title: 'Aucun compte\nrequis',
-    desc: "Comme PrimeReact. Tout est public. L'auth est optionnelle — seulement pour contribuer.",
-    descClass: 'text-avs-secondary/50',
-    checkmark: true,
-  },
-  {
-    solidClass: 'bg-avs-secondary',
-    borderClass: 'border border-avs-accent/10',
-    span: 'lg:col-span-2',
-    minH: '170px',
-    eyebrow: 'Design tokens',
-    eyeClass: 'text-avs-accent/45',
-    titleClass: 'text-avs-accent',
-    title: 'Intégrez en 30s dans\nFigma, Tailwind, React Native',
-    desc: 'Téléchargez les tokens de couleurs, typographie et spacing pour vos outils',
-    descClass: 'text-avs-accent/45',
-    palette: ['#C0573E','#F5EBE0','#1D1D1B','#D4A017','#4A6741','#2A4A6B','#8B4513','#C8A96E'],
-  },
-] as const;
-
-const TESTIMONIALS = [
-  {
-    css: 'avs-pattern-kente-royale',
-    quote: "AVS est la référence que j'attendais depuis 10 ans. Chaque pixel est documenté avec sa source culturelle.",
-    name: 'Ama Asantewaa', flag: '🇬🇭', role: 'Tisserande Kente · Kumasi',
-  },
-  {
-    css: 'avs-pattern-adinkra-sankofa',
-    quote: "Le Ndop de mon sultanat enfin standardisé. AVS préserve ce que le temps risquait d'effacer.",
-    name: 'Njoya Hamidou', flag: '🇨🇲', role: 'Tisserand Ndop · Foumban',
-  },
-  {
-    css: 'avs-pattern-wax-dakar',
-    quote: "En tant que designer, c'est ma première source. Des tokens prêts pour Figma en deux clics.",
-    name: 'Dr. Amara Diop', flag: '🇸🇳', role: 'Directeur Design · Dakar',
-  },
-] as const;
-
-const COMMUNITY_AVATARS = [
-  'avs-pattern-kente-royale',
-  'avs-pattern-ndop-sultan',
-  'avs-pattern-bogolan-fanga',
-  'avs-pattern-adinkra-sankofa',
-  'avs-pattern-kuba-kasai',
-];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MARQUEE KEYFRAME — minimal, no custom CSS vars needed
@@ -222,8 +84,144 @@ function SectionLabel({ label }: { label: string }) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function HomePage() {
+  const t = useTranslations('home');
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
+
+  // Data with i18n
+  const STATS = [
+    { value: 1248, display: '1 248', label: t('stats.patterns'),   sub: t('stats.vectorized')  },
+    { value: 54,   display: '54',    label: t('stats.countries'),     sub: t('stats.represented') },
+    { value: 312,  display: '312',   label: t('stats.artisans'), sub: t('stats.verified')    },
+    { value: 98,   display: '98k',   label: t('stats.downloads'),       sub: t('stats.thisMonth')     },
+  ] as const;
+
+  const MARQUEE_ITEMS = [
+    'KENTE','NDOP','BOGOLAN','ADINKRA','WAX','KUBA',
+    'NDEBELE','BERBER','TOGHU','RAPHIA','MAASAI','ANKARA',
+  ];
+
+  const GALLERY = [
+    { cssClass: 'avs-pattern-ndop-sultan',       type: 'NDOP',    name: 'Ndop Sultan',    origin: 'Foumban · CM', slug: 'ndop-bamoum',      cls: 'lg:col-span-3 lg:row-span-2' },
+    { cssClass: 'avs-pattern-kente-royale',      type: 'KENTE',   name: 'Kente Royale',   origin: 'Kumasi · GH',  slug: 'kente-asante',     cls: 'lg:col-span-2'               },
+    { cssClass: 'avs-pattern-adinkra-sankofa',   type: 'ADINKRA', name: 'Adinkra Sankofa',origin: 'Akan · GH',    slug: 'adinkra-akan', cls: ''                            },
+    { cssClass: 'avs-pattern-kuba-kasai',        type: 'KUBA',    name: 'Kuba Kasai',     origin: 'Kasai · CD',   slug: 'kuba-kasai',      cls: ''                            },
+    { cssClass: 'avs-pattern-bogolan-fanga',     type: 'BOGOLAN', name: 'Bogolan Fanga',  origin: 'Ségou · ML',   slug: 'bogolan-malien',   cls: 'lg:col-span-2'               },
+  ] as const;
+
+  const FEATURES = [
+    {
+      num: '01', Icon: Layers,   title: t('features.patternLibrary.title'),
+      desc: t('features.patternLibrary.desc'),
+      href: '/patterns',
+      accentClass: 'text-avs-primary',  bgClass: 'bg-avs-primary/8',
+    },
+    {
+      num: '02', Icon: Palette,  title: t('features.designTokens.title'),
+      desc: t('features.designTokens.desc'),
+      href: '/colors',
+      accentClass: 'text-avs-kente',    bgClass: 'bg-avs-kente/8',
+    },
+    {
+      num: '03', Icon: Users,    title: t('features.artisanCommunity.title'),
+      desc: t('features.artisanCommunity.desc'),
+      href: '/artisans',
+      accentClass: 'text-avs-ndop',     bgClass: 'bg-avs-ndop/8',
+    },
+    {
+      num: '04', Icon: BookOpen, title: t('features.documentation.title'),
+      desc: t('features.documentation.desc'),
+      href: '/documentation',
+      accentClass: 'text-avs-indigo',   bgClass: 'bg-avs-indigo/8',
+    },
+  ] as const;
+
+  const PIVOT_STATS = [
+    { num: '1 248', label: t('pivotStats.documentedPatterns'),    accentClass: 'text-avs-primary' },
+    { num: '54',    label: t('pivotStats.representedCountries'),     accentClass: 'text-avs-kente'   },
+    { num: '312',   label: t('pivotStats.verifiedArtisans'),    accentClass: 'text-avs-ndop'    },
+    { num: '98k',   label: t('pivotStats.downloadsPerMonth'), accentClass: 'text-avs-indigo'  },
+  ] as const;
+
+  const BENTO = [
+    {
+      css: 'avs-pattern-ndop-sultan',
+      overlay: 'from-avs-accent/94 to-avs-accent/72',
+      span: 'lg:col-span-2',
+      minH: '220px',
+      eyebrow: t('bento.copyPaste.eyebrow'),
+      eyeClass: 'text-avs-raffia',
+      titleClass: 'text-avs-secondary',
+      title: t('bento.copyPaste.title'),
+      desc: t('bento.copyPaste.desc'),
+      descClass: 'text-avs-secondary/50',
+      chips: ['Button', 'PatternCard', 'SvgPattern', 'Toast'],
+      chipClass: 'text-avs-raffia border-avs-raffia/30 bg-avs-raffia/8',
+    },
+    {
+      solidClass: 'bg-avs-primary',
+      span: '',
+      minH: '220px',
+      eyebrow: t('bento.formats.eyebrow'),
+      eyeClass: 'text-avs-secondary/65',
+      titleClass: 'text-avs-secondary',
+      title: t('bento.formats.title'),
+      desc: t('bento.formats.desc'),
+      descClass: 'text-avs-secondary/55',
+      bigNum: '4×',
+    },
+    {
+      solidClass: 'bg-avs-accent',
+      span: '',
+      minH: '200px',
+      eyebrow: t('bento.publicAccess.eyebrow'),
+      eyeClass: 'text-avs-secondary/60',
+      titleClass: 'text-avs-secondary',
+      title: t('bento.publicAccess.title'),
+      desc: t('bento.publicAccess.desc'),
+      descClass: 'text-avs-secondary/50',
+      checkmark: true,
+    },
+    {
+      solidClass: 'bg-avs-secondary',
+      borderClass: 'border border-avs-accent/10',
+      span: 'lg:col-span-2',
+      minH: '170px',
+      eyebrow: t('bento.designTokens.eyebrow'),
+      eyeClass: 'text-avs-accent/45',
+      titleClass: 'text-avs-accent',
+      title: t('bento.designTokens.title'),
+      desc: t('bento.designTokens.desc'),
+      descClass: 'text-avs-accent/45',
+      palette: ['#C0573E','#F5EBE0','#1D1D1B','#D4A017','#4A6741','#2A4A6B','#8B4513','#C8A96E'],
+    },
+  ] as const;
+
+  const TESTIMONIALS = [
+    {
+      css: 'avs-pattern-kente-royale',
+      quote: t('testimonials.ama.quote'),
+      name: 'Ama Asantewaa', flag: '🇬🇭', role: t('testimonials.ama.role'),
+    },
+    {
+      css: 'avs-pattern-adinkra-sankofa',
+      quote: t('testimonials.njoya.quote'),
+      name: 'Njoya Hamidou', flag: '🇨🇲', role: t('testimonials.njoya.role'),
+    },
+    {
+      css: 'avs-pattern-wax-dakar',
+      quote: t('testimonials.amara.quote'),
+      name: 'Dr. Amara Diop', flag: '🇸🇳', role: t('testimonials.amara.role'),
+    },
+  ] as const;
+
+  const COMMUNITY_AVATARS = [
+    'avs-pattern-kente-royale',
+    'avs-pattern-ndop-sultan',
+    'avs-pattern-bogolan-fanga',
+    'avs-pattern-adinkra-sankofa',
+    'avs-pattern-kuba-kasai',
+  ];
 
   useEffect(() => {
     const handler = (e: MouseEvent) => { cursorX.set(e.clientX); cursorY.set(e.clientY); };
@@ -263,12 +261,12 @@ export default function HomePage() {
           
           <div className="mx-auto max-w-7xl">
             <div className="mb-8 flex items-center justify-between">
-              <SectionLabel label="Patrimoine · Motifs en vedette" />
+              <SectionLabel label={t('gallery.label')} />
               <Link
                 href={'/patterns' as Route}
                 className="flex items-center gap-1.5 text-xs font-semibold text-avs-accent/45 hover:text-avs-primary transition-colors"
               >
-                Tout voir <ArrowRight size={12} />
+                {t('gallery.viewAll')} <ArrowRight size={12} />
               </Link>
             </div>
 
@@ -334,7 +332,7 @@ export default function HomePage() {
           <div className="relative mx-auto max-w-6xl px-6 lg:px-8">
             <div className="grid items-center gap-12 lg:grid-cols-2">
               <div>
-                <SectionLabel label="Héritage · Documentation · Standard" />
+                <SectionLabel label={t('pivot.label')} />
                 <motion.h2
                   initial={{ opacity: 0, y: 28 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -343,8 +341,8 @@ export default function HomePage() {
                   className="font-display leading-[.9] font-black text-avs-secondary"
                   style={{ fontSize: 'clamp(2.5rem,5vw,4.25rem)', letterSpacing: '-0.025em' }}
                 >
-                  Chaque motif<br />porte une<br />
-                  <span className="text-avs-primary">histoire</span>
+                  {t('pivot.title1')}<br />{t('pivot.title2')}<br />
+                  <span className="text-avs-primary">{t('pivot.title3')}</span>
                 </motion.h2>
 
                 <motion.p
@@ -354,8 +352,7 @@ export default function HomePage() {
                   transition={{ delay: 0.2, duration: 0.6 }}
                   className="mt-6 max-w-md leading-relaxed text-avs-secondary/55"
                 >
-                  Région d&apos;origine, peuple, époque, symbolisme cérémoniel. Une archive vivante,
-                  ouverte, vérifiée par des artisans réels.
+                  {t('pivot.description')}
                 </motion.p>
 
                 <motion.div
@@ -365,11 +362,11 @@ export default function HomePage() {
                   transition={{ delay: 0.35, duration: 0.6 }}
                   className="mt-8 flex flex-wrap gap-2"
                 >
-                  {['CC BY 4.0', 'Open Source', 'Aucun compte requis', 'SVG · PNG · JSON · CSS'].map((tag) => (
+                  {[t('pivot.tag1'), t('pivot.tag2'), t('pivot.tag3'), t('pivot.tag4')].map((tag) => (
                     <span
                       key={tag}
                       className={`rounded-xl px-4 py-1.5 text-xs font-medium ${
-                        tag === 'CC BY 4.0'
+                        tag === t('pivot.tag1')
                           ? 'bg-avs-primary/12 border border-avs-primary/28 text-avs-primary'
                           : 'border border-avs-secondary/10 text-avs-secondary/70'
                       }`}
@@ -405,19 +402,18 @@ export default function HomePage() {
           <div className="mx-auto max-w-6xl">
             <div className="mb-16 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
               <div>
-                <SectionLabel label="Ce que nous offrons" />
+                <SectionLabel label={t('features.label')} />
                 <h2
                   id="features-title"
                   className="font-display leading-[.92] font-black text-avs-accent"
                   style={{ fontSize: 'clamp(2rem,4vw,3.5rem)', letterSpacing: '-0.025em' }}
                 >
-                  Un standard<br />
-                  <span className="text-avs-primary">ouvert</span> &amp; rigoureux
+                  {t('features.title1')}<br />
+                  <span className="text-avs-primary">{t('features.title2')}</span> &amp; {t('features.title3')}
                 </h2>
               </div>
               <p className="max-w-xs text-sm leading-relaxed lg:text-right text-avs-accent/45">
-                Tout est accessible sans compte, comme PrimeReact. La connaissance africaine
-                appartient à l&apos;humanité.
+                {t('features.description')}
               </p>
             </div>
 
@@ -463,7 +459,7 @@ export default function HomePage() {
         {/* ══ § 6 — BENTO ═════════════════════════════════════════════════ */}
         <section aria-labelledby="bento-title" className="px-6 pt-20 pb-24 lg:px-8 bg-avs-secondary">
           <div className="mx-auto max-w-6xl">
-            <SectionLabel label="Pourquoi AVS" />
+            <SectionLabel label={t('bento.label')} />
             <motion.div
               initial="initial"
               whileInView="animate"
@@ -552,7 +548,7 @@ export default function HomePage() {
         {/* ══ § 7 — TESTIMONIALS ══════════════════════════════════════════ */}
         <section aria-labelledby="testimonials-title" className="px-6 py-24 lg:px-8 bg-avs-secondary-dark">
           <div className="mx-auto max-w-6xl">
-            <SectionLabel label="Ils utilisent AVS" />
+            <SectionLabel label={t('testimonials.label')} />
             <motion.div
               initial="initial"
               whileInView="animate"
@@ -628,9 +624,9 @@ export default function HomePage() {
               className="font-display leading-[.9] font-black tracking-[-0.025em] text-avs-secondary"
               style={{ fontSize: 'clamp(2.75rem,7vw,5.75rem)' }}
             >
-              Construisons<br />
-              <span className="text-avs-primary">le standard</span><br />
-              africain
+              {t('cta.title1')}<br />
+              <span className="text-avs-primary">{t('cta.title2')}</span><br />
+              {t('cta.title3')}
             </motion.h2>
 
             <motion.p
@@ -640,8 +636,7 @@ export default function HomePage() {
               transition={{ delay: 0.2, duration: 0.6 }}
               className="mx-auto mt-8 max-w-md leading-relaxed text-avs-secondary/52"
             >
-              Artisan, designer, chercheur ou développeur — votre savoir enrichit la plus grande
-              archive visuelle africaine open-source du monde.
+              {t('cta.description')}
             </motion.p>
 
             <motion.div
@@ -659,14 +654,14 @@ export default function HomePage() {
                   className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full"
                   aria-hidden
                 />
-                Rejoindre gratuitement{' '}
+                {t('cta.joinFree')}{' '}
                 <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" />
               </Link>
               <Link
                 href={'/patterns' as Route}
                 className="inline-flex items-center gap-2 rounded-xl px-9 py-4 text-sm font-semibold border border-avs-secondary/14 text-avs-secondary/75 hover:border-avs-secondary/28 hover:text-avs-secondary transition-all duration-200"
               >
-                Explorer d&apos;abord
+                {t('cta.exploreFirst')}
               </Link>
             </motion.div>
 

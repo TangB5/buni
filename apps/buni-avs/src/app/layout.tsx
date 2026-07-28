@@ -1,31 +1,24 @@
 import type { Metadata, Viewport } from 'next';
 
-import { Header } from '../components/layout/Header';
-import { Footer } from '../components/layout/Footer';
-import { Providers } from '../components/layout/Providers';
 import '@/theme/tokens/avs-tokens.css';
 import '@/theme/patterns/patterns.css';
 import './globals.css';
-import { AuthListener } from '../components/auth/AuthListener';
-import { AuthHydrator } from '../components/auth/AuthHydrator';
-import { ErrorBoundary } from '../components/feedback';
-import localFont from "next/font/local';
+import localFont from 'next/font/local';
 
 export const dmSans = localFont({
-  src: "../../public/fonts/DM_Sans/DMSans-Regular.ttf",
-  variable: "--font-body",
+  src: '../../public/fonts/DM_Sans/DMSans-Regular.ttf',
+  variable: '--font-body',
 });
 
-export const playfair=localFont({
-  src:"../../public/fonts/Playfair_Display/PlayfairDisplay-Regular.ttf",
-  variable:"--font-display"
-})
+export const playfair = localFont({
+  src: '../../public/fonts/Playfair_Display/PlayfairDisplay-Regular.ttf',
+  variable: '--font-display',
+});
 
-export const jetbrains=localFont({
-  src:"../../public/fonts/JetBrains_Mono/JetBrainsMono-Regular.ttf",
-  variable:"--font-mono"
-})
-
+export const jetbrains = localFont({
+  src: '../../public/fonts/JetBrains_Mono/JetBrainsMono-Regular.ttf',
+  variable: '--font-mono',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'),
@@ -77,28 +70,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       suppressHydrationWarning
     >
       <body className="bg-avs-secondary font-body text-avs-accent selection:bg-avs-primary/20 selection:text-avs-primary min-h-screen antialiased overflow-x-hidden">
-        <ErrorBoundary>
-          
-        <Providers>
-          <AuthHydrator />
-          <AuthListener />
-
-          <a
-            href="#main-content"
-            className="focus:rounded-avs focus:bg-avs-primary focus:text-avs-secondary sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:text-sm focus:font-bold"
-          >
-            Aller au contenu principal
-          </a>
-
-          <Header />
-
-          <main id="main-content" tabIndex={-1} className="outline-none">
-            {children}
-          </main>
-
-          <Footer />
-        </Providers>
-    </ErrorBoundary>
+        {children}
       </body>
     </html>
   );

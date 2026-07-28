@@ -12,16 +12,17 @@ import { Route } from 'next';
 import { useLogin } from '@/features/auth/hooks/useLogin';
 import { authService } from '@/features/auth/services/auth.service';
 import { GoogleLoginButton,GithubLoginButton } from '@buni/auth';
+import { useTranslations } from '@buni/i18n';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // VALIDATION
 // ─────────────────────────────────────────────────────────────────────────────
 
-const LoginSchema = z.object({
-  email: z.string().email('Email invalide'),
-  password: z.string().min(8, 'Minimum 8 caractères'),
-});
-type LoginForm = z.infer<typeof LoginSchema>;
+// Schema will be created inside component to use translations
+type LoginForm = {
+  email: string;
+  password: string;
+};
 type FieldErrors = Partial<Record<keyof LoginForm, string>>;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -47,49 +48,8 @@ const PAGE_STYLES = `
 `;
 
 // ─────────────────────────────────────────────────────────────────────────────
-// DATA
+// DATA (moved inside component for i18n)
 // ─────────────────────────────────────────────────────────────────────────────
-
-const PATTERN_CARDS = [
-  {
-    css: 'avs-pattern-ndop-sultan',
-    name: 'Ndop Sultan',
-    origin: 'Foumban · CM',
-    rotate: '-3deg',
-    style: { top: '8%', left: '6%', width: '52%', height: '44%' },
-  },
-  {
-    css: 'avs-pattern-kente-royale',
-    name: 'Kente Royale',
-    origin: 'Kumasi · GH',
-    rotate: '2deg',
-    style: { top: '6%', right: '4%', width: '38%', height: '32%' },
-  },
-  {
-    css: 'avs-pattern-bogolan-fanga',
-    name: 'Bogolan Fanga',
-    origin: 'Ségou · ML',
-    rotate: '-1.5deg',
-    style: { bottom: '18%', left: '2%', width: '44%', height: '26%' },
-  },
-  {
-    css: 'avs-pattern-adinkra-sankofa',
-    name: 'Adinkra',
-    origin: 'Akan · GH',
-    rotate: '1deg',
-    style: { bottom: '8%', right: '3%', width: '40%', height: '28%' },
-  },
-] as const;
-
-const TESTIMONIALS_MINI = [
-  {
-    pattern: 'avs-pattern-kente-royale',
-    initial: 'A',
-    text: 'Premier outil de référence africain.',
-  },
-  { pattern: 'avs-pattern-ndop-sultan', initial: 'N', text: 'Indispensable pour chaque créateur.' },
-  { pattern: 'avs-pattern-adinkra-sankofa', initial: 'F', text: "Le standard que l'on attendait." },
-] as const;
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -146,6 +106,7 @@ function Field({
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function LoginPage() {
+  const t = useTranslations('login');
   const user = useAuthStore((s) => s.user);
   const { mutate, isPending, error } = useLogin();
   const { add } = useToast();
@@ -155,6 +116,21 @@ export default function LoginPage() {
   const [showPwd, setShowPwd] = useState(false);
   const [focused, setFocused] = useState<string | null>(null);
   const [githubCode, setGithubCode] = useState<string | null>(null);
+
+  const TESTIMONIALS_MINI = [
+    {
+      pattern: 'avs-pattern-kente-royale',
+      initial: 'A',
+      text: t('testimonials.a'),
+    },
+    { pattern: 'avs-pattern-ndop-sultan', initial: 'N', text: t('testimonials.n') },
+    { pattern: 'avs-pattern-adinkra-sankofa', initial: 'F', text: t('testimonials.f') },
+  ] as const;
+
+  const LoginSchema = z.object({
+    email: z.string().email(t('validation.invalidEmail')),
+    password: z.string().min(8, t('validation.passwordTooShort')),
+  });
 
   const validate = (): boolean => {
     const result = LoginSchema.safeParse(form);
@@ -195,15 +171,15 @@ export default function LoginPage() {
       onSuccess: () => {
         add({
           variant: 'success',
-          title: 'Connexion réussie',
-          message: 'Bienvenue ! Vous êtes maintenant connecté.'
+          title: t('toast.success.title'),
+          message: t('toast.success.message')
         });
       },
       onError: (err) => {
         add({
           variant: 'error',
-          title: 'Échec de la connexion',
-          message: err?.message || 'Email ou mot de passe incorrect. Veuillez réessayer.'
+          title: t('toast.error.title'),
+          message: err?.message || t('toast.error.message')
         });
       }
     });
@@ -287,13 +263,13 @@ export default function LoginPage() {
                 className="font-display text-avs-secondary text-2xl leading-snug font-bold"
                 style={{ letterSpacing: '-0.015em' }}
               >
-                L&apos;identité d&apos;un peuple
+                {t('quote.line1')}
                 <br />
-                se lit dans ses motifs.
+                {t('quote.line2')}
               </blockquote>
               <p className="text-avs-secondary/45 mt-3 text-sm">
                 {' '}
-                — NDOH yannick TANG, fondateur AVS
+                — {t('quote.author')}
               </p>
 
               <div className="mt-8 space-y-3">
@@ -344,22 +320,22 @@ export default function LoginPage() {
               <div className="mb-3 flex items-center gap-2">
                 <div className="bg-avs-primary h-px w-6" aria-hidden />
                 <span className="text-avs-primary font-mono text-[9px] tracking-[0.24em] uppercase">
-                  Espace membre
+                  {t('heading.label')}
                 </span>
               </div>
               <h1
                 className="font-display text-avs-accent leading-none font-black"
                 style={{ fontSize: 'clamp(1.75rem,4vw,2.5rem)', letterSpacing: '-0.025em' }}
               >
-                Connexion
+                {t('heading.title')}
               </h1>
               <p className="text-avs-accent/55 mt-2 text-sm">
-                Pas encore de compte ?{' '}
+                {t('heading.noAccount')}{' '}
                 <Link
                   href={'/auth/register' as Route}
                   className="text-avs-primary font-semibold underline-offset-3 hover:underline"
                 >
-                  S&apos;inscrire gratuitement
+                  {t('heading.registerLink')}
                 </Link>
               </p>
             </div>
@@ -383,7 +359,7 @@ export default function LoginPage() {
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-5" noValidate>
               {/* Email */}
-              <Field id="email" label="Email" error={errors.email}>
+              <Field id="email" label={t('fields.email.label')} error={errors.email}>
                 <div className="relative">
                   <Mail
                     size={14}
@@ -401,7 +377,7 @@ export default function LoginPage() {
                       setFocused(null);
                       validate();
                     }}
-                    placeholder="vous@exemple.com"
+                    placeholder={t('fields.email.placeholder')}
                     disabled={isPending}
                     style={{ ...inputStyle('email'), paddingLeft: '2.5rem', paddingRight: '1rem' }}
                     aria-describedby={errors.email ? 'email-error' : undefined}
@@ -413,14 +389,14 @@ export default function LoginPage() {
               {/* Password */}
               <Field
                 id="password"
-                label="Mot de passe"
+                label={t('fields.password.label')}
                 error={errors.password}
                 right={
                   <Link
                     href={'/auth/forgot' as Route}
                     className="text-avs-primary text-xs font-medium underline-offset-3 hover:underline"
                   >
-                    Oublié ?
+                    {t('fields.password.forgot')}
                   </Link>
                 }
               >
@@ -436,7 +412,7 @@ export default function LoginPage() {
                       setFocused(null);
                       validate();
                     }}
-                    placeholder="••••••••"
+                    placeholder={t('fields.password.placeholder')}
                     disabled={isPending}
                     style={{ ...inputStyle('password'), paddingLeft: '1rem', paddingRight: '3rem' }}
                     aria-describedby={errors.password ? 'pwd-error' : undefined}
@@ -447,7 +423,7 @@ export default function LoginPage() {
                     onClick={() => setShowPwd((v) => !v)}
                     disabled={isPending}
                     className="text-avs-accent/32 hover:text-avs-accent absolute top-1/2 right-3.5 -translate-y-1/2 transition-colors"
-                    aria-label={showPwd ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+                    aria-label={showPwd ? t('fields.password.hide') : t('fields.password.show')}
                   >
                     {showPwd ? <EyeOff size={14} /> : <Eye size={14} />}
                   </button>
@@ -468,11 +444,11 @@ export default function LoginPage() {
                 <span className="relative flex items-center justify-center gap-2">
                   {isPending ? (
                     <>
-                      <BuniLoader size={18} showText={false} /> Connexion…
+                      <BuniLoader size={18} showText={false} /> {t('submit.loading')}
                     </>
                   ) : (
                     <>
-                      Se connecter{' '}
+                      {t('submit.text')}{' '}
                       <ArrowRight
                         size={14}
                         className="transition-transform group-hover:translate-x-0.5"
@@ -486,7 +462,7 @@ export default function LoginPage() {
               <div className="flex items-center gap-3">
                 <div className="bg-avs-accent/9 h-px flex-1" />
                 <span className="text-avs-accent/38 font-mono text-[9px] tracking-[0.18em] uppercase">
-                  ou continuer avec
+                  {t('divider')}
                 </span>
                 <div className="bg-avs-accent/9 h-px flex-1" />
               </div>
@@ -511,24 +487,24 @@ export default function LoginPage() {
             {/* Trust footer */}
             <div className="mt-8 flex items-center justify-between">
               <p className="text-avs-accent/38 text-[11px] leading-relaxed">
-                En vous connectant, vous acceptez nos{' '}
+                {t('footer.acceptTerms')}{' '}
                 <Link
                   href={'/terms' as Route}
                   className="text-avs-accent/38 underline underline-offset-3"
                 >
-                  conditions
+                  {t('footer.terms')}
                 </Link>{' '}
-                et notre{' '}
+                {t('footer.and')}{' '}
                 <Link
                   href={'/privacy' as Route}
                   className="text-avs-accent/38 underline underline-offset-3"
                 >
-                  confidentialité
+                  {t('footer.privacy')}
                 </Link>
                 .
               </p>
               <span className="bg-avs-primary/8 text-avs-primary border-avs-primary/20 shrink-0 rounded-lg border px-2.5 py-1 font-mono text-[9px] font-bold tracking-wide uppercase">
-                Apache 2.0 + Commons Clause
+                {t('footer.license')}
               </span>
             </div>
           </motion.div>

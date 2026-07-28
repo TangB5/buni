@@ -12,7 +12,7 @@ const AUTH_ROUTES = ['/auth/login', '/auth/register'];
 const intlMiddleware = createMiddleware({
   locales,
   defaultLocale,
-  localePrefix: 'as-needed',
+  localePrefix: 'always',
 });
 
 export function middleware(request: NextRequest) {
@@ -32,7 +32,7 @@ export function middleware(request: NextRequest) {
 
   // ── Redirection login si route protégée sans token ──────────────────────────
   if (isProtected && !token) {
-    const url = new URL('/auth/login', request.url);
+    const url = new URL(`/${defaultLocale}/auth/login`, request.url);
     url.searchParams.set('callbackUrl', pathname);
     url.searchParams.set('reason', 'auth_required');
     return NextResponse.redirect(url);
@@ -40,7 +40,7 @@ export function middleware(request: NextRequest) {
 
   // ── Si déjà connecté, ne pas re-afficher login/register ────────────────────
   if (isAuthRoute && token) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+    return NextResponse.redirect(new URL(`/${defaultLocale}/dashboard`, request.url));
   }
 
   // ── Headers de sécurité sur toutes les réponses ─────────────────────────────

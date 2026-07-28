@@ -1,8 +1,8 @@
 'use client';
 
 import { useParams, useSearchParams } from 'next/navigation';
-import PatternDetailsPage from '../../../../features/patterns/components/PatternDetailsPage';
-import PatternEditPage from '../../../../features/patterns/components/PatternEditPage';
+import PatternDetailsPage from '../../../../../features/patterns/components/PatternDetailsPage';
+import PatternEditPage from '../../../../../features/patterns/components/PatternEditPage';
 
 
 export default function PatternPage() {

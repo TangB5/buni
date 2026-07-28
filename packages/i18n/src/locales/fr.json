@@ -51,6 +51,185 @@
     "dark": "Mode sombre",
     "toggle": "Changer de thème"
   },
+  "hero": {
+    "title1": "Chaque motif",
+    "title2": "a une histoire",
+    "title3": "Nous l'avons codée.",
+    "description": "vérifient l'origine, la symbolique et les droits d'usage de chaque motif avant qu'il ne devienne un token — prêt pour la production, sans compte requis.",
+    "artisansCount": "312 artisans-conservateurs",
+    "exploreSystem": "Explorer le système",
+    "viewDocs": "Voir la documentation",
+    "communityProof": "+312 artisans",
+    "verifyEachPattern": "vérifient chaque motif",
+    "verifiedProvenance": "Provenance vérifiée",
+    "footnote1": "motifs documentés",
+    "footnote2": "pays représentés",
+    "footnote3": "artisans-conservateurs",
+    "footnote4": "motif sans provenance vérifiée",
+    "tokensLabel": "Tokens — cliquer pour copier",
+    "copyToken": "Copier le token",
+    "tailwind": "Tailwind",
+    "figma": "Figma"
+  },
+  "home": {
+    "stats": {
+      "patterns": "Motifs",
+      "vectorized": "vectorisés",
+      "countries": "Pays",
+      "represented": "représentés",
+      "artisans": "Artisans",
+      "verified": "vérifiés",
+      "downloads": "DL",
+      "thisMonth": "ce mois"
+    },
+    "gallery": {
+      "label": "Patrimoine · Motifs en vedette",
+      "viewAll": "Tout voir"
+    },
+    "pivot": {
+      "label": "Héritage · Documentation · Standard",
+      "title1": "Chaque motif",
+      "title2": "porte une",
+      "title3": "histoire",
+      "description": "Région d'origine, peuple, époque, symbolisme cérémoniel. Une archive vivante, ouverte, vérifiée par des artisans réels.",
+      "tag1": "CC BY 4.0",
+      "tag2": "Open Source",
+      "tag3": "Aucun compte requis",
+      "tag4": "SVG · PNG · JSON · CSS"
+    },
+    "features": {
+      "label": "Ce que nous offrons",
+      "title1": "Un standard",
+      "title2": "ouvert",
+      "title3": "rigoureux",
+      "description": "Tout est accessible sans compte, comme PrimeReact. La connaissance africaine appartient à l'humanité.",
+      "patternLibrary": {
+        "title": "Bibliothèque de motifs",
+        "desc": "+1 200 motifs par région, époque et symbolisme. SVG, PNG, JSON, CSS."
+      },
+      "designTokens": {
+        "title": "Design tokens culturels",
+        "desc": "Palettes de pigments naturels africains. Tailwind, Figma, CSS Variables."
+      },
+      "artisanCommunity": {
+        "title": "Communauté d'artisans",
+        "desc": "312 artisans vérifiés valident chaque entrée. La source primaire, toujours."
+      },
+      "documentation": {
+        "title": "Composants & Documentation",
+        "desc": "Bibliothèque UI React, templates, icônes SVG. Copy & Paste. Sans compte."
+      }
+    },
+    "pivotStats": {
+      "documentedPatterns": "Motifs documentés",
+      "representedCountries": "Pays représentés",
+      "verifiedArtisans": "Artisans vérifiés",
+      "downloadsPerMonth": "Téléchargements/mois"
+    },
+    "bento": {
+      "label": "Pourquoi AVS",
+      "copyPaste": {
+        "eyebrow": "Copy & Paste · Shadcn style",
+        "title": "Vous possédez\nvotre code",
+        "desc": "Copiez les composants, motifs et tokens. Aucune dépendance opaque. Adaptez sans permission."
+      },
+      "formats": {
+        "eyebrow": "Formats · Licences",
+        "title": "SVG · PNG\nJSON · CSS",
+        "desc": "Chaque motif dans 4 formats. CC BY 4.0 — usage libre."
+      },
+      "publicAccess": {
+        "eyebrow": "Accès public",
+        "title": "Aucun compte\nrequis",
+        "desc": "Comme PrimeReact. Tout est public. L'auth est optionnelle — seulement pour contribuer."
+      },
+      "designTokens": {
+        "eyebrow": "Design tokens",
+        "title": "Intégrez en 30s dans\nFigma, Tailwind, React Native",
+        "desc": "Téléchargez les tokens de couleurs, typographie et spacing pour vos outils"
+      }
+    },
+    "testimonials": {
+      "label": "Ils utilisent AVS",
+      "ama": {
+        "quote": "AVS est la référence que j'attendais depuis 10 ans. Chaque pixel est documenté avec sa source culturelle.",
+        "role": "Tisserande Kente · Kumasi"
+      },
+      "njoya": {
+        "quote": "Le Ndop de mon sultanat enfin standardisé. AVS préserve ce que le temps risquait d'effacer.",
+        "role": "Tisserand Ndop · Foumban"
+      },
+      "amara": {
+        "quote": "En tant que designer, c'est ma première source. Des tokens prêts pour Figma en deux clics.",
+        "role": "Directeur Design · Dakar"
+      }
+    },
+    "cta": {
+      "title1": "Construisons",
+      "title2": "le standard",
+      "title3": "africain",
+      "description": "Artisan, designer, chercheur ou développeur — votre savoir enrichit la plus grande archive visuelle africaine open-source du monde.",
+      "joinFree": "Rejoindre gratuitement",
+      "exploreFirst": "Explorer d'abord"
+    }
+  },
+  "login": {
+    "testimonials": {
+      "a": "Premier outil de référence africain.",
+      "n": "Indispensable pour chaque créateur.",
+      "f": "Le standard que l'on attendait."
+    },
+    "quote": {
+      "line1": "L'identité d'un peuple",
+      "line2": "se lit dans ses motifs.",
+      "author": "NDOH Yannick TANG, fondateur AVS"
+    },
+    "heading": {
+      "label": "Espace membre",
+      "title": "Connexion",
+      "noAccount": "Pas encore de compte ?",
+      "registerLink": "S'inscrire gratuitement"
+    },
+    "validation": {
+      "invalidEmail": "Email invalide",
+      "passwordTooShort": "Minimum 8 caractères"
+    },
+    "fields": {
+      "email": {
+        "label": "Email",
+        "placeholder": "vous@exemple.com"
+      },
+      "password": {
+        "label": "Mot de passe",
+        "placeholder": "••••••••",
+        "forgot": "Oublié ?",
+        "show": "Afficher le mot de passe",
+        "hide": "Masquer le mot de passe"
+      }
+    },
+    "submit": {
+      "text": "Se connecter",
+      "loading": "Connexion…"
+    },
+    "divider": "ou continuer avec",
+    "toast": {
+      "success": {
+        "title": "Connexion réussie",
+        "message": "Bienvenue ! Vous êtes maintenant connecté."
+      },
+      "error": {
+        "title": "Échec de la connexion",
+        "message": "Email ou mot de passe incorrect. Veuillez réessayer."
+      }
+    },
+    "footer": {
+      "acceptTerms": "En vous connectant, vous acceptez nos",
+      "terms": "conditions",
+      "and": "et notre",
+      "privacy": "confidentialité",
+      "license": "Apache 2.0 + Commons Clause"
+    }
+  },
   "errors": {
     "required": "Ce champ est requis",
     "invalidEmail": "Email invalide",

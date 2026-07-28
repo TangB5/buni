@@ -51,6 +51,185 @@
     "dark": "Dark mode",
     "toggle": "Toggle theme"
   },
+  "hero": {
+    "title1": "Every pattern",
+    "title2": "has a story",
+    "title3": "We've coded it.",
+    "description": "verify the origin, symbolism and usage rights of each pattern before it becomes a token — ready for production, no account required.",
+    "artisansCount": "312 artisan-conservators",
+    "exploreSystem": "Explore the system",
+    "viewDocs": "View documentation",
+    "communityProof": "+312 artisans",
+    "verifyEachPattern": "verify each pattern",
+    "verifiedProvenance": "Verified provenance",
+    "footnote1": "documented patterns",
+    "footnote2": "countries represented",
+    "footnote3": "artisan-conservators",
+    "footnote4": "pattern without verified provenance",
+    "tokensLabel": "Tokens — click to copy",
+    "copyToken": "Copy token",
+    "tailwind": "Tailwind",
+    "figma": "Figma"
+  },
+  "home": {
+    "stats": {
+      "patterns": "Patterns",
+      "vectorized": "vectorized",
+      "countries": "Countries",
+      "represented": "represented",
+      "artisans": "Artisans",
+      "verified": "verified",
+      "downloads": "DL",
+      "thisMonth": "this month"
+    },
+    "gallery": {
+      "label": "Heritage · Featured Patterns",
+      "viewAll": "View all"
+    },
+    "pivot": {
+      "label": "Heritage · Documentation · Standard",
+      "title1": "Every pattern",
+      "title2": "carries a",
+      "title3": "story",
+      "description": "Region of origin, people, era, ceremonial symbolism. A living, open archive, verified by real artisans.",
+      "tag1": "CC BY 4.0",
+      "tag2": "Open Source",
+      "tag3": "No account required",
+      "tag4": "SVG · PNG · JSON · CSS"
+    },
+    "features": {
+      "label": "What we offer",
+      "title1": "An open",
+      "title2": "standard",
+      "title3": "rigorous",
+      "description": "Everything is accessible without an account, like PrimeReact. African knowledge belongs to humanity.",
+      "patternLibrary": {
+        "title": "Pattern Library",
+        "desc": "+1,200 patterns by region, era and symbolism. SVG, PNG, JSON, CSS."
+      },
+      "designTokens": {
+        "title": "Cultural Design Tokens",
+        "desc": "Natural African pigment palettes. Tailwind, Figma, CSS Variables."
+      },
+      "artisanCommunity": {
+        "title": "Artisan Community",
+        "desc": "312 verified artisans validate each entry. The primary source, always."
+      },
+      "documentation": {
+        "title": "Components & Documentation",
+        "desc": "React UI library, templates, SVG icons. Copy & Paste. No account."
+      }
+    },
+    "pivotStats": {
+      "documentedPatterns": "Documented patterns",
+      "representedCountries": "Countries represented",
+      "verifiedArtisans": "Verified artisans",
+      "downloadsPerMonth": "Downloads/month"
+    },
+    "bento": {
+      "label": "Why AVS",
+      "copyPaste": {
+        "eyebrow": "Copy & Paste · Shadcn style",
+        "title": "You own\nyour code",
+        "desc": "Copy components, patterns and tokens. No opaque dependencies. Adapt without permission."
+      },
+      "formats": {
+        "eyebrow": "Formats · Licenses",
+        "title": "SVG · PNG\nJSON · CSS",
+        "desc": "Each pattern in 4 formats. CC BY 4.0 — free use."
+      },
+      "publicAccess": {
+        "eyebrow": "Public access",
+        "title": "No account\nrequired",
+        "desc": "Like PrimeReact. Everything is public. Auth is optional — only for contributing."
+      },
+      "designTokens": {
+        "eyebrow": "Design tokens",
+        "title": "Integrate in 30s into\nFigma, Tailwind, React Native",
+        "desc": "Download color, typography and spacing tokens for your tools"
+      }
+    },
+    "testimonials": {
+      "label": "They use AVS",
+      "ama": {
+        "quote": "AVS is the reference I've been waiting for for 10 years. Every pixel is documented with its cultural source.",
+        "role": "Kente Weaver · Kumasi"
+      },
+      "njoya": {
+        "quote": "My sultanate's Ndop finally standardized. AVS preserves what time risked erasing.",
+        "role": "Ndop Weaver · Foumban"
+      },
+      "amara": {
+        "quote": "As a designer, it's my first source. Tokens ready for Figma in two clicks.",
+        "role": "Design Director · Dakar"
+      }
+    },
+    "cta": {
+      "title1": "Let's build",
+      "title2": "the standard",
+      "title3": "African",
+      "description": "Artisan, designer, researcher or developer — your knowledge enriches the world's largest open-source African visual archive.",
+      "joinFree": "Join for free",
+      "exploreFirst": "Explore first"
+    }
+  },
+  "login": {
+    "testimonials": {
+      "a": "First African reference tool.",
+      "n": "Essential for every creator.",
+      "f": "The standard we've been waiting for."
+    },
+    "quote": {
+      "line1": "The identity of a people",
+      "line2": "is read in their patterns.",
+      "author": "NDOH Yannick TANG, AVS founder"
+    },
+    "heading": {
+      "label": "Member area",
+      "title": "Login",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Sign up for free"
+    },
+    "validation": {
+      "invalidEmail": "Invalid email",
+      "passwordTooShort": "Minimum 8 characters"
+    },
+    "fields": {
+      "email": {
+        "label": "Email",
+        "placeholder": "you@example.com"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "••••••••",
+        "forgot": "Forgot?",
+        "show": "Show password",
+        "hide": "Hide password"
+      }
+    },
+    "submit": {
+      "text": "Log in",
+      "loading": "Logging in…"
+    },
+    "divider": "or continue with",
+    "toast": {
+      "success": {
+        "title": "Login successful",
+        "message": "Welcome! You are now connected."
+      },
+      "error": {
+        "title": "Login failed",
+        "message": "Incorrect email or password. Please try again."
+      }
+    },
+    "footer": {
+      "acceptTerms": "By logging in, you accept our",
+      "terms": "terms",
+      "and": "and our",
+      "privacy": "privacy",
+      "license": "Apache 2.0 + Commons Clause"
+    }
+  },
   "errors": {
     "required": "This field is required",
     "invalidEmail": "Invalid email",

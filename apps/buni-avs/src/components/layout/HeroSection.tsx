@@ -13,6 +13,7 @@ import {
   useReducedMotion,
 } from 'framer-motion';
 import { ArrowRight, Check, Command, Copy, MoveDown } from 'lucide-react';
+import { useTranslations } from '@buni/i18n';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DATA — the hero IS a live instance of the design system, not a picture of it
@@ -112,10 +113,10 @@ const PATTERNS: readonly PatternFamily[] = [
 ] as const;
 
 const FOOTNOTES = [
-  { index: 0,  value: '1 248', label: 'motifs documentés' },
-  { index: 1,  value: '54', label: 'pays représentés' },
-  { index: 2,  value: '312', label: 'artisans-conservateurs' },
-  { index: 3,  value: '0', label: 'motif sans provenance vérifiée' },
+  { index: 0,  value: '1 248', labelKey: 'footnote1' },
+  { index: 1,  value: '54', labelKey: 'footnote2' },
+  { index: 2,  value: '312', labelKey: 'footnote3' },
+  { index: 3,  value: '0', labelKey: 'footnote4' },
 ] as const;
 
 const COMMUNITY_AVATARS = [
@@ -178,21 +179,24 @@ const HERO_STYLES = `
 // ─────────────────────────────────────────────────────────────────────────────
 function FormatChip({
   label,
+  labelKey,
   bg,
   className,
   style,
 }: {
-  label: string;
+  label?: string;
+  labelKey?: string;
   bg: string;
   className?: string;
   style?: React.CSSProperties;
 }) {
+  const t = useTranslations('hero');
   return (
     <span
       className={`rounded-lg px-2.5 py-1 font-mono text-[8.5px] font-bold tracking-[.12em] text-white uppercase ${className ?? ''}`}
       style={{ background: bg, backdropFilter: 'blur(8px)', ...style }}
     >
-      {label}
+      {labelKey ? t(labelKey) : label}
     </span>
   );
 }
@@ -215,6 +219,7 @@ function PatternInspector({
   onCopy: (hex: string) => void;
   reduceMotion: boolean;
 }) {
+  const t = useTranslations('hero');
   return (
     <div
       className="relative overflow-hidden rounded-2xl"
@@ -317,7 +322,7 @@ function PatternInspector({
           className="mb-2 font-mono text-[7px] tracking-[.18em] uppercase sm:text-[8px]"
           style={{ color: '#C0573E' }}
         >
-          Tokens — cliquer pour copier
+          {t('tokensLabel')}
         </p>
         <div className="flex gap-1 sm:gap-1.5">
           {active.colors.map((hex) => (
@@ -325,7 +330,7 @@ function PatternInspector({
               key={hex}
               type="button"
               onClick={() => onCopy(hex)}
-              aria-label={`Copier le token ${hex}`}
+              aria-label={`{t('copyToken')} ${hex}`}
               className="group relative h-7 flex-1 overflow-hidden rounded-md transition-transform hover:-translate-y-0.5 sm:h-8"
               style={{ background: hex }}
             >
@@ -370,6 +375,7 @@ function PatternInspector({
 export function HeroSection() {
   const heroRef = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
+  const t = useTranslations('hero');
 
   // Scroll-linked exit for the whole hero
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
@@ -468,11 +474,11 @@ export function HeroSection() {
                 className="font-display w-full leading-[.92] font-black tracking-[-0.03em]"
                 style={{ fontSize: 'clamp(2rem,8vw,5rem)', color: 'var(--hp-text)' }}
               >
-                <span className="block">Chaque motif</span>
+                <span className="block">{t('title1')}</span>
                 <span className="block" style={{ color: '#C0573E' }}>
-                  a une histoire
+                  {t('title2')}
                 </span>
-                <span className="block">Nous l&rsquo;avons codée.</span>
+                <span className="block">{t('title3')}</span>
               </motion.h1>
 
               <div className="mt-8 sm:mt-10">
@@ -485,11 +491,9 @@ export function HeroSection() {
                     style={{ color: 'var(--hp-muted)' }}
                   >
                     <strong style={{ color: 'var(--hp-text)', fontWeight: 600 }}>
-                      312 artisans-conservateurs
+                      {t('artisansCount')}
                     </strong>{' '}
-                    vérifient<sup className="avs-footnote-mark">04</sup> l&rsquo;origine, la
-                    symbolique et les droits d&rsquo;usage de chaque motif avant qu&rsquo;il ne
-                    devienne un token — prêt pour la production, sans compte requis.
+                    {t('description')}<sup className="avs-footnote-mark">04</sup>
                   </motion.p>
 
                   <motion.div
@@ -510,7 +514,7 @@ export function HeroSection() {
                         className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full"
                         aria-hidden
                       />
-                      Explorer le système
+                      {t('exploreSystem')}
                       <ArrowRight
                         size={14}
                         className="transition-transform group-hover:translate-x-1"
@@ -522,7 +526,7 @@ export function HeroSection() {
                       className="inline-flex items-center gap-2 rounded-xl border-2 border-[var(--color-light-border)] px-5 py-3 text-sm font-semibold text-[var(--color-light-text)] transition-all duration-200 hover:border-[var(--color-avs-primary)] hover:text-[var(--color-avs-primary)] sm:px-7 sm:py-3.5"
                     >
                       <Command size={13} />
-                      Voir la documentation
+                      {t('viewDocs')}
                     </Link>
                   </motion.div>
 
@@ -550,9 +554,9 @@ export function HeroSection() {
                     </div>
                     <p className="text-[11px]" style={{ color: 'var(--hp-hint)' }}>
                       <span style={{ color: 'var(--hp-muted)', fontWeight: 600 }}>
-                        +312 artisans
+                        {t('communityProof')}
                       </span>{' '}
-                      vérifient chaque motif
+                      {t('verifyEachPattern')}
                     </p>
                   </motion.div>
                 </div>
@@ -565,7 +569,7 @@ export function HeroSection() {
                 className="grid grid-cols-2 sm:flex"
                 style={{ border: '1px solid var(--hp-border)', background: 'var(--hp-faint)' }}
               >
-                {FOOTNOTES.map(({ index, value, label }, i) => (
+                {FOOTNOTES.map(({ index, value, labelKey }, i) => (
                   <div key={index} className="relative px-3 py-3 sm:px-4 sm:py-3">
                     {i > 0 && i % 2 === 0 && (
                       <div
@@ -585,7 +589,7 @@ export function HeroSection() {
                       className="tracking-widset mt-1 font-mono text-[8px] leading-tight uppercase sm:text-[9px]"
                       style={{ color: 'var(--hp-hint)' }}
                     >
-                      {label}
+                      {t(labelKey)}
                     </p>
                   </div>
                 ))}
@@ -604,7 +608,7 @@ export function HeroSection() {
                   className="avs-chip-float-a absolute -top-4 left-2 z-10 hidden sm:-top-6 sm:left-4 lg:block"
                   style={reduceMotion ? undefined : { x: chipX, y: chipY }}
                 >
-                  <FormatChip label="Provenance vérifiée" bg="rgba(74,103,65,.9)" />
+                  <FormatChip labelKey="verifiedProvenance" bg="rgba(74,103,65,.9)" />
                 </motion.div>
 
                 {/* floating format chips - desktop only */}
@@ -612,8 +616,8 @@ export function HeroSection() {
                   className="avs-chip-float-b absolute top-6 -right-2 z-10 flex hidden flex-col gap-1.5 sm:top-8 sm:-right-3 lg:flex"
                   style={reduceMotion ? undefined : { x: chipX, y: chipY }}
                 >
-                  <FormatChip label="Tailwind" bg="rgba(42,74,107,.9)" />
-                  <FormatChip label="Figma" bg="rgba(212,160,23,.9)" />
+                  <FormatChip labelKey="tailwind" bg="rgba(42,74,107,.9)" />
+                  <FormatChip labelKey="figma" bg="rgba(212,160,23,.9)" />
                 </motion.div>
 
                 <PatternInspector
@@ -649,11 +653,11 @@ export function HeroSection() {
                 className="font-display leading-[.92] font-black tracking-[-0.03em]"
                 style={{ fontSize: 'clamp(2rem,8vw,5rem)', color: 'var(--hp-text)' }}
               >
-                <span className="block">Chaque motif</span>
+                <span className="block">{t('title1')}</span>
                 <span className="block" style={{ color: '#C0573E' }}>
-                  a une histoire
+                  {t('title2')}
                 </span>
-                <span className="block">Nous l&rsquo;avons codée.</span>
+                <span className="block">{t('title3')}</span>
               </motion.h1>
 
               {/* ══════════════════════════════════════════
@@ -670,11 +674,9 @@ export function HeroSection() {
                     style={{ color: 'var(--hp-muted)' }}
                   >
                     <strong style={{ color: 'var(--hp-text)', fontWeight: 600 }}>
-                      312 artisans-conservateurs
+                      {t('artisansCount')}
                     </strong>{' '}
-                    vérifient<sup className="avs-footnote-mark">04</sup> l&rsquo;origine, la
-                    symbolique et les droits d&rsquo;usage de chaque motif avant qu&rsquo;il ne
-                    devienne un token — prêt pour la production, sans compte requis.
+                    {t('description')}<sup className="avs-footnote-mark">04</sup>
                   </motion.p>
 
                   <motion.div
@@ -695,7 +697,7 @@ export function HeroSection() {
                         className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full"
                         aria-hidden
                       />
-                      Explorer le système
+                      {t('exploreSystem')}
                       <ArrowRight
                         size={14}
                         className="transition-transform group-hover:translate-x-1"
@@ -707,7 +709,7 @@ export function HeroSection() {
                       className="inline-flex items-center gap-2 rounded-xl border-2 border-[var(--color-light-border)] px-5 py-3 text-sm font-semibold text-[var(--color-light-text)] transition-all duration-200 hover:border-[var(--color-avs-primary)] hover:text-[var(--color-avs-primary)] sm:px-7 sm:py-3.5"
                     >
                       <Command size={13} />
-                      Voir la documentation
+                      {t('viewDocs')}
                     </Link>
                   </motion.div>
 
@@ -735,9 +737,9 @@ export function HeroSection() {
                     </div>
                     <p className="text-[11px]" style={{ color: 'var(--hp-hint)' }}>
                       <span style={{ color: 'var(--hp-muted)', fontWeight: 600 }}>
-                        +312 artisans
+                        {t('communityProof')}
                       </span>{' '}
-                      vérifient chaque motif
+                      {t('verifyEachPattern')}
                     </p>
                   </motion.div>
                 </div>
@@ -754,7 +756,7 @@ export function HeroSection() {
                     className="avs-chip-float-a absolute -top-4 left-2 z-10 hidden sm:-top-6 sm:left-4 lg:block"
                     style={reduceMotion ? undefined : { x: chipX, y: chipY }}
                   >
-                    <FormatChip label="Provenance vérifiée" bg="rgba(74,103,65,.9)" />
+                    <FormatChip labelKey="verifiedProvenance" bg="rgba(74,103,65,.9)" />
                   </motion.div>
 
                   {/* floating format chips - desktop only */}
@@ -762,8 +764,8 @@ export function HeroSection() {
                     className="avs-chip-float-b absolute top-6 -right-2 z-10 flex hidden flex-col gap-1.5 sm:top-8 sm:-right-3 lg:flex"
                     style={reduceMotion ? undefined : { x: chipX, y: chipY }}
                   >
-                    <FormatChip label="Tailwind" bg="rgba(42,74,107,.9)" />
-                    <FormatChip label="Figma" bg="rgba(212,160,23,.9)" />
+                    <FormatChip labelKey="tailwind" bg="rgba(42,74,107,.9)" />
+                    <FormatChip labelKey="figma" bg="rgba(212,160,23,.9)" />
                   </motion.div>
 
                   <PatternInspector
@@ -786,7 +788,7 @@ export function HeroSection() {
                 className="grid grid-cols-2 sm:flex"
                 style={{ border: '1px solid var(--hp-border)', background: 'var(--hp-faint)' }}
               >
-                {FOOTNOTES.map(({ index, value, label }, i) => (
+                {FOOTNOTES.map(({ index, value, labelKey }, i) => (
                   <div key={index} className="relative px-3 py-3 sm:px-4 sm:py-3">
                     {i > 0 && i % 2 === 0 && (
                       <div
@@ -806,7 +808,7 @@ export function HeroSection() {
                       className="tracking-widset mt-1 font-mono text-[8px] leading-tight uppercase sm:text-[9px]"
                       style={{ color: 'var(--hp-hint)' }}
                     >
-                      {label}
+                      {t(labelKey)}
                     </p>
                   </div>
                 ))}

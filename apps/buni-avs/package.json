@@ -20,6 +20,7 @@
     "@buni/tokens": "workspace:*",
     "@buni/ui": "workspace:*",
     "@buni/utils": "workspace:*",
-    "@react-oauth/google": "^0.13.5"
+    "@react-oauth/google": "^0.13.5",
+    "next-intl": "^3.26.5"
   }
 }
