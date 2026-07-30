@@ -219,7 +219,7 @@ export default function LoginPage() {
             className="fixed inset-0 z-50 flex items-center justify-center bg-avs-accent/55 backdrop-blur-sm"
           >
             <div className="flex flex-col items-center gap-4 rounded-2xl p-8 bg-avs-secondary border border-avs-accent/9">
-              <BuniLoader size={36} showText={false} theme="dark" />
+              <BuniLoader size={200} showText={false} theme="dark" />
               <p className="font-mono text-[10px] tracking-[0.2em] uppercase animate-pulse text-avs-accent/38">
                 {t('loading')}
               </p>
@@ -356,22 +356,6 @@ export default function LoginPage() {
                 </Link>
               </p>
             </div>
-
-            {/* API error */}
-            <AnimatePresence>
-              {error instanceof Error && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0, marginBottom: 0 }}
-                  animate={{ opacity: 1, height: 'auto', marginBottom: '1.25rem' }}
-                  exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-                  role="alert"
-                  className="flex items-center gap-2.5 overflow-hidden rounded-xl border border-red-500/22 bg-red-500/8 px-4 py-3 text-sm text-red-500"
-                >
-                  <AlertCircle size={14} />
-                  {error.message}
-                </motion.div>
-              )}
-            </AnimatePresence>
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-5" noValidate>

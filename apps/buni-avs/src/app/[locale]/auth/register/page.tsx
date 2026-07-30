@@ -385,22 +385,6 @@ export default function RegisterPage() {
               </p>
             </div>
 
-            {/* API error */}
-            <AnimatePresence>
-              {error && typeof error === 'string' && (
-                <motion.div
-                  initial={{ opacity: 0, height: 0, marginBottom: 0 }}
-                  animate={{ opacity: 1, height: 'auto', marginBottom: '1.25rem' }}
-                  exit={{ opacity: 0, height: 0, marginBottom: 0 }}
-                  role="alert"
-                  className="flex items-center gap-2.5 overflow-hidden rounded-xl px-4 py-3 text-sm text-red-500 bg-red-500/8 border border-red-500/22"
-                >
-                  <AlertCircle size={14} />
-                  {error}
-                </motion.div>
-              )}
-            </AnimatePresence>
-
             <form onSubmit={handleSubmit} className="space-y-5" noValidate>
 
               {/* Name */}

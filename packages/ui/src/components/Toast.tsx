@@ -34,7 +34,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={{ add, remove }}>
       {children}
-      <div className="pointer-events-none absolute top-5 right-25 z-100 flex flex-col gap-2.5 w-80">
+      <div className="pointer-events-none fixed top-5 right-5 z-50 flex flex-col gap-2.5 w-80">
         <AnimatePresence mode="popLayout">
           {toasts.map(toast => {
             const { css, Icon } = TOAST_CONFIG[toast.variant];
