@@ -12,7 +12,6 @@ import { useAuth, useLogout } from '@buni/auth';
 import { useTranslations } from 'next-intl';
 import { timeAgo, formatNumber, formatDate } from '@buni/utils';
 import { useTheme } from 'next-themes';
-import { BuniLoader } from '@buni/ui';
 
 import { Route } from 'next';
 import { DashboardStats, UserPattern, DashboardActivity, dashboardService } from '@/features/dashboard/services/dashboard.service';

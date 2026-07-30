@@ -218,12 +218,11 @@ export default function LoginPage() {
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center bg-avs-accent/55 backdrop-blur-sm"
           >
-            <div className="flex flex-col items-center gap-4 rounded-2xl p-8 bg-avs-secondary border border-avs-accent/9">
               <BuniLoader size={200} showText={false} theme="dark" />
               <p className="font-mono text-[10px] tracking-[0.2em] uppercase animate-pulse text-avs-accent/38">
                 {t('loading')}
               </p>
-            </div>
+            
           </motion.div>
         )}
       </AnimatePresence>
