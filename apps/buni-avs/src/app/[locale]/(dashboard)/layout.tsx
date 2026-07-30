@@ -1,6 +1,7 @@
 'use client';
 
 import { useAuth } from '@buni/auth';
+import { BuniLoader } from '@buni/ui';
 import { Route } from 'next';
 import { useRouter } from 'next/navigation';
 import { ReactNode, useEffect } from 'react';
@@ -22,10 +23,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   if (!isHydrated) {
     return (
-      <div className="bg-avs-secondary flex min-h-screen items-center justify-center dark">
-        <div className="text-center">
-          <div className="border-avs-primary inline-block h-12 w-12 animate-spin rounded-full border-b-2"></div>
-          <p className="text-avs-accent/60 mt-4">Chargement...</p>
+      <div className="bg-avs-secondary min-h-screen relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-avs-accent/60 backdrop-blur-sm">
+          <BuniLoader size={200} showText={false} theme="dark" />
         </div>
       </div>
     );

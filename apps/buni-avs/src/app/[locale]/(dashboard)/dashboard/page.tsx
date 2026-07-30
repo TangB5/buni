@@ -372,24 +372,6 @@ function PanelHeader({
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// LOADING STATE
-// ─────────────────────────────────────────────────────────────────────────────
-
-function PageLoader({ t }: { t: any }) {
-  return (
-    <div className="flex min-h-[70vh] flex-col items-center justify-center gap-4">
-      <div className="relative h-12 w-12">
-        <div className="avs-pattern-kente-royale absolute inset-0 rounded-full opacity-70 animate-spin [animation-duration:2.5s]" />
-        <div className="absolute inset-2.5 rounded-full bg-avs-secondary" />
-      </div>
-      <p className="font-mono text-[9px] tracking-[0.25em] uppercase text-avs-accent/25 animate-pulse">
-        {t('loading')}
-      </p>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
 // PROFILE STRIP
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -537,9 +519,6 @@ export default function DashboardPage() {
     void fetchData();
   }, [isHydrated, isAuthenticated, isAdmin, canContribute]);
 
-  
-  if (!isHydrated) return <PageLoader t={t} />;
-
   // Show viewer dashboard for VIEWER role
   if (user?.role?.toLowerCase() === 'viewer') {
     return (
@@ -606,25 +585,6 @@ export default function DashboardPage() {
   
   return (
     <>
-      {/* Loading overlay */}
-      <AnimatePresence>
-        {loading && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-avs-accent/60 backdrop-blur-sm"
-          >
-            <div className="avs-card flex flex-col items-center gap-4 p-8">
-              <BuniLoader size={80} showText={false} theme="dark" />
-              <p className="animate-pulse font-mono text-[10px] uppercase tracking-[0.2em] text-avs-accent/40">
-                Chargement…
-              </p>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       <div className="min-h-screen bg-avs-secondary relative">
       {/* Motif de fond subtil premium */}
       <div

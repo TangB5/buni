@@ -12,17 +12,12 @@ export function LoadingOverlay({ isLoading, message }: LoadingOverlayProps) {
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-avs-accent/80 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-avs-accent/80 backdrop-blur-sm"
       role="status"
       aria-live="polite"
       aria-label={message || 'Chargement…'}
     >
-      <BuniLoader size={120} showText={true} theme="dark" />
-      {message && (
-        <p className="mt-8 text-center text-avs-secondary text-lg font-semibold">
-          {message}
-        </p>
-      )}
+      <BuniLoader size={80} showText={false} theme="dark" />
     </div>
   );
 }

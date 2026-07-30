@@ -110,12 +110,7 @@ export function PatternForm({ initialPattern }: PatternFormProps) {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 flex items-center justify-center bg-avs-accent/60 backdrop-blur-sm"
           >
-            <div className="avs-card flex flex-col items-center gap-4 p-8">
-              <BuniLoader size={36} showText={false} theme="dark" />
-              <p className="animate-pulse font-mono text-[10px] uppercase tracking-[0.2em] text-avs-accent/40">
-                Envoi en cours…
-              </p>
-            </div>
+            <BuniLoader size={80} showText={false} theme="dark" />
           </motion.div>
         )}
       </AnimatePresence>
