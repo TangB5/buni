@@ -3,8 +3,8 @@
 import Link from 'next/link';
 import type { Route } from 'next';
 import { motion } from 'framer-motion';
-import { ArrowRight, ArrowDown } from 'lucide-react';
-import { useTranslations } from '@buni/i18n';
+import { ArrowRight, ArrowDown, Coffee } from 'lucide-react';
+import { useTranslations } from '@/i18n';
 
 import { PrincipleRow } from './principle-row';
 
@@ -474,7 +474,7 @@ export function AboutContent() {
             {t('cta.title')}
           </h2>
 
-          <div className="mt-12 flex justify-center">
+          <div className="mt-12 flex justify-center gap-4">
             <Link
               href={'/auth/register' as Route}
               className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl bg-avs-primary px-10 py-4 text-sm font-bold text-avs-secondary shadow-avs-md transition-all duration-300 hover:-translate-y-0.5"
@@ -483,6 +483,14 @@ export function AboutContent() {
               {t('cta.button')}
               <ArrowRight size={14} className="transition-transform group-hover:translate-x-1" aria-hidden />
             </Link>
+            <button
+              onClick={() => window.open('https://ko-fi.com/yourusername', '_blank', 'noopener,noreferrer')}
+              className="inline-flex items-center gap-2 rounded-xl border border-avs-primary/40 px-8 py-4 text-sm font-semibold text-avs-primary hover:bg-avs-primary/10 hover:border-avs-primary transition-all duration-200"
+              aria-label="Offer me a coffee on Ko-fi"
+            >
+              <Coffee size={14} />
+              <span>Offer me a coffee</span>
+            </button>
           </div>
 
           <p className="mt-10 font-mono text-[10px] tracking-[0.16em] uppercase text-avs-secondary/22">

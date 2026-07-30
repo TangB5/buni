@@ -27,13 +27,14 @@ import {
   ArrowRight,
   Sparkles,
   Zap,
+  Coffee,
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { useAuth, useLogout } from '@buni/auth';
 import { Comingsoon } from '@buni/ui';
 import { useTheme, ThemeToggle } from '@buni/theme';
-import { useTranslations, LocaleToggle, locales } from '@buni/i18n';
+import { useTranslations, LocaleToggle, locales } from '@/i18n';
 import { Route } from 'next';
 import { authService } from '../../features/auth/services/auth.service';
 
@@ -761,6 +762,8 @@ export function Header() {
   const [, startTransition] = useTransition();
   const [comingSoon, setComingSoon] = useState<ModalData | null>(null);
   const [authState, setAuthState] = useState({ isAuthenticated, user });
+  
+  // Use absolute path to bypass i18n middleware for static assets
 
   const NAV_ITEMS = getNavItems(navT);
 
@@ -817,29 +820,26 @@ export function Header() {
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-6 px-4 sm:px-6 lg:px-8">
           {/* ── LOGO ───────────────────────────────────────────────────── */}
           <Link
-            href="/"
+            href={`/` as Route}
             className="group flex shrink-0 items-center gap-3"
             aria-label="AVS — Accueil"
           >
-            <div className="avs-pattern-kente-royale ring-avs-accent/10 relative h-9 w-9 overflow-hidden rounded-xl ring-1 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-3">
-              <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                <span
-                  className="font-display text-avs-secondary text-base font-black drop-shadow-md"
-                  aria-hidden
-                >
-                  A
-                </span>
-              </div>
-            </div>
+            
+            <img 
+              src={theme === 'dark' ? '/logo_fond_noir.png' : '/logo_fond_blanc.png'} 
+              alt="logo de buni" 
+              className="h-10 w-10 rounded-xl"
+              style={{ objectFit: 'contain' }}
+            />
             <div className="flex flex-col leading-tight">
               <span
                 className="font-display text-avs-accent text-[15px] font-black tracking-tight"
                 style={{ letterSpacing: '-0.02em' }}
               >
-                AVS
+                Buni
               </span>
               <span className="text-avs-primary hidden font-mono text-[9px] font-bold tracking-[0.18em] uppercase sm:block">
-                Standard
+                AVS
               </span>
             </div>
           </Link>
@@ -870,6 +870,28 @@ export function Header() {
             <div className="hidden md:block">
               <LocaleToggle />
             </div>
+
+            {/* Coffee CTA */}
+            <button
+              onClick={() => router.push('/coffee' as Route)}
+              className="group hidden items-center gap-2 rounded-xl border px-4 py-2 text-[13px] font-semibold transition-all duration-200 hover:-translate-y-0.5 sm:flex"
+              style={{
+                borderColor: 'rgba(192,87,62,0.3)',
+                color: '#C08552',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = '#C08552';
+                e.currentTarget.style.backgroundColor = 'rgba(192,87,62,0.08)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(192,87,62,0.3)';
+                e.currentTarget.style.backgroundColor = 'transparent';
+              }}
+              aria-label="Offer me a coffee on Ko-fi"
+            >
+              <Coffee size={14} />
+              <span>Offer me a coffee</span>
+            </button>
 
             {/* Auth area */}
             {!isHydrated ? (
@@ -1018,6 +1040,13 @@ export function Header() {
                   </MobileSection>
 
                   <MobileSection title="Outils">
+                    <MobileLink
+                      href="/coffee"
+                      icon={Coffee}
+                      label="Offer me a coffee"
+                      isActive={pathname === '/coffee'}
+                      onClick={() => setMobileOpen(false)}
+                    />
                     {authState.isAuthenticated && authState.user && (
                       <MobileLink
                         href="/dashboard"
@@ -1044,10 +1073,10 @@ export function Header() {
                         const segments = pathname.split('/');
                         if (locales.includes(segments[1] as any)) {
                           segments[1] = newLocale;
-                          router.push(segments.join('/'));
+                          router.push(segments.join('/') as Route);
                         } else {
                           segments.splice(1, 0, newLocale);
-                          router.push(segments.join('/'));
+                          router.push(segments.join('/') as Route);
                         }
                         setMobileOpen(false);
                       }}

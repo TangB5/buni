@@ -1,19 +1,17 @@
 import { DocPageTemplate } from '../../doc-page-template';
-import { NAV_SPACES } from '../../nav-data';
-
-const space = NAV_SPACES.find(s => s.slug === 'api')!;
-
-export const metadata = {
-  title: 'Référence API - AVS Documentation',
-  description: 'Référence de l\'API AVS.',
-};
+import { useNavSpaces } from '../../nav-data';
+import { useTranslations } from '@/i18n';
 
 export default function ApiReferencePage() {
+  const t = useTranslations('documentation.api.reference');
+  const NAV_SPACES = useNavSpaces();
+  const space = NAV_SPACES.find(s => s.slug === 'api')!;
+
   return (
     <DocPageTemplate
       space={space}
-      title="Référence API"
-      summary="Documentation complète de l'API programmatique pour accéder au standard AVS."
+      title={t('title')}
+      summary={t('summary')}
       explanation={<p>Contenu à venir.</p>}
       toc={[]}
     />

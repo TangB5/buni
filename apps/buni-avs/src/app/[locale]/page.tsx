@@ -12,11 +12,12 @@ import {
   BookOpen,
   Check,
   Download,
+  Coffee,
 } from 'lucide-react';
 import { cn } from '@buni/ui';
 import { Route } from 'next';
 import { HeroSection } from '../../components/layout/HeroSection';
-import { useTranslations } from '@buni/i18n';
+import { useTranslations } from '@/i18n';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DATA (moved inside component for i18n)
@@ -663,6 +664,14 @@ export default function HomePage() {
               >
                 {t('cta.exploreFirst')}
               </Link>
+              <button
+                onClick={() => window.open('https://ko-fi.com/yourusername', '_blank', 'noopener,noreferrer')}
+                className="inline-flex items-center gap-2 rounded-xl px-6 py-4 text-sm font-semibold border border-avs-primary/30 text-avs-primary hover:bg-avs-primary/10 hover:border-avs-primary transition-all duration-200"
+                aria-label="Offer me a coffee on Ko-fi"
+              >
+                <Coffee size={14} />
+                <span>Offer me a coffee</span>
+              </button>
             </motion.div>
 
             {/* Community avatars */}

@@ -1,0 +1,70 @@
+import { PaymentConfig } from './types';
+
+export const paymentConfig: PaymentConfig = {
+  providers: [
+    {
+      id: 'stripe',
+      name: 'Stripe',
+      icon: '💳',
+      enabled: true,
+    },
+    {
+      id: 'paypal',
+      name: 'PayPal',
+      icon: '🅿️',
+      enabled: true,
+    },
+    {
+      id: 'mobile-money',
+      name: 'Mobile Money',
+      icon: '📱',
+      enabled: true,
+    },
+  ],
+  tiers: [
+    {
+      id: 'espresso',
+      name: 'Espresso',
+      amount: 3,
+      currency: 'USD',
+      description: 'A quick boost of creativity',
+      features: [
+        'Support one project',
+        'Personal thank you',
+        'Impact on open source',
+      ],
+      emotionalTagline: 'Small gesture, big impact',
+    },
+    {
+      id: 'cappuccino',
+      name: 'Cappuccino',
+      amount: 9,
+      currency: 'USD',
+      description: 'Fuel a full day of creation',
+      features: [
+        'Support multiple projects',
+        'Priority updates',
+        'Community recognition',
+      ],
+      popular: true,
+      emotionalTagline: 'Fuel the creative journey',
+    },
+    {
+      id: 'pour-over',
+      name: 'Pour Over',
+      amount: 25,
+      currency: 'USD',
+      description: 'Sustain a week of dedicated work',
+      features: [
+        'Sustain development',
+        'Early access features',
+        'Direct collaboration',
+        'Special supporter badge',
+      ],
+      emotionalTagline: 'Invest in African heritage',
+    },
+  ],
+  defaultProvider: 'stripe',
+  successUrl: '/coffee/success',
+  cancelUrl: '/coffee/cancel',
+};

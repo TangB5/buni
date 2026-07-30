@@ -219,9 +219,6 @@ importers:
       '@buni/config':
         specifier: workspace:*
         version: link:../../packages/config
-      '@buni/i18n':
-        specifier: workspace:*
-        version: link:../../packages/i18n
       '@buni/patterns':
         specifier: workspace:*
         version: link:../../packages/patterns
@@ -243,6 +240,9 @@ importers:
       next-intl:
         specifier: ^3.26.5
         version: 3.26.5(next@16.2.2(@babel/core@7.29.0)(@playwright/test@1.59.1)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(sass@1.99.0))(react@19.2.4)
+      primeicons:
+        specifier: ^7.0.0
+        version: 7.0.0
 
   packages/analytics: {}
 

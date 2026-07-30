@@ -12,7 +12,7 @@ import { useRegister } from '@/features/auth/hooks/useRegister';
 import { GoogleLoginButton, GithubLoginButton } from '@buni/auth';
 import { authService } from '@/features/auth/services/auth.service';
 import { useAuthStore } from '@buni/auth';
-import { useTranslations } from '@buni/i18n';
+import { useTranslations } from '@/i18n';
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -280,7 +280,7 @@ export default function RegisterPage() {
             className="fixed inset-0 z-50 flex items-center justify-center bg-avs-accent/55 backdrop-blur-sm"
           >
             <div className="flex flex-col items-center gap-4 rounded-2xl p-8 bg-avs-secondary border border-avs-accent/9">
-              <BuniLoader size={36} showText={false} />
+              <BuniLoader size={36} showText={false} theme="dark" />
               <p className="font-mono text-[10px] tracking-[0.2em] uppercase animate-pulse text-avs-accent/38">
                 {t('loading')}
               </p>
@@ -509,7 +509,7 @@ export default function RegisterPage() {
                 <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" aria-hidden />
                 <span className="relative flex items-center justify-center gap-2">
                   {isPending
-                    ? <><BuniLoader size={18} showText={false} /> {t('submit.loading')}</>
+                    ? <>{t('submit.loading')}</>
                     : <>{t('submit.text')} <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" /></>
                   }
                 </span>

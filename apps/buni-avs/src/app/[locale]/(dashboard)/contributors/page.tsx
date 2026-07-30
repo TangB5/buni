@@ -8,6 +8,7 @@ import {
   Trophy, Medal, Check, X, ArrowRight,
 } from 'lucide-react';
 import { useAuth } from '@buni/auth';
+import { useTranslations } from 'next-intl';
 import { userService } from '@/features/user/services/user.service';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -34,20 +35,24 @@ interface Contributor {
 // ROLE CONFIG — accentHex kept only for dynamic bg/border tints per role
 // ─────────────────────────────────────────────────────────────────────────────
 
-const ROLE_CONFIG: Record<ContributorRole, { label: string; accentHex: string; icon: typeof Shield }> = {
-  admin:       { label: 'Admin',        accentHex: '#C0573E', icon: Shield  },
-  curator:     { label: 'Curateur',     accentHex: '#D4A017', icon: Star    },
-  contributor: { label: 'Contributeur', accentHex: '#4A6741', icon: Layers  },
-  artisan:     { label: 'Artisan',      accentHex: '#2A4A6B', icon: Award   },
-  viewer:      { label: 'Explorateur',  accentHex: '#888780', icon: Shield  },
-};
+function getRoleConfig(t: any): Record<ContributorRole, { label: string; accentHex: string; icon: typeof Shield }> {
+  return {
+    admin:       { label: t('roles.admin'),       accentHex: '#C0573E', icon: Shield  },
+    curator:     { label: t('roles.curator'),     accentHex: '#D4A017', icon: Star    },
+    contributor: { label: t('roles.contributor'), accentHex: '#4A6741', icon: Layers  },
+    artisan:     { label: t('roles.artisan'),     accentHex: '#2A4A6B', icon: Award   },
+    viewer:      { label: t('roles.viewer'),      accentHex: '#888780', icon: Shield  },
+  };
+}
 
-const SORT_OPTIONS: { value: SortKey; label: string }[] = [
-  { value: 'score',    label: 'Score'      },
-  { value: 'patterns', label: 'Motifs'     },
-  { value: 'views',    label: 'Vues'       },
-  { value: 'joined',   label: 'Ancienneté' },
-];
+function getSortOptions(t: any): { value: SortKey; label: string }[] {
+  return [
+    { value: 'score',    label: t('sort.score')    },
+    { value: 'patterns', label: t('sort.patterns') },
+    { value: 'views',    label: t('sort.views')    },
+    { value: 'joined',   label: t('sort.joined')   },
+  ];
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MINIMAL STYLES — only what Tailwind can't express
@@ -121,7 +126,7 @@ function ScoreBar({ score }: { score: number }) {
 // STAT CARD
 // ─────────────────────────────────────────────────────────────────────────────
 
-function StatCard({ value, label, icon: Icon }: { value: string; label: string; icon: typeof Shield }) {
+function StatCard({ value, label, icon: Icon, t }: { value: string; label: string; icon: typeof Shield; t: any }) {
   return (
     <div className="group relative overflow-hidden rounded-2xl border border-avs-accent/9 bg-avs-secondary p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-avs-primary/20">
       <div className="absolute inset-x-0 top-0 h-0.5 bg-avs-primary" aria-hidden />
@@ -142,8 +147,8 @@ function StatCard({ value, label, icon: Icon }: { value: string; label: string; 
 // PODIUM CARD
 // ─────────────────────────────────────────────────────────────────────────────
 
-function PodiumCard({ c, rank }: { c: Contributor; rank: number }) {
-  const { accentHex } = ROLE_CONFIG[c.role];
+function PodiumCard({ c, rank, t }: { c: Contributor; rank: number; t: any }) {
+  const { accentHex } = getRoleConfig(t)[c.role];
   const isFirst   = rank === 1;
   const RankIcon  = rank === 1 ? Trophy : rank === 2 ? Medal : Award;
   const rankClass = rank === 1 ? 'text-avs-kente' : rank === 2 ? 'text-avs-accent/35' : 'text-avs-primary';
@@ -193,7 +198,7 @@ function PodiumCard({ c, rank }: { c: Contributor; rank: number }) {
         className="mt-2 inline-flex items-center gap-1 rounded-lg px-2.5 py-1 font-mono text-[8px] font-black uppercase tracking-[0.14em]"
         style={{ background: `${accentHex}12`, color: accentHex, border: `1px solid ${accentHex}28` }}
       >
-        {ROLE_CONFIG[c.role].label}
+        {getRoleConfig(t)[c.role].label}
       </span>
 
       <div className="mt-3 flex justify-center gap-4 text-xs text-avs-accent/35">
@@ -210,8 +215,8 @@ function PodiumCard({ c, rank }: { c: Contributor; rank: number }) {
 // CONTRIBUTOR ROW
 // ─────────────────────────────────────────────────────────────────────────────
 
-function ContributorRow({ c, rank }: { c: Contributor; rank: number }) {
-  const { accentHex } = ROLE_CONFIG[c.role];
+function ContributorRow({ c, rank, t }: { c: Contributor; rank: number; t: any }) {
+  const { accentHex } = getRoleConfig(t)[c.role];
   const isTop3 = rank <= 3;
 
   return (
@@ -262,7 +267,7 @@ function ContributorRow({ c, rank }: { c: Contributor; rank: number }) {
             className="rounded-lg px-2 py-0.5 font-mono text-[8px] font-black uppercase tracking-[0.14em]"
             style={{ background: `${accentHex}12`, color: accentHex, border: `1px solid ${accentHex}25` }}
           >
-            {ROLE_CONFIG[c.role].label}
+            {getRoleConfig(t)[c.role].label}
           </span>
           {c.featured && (
             <Star size={11} className="text-avs-kente fill-avs-kente shrink-0" aria-label="Featured" />
@@ -324,6 +329,7 @@ function ContributorRow({ c, rank }: { c: Contributor; rank: number }) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function ContributorsPage() {
+  const t = useTranslations('dashboard.contributors');
   const { isAuthenticated } = useAuth();
   const [search, setSearch] = useState('');
   const [role,   setRole]   = useState<ContributorRole | 'all'>('all');
@@ -378,14 +384,14 @@ export default function ContributorsPage() {
               <div className="mb-2 flex items-center gap-2">
                 <div className="h-px w-6 bg-avs-primary" aria-hidden />
                 <span className="font-mono text-[9px] font-bold tracking-[0.24em] uppercase text-avs-primary">
-                  Communauté AVS
+                  {t('title')}
                 </span>
               </div>
               <h1 className="font-display font-black leading-none text-avs-accent" style={{ fontSize: 'clamp(1.5rem,4vw,2.25rem)', letterSpacing: '-0.025em' }}>
-                Contributeurs
+                {t('title')}
               </h1>
               <p className="mt-1 text-sm text-avs-accent/35">
-                {loading ? 'Chargement...' : `${contributors.length} membres actifs du monde entier`}
+                {loading ? t('subtitle') : t('subtitleLoaded', { count: contributors.length })}
               </p>
             </div>
 
@@ -394,7 +400,7 @@ export default function ContributorsPage() {
               className="group relative flex items-center gap-2 overflow-hidden rounded-xl px-5 py-2.5 text-sm font-bold text-avs-secondary bg-avs-primary shadow-avs-md hover:-translate-y-0.5 transition-all duration-200"
             >
               <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" aria-hidden />
-              <ExternalLink size={13} /> Rejoindre <ArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" />
+              <ExternalLink size={13} /> {t('join')} <ArrowRight size={12} className="transition-transform group-hover:translate-x-0.5" />
             </a>
           </div>
         </div>
@@ -413,10 +419,10 @@ export default function ContributorsPage() {
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-              <StatCard value={String(contributors.length)}                       label="Membres"        icon={Shield}    />
-              <StatCard value={String(totalPatterns)}                             label="Motifs total"   icon={Layers}    />
-              <StatCard value={`${(totalViews / 1000).toFixed(0)}k`}              label="Vues cumulées"  icon={TrendingUp} />
-              <StatCard value={String(verifiedCount)}                             label="Vérifiés"       icon={Award}     />
+              <StatCard value={String(contributors.length)}                       label={t('stats.members')}        icon={Shield}    t={t} />
+              <StatCard value={String(totalPatterns)}                             label={t('stats.totalPatterns')}   icon={Layers}    t={t} />
+              <StatCard value={`${(totalViews / 1000).toFixed(0)}k`}              label={t('stats.totalViews')}  icon={TrendingUp} t={t} />
+              <StatCard value={String(verifiedCount)}                             label={t('stats.verified')}       icon={Award}     t={t} />
             </div>
           )}
 
@@ -425,7 +431,7 @@ export default function ContributorsPage() {
             <div className="mb-5 flex items-center gap-2.5">
               <Trophy size={18} className="text-avs-kente" aria-hidden />
               <h2 className="font-display text-lg font-black text-avs-accent" style={{ letterSpacing: '-0.015em' }}>
-                Hall of Fame
+                {t('hallOfFame')}
               </h2>
             </div>
             {loading ? (
@@ -439,7 +445,7 @@ export default function ContributorsPage() {
               </div>
             ) : (
               <div className="grid gap-4 sm:grid-cols-3">
-                {topThree.map((c, i) => <PodiumCard key={c.id} c={c} rank={i + 1} />)}
+                {topThree.map((c, i) => <PodiumCard key={c.id} c={c} rank={i + 1} t={t} />)}
               </div>
             )}
           </section>
@@ -449,7 +455,7 @@ export default function ContributorsPage() {
             {/* Controls bar */}
             <div className="mb-5 flex flex-wrap items-center gap-3">
               <h2 className="font-display text-lg font-black text-avs-accent" style={{ letterSpacing: '-0.015em' }}>
-                Classement
+                {t('leaderboard')}
               </h2>
 
               <div className="ml-auto flex flex-wrap items-center gap-2">
@@ -460,7 +466,7 @@ export default function ContributorsPage() {
                     type="search"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    placeholder="Nom, spécialité…"
+                    placeholder={t('search')}
                     className="ctr-input py-2 pl-8 pr-8"
                     style={{ width: '160px' }}
                   />
@@ -470,7 +476,7 @@ export default function ContributorsPage() {
                         initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.8 }}
                         onClick={() => setSearch('')}
                         className="absolute right-2.5 top-1/2 -translate-y-1/2 text-avs-accent/35"
-                        aria-label="Effacer"
+                        aria-label={t('filter.clear')}
                       >
                         <X size={12} />
                       </motion.button>
@@ -479,14 +485,14 @@ export default function ContributorsPage() {
                 </div>
 
                 <select value={role} onChange={(e) => setRole(e.target.value as ContributorRole | 'all')} className="ctr-select" aria-label="Filtrer par rôle">
-                  <option value="all">Tous les rôles</option>
-                  {(Object.keys(ROLE_CONFIG) as ContributorRole[]).map((r) => (
-                    <option key={r} value={r}>{ROLE_CONFIG[r].label}</option>
+                  <option value="all">{t('filter.all')}</option>
+                  {(Object.keys(getRoleConfig(t)) as ContributorRole[]).map((r) => (
+                    <option key={r} value={r}>{getRoleConfig(t)[r].label}</option>
                   ))}
                 </select>
 
                 <select value={sortBy} onChange={(e) => setSortBy(e.target.value as SortKey)} className="ctr-select" aria-label="Trier par">
-                  {SORT_OPTIONS.map(({ value, label }) => (
+                  {getSortOptions(t).map(({ value, label }) => (
                     <option key={value} value={value}>{label}</option>
                   ))}
                 </select>
@@ -496,8 +502,8 @@ export default function ContributorsPage() {
             {/* Results count */}
             {(search || role !== 'all') && (
               <p className="mb-3 font-mono text-[10px] text-avs-accent/35">
-                {filtered.length} résultat{filtered.length !== 1 ? 's' : ''}
-                {role !== 'all' && ` · ${ROLE_CONFIG[role as ContributorRole]?.label}`}
+                {t('results', { count: filtered.length })}
+                {role !== 'all' && ` · ${getRoleConfig(t)[role as ContributorRole]?.label}`}
               </p>
             )}
 
@@ -526,7 +532,7 @@ export default function ContributorsPage() {
                   transition={{ duration: 0.18 }}
                   className="space-y-2"
                 >
-                  {filtered.map((c, i) => <ContributorRow key={c.id} c={c} rank={i + 1} />)}
+                  {filtered.map((c, i) => <ContributorRow key={c.id} c={c} rank={i + 1} t={t} />)}
                 </motion.div>
               ) : (
                 <motion.div
@@ -534,12 +540,12 @@ export default function ContributorsPage() {
                   className="flex h-36 flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-avs-accent/16"
                 >
                   <div className="avs-pattern-wax-dakar h-10 w-10 rounded-full opacity-30" aria-hidden />
-                  <p className="text-sm text-avs-accent/35">Aucun contributeur trouvé</p>
+                  <p className="text-sm text-avs-accent/35">{t('empty')}</p>
                   <button
                     onClick={() => { setSearch(''); setRole('all'); }}
                     className="text-xs font-semibold underline underline-offset-3 text-avs-primary"
                   >
-                    Réinitialiser les filtres
+                    {t('resetFilters')}
                   </button>
                 </motion.div>
               )}
@@ -560,15 +566,15 @@ export default function ContributorsPage() {
               <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-avs-primary/28 px-4 py-2 bg-avs-primary/10">
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-avs-primary" aria-hidden />
                 <span className="font-mono text-[9px] font-bold uppercase tracking-[0.22em] text-avs-primary">
-                  Rejoindre la communauté
+                  {t('joinCta.badge')}
                 </span>
               </div>
 
               <p className="font-display font-black leading-tight text-avs-secondary" style={{ fontSize: 'clamp(1.5rem,4vw,2.25rem)', letterSpacing: '-0.02em' }}>
-                Devenez contributeur AVS
+                {t('joinCta.title')}
               </p>
               <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-avs-secondary/52">
-                Artisan, chercheur ou designer — votre connaissance enrichit la plus grande archive visuelle africaine open-source.
+                {t('joinCta.description')}
               </p>
 
               <div className="mt-7 flex flex-wrap justify-center gap-3">
@@ -577,19 +583,19 @@ export default function ContributorsPage() {
                   className="group relative flex items-center gap-2 overflow-hidden rounded-xl px-7 py-3 text-sm font-bold text-avs-secondary bg-avs-primary shadow-avs-md hover:-translate-y-0.5 transition-all duration-200"
                 >
                   <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" aria-hidden />
-                  Créer un compte gratuit
+                  {t('joinCta.createAccount')}
                   <ArrowRight size={13} className="transition-transform group-hover:translate-x-0.5" />
                 </a>
                 <a
                   href="/documentation"
                   className="flex items-center gap-2 rounded-xl px-7 py-3 text-sm font-semibold border border-avs-secondary/14 text-avs-secondary/72 hover:border-avs-secondary/28 hover:text-avs-secondary transition-all duration-200"
                 >
-                  Lire la documentation
+                  {t('joinCta.readDocs')}
                 </a>
               </div>
 
               <p className="mt-6 font-mono text-[9px] uppercase tracking-[0.16em] text-avs-secondary/22">
-                {contributors.length} membres · {totalPatterns} motifs · Open Source
+                {t('joinCta.footer', { members: contributors.length, patterns: totalPatterns })}
               </p>
             </div>
           </section>

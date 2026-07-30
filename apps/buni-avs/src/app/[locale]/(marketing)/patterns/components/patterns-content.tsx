@@ -6,10 +6,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { PatternSheet } from './pattern-sheet';
 import { PATTERNS_DOCS } from '../mock';
 import { patternRepository } from '@/features/patterns/repositories/pattern.repository';
+import { useTranslations } from '@/i18n';
 
 const TYPES = ['ALL', 'KENTE', 'NDOP', 'BOGOLAN', 'ADINKRA', 'WAX', 'NDEBELE', 'KUBA'];
 
 export function PatternsContent() {
+  const t = useTranslations('patterns');
   const searchParams = useSearchParams();
   const router = useRouter();
 
@@ -84,16 +86,15 @@ export function PatternsContent() {
               <div className="mb-2 flex items-center gap-2">
                 <div className="bg-avs-primary h-px w-4 sm:w-6" aria-hidden />
                 <span className="text-avs-primary font-mono text-[8px] sm:text-[9px] font-bold tracking-[0.24em] uppercase">
-                  Documentation culturelle · {patterns.length} motifs
+                  {t('header.label', { count: patterns.length })}
                 </span>
               </div>
               <h1 className="font-display text-avs-accent text-2xl sm:text-4xl leading-none font-black tracking-tight">
-                Encyclopédie des Motifs
+                {t('header.title')}
               </h1>
             </div>
             <p className="text-avs-accent/50 max-w-xs text-xs leading-relaxed">
-              Fiches ethnographiques complètes — symboles constitutifs, histoire, technique, sources
-              primaires.
+              {t('header.description')}
             </p>
           </div>
 
@@ -108,7 +109,7 @@ export function PatternsContent() {
               <input
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Motif, peuple, symbole, pays…"
+                placeholder={t('search.placeholder')}
                 className="avs-input focus:border-avs-primary pr-9 pl-9 text-sm"
               />
               <AnimatePresence>
@@ -119,7 +120,7 @@ export function PatternsContent() {
                     exit={{ opacity: 0, scale: 0.8 }}
                     onClick={() => setSearch('')}
                     className="text-avs-accent/40 hover:text-avs-accent absolute top-1/2 right-3 -translate-y-1/2 rounded-lg p-0.5 transition-colors"
-                    aria-label="Effacer"
+                    aria-label={t('search.clear')}
                   >
                     <i className="pi pi-times" style={{ fontSize: '12px' }} />
                   </motion.button>
@@ -128,17 +129,17 @@ export function PatternsContent() {
             </div>
 
             <div className="flex flex-wrap gap-1.5">
-              {TYPES.map((t) => (
+              {TYPES.map((type) => (
                 <button
-                  key={t}
-                  onClick={() => setActiveType(t)}
+                  key={type}
+                  onClick={() => setActiveType(type)}
                   className={`shrink-0 rounded-lg px-2.5 sm:px-3 py-1.5 font-mono text-[8px] sm:text-[9px] font-black tracking-[0.14em] uppercase transition-all duration-150 ${
-                    activeType === t
+                    activeType === type
                       ? 'bg-avs-primary text-avs-secondary shadow-avs-sm'
                       : 'border-avs-accent/15 text-avs-accent/50 bg-avs-secondary hover:border-avs-primary/20 hover:text-avs-primary border'
                   } `}
                 >
-                  {t === 'ALL' ? 'Tous' : t}
+                  {t(`types.${type}` as any)}
                 </button>
               ))}
             </div>
@@ -154,7 +155,7 @@ export function PatternsContent() {
         >
           <div className="border-avs-accent/10 flex items-center justify-between border-b px-3 sm:px-4 py-2.5 sm:py-3">
             <p className="text-avs-accent/40 font-mono text-[8px] sm:text-[9px] font-bold tracking-[0.18em] uppercase">
-              {filtered.length} motif{filtered.length > 1 ? 's' : ''}
+              {t('sidebar.count', { count: filtered.length })}
             </p>
             {(search || activeType !== 'ALL') && (
               <button
@@ -164,7 +165,7 @@ export function PatternsContent() {
                 }}
                 className="text-avs-primary font-mono text-[8px] sm:text-[9px] font-bold tracking-wide underline underline-offset-3"
               >
-                Réinitialiser
+                {t('search.reset')}
               </button>
             )}
           </div>
@@ -176,14 +177,14 @@ export function PatternsContent() {
                 aria-hidden
               />
               <div className="text-center">
-                <p className="text-avs-accent/40 text-sm font-medium">Aucun motif ne correspond</p>
-                <p className="text-avs-accent/30 mt-1 text-xs">Essayez d'ajuster vos filtres ou votre recherche</p>
+                <p className="text-avs-accent/40 text-sm font-medium">{t('sidebar.noResults.title')}</p>
+                <p className="text-avs-accent/30 mt-1 text-xs">{t('sidebar.noResults.subtitle')}</p>
               </div>
             </div>
           ) : (
             <nav
               className="flex-1 overflow-y-auto py-1.5 [scrollbar-width:thin]"
-              aria-label="Liste des motifs"
+              aria-label={t('sidebar.listLabel')}
             >
               {filtered.map((p) => {
                 const isActive = selected?.id === p.id;
@@ -243,7 +244,7 @@ export function PatternsContent() {
               <div className="text-center">
                 <div className="avs-pattern-wax-dakar mx-auto mb-4 h-16 w-16 sm:h-20 sm:w-20 rounded-full opacity-20" />
                 <p className="text-avs-accent/40 text-sm">
-                  Sélectionnez un motif pour voir sa documentation
+                  {t('main.selectPattern')}
                 </p>
               </div>
             </div>
@@ -259,7 +260,7 @@ export function PatternsContent() {
               router.push('/patterns', { scroll: false });
             }}
             className="lg:hidden fixed bottom-6 right-6 bg-avs-primary text-avs-secondary shadow-avs-md flex h-12 w-12 items-center justify-center rounded-full z-50"
-            aria-label="Fermer"
+            aria-label={t('mobile.close')}
           >
             <i className="pi pi-times" style={{ fontSize: '16px' }} />
           </button>

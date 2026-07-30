@@ -1,0 +1,2120 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "search": "Search",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "community": "Community",
+    "templates": "Templates",
+    "docs": "Docs",
+    "about": "About",
+    "contact": "Contact",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "settings": "Settings",
+    "logout": "Logout",
+    "login": "Login",
+    "register": "Register"
+  },
+  "auth": {
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "forgotPassword": "Forgot password?",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "signingIn": "Signing in...",
+    "signingOut": "Signing out...",
+    "signingUp": "Signing up..."
+  },
+  "theme": {
+    "light": "Light mode",
+    "dark": "Dark mode",
+    "toggle": "Toggle theme"
+  },
+  "hero": {
+    "title1": "Every pattern",
+    "title2": "has a story",
+    "title3": "We've coded it.",
+    "description": "verify the origin, symbolism and usage rights of each pattern before it becomes a token — ready for production, no account required.",
+    "artisansCount": "312 artisan-conservators",
+    "exploreSystem": "Explore the system",
+    "viewDocs": "View documentation",
+    "communityProof": "+312 artisans",
+    "verifyEachPattern": "verify each pattern",
+    "verifiedProvenance": "Verified provenance",
+    "footnote1": "documented patterns",
+    "footnote2": "countries represented",
+    "footnote3": "artisan-conservators",
+    "footnote4": "pattern without verified provenance",
+    "tokensLabel": "Tokens — click to copy",
+    "copyToken": "Copy token",
+    "tailwind": "Tailwind",
+    "figma": "Figma"
+  },
+  "home": {
+    "stats": {
+      "patterns": "Patterns",
+      "vectorized": "vectorized",
+      "countries": "Countries",
+      "represented": "represented",
+      "artisans": "Artisans",
+      "verified": "verified",
+      "downloads": "DL",
+      "thisMonth": "this month"
+    },
+    "gallery": {
+      "label": "Heritage · Featured Patterns",
+      "viewAll": "View all"
+    },
+    "pivot": {
+      "label": "Heritage · Documentation · Standard",
+      "title1": "Every pattern",
+      "title2": "carries a",
+      "title3": "story",
+      "description": "Region of origin, people, era, ceremonial symbolism. A living, open archive, verified by real artisans.",
+      "tag1": "CC BY 4.0",
+      "tag2": "Open Source",
+      "tag3": "No account required",
+      "tag4": "SVG · PNG · JSON · CSS"
+    },
+    "features": {
+      "label": "What we offer",
+      "title1": "An open",
+      "title2": "standard",
+      "title3": "rigorous",
+      "description": "Everything is accessible without an account, like PrimeReact. African knowledge belongs to humanity.",
+      "patternLibrary": {
+        "title": "Pattern Library",
+        "desc": "+1,200 patterns by region, era and symbolism. SVG, PNG, JSON, CSS."
+      },
+      "designTokens": {
+        "title": "Cultural Design Tokens",
+        "desc": "Natural African pigment palettes. Tailwind, Figma, CSS Variables."
+      },
+      "artisanCommunity": {
+        "title": "Artisan Community",
+        "desc": "312 verified artisans validate each entry. The primary source, always."
+      },
+      "documentation": {
+        "title": "Components & Documentation",
+        "desc": "React UI library, templates, SVG icons. Copy & Paste. No account."
+      }
+    },
+    "pivotStats": {
+      "documentedPatterns": "Documented patterns",
+      "representedCountries": "Countries represented",
+      "verifiedArtisans": "Verified artisans",
+      "downloadsPerMonth": "Downloads/month"
+    },
+    "bento": {
+      "label": "Why AVS",
+      "copyPaste": {
+        "eyebrow": "Copy & Paste · Shadcn style",
+        "title": "You own\nyour code",
+        "desc": "Copy components, patterns and tokens. No opaque dependencies. Adapt without permission."
+      },
+      "formats": {
+        "eyebrow": "Formats · Licenses",
+        "title": "SVG · PNG\nJSON · CSS",
+        "desc": "Each pattern in 4 formats. CC BY 4.0 — free use."
+      },
+      "publicAccess": {
+        "eyebrow": "Public access",
+        "title": "No account\nrequired",
+        "desc": "Like PrimeReact. Everything is public. Auth is optional — only for contributing."
+      },
+      "designTokens": {
+        "eyebrow": "Design tokens",
+        "title": "Integrate in 30s into\nFigma, Tailwind, React Native",
+        "desc": "Download color, typography and spacing tokens for your tools"
+      }
+    },
+    "testimonials": {
+      "label": "They use AVS",
+      "ama": {
+        "quote": "AVS is the reference I've been waiting for for 10 years. Every pixel is documented with its cultural source.",
+        "role": "Kente Weaver · Kumasi"
+      },
+      "njoya": {
+        "quote": "My sultanate's Ndop finally standardized. AVS preserves what time risked erasing.",
+        "role": "Ndop Weaver · Foumban"
+      },
+      "amara": {
+        "quote": "As a designer, it's my first source. Tokens ready for Figma in two clicks.",
+        "role": "Design Director · Dakar"
+      }
+    },
+    "cta": {
+      "title1": "Let's build",
+      "title2": "the standard",
+      "title3": "African",
+      "description": "Artisan, designer, researcher or developer — your knowledge enriches the world's largest open-source African visual archive.",
+      "joinFree": "Join for free",
+      "exploreFirst": "Explore first"
+    }
+  },
+  "login": {
+    "testimonials": {
+      "a": "First African reference tool.",
+      "n": "Essential for every creator.",
+      "f": "The standard we've been waiting for."
+    },
+    "quote": {
+      "line1": "The identity of a people",
+      "line2": "is read in their patterns.",
+      "author": "NDOH Yannick TANG, AVS founder"
+    },
+    "heading": {
+      "label": "Member area",
+      "title": "Login",
+      "noAccount": "Don't have an account?",
+      "registerLink": "Sign up for free"
+    },
+    "validation": {
+      "invalidEmail": "Invalid email",
+      "passwordTooShort": "Minimum 8 characters"
+    },
+    "fields": {
+      "email": {
+        "label": "Email",
+        "placeholder": "you@example.com"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "••••••••",
+        "forgot": "Forgot?",
+        "show": "Show password",
+        "hide": "Hide password"
+      }
+    },
+    "submit": {
+      "text": "Log in",
+      "loading": "Logging in…"
+    },
+    "divider": "or continue with",
+    "toast": {
+      "success": {
+        "title": "Login successful",
+        "message": "Welcome! You are now connected."
+      },
+      "error": {
+        "title": "Login failed",
+        "message": "Incorrect email or password. Please try again."
+      }
+    },
+    "footer": {
+      "acceptTerms": "By logging in, you accept our",
+      "terms": "terms",
+      "and": "and our",
+      "privacy": "privacy",
+      "license": "Apache 2.0 + Commons Clause"
+    }
+  },
+  "register": {
+    "loading": "Creating account…",
+    "perks": {
+      "title": "Why join?",
+      "patterns": "Access to 1,248 high-resolution patterns",
+      "tokens": "Ready-to-use design token palette",
+      "community": "Community of 312 verified artisans",
+      "downloads": "Unlimited SVG, PNG and JSON downloads"
+    },
+    "stats": {
+      "patterns": "patterns",
+      "artisans": "artisans",
+      "countries": "countries"
+    },
+    "leftFooter": "Free · Open Source · CC BY 4.0",
+    "heading": {
+      "label": "Create account",
+      "title": "Join AVS",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Log in"
+    },
+    "validation": {
+      "nameTooShort": "Minimum 2 characters",
+      "invalidEmail": "Invalid email",
+      "passwordTooShort": "Minimum 8 characters",
+      "passwordUppercase": "One uppercase required",
+      "passwordNumber": "One number required",
+      "confirmPassword": "Confirm your password",
+      "passwordMismatch": "Passwords do not match"
+    },
+    "passwordStrength": {
+      "chars": "8 chars",
+      "uppercase": "Uppercase",
+      "number": "Number",
+      "tooShort": "Too short",
+      "weak": "Weak",
+      "medium": "Medium",
+      "strong": "Strong"
+    },
+    "fields": {
+      "name": {
+        "label": "Full name",
+        "placeholder": "Amara Diop"
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "you@example.com"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "••••••••",
+        "show": "Show password",
+        "hide": "Hide password"
+      },
+      "confirmPassword": {
+        "label": "Confirm password",
+        "placeholder": "••••••••",
+        "show": "Show password",
+        "hide": "Hide password"
+      }
+    },
+    "submit": {
+      "text": "Create my account",
+      "loading": "Creating…"
+    },
+    "divider": "or continue with",
+    "toast": {
+      "success": {
+        "title": "Account created",
+        "message": "Your account has been successfully created. Welcome to the AVS community!"
+      },
+      "error": {
+        "title": "Creation failed",
+        "message": "An error occurred while creating the account. Please try again."
+      }
+    },
+    "footer": {
+      "acceptTerms": "By signing up, you accept our",
+      "terms": "terms",
+      "and": "and our",
+      "privacy": "privacy",
+      "license": "Apache 2.0 + Commons Clause"
+    }
+  },
+  "errors": {
+    "required": "This field is required",
+    "invalidEmail": "Invalid email",
+    "passwordTooShort": "Password must be at least 8 characters",
+    "passwordMismatch": "Passwords do not match",
+    "general": "An error occurred"
+  },
+  "about": {
+    "metadata": {
+      "title": "About — AVS",
+      "description": "The mission, values and team behind the African visual standard."
+    },
+    "manifesto": {
+      "title": "African visual heritage",
+      "highlight": "deserves a standard.",
+      "subtitle": "As rigorous as Unicode is for writing. We're building it."
+    },
+    "problem": {
+      "label": "The situation",
+      "title": "The richest visual heritage",
+      "titleHighlight": "in the world,",
+      "titleEnd": "documented nowhere.",
+      "paragraph1": "Every designer looking for an African pattern lands on the same libraries of images without source, without context, without clear permission. The same wax circulates without knowing where it comes from, nor who created it.",
+      "paragraph2": "There is no shared nomenclature, no reference palette, no token, no standard. Result: visual inconsistency, involuntary appropriation, and artisanal knowledge that fades generation after generation."
+    },
+    "response": {
+      "label": "Our response",
+      "title": "African Visual System is not a library.",
+      "highlight": "It's an infrastructure.",
+      "subtitle": "Seven interconnected bricks, each documented, versioned and traceable to its source."
+    },
+    "infrastructure": {
+      "motifs": "Patterns",
+      "motifsDetail": "1,248 vectorized and sourced patterns",
+      "designTokens": "Design Tokens",
+      "designTokensDetail": "Color, space, rhythm — named",
+      "palettes": "Palettes",
+      "palettesDetail": "Validated combinations by region",
+      "components": "Components",
+      "componentsDetail": "Figma, Tailwind, React",
+      "svg": "SVG",
+      "svgDetail": "High-fidelity source files",
+      "documentation": "Documentation",
+      "documentationDetail": "History, usage, provenance",
+      "api": "API",
+      "apiDetail": "Programmatic access to the standard"
+    },
+    "method": {
+      "label": "Our method",
+      "title": "How a pattern becomes a standard",
+      "research": "Research",
+      "researchDetail": "Fieldwork, interviews, mapping of existing patterns.",
+      "documentation": "Documentation",
+      "documentationDetail": "Origin, region, era, meaning recorded.",
+      "validation": "Artisan validation",
+      "validationDetail": "Review by the source community — right of veto.",
+      "digitization": "Digitization",
+      "digitizationDetail": "Faithful vectorization, high-fidelity source files.",
+      "designTokens": "Design Tokens",
+      "designTokensDetail": "Colors, curves, spacings extracted and named.",
+      "components": "Components",
+      "componentsDetail": "Figma, Tailwind, React integration — ready to use.",
+      "publication": "Publication",
+      "publicationDetail": "Online publication, clear license, full traceability."
+    },
+    "principles": {
+      "label": "Principles",
+      "title": "What is never negotiable",
+      "ethnographicRigor": {
+        "title": "Ethnographic rigor",
+        "text": "Each pattern is validated by field artisans and specialized researchers. No romanticization, no appropriation: factual documentation."
+      },
+      "culturalSovereignty": {
+        "title": "Cultural sovereignty",
+        "text": "Source communities have permanent oversight over their heritage. AVS is a preservation tool, never an extraction tool."
+      },
+      "universalAccess": {
+        "title": "Universal access",
+        "text": "Most resources are free and open (CC BY 4.0). African knowledge belongs to all humanity, starting with Africans."
+      },
+      "traceability": {
+        "title": "Total traceability",
+        "text": "Each color token, each pattern, each symbol carries the trace of its source: artisan, region, era, documented meaning."
+      }
+    },
+    "stats": {
+      "label": "Where the standard stands",
+      "title": "Two years of fieldwork, in numbers",
+      "hero": {
+        "value": "1,248",
+        "label": "Documented patterns",
+        "detail": "Vectorized, sourced, ready for production"
+      },
+      "countries": {
+        "value": "54",
+        "label": "Countries represented",
+        "detail": "Out of 54 countries on the continent"
+      },
+      "artisans": {
+        "value": "312",
+        "label": "Verified artisans",
+        "detail": "Permanent oversight over their heritage"
+      },
+      "archive": {
+        "value": "5 years",
+        "label": "Of living archive",
+        "detail": "Continuous field research since 2024"
+      }
+    },
+    "roadmap": {
+      "label": "Roadmap 2024–2029",
+      "title": "From Douala to continental standard",
+      "subtitle": "Launched in 2024 from Bonamoussadi, Douala — two years of fieldwork before the first public line of code. Here is the plan, phase by phase.",
+      "status": {
+        "now": "In progress · Today",
+        "done": "Completed",
+        "planned": "Planned"
+      },
+      "phases": {
+        "01": {
+          "title": "Research & scoping",
+          "objective": "Understand the real need before coding anything.",
+          "metric": "18 months of field research",
+          "deliverables": [
+            "Interviews with artisans and researchers to map existing patterns",
+            "Ethnographic watch on African classification systems",
+            "First technical prototypes — SVG formats, token structure",
+            "Definition of the data model and standard architecture"
+          ]
+        },
+        "02": {
+          "title": "v1.0 launch",
+          "objective": "Release a solid, documented, production-ready foundation.",
+          "metric": "1,248 patterns · 312 verified artisans",
+          "deliverables": [
+            "Open library of documented patterns",
+            "Figma & Tailwind integrations",
+            "Artisan verification system (v1)",
+            "Public documentation of the standard"
+          ]
+        },
+        "03": {
+          "title": "Consolidation",
+          "objective": "Solidify quality and governance before accelerating.",
+          "deliverables": [
+            "Partnerships with museums and universities in Central Africa",
+            "Public API for third-party integrations",
+            "Strengthened artisan certification program",
+            "First recurring revenue — licenses and partnerships"
+          ]
+        },
+        "04": {
+          "title": "Regional expansion",
+          "objective": "Extend geographic coverage and community.",
+          "deliverables": [
+            "Coverage of West Africa and Southern Africa",
+            "Community governance — artisan advisory committee",
+            "Multilingual translation program of the standard",
+            "Designer tools — plugin, CLI, stable API"
+          ]
+        },
+        "05": {
+          "title": "Reference standard",
+          "objective": "Become the continental reference, recognized and adopted.",
+          "deliverables": [
+            "54 countries covered, open and transparent governance",
+            "Adoption by major cultural institutions",
+            "Sustainable funding model",
+            "Official certification « AVS Verified »"
+          ]
+        }
+      }
+    },
+    "team": {
+      "label": "Heritage guardians",
+      "title": "Faces behind the standard",
+      "subtitle": "A distributed team across the continent, united by the same conviction.",
+      "guardians": {
+        "amara": {
+          "name": "Dr. Amara Diop",
+          "role": "Founder & Ethnographic Director",
+          "origin": "🇸🇳 Dakar",
+          "expertise": "West African textiles",
+          "motifName": "Wax Dakar",
+          "quote": "A pattern without its source is just decoration. Our work always starts with the name of the village."
+        },
+        "ngozi": {
+          "name": "Ngozi Okonkwo",
+          "role": "Design & Standard Director",
+          "origin": "🇳🇬 Lagos",
+          "expertise": "Design systems",
+          "motifName": "Kente Royale",
+          "quote": "A standard is only useful if designers adopt it without thinking. That's our requirement."
+        },
+        "jeanPaul": {
+          "name": "Jean-Paul Kamdem",
+          "role": "Lead Engineering & Archiving",
+          "origin": "🇨🇲 Yaoundé",
+          "expertise": "Architecture & data",
+          "motifName": "Ndop Sultan",
+          "quote": "Every token we publish must be auditable in twenty years. We build to last."
+        },
+        "aicha": {
+          "name": "Aïcha Ben Salah",
+          "role": "North Africa Research",
+          "origin": "🇹🇳 Tunis",
+          "expertise": "Berber iconography",
+          "motifName": "Bogolan Fanga",
+          "quote": "North Africa is often absent from the continent's visual narratives. We correct this, pattern by pattern."
+        },
+        "thabo": {
+          "name": "Thabo Mokoena",
+          "role": "Community & Artisan Partnerships",
+          "origin": "🇿🇦 Jo'burg",
+          "expertise": "Artisan relations",
+          "motifName": "Adinkra Sankofa",
+          "quote": "Sankofa: go back and fetch what you left behind. That's literally our mission."
+        }
+      }
+    },
+    "vision": {
+      "label": "Vision",
+      "title": "In twenty years, this standard will be as obvious as Unicode is today.",
+      "subtitle": "Each pattern integrated today protects a practice, an artisan, a memory. AVS does not exist to freeze heritage — it exists for it to continue to be created, transmitted and recognized, generation after generation."
+    },
+    "cta": {
+      "title": "Join the standard.",
+      "button": "Contribute to the standard",
+      "footer": "312 artisans · 54 countries · CC BY 4.0 · Free"
+    }
+  },
+  "coffee": {
+    "metadata": {
+      "title": "Offer Me a Coffee — Buni",
+      "description": "Support open-source projects and creative work. Every contribution fuels creativity and independence."
+    },
+    "brand": "BUNI",
+    "hero": {
+      "title": "Every coffee fuels",
+      "titleLine2": "creativity.",
+      "description": "Every project, every idea and every hour spent creating is made possible thanks to people like you. Your support means much more than a coffee.",
+      "trust": {
+        "openSource": "Open source",
+        "transparent": "Transparent",
+        "community": "Community-driven"
+      }
+    },
+    "cta": {
+      "button": "Offer me a coffee",
+      "ariaLabel": "Open payment options to support"
+    },
+    "ritual": {
+      "label": "THE RITUAL",
+      "title": "Offering coffee has always meant something more.",
+      "paragraph1": "Long before it became a gesture on the internet, offering coffee was an act of welcome — shared in courtyards, passed from hand to hand, a quiet way of saying you matter to me. Across the continent, from Ethiopian buna ceremonies to family compounds in Cameroon, coffee has never just been a drink. It's an invitation to sit down, to be seen, to belong.",
+      "paragraph2": "When you offer a coffee here, you're taking part in that same tradition — encouraging someone who has chosen to spend their time honoring African heritage through design and code, one pattern, one pixel, one idea at a time.",
+      "imageAlt": "Two hands sharing a cup of coffee, a gesture of hospitality rooted in African tradition"
+    },
+    "whySupport": {
+      "label": "WHY SUPPORT?",
+      "title": "Your support powers open innovation",
+      "cards": {
+        "openSource": {
+          "title": "More open-source projects",
+          "text": "Building tools and libraries that empower developers worldwide."
+        },
+        "content": {
+          "title": "Better content",
+          "text": "Creating tutorials, guides, and resources to share knowledge."
+        },
+        "independence": {
+          "title": "Independence",
+          "text": "Staying free to create without external pressure or constraints."
+        },
+        "heritage": {
+          "title": "A voice for African heritage",
+          "text": "Keeping African design, patterns and stories at the center — not an afterthought."
+        }
+      }
+    },
+    "whyAfrica": {
+      "label": "THE WHY",
+      "title": "Because Africa deserves to be told with care.",
+      "paragraph1": "Behind every kente pattern rebuilt in code, every ndop motif turned into a design token, there's a choice: to treat African heritage as a living, evolving language — not a decoration borrowed for a moment. That choice takes time, research, and care that isn't always visible on the surface.",
+      "paragraph2": "Your coffee doesn't just fund a feature. It tells someone working to put African craft on the same stage as any global design system: keep going, this matters.",
+      "imageAlt": "Close-up of a hand-woven African textile pattern, source of inspiration for the design system"
+    },
+    "contribution": {
+      "title": "Every contribution matters",
+      "text": "Whether it's one coffee or several, every contribution helps continue building beautiful products and sharing knowledge with everyone."
+    },
+    "testimonial": {
+      "quote": "The attention to detail and commitment to quality in every project is truly inspiring. Supporting this work feels like investing in excellence itself.",
+      "author": "— A supporter"
+    },
+    "payment": {
+      "title": "Choose Your Support Level",
+      "subtitle": "Every contribution fuels creativity and African heritage preservation",
+      "methodLabel": "Payment Method",
+      "tiers": {
+        "espresso": {
+          "name": "Espresso",
+          "description": "A quick boost of creativity",
+          "features": [
+            "Support one project",
+            "Personal thank you",
+            "Impact on open source"
+          ],
+          "tagline": "Small gesture, big impact"
+        },
+        "cappuccino": {
+          "name": "Cappuccino",
+          "description": "Fuel a full day of creation",
+          "features": [
+            "Support multiple projects",
+            "Priority updates",
+            "Community recognition"
+          ],
+          "tagline": "Fuel the creative journey"
+        },
+        "pourOver": {
+          "name": "Pour Over",
+          "description": "Sustain a week of dedicated work",
+          "features": [
+            "Sustain development",
+            "Early access features",
+            "Direct collaboration",
+            "Special supporter badge"
+          ],
+          "tagline": "Invest in African heritage"
+        }
+      },
+      "button": "Support with {tier}",
+      "processing": "Processing...",
+      "secure": "Secure payment powered by {provider}"
+    },
+    "footer": {
+      "text": "Made with passion by Buni.",
+      "links": {
+        "about": "About",
+        "contact": "Contact",
+        "support": "Support"
+      }
+    }
+  },
+  "patterns": {
+    "header": {
+      "label": "Cultural Documentation · {count} patterns",
+      "title": "Pattern Encyclopedia",
+      "description": "Complete ethnographic sheets — constituent symbols, history, technique, primary sources."
+    },
+    "search": {
+      "placeholder": "Pattern, people, symbol, country…",
+      "clear": "Clear",
+      "reset": "Reset"
+    },
+    "types": {
+      "ALL": "All",
+      "KENTE": "Kente",
+      "NDOP": "Ndop",
+      "BOGOLAN": "Bogolan",
+      "ADINKRA": "Adinkra",
+      "WAX": "Wax",
+      "NDEBELE": "Ndebele",
+      "KUBA": "Kuba"
+    },
+    "sidebar": {
+      "count": "{count} pattern{count, plural, one {} other {s}}",
+      "listLabel": "Pattern list",
+      "noResults": {
+        "title": "No patterns match",
+        "subtitle": "Try adjusting your filters or search"
+      }
+    },
+    "main": {
+      "selectPattern": "Select a pattern to view its documentation"
+    },
+    "mobile": {
+      "close": "Close"
+    }
+  },
+  "colors": {
+    "hero": {
+      "label": "Color Picker",
+      "title": "African Color Combos",
+      "description": "Choose a color combination inspired by African textiles and pigments, and see it applied live on interface examples. Export in CSS, JSON or Tailwind."
+    },
+    "stats": {
+      "combos": "combos",
+      "colors": "colors",
+      "regions": "regions",
+      "cultures": "cultures",
+      "formats": "formats"
+    },
+    "filters": {
+      "label": "Filter by region, culture or theme",
+      "selectCombo": "Select a combo",
+      "filtered": "({count} filtered)",
+      "reset": "Reset filters"
+    },
+    "createCombo": "Create a combo",
+    "culturalContextLabel": "Cultural Context",
+    "region": "Region",
+    "culture": "Culture",
+    "theme": "Theme",
+    "combosData": {
+      "avs-core": {
+        "name": "AVS Core",
+        "origin": "AVS Standard",
+        "description": "The official combination of the African Visual Standard — terracotta, natural linen, and obsidian.",
+        "colors": {
+          "primary": { "name": "avs-primary", "meaning": "Burnt earth — warmth, energy, identity", "origin": "Yoruba pottery" },
+          "secondary": { "name": "avs-secondary", "meaning": "Natural linen — rest, clarity, neutrality", "origin": "Fulani fabric" },
+          "accent": { "name": "avs-accent", "meaning": "Obsidian — depth, authority, night", "origin": "Kenya basalt" },
+          "neutral": { "name": "avs-mist", "meaning": "Lagoon mist — serenity, horizon", "origin": "Cotonou lagoon" }
+        }
+      },
+      "kente": {
+        "name": "Kente Asante",
+        "origin": "Ghana",
+        "description": "Combo extracted from the royal Akan fabric — royal gold, sacred black, blood red.",
+        "colors": {
+          "primary": { "name": "kente-gold", "meaning": "Royal gold — wealth, royalty, sun", "origin": "Asante silk thread" },
+          "secondary": { "name": "kente-ivory", "meaning": "Ivory — ritual purity, soft light", "origin": "Bleached cotton" },
+          "accent": { "name": "kente-black", "meaning": "Maturity black — wisdom, cosmic energy", "origin": "Charcoal ink" },
+          "neutral": { "name": "kente-red", "meaning": "Blood red — sacrifice, courage, ancestors", "origin": "Ferruginous ochre" }
+        }
+      },
+      "ndop": {
+        "name": "Ndop Bamoum",
+        "origin": "Cameroon",
+        "description": "Deep shades of the sacred Bamoum fabric — cosmic indigo, raffia gold, ritual ivory.",
+        "colors": {
+          "primary": { "name": "ndop-indigo", "meaning": "Cosmic indigo — primordial waters, infinity", "origin": "Foumban indigo" },
+          "secondary": { "name": "ndop-ivory", "meaning": "Ivory — purity, peace, ancestors", "origin": "Vegetable ivory" },
+          "accent": { "name": "ndop-raffia", "meaning": "Raffia gold — natural wealth, sun", "origin": "Palm fiber" },
+          "neutral": { "name": "ndop-nile", "meaning": "Nile water — soothing, fluidity, life", "origin": "Foumban pigment" }
+        }
+      },
+      "earth": {
+        "name": "African Earths",
+        "origin": "Pan-African",
+        "description": "Ochers, siennas and mineral earths extracted from the continent's natural pigments.",
+        "colors": {
+          "primary": { "name": "earth-sienna", "meaning": "Burnt sienna — fertile soil, grounding", "origin": "Sahel clay" },
+          "secondary": { "name": "earth-sand", "meaning": "Golden sand — Sahara, journey, openness", "origin": "Saharan dunes" },
+          "accent": { "name": "earth-baobab", "meaning": "Baobab bark — endurance, memory", "origin": "Baobab wood" },
+          "neutral": { "name": "earth-clay", "meaning": "Pale clay — softness, construction, hearth", "origin": "Sahel laterite" }
+        }
+      },
+      "mali-mud": {
+        "name": "Bogolan Mali",
+        "origin": "Mali",
+        "description": "Shades of Bogolan earth — brown clay, vegetable black, yellow ochre, white kaolin.",
+        "colors": {
+          "primary": { "name": "mud-clay", "meaning": "Raw clay — authenticity, tradition", "origin": "Niger mud" },
+          "secondary": { "name": "mud-kaolin", "meaning": "Kaolin — purity, spiritual protection", "origin": "White clay" },
+          "accent": { "name": "mud-black", "meaning": "Vegetable black — mystery, ancestry", "origin": "Neem leaves" },
+          "neutral": { "name": "mud-ochre", "meaning": "Yellow ochre — sun, prosperity", "origin": "Sahel earth" }
+        }
+      },
+      "ethiopia": {
+        "name": "Ancient Ethiopia",
+        "origin": "Ethiopia",
+        "description": "Colors of historical Ethiopia — imperial gold, earth green, courage red.",
+        "colors": {
+          "primary": { "name": "ethiopia-gold", "meaning": "Imperial gold — wealth, divinity", "origin": "Solomon's crown" },
+          "secondary": { "name": "ethiopia-green", "meaning": "Earth green — fertility, hope", "origin": "Fertile land" },
+          "accent": { "name": "ethiopia-red", "meaning": "Courage red — sacrifice, strength", "origin": "Martyrs' blood" },
+          "neutral": { "name": "ethiopia-cream", "meaning": "Cream — peace, light", "origin": "Natural limestone" }
+        }
+      },
+      "zulu-beads": {
+        "name": "Zulu Beads",
+        "origin": "South Africa",
+        "description": "Traditional Zulu bead palette — sky blue communication, red love, black marriage.",
+        "colors": {
+          "primary": { "name": "zulu-blue", "meaning": "Sky blue — communication, loyalty", "origin": "Glass beads" },
+          "secondary": { "name": "zulu-white", "meaning": "Pure white — spirituality, clarity", "origin": "Seashell" },
+          "accent": { "name": "zulu-red", "meaning": "Passion red — love, intensity", "origin": "Red ochre" },
+          "neutral": { "name": "zulu-black", "meaning": "Union black — commitment, marriage", "origin": "Wood charcoal" }
+        }
+      },
+      "sahara-sunset": {
+        "name": "Sahara Sunset",
+        "origin": "Sahara",
+        "description": "The golden colors of the desert at dusk — burnt orange, ochre, sand, night violet.",
+        "colors": {
+          "primary": { "name": "sunset-orange", "meaning": "Burnt orange — fire, passion, desert", "origin": "Sunlit sand" },
+          "secondary": { "name": "sunset-sand", "meaning": "Golden sand — dunes, journey, infinity", "origin": "Sahara erg" },
+          "accent": { "name": "sunset-purple", "meaning": "Night violet — mystery, stars", "origin": "Night sky" },
+          "neutral": { "name": "sunset-ochre", "meaning": "Warm ochre — earth, grounding", "origin": "Natural pigment" }
+        }
+      },
+      "congo-river": {
+        "name": "Congo River",
+        "origin": "DRC",
+        "description": "The deep waters of the Congo River — intense blue, forest green, wet earth, moss.",
+        "colors": {
+          "primary": { "name": "congo-blue", "meaning": "Deep blue — powerful waters", "origin": "Congo River" },
+          "secondary": { "name": "congo-green", "meaning": "Forest green — biodiversity, life", "origin": "Equatorial forest" },
+          "accent": { "name": "congo-brown", "meaning": "Wet earth — soil richness", "origin": "River bank" },
+          "neutral": { "name": "congo-moss", "meaning": "Moss — growth, freshness", "origin": "Undergrowth" }
+        }
+      },
+      "masai-red": {
+        "name": "Maasai Red",
+        "origin": "Kenya/Tanzania",
+        "description": "The emblematic color of the Maasai — ochre red, milk white, ash black, burnt earth.",
+        "colors": {
+          "primary": { "name": "masai-red", "meaning": "Ochre red — courage, protection", "origin": "Natural ochre" },
+          "secondary": { "name": "masai-white", "meaning": "Milk white — peace, milk, prosperity", "origin": "Cow milk" },
+          "accent": { "name": "masai-black", "meaning": "Ash black — resilience, strength", "origin": "Fire ash" },
+          "neutral": { "name": "masai-earth", "meaning": "Burnt earth — ancestral connection", "origin": "Dry savanna" }
+        }
+      },
+      "nubian-gold": {
+        "name": "Nubian Gold",
+        "origin": "Sudan",
+        "description": "The golden heritage of ancient Nubia — royal gold, lapis lazuli blue, obsidian black, ivory.",
+        "colors": {
+          "primary": { "name": "nubian-gold", "meaning": "Royal gold — splendor, divinity", "origin": "Nubian mines" },
+          "secondary": { "name": "nubian-lapis", "meaning": "Lapis lazuli — wisdom, sky", "origin": "Ancient Afghanistan" },
+          "accent": { "name": "nubian-black", "meaning": "Obsidian — eternity, mystery", "origin": "Volcano" },
+          "neutral": { "name": "nubian-ivory", "meaning": "Ivory — purity, luxury", "origin": "Elephant" }
+        }
+      },
+      "senegal-wax": {
+        "name": "Senegalese Wax",
+        "origin": "Senegal",
+        "description": "The vibrant colors of Senegalese Wax fabric — electric orange, turquoise, lemon yellow, white.",
+        "colors": {
+          "primary": { "name": "wax-orange", "meaning": "Electric orange — energy, joy", "origin": "Industrial dye" },
+          "secondary": { "name": "wax-turquoise", "meaning": "Turquoise — freshness, ocean", "origin": "Synthetic pigment" },
+          "accent": { "name": "wax-yellow", "meaning": "Lemon yellow — sun, vitality", "origin": "Turmeric" },
+          "neutral": { "name": "wax-white", "meaning": "Pure white — clarity, modernity", "origin": "Cotton" }
+        }
+      },
+      "ivory-coast": {
+        "name": "Ivory Coast",
+        "origin": "Ivory Coast",
+        "description": "The colors of Ivory Coast — orange, white, green, national symbols.",
+        "colors": {
+          "primary": { "name": "ivory-orange", "meaning": "National orange — wealth, earth", "origin": "National flag" },
+          "secondary": { "name": "ivory-white", "meaning": "Peace white — harmony, purity", "origin": "National flag" },
+          "accent": { "name": "ivory-green", "meaning": "Hope green — future, growth", "origin": "National flag" },
+          "neutral": { "name": "ivory-gold", "meaning": "Prosperity gold — economy, abundance", "origin": "Natural resources" }
+        }
+      },
+      "ghana-adinkra": {
+        "name": "Ghana Adinkra",
+        "origin": "Ghana",
+        "description": "Adinkra symbols on black fabric — deep black, blood red, kaolin white, royal gold.",
+        "colors": {
+          "primary": { "name": "adinkra-black", "meaning": "Deep black — wisdom, ancestors", "origin": "Badie bark" },
+          "secondary": { "name": "adinkra-red", "meaning": "Blood red — sacrifice, courage", "origin": "Red ochre" },
+          "accent": { "name": "adinkra-gold", "meaning": "Royal gold — wealth, royalty", "origin": "Dust gold" },
+          "neutral": { "name": "adinkra-white", "meaning": "Kaolin white — purity, spirituality", "origin": "White clay" }
+        }
+      },
+      "namibia-desert": {
+        "name": "Namib Desert",
+        "origin": "Namibia",
+        "description": "The shades of the Namib desert — sand ochre, veld pink, mountain violet, sky blue.",
+        "colors": {
+          "primary": { "name": "namib-sand", "meaning": "Golden sand — dunes, eternity", "origin": "Namib Desert" },
+          "secondary": { "name": "namib-pink", "meaning": "Veld pink — sunsets", "origin": "Flowering veld" },
+          "accent": { "name": "namib-purple", "meaning": "Mountain violet — depth, mystery", "origin": "Mountains" },
+          "neutral": { "name": "namib-sky", "meaning": "Sky blue — horizon, infinity", "origin": "Desert sky" }
+        }
+      },
+      "madagascar-spice": {
+        "name": "Madagascar Spices",
+        "origin": "Madagascar",
+        "description": "The colors of Malagasy spices — cinnamon, vanilla, pepper, clove.",
+        "colors": {
+          "primary": { "name": "spice-cinnamon", "meaning": "Cinnamon — warmth, comfort", "origin": "Cinnamon bark" },
+          "secondary": { "name": "spice-vanilla", "meaning": "Vanilla — softness, luxury", "origin": "Vanilla pod" },
+          "accent": { "name": "spice-pepper", "meaning": "Black pepper — intensity, character", "origin": "Black pepper" },
+          "neutral": { "name": "spice-clove", "meaning": "Clove — wealth, aroma", "origin": "Clove" }
+        }
+      },
+      "seigensha-warm": {
+        "name": "Warm Contrast",
+        "origin": "Seigensha · Combinations",
+        "description": "Warm harmony from the Color Combination Dictionary — Etruscan red, Nile blue, golden sulfin.",
+        "colors": {
+          "primary": { "name": "sg-etruscan", "meaning": "Etruscan red — strength, fire, character", "origin": "Dict. comb. #025" },
+          "secondary": { "name": "sg-nile-blue", "meaning": "Nile blue — rest, water, serene horizon", "origin": "Dict. comb. #025" },
+          "accent": { "name": "sg-golden", "meaning": "Golden yellow — light, warmth, harvest", "origin": "Dict. comb. #026" },
+          "neutral": { "name": "sg-sulphine", "meaning": "Sulphine yellow — brightness, vitality, savanna", "origin": "Dict. comb. #065" }
+        }
+      },
+      "seigensha-deep": {
+        "name": "Depth & Contrast",
+        "origin": "Seigensha · Combinations",
+        "description": "Tonal depth from the Seigensha Dictionary — sacred olive, night violet, yellow ochre, chartreuse.",
+        "colors": {
+          "primary": { "name": "sg-olive", "meaning": "Olive green — maturity, grounding, balance", "origin": "Dict. comb. #066" },
+          "secondary": { "name": "sg-ocher", "meaning": "Olive ochre — dry heat, steppe, sun", "origin": "Dict. comb. #066" },
+          "accent": { "name": "sg-violet-nuit", "meaning": "Night violet — cosmos, mystery, infinity", "origin": "Dict. comb. #106" },
+          "neutral": { "name": "sg-chartreuse", "meaning": "Chartreuse green — freshness, nature, hope", "origin": "Dict. comb. #289" }
+        }
+      }
+    },
+    "culturalContext": {
+      "west-africa": {
+        "description": "Region rich in textile traditions, from Yoruba pottery to Akan Kente fabric.",
+        "significance": "Cradle of ancient civilizations, known for its symbolic textiles and natural pigments."
+      },
+      "central-africa": {
+        "description": "Land of the Bamoum and Kongo kingdoms, with indigo dyes and sacred fabrics.",
+        "significance": "Region of deep spirituality, where colors carry ritual and ancestral meanings."
+      },
+      "east-africa": {
+        "description": "From imperial Ethiopia to Maasai cultures, palette of red earths and historical gold.",
+        "significance": "Crossroads of ancient civilizations, with millennia-old artistic traditions."
+      },
+      "southern-africa": {
+        "description": "San art, Zulu beads, and Namib desert shades — unique artistic expressions.",
+        "significance": "Region of extraordinary cultural diversity, with the world's oldest rock art."
+      },
+      "north-africa": {
+        "description": "Saharan deserts, Tuareg and Nubian cultures — gold, lapis lazuli, and sand shades.",
+        "significance": "Land of caravans and Berber civilizations, with a rich artistic heritage."
+      },
+      "pan-african": {
+        "description": "Colors transcending borders, uniting the continent through shared natural pigments.",
+        "significance": "Expression of African unity through universal continent shades."
+      },
+      "international": {
+        "description": "Modern combinations inspired by the African palette, adapted to contemporary design.",
+        "significance": "Fusion between African heritage and international design standards."
+      }
+    },
+    "swatchLibrary": {
+      "terre": {
+        "label": "Earth & Ochre",
+        "swatches": [
+          { "name": "Terracotta", "meaning": "Burnt earth, warmth" },
+          { "name": "Sienna", "meaning": "Fertile soil, grounding" },
+          { "name": "Ochre", "meaning": "Grazing light" },
+          { "name": "Baobab", "meaning": "Bark, endurance" },
+          { "name": "Sand", "meaning": "Sahara, openness" },
+          { "name": "Clay", "meaning": "Softness, hearth" }
+        ]
+      },
+      "indigo": {
+        "label": "Indigo & Blue",
+        "swatches": [
+          { "name": "Cosmic indigo", "meaning": "Primordial waters" },
+          { "name": "Royal blue", "meaning": "Authority, sky" },
+          { "name": "Nile blue", "meaning": "Rest, horizon" },
+          { "name": "Antwarp", "meaning": "Clarity, confidence" },
+          { "name": "Lagoon mist", "meaning": "Serenity" }
+        ]
+      },
+      "or": {
+        "label": "Gold & Yellow",
+        "swatches": [
+          { "name": "Royal gold", "meaning": "Wealth, royalty" },
+          { "name": "Raffia", "meaning": "Natural wealth" },
+          { "name": "Golden yellow", "meaning": "Light, harvest" },
+          { "name": "Sulphine", "meaning": "Brightness, savanna" },
+          { "name": "Olive ochre", "meaning": "Dry heat" }
+        ]
+      },
+      "vert": {
+        "label": "Green",
+        "swatches": [
+          { "name": "Forest green", "meaning": "Growth, life" },
+          { "name": "Olive", "meaning": "Maturity, balance" },
+          { "name": "Chartreuse", "meaning": "Freshness, hope" }
+        ]
+      },
+      "neutre": {
+        "label": "Neutrals",
+        "swatches": [
+          { "name": "Obsidian", "meaning": "Depth, authority" },
+          { "name": "Natural linen", "meaning": "Rest, clarity" },
+          { "name": "Night violet", "meaning": "Cosmos, mystery" },
+          { "name": "Etruscan", "meaning": "Strength, character" }
+        ]
+      }
+    }
+  },
+  "documentation": {
+    "metadata": {
+      "title": "Documentation",
+      "description": "The starting point to explore the African visual standard: patterns, tokens, components, API and cultural studies."
+    },
+    "home": {
+      "hero": {
+        "label": "Documentation",
+        "title": "The entire standard,",
+        "titleLine2": "at your fingertips.",
+        "description": "Patterns, tokens, components, API, cultural studies — 15 spaces, one single source of truth."
+      },
+      "newHere": {
+        "title": "New here?",
+        "description": "Install AVS and publish your first component in less than 5 minutes.",
+        "button": "Get started"
+      },
+      "exploreSpaces": "Explore spaces",
+      "latestAdditions": "Latest additions",
+      "popularResources": "Popular resources",
+      "views": "views",
+      "recommendedPaths": "Recommended paths",
+      "systemOverview": "One system, seven bricks, fifteen spaces",
+      "paths": {
+        "designer": {
+          "title": "Designer",
+          "desc": "Patterns, colors, typography, cultural studies.",
+          "step1": "Patterns",
+          "step2": "Colors",
+          "step3": "Typography",
+          "step4": "Cultural studies"
+        },
+        "developer": {
+          "title": "Developer",
+          "desc": "Installation, tokens, components, API.",
+          "step1": "Installation",
+          "step2": "Design Tokens",
+          "step3": "Components",
+          "step4": "API"
+        },
+        "researcher": {
+          "title": "Researcher",
+          "desc": "Concepts, cultural studies, bibliography.",
+          "step1": "Fundamental concepts",
+          "step2": "Cultural studies",
+          "step3": "Resources"
+        }
+      }
+    },
+    "nav": {
+      "commencer": {
+        "label": "Get Started",
+        "description": "Installation, first steps, project structure.",
+        "pages": {
+          "introduction": "Introduction",
+          "installation": "Installation",
+          "structure": "Project structure"
+        }
+      },
+      "sidebar": {
+        "tabs": {
+          "nav": "Navigation",
+          "favorites": "Favorites",
+          "history": "History"
+        },
+        "emptyFavorites": "No favorites yet. Click the star on a page.",
+        "emptyHistory": "Your reading history will appear here.",
+        "quickAccess": {
+          "github": "GitHub",
+          "components": "Components",
+          "icons": "Icons"
+        },
+        "aria": {
+          "navigation": "Documentation navigation",
+          "addToFavorites": "Add to favorites",
+          "removeFromFavorites": "Remove from favorites"
+        }
+      },
+      "concepts": {
+        "label": "Fundamental Concepts",
+        "description": "The philosophy behind the standard.",
+        "pages": {
+          "philosophie": "Philosophy",
+          "tracability": "Traceability"
+        }
+      },
+      "motifs": {
+        "label": "Patterns",
+        "description": "1,248 documented and sourced patterns.",
+        "pages": {
+          "intro": "Introduction",
+          "utiliser-patterns-code": "Use in your code",
+          "ndop-bamoum": "Ndop Bamoum",
+          "kente-royale": "Kente Royale",
+          "bogolan-fanga": "Bogolan Fanga"
+        }
+      },
+      "couleurs": {
+        "label": "Colors",
+        "description": "Palettes extracted from natural African pigments.",
+        "pages": {
+          "introduction": "Introduction",
+          "color-picker": "Color Picker",
+          "integration": "Integration",
+          "design-system": "Design System",
+          "palette-principale": "Main palette"
+        }
+      },
+      "tokens": {
+        "label": "Design Tokens",
+        "description": "Color, space, rhythm — named and versioned.",
+        "pages": {
+          "reference": "Token reference"
+        }
+      },
+      "composants": {
+        "label": "Components",
+        "description": "Copy-and-paste UI library.",
+        "pages": {
+          "bouton": "Button",
+          "carte": "Card"
+        }
+      },
+      "icones": {
+        "label": "Icons",
+        "description": "Iconographic set consistent with the standard.",
+        "pages": {
+          "catalogue": "Catalog"
+        }
+      },
+      "svg": {
+        "label": "SVG",
+        "description": "High-fidelity source files, ready to integrate.",
+        "pages": {
+          "export": "Export guide"
+        }
+      },
+      "typographie": {
+        "label": "Typography",
+        "description": "Scale, families, usages.",
+        "pages": {
+          "echelle": "Typographic scale"
+        }
+      },
+      "accessibilite": {
+        "label": "Accessibility",
+        "description": "Contrasts, focus, keyboard navigation.",
+        "pages": {
+          "checklist": "WCAG Checklist"
+        }
+      },
+      "api": {
+        "label": "API",
+        "description": "Programmatic access to the standard.",
+        "pages": {
+          "reference": "API reference"
+        }
+      },
+      "guides": {
+        "label": "Guides",
+        "description": "Step-by-step tutorials to integrate AVS.",
+        "pages": {
+          "integration-nextjs": "Next.js integration"
+        }
+      },
+      "etudes-culturelles": {
+        "label": "Cultural Studies",
+        "description": "Origin, symbolism and history of patterns.",
+        "pages": {
+          "wax-pan-africain": "Pan-African wax"
+        }
+      },
+      "exemples": {
+        "label": "Examples",
+        "description": "Real projects built with AVS.",
+        "pages": {
+          "showcase": "Showcase"
+        }
+      },
+      "ressources": {
+        "label": "Resources",
+        "description": "Source files, kits, bibliography.",
+        "pages": {
+          "telechargements": "Downloads"
+        }
+      }
+    },
+    "template": {
+      "whyImportant": "Why this topic is important",
+      "explanation": "Explanation",
+      "interactiveExamples": "Interactive examples",
+      "useCases": "Use cases",
+      "bestPractices": "Best practices",
+      "commonPitfalls": "Common pitfalls",
+      "culturalReferences": "Cultural references",
+      "downloads": "Downloads"
+    },
+    "introduction": {
+      "metadata": {
+        "title": "Introduction - AVS Documentation",
+        "description": "Discover AVS - African Visual Standard, an open-source design system inspired by African visual heritage."
+      },
+      "title": "Introduction",
+      "summary": "AVS is an open-source design system inspired by African visual heritage. Discover its philosophy and fundamental principles.",
+      "why": {
+        "title": "Why this topic is important",
+        "badge": "v1.0 · Tailwind CSS v4",
+        "heroTitle": "AVS — African Visual Standard",
+        "heroDescription": "Open-source design system inspired by African visual heritage. Compatible with Tailwind CSS v4. Installation in 30 seconds.",
+        "description": "AVS is the first modern African design system. Integrate authentic colors, patterns and components into your project with a single command. No account, no complex configuration."
+      },
+      "explanation": {
+        "description": "AVS is designed to be <strong>ultra-simple to integrate</strong>. No complex configuration, no heavy dependencies. Just one command and you have access to:",
+        "features": {
+          "colors": {
+            "title": "African colors",
+            "desc": "Palette extracted from natural pigments (red earth, kente gold, bogolan indigo)."
+          },
+          "patterns": {
+            "title": "SVG & CSS patterns",
+            "desc": "Traditional patterns (kente, ndop, adinkra) ready to use."
+          },
+          "components": {
+            "title": "UI components",
+            "desc": "Buttons, cards, forms with modern African design."
+          },
+          "installation": {
+            "title": "30s installation",
+            "desc": "A single command to configure everything automatically."
+          }
+        },
+        "installTitle": "Ultra-simple installation",
+        "installDesc": "A single command to configure everything:",
+        "command": "npx @buni/cli init",
+        "commandDesc": "This command automatically detects your configuration (Next.js, Vite, etc.) and installs Tailwind CSS v4 with AVS colors, patterns and necessary components.",
+        "whyAvs": "Why AVS?",
+        "comparison": {
+          "feature": "Feature",
+          "avs": "AVS",
+          "primeReact": "PrimeReact",
+          "shadcn": "Shadcn",
+          "install30s": "30s installation",
+          "africanDesign": "African design",
+          "tailwindV4": "Tailwind CSS v4",
+          "cssPatterns": "CSS patterns",
+          "nativeSvg": "Native SVG",
+          "copyPaste": "Copy & Paste",
+          "typescriptStrict": "TypeScript strict"
+        },
+        "callout": {
+          "title": "Get started now",
+          "desc": "Run <code>npx @buni/cli init</code> in your project to install AVS in 30 seconds. Then explore the <a href=\"/documentation/motifs/utiliser-patterns-code\">patterns</a> and <a href=\"/documentation/composants\">components</a>."
+        }
+      },
+      "toc": {
+        "why": "Why this topic is important",
+        "explanation": "Explanation"
+      },
+      "next": "Installation"
+    },
+    "installation": {
+      "metadata": {
+        "title": "Installation - AVS Documentation",
+        "description": "Guide to installing AVS in your Next.js project."
+      },
+      "title": "Installation",
+      "summary": "Several methods to integrate AVS into your project. The CLI method is recommended for quick setup.",
+      "toc": {
+        "why": "Why this topic is important",
+        "explanation": "Explanation"
+      },
+      "prev": "Introduction",
+      "next": "Project structure"
+    },
+    "structure": {
+      "metadata": {
+        "title": "Project Structure - AVS Documentation",
+        "description": "Understand the architecture and organization of the AVS project."
+      },
+      "title": "Project Structure",
+      "summary": "Nx monorepo architecture, package organization and folder structure for optimal maintenance.",
+      "toc": {
+        "why": "Why this topic is important",
+        "explanation": "Explanation"
+      },
+      "prev": "Installation",
+      "next": "Philosophy"
+    },
+    "philosophie": {
+      "metadata": {
+        "title": "Philosophy - AVS Documentation",
+        "description": "The philosophy that guides African Visual System."
+      },
+      "title": "Philosophy",
+      "summary": "AVS is built on three pillars: documentary rigor, cultural sovereignty, universal access.",
+      "why": "Understanding the philosophy before the tools avoids out-of-context usage — a pattern without its source is just decoration.",
+      "explanation": {
+        "pillar1": "Documentary rigor — each resource carries its source, region, era.",
+        "pillar2": "Cultural sovereignty — source communities retain permanent oversight.",
+        "pillar3": "Universal access — most resources are free (CC BY 4.0)."
+      },
+      "culturalRefs": "These principles are directly inspired by museum governance standards (ICOM) adapted to a digital context.",
+      "toc": {
+        "explanation": "The three pillars",
+        "culturalRefs": "Cultural anchoring"
+      },
+      "prev": "Project structure",
+      "next": "Traceability"
+    },
+    "tracability": {
+      "metadata": {
+        "title": "Traceability - AVS Documentation",
+        "description": "How each AVS resource remains traceable to its source."
+      },
+      "title": "Traceability",
+      "summary": "Each pattern, color and token carries consultable provenance metadata at all times.",
+      "explanation": {
+        "table": {
+          "source_ethnie": { "type": "string", "default": "—", "desc": "Origin ethnic group" },
+          "source_pays": { "type": "string", "default": "—", "desc": "Documented country" },
+          "artisan_verifie": { "type": "boolean", "default": "false", "desc": "Validation by a field artisan" },
+          "licence": { "type": "string", "default": "'CC BY 4.0'", "desc": "License applicable to the resource" }
+        }
+      },
+      "useCases": "Display automatic credit in an interface, generate project bibliography, audit pattern usage.",
+      "toc": {
+        "explanation": "The traceability model",
+        "useCases": "Use cases"
+      },
+      "prev": "Philosophy",
+      "next": "Patterns"
+    },
+    "motifs": {
+      "intro": {
+        "metadata": {
+          "title": "Patterns - AVS Documentation",
+          "description": "Catalog of African CSS patterns generated entirely in CSS."
+        },
+        "title": "Patterns",
+        "summary": "African patterns generated entirely in CSS — no images, no SVG. Instant use via className.",
+        "toc": {
+          "why": "Why this topic is important",
+          "explanation": "Explanation"
+        }
+      }
+    },
+    "tokens": {
+      "reference": {
+        "metadata": {
+          "title": "Token Reference - AVS Documentation",
+          "description": "Complete reference of AVS design tokens."
+        },
+        "title": "Token Reference",
+        "summary": "Complete list of design tokens used in AVS: colors, spacing, typography, etc."
+      }
+    },
+    "icones": {
+      "catalogue": {
+        "metadata": {
+          "title": "Icon Catalog - AVS Documentation",
+          "description": "Iconographic set consistent with the AVS standard."
+        },
+        "title": "Icon Catalog",
+        "summary": "Complete catalog of icons designed to match the African Visual Standard."
+      }
+    },
+    "svg": {
+      "export": {
+        "metadata": {
+          "title": "SVG Export Guide - AVS Documentation",
+          "description": "Guide for exporting high-fidelity SVG files."
+        },
+        "title": "SVG Export Guide",
+        "summary": "How to export and integrate high-fidelity SVG source files."
+      }
+    },
+    "typographie": {
+      "echelle": {
+        "metadata": {
+          "title": "Typographic Scale - AVS Documentation",
+          "description": "Scale, families, and typography usage."
+        },
+        "title": "Typographic Scale",
+        "summary": "The typographic scale system used in AVS for consistent hierarchy."
+      }
+    },
+    "accessibilite": {
+      "checklist": {
+        "metadata": {
+          "title": "WCAG Checklist - AVS Documentation",
+          "description": "Contrasts, focus, keyboard navigation."
+        },
+        "title": "WCAG Checklist",
+        "summary": "Accessibility checklist based on WCAG guidelines for AVS components."
+      }
+    },
+    "api": {
+      "reference": {
+        "metadata": {
+          "title": "API Reference - AVS Documentation",
+          "description": "Programmatic access to the AVS standard."
+        },
+        "title": "API Reference",
+        "summary": "Complete API documentation for programmatic access to AVS resources."
+      }
+    },
+    "guides": {
+      "integrationNextjs": {
+        "metadata": {
+          "title": "Next.js Integration - AVS Documentation",
+          "description": "Step-by-step tutorial to integrate AVS in Next.js."
+        },
+        "title": "Next.js Integration",
+        "summary": "Complete guide to integrating AVS into a Next.js project."
+      }
+    },
+    "etudesCulturelles": {
+      "waxPanAfricain": {
+        "metadata": {
+          "title": "Pan-African Wax - AVS Documentation",
+          "description": "Origin, symbolism and history of wax patterns."
+        },
+        "title": "Pan-African Wax",
+        "summary": "Cultural study of wax patterns across the African continent."
+      }
+    },
+    "exemples": {
+      "showcase": {
+        "metadata": {
+          "title": "Showcase - AVS Documentation",
+          "description": "Real projects built with AVS."
+        },
+        "title": "Showcase",
+        "summary": "Gallery of real projects built using the African Visual Standard."
+      }
+    },
+    "ressources": {
+      "telechargements": {
+        "metadata": {
+          "title": "Downloads - AVS Documentation",
+          "description": "Source files, kits, bibliography."
+        },
+        "title": "Downloads",
+        "summary": "Complete kits for Figma, exported palettes and complete project bibliography.",
+        "explanation": "Each file below is versioned and dated — check the latest update before production integration.",
+        "downloads": {
+          "figma": "AVS Figma Kit",
+          "palettes": "Complete palettes",
+          "bibliography": "Complete bibliography",
+          "patterns": "Vector patterns (complete set)"
+        },
+        "toc": {
+          "files": "Files"
+        },
+        "prev": "Examples"
+      }
+    },
+    "colors": {
+      "introduction": {
+        "metadata": {
+          "title": "Introduction to AVS Colors",
+          "description": "Discover the African Visual Standard color system, inspired by traditional textiles and natural African pigments."
+        },
+        "title": "Introduction to AVS Colors",
+        "summary": "Discover the African Visual Standard color system, inspired by traditional textiles and natural African pigments.",
+        "why": {
+          "description": "African colors carry deep history and symbolism. The AVS system allows you to create interfaces that resonate with the continent's visual identity while maintaining semantic consistency."
+        },
+        "explanation": {
+          "conceptTitle": "Combo Concept",
+          "conceptDesc": "Each combo is a combination of 4 colors organized by semantic roles:",
+          "primary": "Primary — Dominant color for identity",
+          "secondary": "Secondary — Accompanying color for backgrounds",
+          "accent": "Accent — Contrast color for interactions",
+          "neutral": "Neutral — Support color for states"
+        },
+        "toc": {
+          "why": "Why",
+          "concept": "Concept"
+        },
+        "prev": "Documentation",
+        "next": "Color Picker"
+      }
+    }
+  },
+  "contact": {
+    "hero": {
+      "title": "Let's talk",
+      "titleHighlight": "heritage",
+      "description": "A question, a partnership, a contribution to submit? Our distributed team across the continent will respond within 48h."
+    },
+    "channels": {
+      "email": {
+        "label": "General email",
+        "value": "buni@avs-standard.com"
+      },
+      "support": {
+        "label": "Support & contributions",
+        "value": "contrib@avs-standard.com"
+      },
+      "location": {
+        "label": "Based in",
+        "value": "Douala-bonamoussadi"
+      }
+    },
+    "form": {
+      "title": "Contact form",
+      "fields": {
+        "name": {
+          "label": "Full name",
+          "placeholder": "Amara Diop"
+        },
+        "email": {
+          "label": "Email",
+          "placeholder": "you@example.com"
+        },
+        "role": {
+          "label": "You are",
+          "options": {
+            "artisan": "Artisan / Creator",
+            "designer": "Designer",
+            "researcher": "Researcher / Academic",
+            "developer": "Developer",
+            "other": "Other"
+          }
+        },
+        "subject": {
+          "label": "Subject",
+          "placeholder": "Partnership, contribution, question…"
+        },
+        "message": {
+          "label": "Message",
+          "placeholder": "Describe your request in detail…",
+          "hint": "Minimum 20 characters",
+          "charCount": "{count}/2000"
+        }
+      },
+      "validation": {
+        "nameMin": "Minimum 2 characters",
+        "emailInvalid": "Invalid email",
+        "subjectMin": "Minimum 3 characters",
+        "messageMin": "Minimum 20 characters"
+      },
+      "submit": {
+        "sending": "Sending…",
+        "send": "Send message"
+      },
+      "success": {
+        "title": "Message sent!",
+        "description": "We will respond within 48 business hours.",
+        "sendAnother": "Send another message"
+      }
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": [
+        {
+          "q": "How to submit a pattern?",
+          "a": "Create an account, then use the 'New pattern' form in your dashboard."
+        },
+        {
+          "q": "Are resources free?",
+          "a": "Yes. Most are under CC BY 4.0 license, downloadable without an account."
+        },
+        {
+          "q": "How to become a curator?",
+          "a": "Contribute regularly for 3 months, then contact us via this form."
+        },
+        {
+          "q": "Does AVS accept partnerships?",
+          "a": "Yes — museums, universities and companies aligned with our cultural values."
+        }
+      ]
+    },
+    "responseTime": {
+      "label": "Response time",
+      "description": "Usually within 48 business hours"
+    },
+    "cta": {
+      "title": "Ready to contribute to the",
+      "titleHighlight": "African standard",
+      "titleEnd": "?",
+      "description": "Join 312 artisans, researchers and designers building together the largest open-source African visual archive.",
+      "createAccount": "Create a free account",
+      "explorePatterns": "Explore patterns"
+    }
+  },
+  "dashboard": {
+    "activity": {
+      "title": "My Activity",
+      "subtitle": "View all your interactions with the platform",
+      "types": {
+        "download": "Download",
+        "favorite": "Favorite",
+        "comment": "Comment",
+        "review": "Validation"
+      },
+      "stats": {
+        "total": "Total",
+        "downloads": "Downloads",
+        "favorites": "Favorites",
+        "reviews": "Validations"
+      },
+      "filter": {
+        "all": "All activities",
+        "downloads": "Downloads",
+        "favorites": "Favorites",
+        "comments": "Comments",
+        "reviews": "Validations"
+      },
+      "empty": {
+        "all": "No activity found",
+        "filtered": "No activity of type \"{type}\"",
+        "tryExplore": "Start exploring patterns to see your activity here",
+        "tryFilter": "Try another filter"
+      }
+    },
+    "contributors": {
+      "title": "Contributors",
+      "subtitle": "Loading...",
+      "subtitleLoaded": "{count} active members from around the world",
+      "join": "Join",
+      "stats": {
+        "members": "Members",
+        "totalPatterns": "Total patterns",
+        "totalViews": "Total views",
+        "verified": "Verified"
+      },
+      "roles": {
+        "admin": "Admin",
+        "curator": "Curator",
+        "contributor": "Contributor",
+        "artisan": "Artisan",
+        "viewer": "Explorer"
+      },
+      "sort": {
+        "score": "Score",
+        "patterns": "Patterns",
+        "views": "Views",
+        "joined": "Seniority"
+      },
+      "hallOfFame": "Hall of Fame",
+      "leaderboard": "Leaderboard",
+      "search": "Name, specialty…",
+      "filter": {
+        "all": "All roles",
+        "clear": "Clear"
+      },
+      "results": "{count} result{count, plural, one {} other {s}}",
+      "empty": "No contributor found",
+      "resetFilters": "Reset filters",
+      "joinCta": {
+        "badge": "Join the community",
+        "title": "Become an AVS contributor",
+        "description": "Artisan, researcher or designer — your knowledge enriches the largest open-source African visual archive.",
+        "createAccount": "Create a free account",
+        "readDocs": "Read documentation",
+        "footer": "{members} members · {patterns} patterns · Open Source"
+      }
+    },
+    "main": {
+      "profile": {
+        "memberSince": "Member since",
+        "profile": "Profile",
+        "verification": {
+          "verified": "Verified",
+          "notVerified": "Not verified"
+        }
+      },
+      "kpi": {
+        "myPatterns": "My patterns",
+        "downloads": "Downloads",
+        "totalViews": "Total views",
+        "favorites": "Favorites received",
+        "totalUsers": "Total users",
+        "totalPatterns": "Total patterns",
+        "admins": "Administrators",
+        "verifiedUsers": "Verified users",
+        "curators": "Curators: {count}",
+        "contributors": "Contributors",
+        "activeOnPlatform": "Active on platform",
+        "publishedPatterns": "Published patterns",
+        "inReview": "In review"
+      },
+      "trends": {
+        "thisMonth": "+0 this month",
+        "vsLastMonth": "+0% vs last month",
+        "new": "+0 new"
+      },
+      "statsLabel": "Key statistics",
+      "recentPatternsLabel": "Recent patterns",
+      "recentPatterns": {
+        "title": "Recent patterns",
+        "viewAll": "View all patterns"
+      },
+      "quickActionsLabel": "Quick actions",
+      "quickActions": {
+        "title": "Quick actions",
+        "newPattern": {
+          "label": "New pattern",
+          "sub": "Submit to catalog"
+        },
+        "library": {
+          "label": "Library",
+          "sub": "Explore patterns"
+        },
+        "profile": {
+          "label": "My profile",
+          "sub": "Manage account"
+        },
+        "activity": {
+          "label": "My activity",
+          "sub": "History"
+        },
+        "palettes": {
+          "label": "Palettes",
+          "sub": "Colors & themes"
+        },
+        "users": {
+          "label": "Users",
+          "sub": "Manage accounts"
+        }
+      },
+      "roles": {
+        "superAdmin": "Super Admin"
+      },
+      "hero": {
+        "badge": "AVS Standard — Contributor",
+        "title": "{count} patterns codified. Each line, a heritage.",
+        "highlight": "Each line, a heritage.",
+        "description": "You are shaping the first African visual standard of the digital age.",
+        "submitPattern": "Submit a pattern",
+        "analytics": "Analytics"
+      },
+      "status": {
+        "published": "Published",
+        "draft": "Draft",
+        "review": "Review",
+        "rejected": "Rejected"
+      },
+      "platformStats": "Platform statistics",
+      "loading": "Loading BUNI AVS…"
+    },
+    "patterns": {
+      "title": "My Patterns",
+      "subtitle": "{count} pattern{count, plural, one {} other {s}} in total",
+      "back": "Back to dashboard",
+      "newPattern": "New pattern",
+      "stats": {
+        "published": "Published",
+        "drafts": "Drafts",
+        "review": "In review",
+        "totalViews": "Total views"
+      },
+      "status": {
+        "published": "Published",
+        "draft": "Draft",
+        "review": "In review"
+      },
+      "filter": {
+        "all": "All",
+        "published": "Published",
+        "draft": "Drafts",
+        "review": "In review"
+      },
+      "search": "Pattern, type, region…",
+      "clear": "Clear",
+      "bulk": {
+        "selected": "{count} selected",
+        "delete": "Delete",
+        "export": "Export",
+        "cancel": "Cancel"
+      },
+      "table": {
+        "preview": "Preview",
+        "pattern": "Pattern",
+        "status": "Status",
+        "views": "Views",
+        "downloads": "DL",
+        "modified": "Modified",
+        "selectAll": "Select all",
+        "selectPattern": "Select {name}",
+        "featured": "Featured",
+        "showing": "{count} pattern{count, plural, one {} other {s}} displayed",
+        "reset": "Reset"
+      },
+      "actions": {
+        "edit": "Edit",
+        "viewDetails": "View details",
+        "removeFeatured": "Remove featured",
+        "makeFeatured": "Make featured",
+        "delete": "Delete"
+      },
+      "empty": {
+        "noResults": "No results",
+        "noPatterns": "No patterns",
+        "noResultsSearch": "No pattern matches \"{search}\"",
+        "noPatternsDesc": "Create your first pattern to get started",
+        "createFirst": "New pattern"
+      },
+      "deleteModal": {
+        "title": "Delete this pattern?",
+        "description": "The pattern <strong>{name}</strong> will be permanently deleted. This action is irreversible.",
+        "cancel": "Cancel",
+        "delete": "Delete"
+      }
+    },
+    "profile": {
+      "title": "My Profile",
+      "subtitle": "Manage your public information",
+      "back": "Back to dashboard",
+      "save": "Save",
+      "saving": "Saving…",
+      "loading": "Loading profile…",
+      "loadingData": "Loading data…",
+      "tabs": {
+        "infos": "Information",
+        "social": "Social networks"
+      },
+      "roles": {
+        "admin": "Administrator",
+        "curator": "Curator",
+        "contributor": "Contributor",
+        "viewer": "Explorer"
+      },
+      "avatar": {
+        "upload": "Change avatar",
+        "uploading": "Uploading…",
+        "online": "Online"
+      },
+      "verification": {
+        "verified": "Verified",
+        "notVerified": "Not verified"
+      },
+      "restricted": {
+        "title": "Restricted editing",
+        "description": "As an Explorer, you cannot edit your profile. Become a Curator to access all editing features.",
+        "becomeCurator": "Become Curator"
+      },
+      "form": {
+        "fullName": "Full name",
+        "specialty": "Specialty",
+        "specialtyHint": "Your area of expertise (Ndop, Bogolan…)",
+        "bio": "Bio",
+        "bioHint": "Describe yourself in 280 characters or less",
+        "location": "Location",
+        "website": "Website",
+        "github": "GitHub",
+        "twitter": "Twitter / X"
+      },
+      "fields": {
+        "name": "Full name",
+        "specialty": "Specialty",
+        "bio": "Bio",
+        "location": "Location",
+        "website": "Website",
+        "github": "GitHub",
+        "twitter": "Twitter / X"
+      },
+      "hints": {
+        "specialty": "Your area of expertise (Ndop, Bogolan…)",
+        "bio": "Describe yourself in 280 characters or less"
+      },
+      "placeholders": {
+        "name": "Amara Diop",
+        "specialty": "Ndop weaver",
+        "bio": "Traditional weaver, I have been documenting Ndop patterns for 20 years…",
+        "location": "Foumban, Cameroon",
+        "website": "https://example.com",
+        "github": "username",
+        "twitter": "username"
+      },
+      "validation": {
+        "nameMin": "Minimum 2 characters",
+        "invalidUrl": "Invalid URL"
+      },
+      "tabs": {
+        "info": "Information",
+        "social": "Social networks"
+      },
+      "avatar": {
+        "fileTooLarge": "File too large",
+        "fileTooLargeDesc": "Image must not exceed 5MB",
+        "unsupportedFormat": "Format not supported",
+        "unsupportedFormatDesc": "Only JPEG, PNG, WebP and GIF are accepted",
+        "updated": "Avatar updated",
+        "updatedDesc": "Your profile photo has been changed successfully",
+        "error": "Error",
+        "errorDesc": "Unable to upload avatar. Please try again.",
+        "upload": "Change avatar",
+        "uploading": "Uploading…",
+        "online": "Online"
+      },
+      "social": {
+        "github": "GitHub",
+        "twitter": "Twitter / X",
+        "preview": "Link preview"
+      },
+      "loading": "Loading profile…",
+      "memberSince": "Member since",
+      "verified": "Verified",
+      "notVerified": "Not verified",
+      "changeAvatar": "Change avatar",
+      "validationError": "Validation error",
+      "validationErrorDesc": "Please check the form fields",
+      "saved": "Profile updated",
+      "savedDesc": "Your changes have been saved successfully",
+      "error": "Error",
+      "errorDesc": "Unable to save profile. Please try again.",
+      "socialPreview": "Link preview",
+      "toasts": {
+        "fileTooLarge": "File too large",
+        "fileTooLargeDesc": "Image must not exceed 5MB",
+        "formatNotSupported": "Format not supported",
+        "formatNotSupportedDesc": "Only JPEG, PNG, WebP and GIF are accepted",
+        "avatarUpdated": "Avatar updated",
+        "avatarUpdatedDesc": "Your profile photo has been changed successfully",
+        "uploadError": "Error",
+        "uploadErrorDesc": "Unable to upload avatar. Please try again.",
+        "validationError": "Validation error",
+        "validationErrorDesc": "Please check the form fields",
+        "profileUpdated": "Profile updated",
+        "profileUpdatedDesc": "Your changes have been saved successfully",
+        "saveError": "Error",
+        "saveErrorDesc": "Unable to save profile. Please try again."
+      }
+    },
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Manage your account and preferences",
+      "account": "Account",
+      "sections": {
+        "notifications": "Notifications",
+        "security": "Security",
+        "privacy": "Privacy",
+        "danger": "Danger zone"
+      },
+      "notifications": {
+        "email": {
+          "title": "Email Notifications",
+          "comments": {
+            "label": "Comments",
+            "desc": "Receive an email when someone comments on your patterns",
+            "toggle": "Email comments"
+          },
+          "downloads": {
+            "label": "Downloads",
+            "desc": "Notify on each download of your patterns",
+            "toggle": "Email downloads"
+          },
+          "validations": {
+            "label": "Validations",
+            "desc": "Receive review results for your submissions",
+            "toggle": "Email validations"
+          },
+          "newsletter": {
+            "label": "AVS Newsletter",
+            "desc": "News, new features and events",
+            "toggle": "Email newsletter"
+          }
+        },
+        "browser": {
+          "title": "Browser Notifications",
+          "push": {
+            "label": "Push enabled",
+            "desc": "Allow browser push notifications",
+            "toggle": "Browser push"
+          },
+          "reviews": {
+            "label": "Review results",
+            "desc": "Immediate notification on pattern validation",
+            "toggle": "Push validations"
+          }
+        }
+      },
+      "security": {
+        "password": {
+          "title": "Change password",
+          "current": "Current password",
+          "new": "New password",
+          "confirm": "Confirm new password",
+          "show": "Show password",
+          "hide": "Hide password",
+          "update": "Update",
+          "updating": "Updating…",
+          "updated": "Updated!"
+        },
+        "2fa": {
+          "title": "Two-factor authentication (2FA)",
+          "description": "Add a security layer via a TOTP app (Google Authenticator, Authy).",
+          "toggle": "Enable 2FA",
+          "setupRequired": "Configuration required",
+          "scanQR": "Scan the QR code with your authentication app to complete setup."
+        },
+        "sessions": {
+          "title": "Active sessions",
+          "noSessions": "No active sessions",
+          "current": "Current",
+          "revoke": "Revoke"
+        }
+      },
+      "privacy": {
+        "profile": {
+          "title": "Public Profile",
+          "visible": {
+            "label": "Profile visible",
+            "desc": "Your profile is accessible to all AVS users",
+            "toggle": "Profile visible"
+          },
+          "email": {
+            "label": "Show email",
+            "desc": "Visible on your public profile page",
+            "toggle": "Show email"
+          },
+          "location": {
+            "label": "Show location",
+            "desc": "Country and city on your profile",
+            "toggle": "Show location"
+          }
+        },
+        "data": {
+          "title": "Data & Analytics",
+          "indexing": {
+            "label": "Search engine indexing",
+            "desc": "Your profile may appear in Google/Bing",
+            "toggle": "Allow indexing"
+          },
+          "analytics": {
+            "label": "Share usage data",
+            "desc": "Help us improve AVS anonymously",
+            "toggle": "Share analytics"
+          },
+          "download": "Download my data (GDPR)"
+        }
+      },
+      "danger": {
+        "deactivate": {
+          "title": "Deactivate account",
+          "description": "Your account will be temporarily deactivated. Your patterns remain accessible but you will no longer be able to log in.",
+          "button": "Deactivate my account"
+        },
+        "delete": {
+          "title": "Delete account",
+          "warning": "This action is irreversible.",
+          "description": "All your patterns, data and contributions will be permanently deleted.",
+          "noteTitle": "Important note",
+          "note": "This action cannot be undone. Please backup your data before proceeding.",
+          "button": "Delete my account"
+        }
+      },
+      "validation": {
+        "min8": "Minimum 8 characters",
+        "uppercase": "One uppercase required",
+        "number": "One number required",
+        "noMatch": "Passwords do not match"
+      },
+      "sectionsLabel": "Settings sections",
+      "updatingPassword": "Updating password…"
+    },
+    "users": {
+      "title": "User Management",
+      "subtitle": "Manage users, roles and verifications",
+      "header": {
+        "admin": "Administration",
+        "title": "User Management",
+        "subtitle": "Manage users, roles and verifications"
+      },
+      "view": {
+        "table": "Table view",
+        "grid": "Grid view"
+      },
+      "statsLabel": "Key statistics",
+      "kpi": {
+        "total": "Total users",
+        "verified": "Verified",
+        "admins": "Administrators",
+        "newThisMonth": "New this month"
+      },
+      "search": {
+        "placeholder": "Search by name or email..."
+      },
+      "filter": {
+        "allRoles": "All roles",
+        "count": "{count} user{count, plural, one {} other {s}}"
+      },
+      "roles": {
+        "superAdmin": "Super Admin",
+        "admin": "Admin",
+        "curator": "Curator",
+        "contributor": "Curator",
+        "viewer": "Visitor"
+      },
+      "verified": "Verified",
+      "notVerified": "Not verified",
+      "notProvided": "Not provided",
+      "memberSince": "Member since",
+      "actions": {
+        "verify": "Verify",
+        "revoke": "Revoke"
+      },
+      "table": {
+        "title": "User list",
+        "user": "User",
+        "status": "Status",
+        "memberSince": "Member since",
+        "role": "Role"
+      },
+      "empty": {
+        "title": "No users found",
+        "description": "Try adjusting your search filters"
+      },
+      "accessDenied": {
+        "title": "Access denied",
+        "description": "Only administrators can access this page."
+      }
+    }
+  }
+}

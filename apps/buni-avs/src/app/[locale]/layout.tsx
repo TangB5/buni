@@ -1,4 +1,4 @@
-import { I18nProvider, messages } from '@buni/i18n';
+import { I18nProvider, messages } from '@/i18n';
 import { Header } from '../../components/layout/Header';
 import { Footer } from '../../components/layout/Footer';
 import { Providers } from '../../components/layout/Providers';

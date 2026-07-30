@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { useTranslations } from '@buni/i18n';
+import { useTranslations } from '@/i18n';
 
 export interface RoadmapPhase {
   phase: string;

@@ -1,28 +1,26 @@
 import { DocPageTemplate } from '../../doc-page-template';
-import { NAV_SPACES } from '../../nav-data';
+import { useNavSpaces } from '../../nav-data';
 import { InstallationExplanation, InstallationWhy } from './installation-content';
-
-const space = NAV_SPACES.find(s => s.slug === 'commencer')!;
-
-export const metadata = {
-  title: 'Installation - AVS Documentation',
-  description: 'Guide d\'installation d\'AVS dans votre projet Next.js.',
-};
+import { useTranslations } from '@/i18n';
 
 export default function InstallationPage() {
+  const t = useTranslations('documentation.installation');
+  const NAV_SPACES = useNavSpaces();
+  const space = NAV_SPACES.find(s => s.slug === 'commencer')!;
+
   return (
     <DocPageTemplate
       space={space}
-      title="Installation"
-      summary="Plusieurs méthodes pour intégrer AVS dans votre projet. La méthode CLI est recommandée pour démarrer rapidement."
+      title={t('title')}
+      summary={t('summary')}
       why={<InstallationWhy />}
       explanation={<InstallationExplanation />}
       toc={[
-        { id: 'pourquoi', level: 2, label: 'Pourquoi ce sujet est important' },
-        { id: 'explication', level: 2, label: 'Explication' },
+        { id: 'pourquoi', level: 2, label: t('toc.why') },
+        { id: 'explication', level: 2, label: t('toc.explanation') },
       ]}
-      prev={{ href: '/documentation/commencer/introduction', title: 'Introduction' }}
-      next={{ href: '/documentation/commencer/structure', title: 'Structure du projet' }}
+      prev={{ href: '/documentation/commencer/introduction', title: t('prev') }}
+      next={{ href: '/documentation/commencer/structure', title: t('next') }}
     />
   );
 }

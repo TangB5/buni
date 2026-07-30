@@ -126,7 +126,7 @@ export function PatternSheet({ pattern }: { pattern: any }) {
                 />
                 {isDownloading ? (
                   <>
-                    <BuniLoader size={18} showText={false} />
+                    <BuniLoader size={18} showText={false} theme="dark" />
                     <span>Téléchargement...</span>
                   </>
                 ) : (

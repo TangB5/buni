@@ -1,7 +1,7 @@
 'use client';
 
 import { Shield, Heart, Globe, BookOpen } from 'lucide-react';
-import { useTranslations } from '@buni/i18n';
+import { useTranslations } from '@/i18n';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TYPES & CONFIG

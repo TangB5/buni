@@ -1,25 +1,34 @@
 import type { Metadata } from 'next';
 import { DocPageTemplate, type DocTocEntry } from '../../doc-page-template';
+import { useNavSpaces } from '../../nav-data';
+import { useTranslations } from '@/i18n';
 
-export const metadata: Metadata = { title: 'Téléchargements', description: 'Kits, fichiers source et bibliographie AVS prêts à télécharger.' };
-
-const TOC: DocTocEntry[] = [{ id: 'telechargements', label: 'Fichiers', level: 2 }];
+export const metadata: Metadata = {
+  title: 'Téléchargements',
+  description: 'Kits, fichiers source et bibliographie AVS prêts à télécharger.',
+};
 
 export default function TelechargementsPage() {
+  const t = useTranslations('documentation.ressources.telechargements');
+  const NAV_SPACES = useNavSpaces();
+  const space = NAV_SPACES.find(s => s.slug === 'ressources')!;
+
+  const TOC: DocTocEntry[] = [{ id: 'telechargements', label: t('toc.files'), level: 2 }];
+
   return (
     <DocPageTemplate
-      space={{ label: 'Ressources', color: '#4A6741', icon: 'download' }}
-      title="Téléchargements"
-      summary="Kits complets pour Figma, palettes exportées et bibliographie complète du projet."
-      explanation={<p>Chaque fichier ci-dessous est versionné et daté — vérifiez la dernière mise à jour avant intégration en production.</p>}
+      space={space}
+      title={t('title')}
+      summary={t('summary')}
+      explanation={<p>{t('explanation')}</p>}
       downloads={[
-        { label: 'Kit Figma AVS', href: '#', format: 'FIG' },
-        { label: 'Palettes complètes', href: '#', format: 'JSON' },
-        { label: 'Bibliographie complète', href: '#', format: 'PDF' },
-        { label: 'Motifs vectoriels (lot complet)', href: '#', format: 'ZIP' },
+        { label: t('downloads.figma'), href: '#', format: 'FIG' },
+        { label: t('downloads.palettes'), href: '#', format: 'JSON' },
+        { label: t('downloads.bibliography'), href: '#', format: 'PDF' },
+        { label: t('downloads.patterns'), href: '#', format: 'ZIP' },
       ]}
       toc={TOC}
-      prev={{ href: '/documentation/exemples/showcase', title: 'Exemples' }}
+      prev={{ href: '/documentation/exemples/showcase', title: t('prev') }}
     />
   );
 }

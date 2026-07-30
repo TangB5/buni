@@ -1,43 +1,49 @@
 import { DocPageTemplate, type DocTocEntry } from '../../doc-page-template';
-
-const TOC: DocTocEntry[] = [
-  { id: 'pourquoi', label: 'Pourquoi', level: 2 },
-  { id: 'concept', label: 'Concept', level: 2 },
-];
+import { useTranslations } from '@/i18n';
+import { useNavSpaces } from '../../nav-data';
 
 export default function IntroductionPage() {
+  const t = useTranslations('documentation.colors.introduction');
+  const NAV_SPACES = useNavSpaces();
+  const space = NAV_SPACES.find(s => s.slug === 'couleurs')!;
+
+  const TOC: DocTocEntry[] = [
+    { id: 'pourquoi', label: t('toc.why'), level: 2 },
+    { id: 'concept', label: t('toc.concept'), level: 2 },
+  ];
+
   return (
     <DocPageTemplate
-      space={{ label: 'Couleurs', color: '#C0573E', icon: 'palette' }}
-      title="Introduction aux Couleurs AVS"
-      summary="Découvrez le système de couleurs African Visual Standard, inspiré des textiles traditionnels et pigments naturels africains."
+      space={space}
+      title={t('title')}
+      summary={t('summary')}
       
       why={
         <p className="text-avs-accent/70 leading-relaxed">
-          Les couleurs africaines portent une histoire et une symbolique profondes. Le système AVS permet de créer des interfaces qui résonnent avec l&apos;identité visuelle du continent tout en maintenant une cohérence sémantique.
+          {t('why.description')}
         </p>
       }
 
       explanation={
         <div className="space-y-6">
           <div>
-            <h3 className="font-display text-lg font-bold text-avs-accent mb-3">Concept des Combos</h3>
+            <h3 className="font-display text-lg font-bold text-avs-accent mb-3">{t('explanation.conceptTitle')}</h3>
             <p className="text-avs-accent/70 leading-relaxed mb-4">
-              Chaque combo est une combinaison de 4 couleurs organisées par rôles sémantiques :
+              {t('explanation.conceptDesc')}
             </p>
             <ul className="space-y-2 text-avs-accent/70">
-              <li><strong>Primary</strong> — Couleur dominante pour l&apos;identité</li>
-              <li><strong>Secondary</strong> — Couleur d&apos;accompagnement pour les fonds</li>
-              <li><strong>Accent</strong> — Couleur de contraste pour les interactions</li>
-              <li><strong>Neutral</strong> — Couleur de support pour les états</li>
+              <li><strong>Primary</strong> — {t('explanation.primary')}</li>
+              <li><strong>Secondary</strong> — {t('explanation.secondary')}</li>
+              <li><strong>Accent</strong> — {t('explanation.accent')}</li>
+              <li><strong>Neutral</strong> — {t('explanation.neutral')}</li>
             </ul>
           </div>
         </div>
       }
 
       toc={TOC}
-      prev={{ href: '/documentation', title: 'Documentation' }}
-      next={{ href: '/documentation/couleurs/color-picker', title: 'Color Picker' }}
+      prev={{ href: '/documentation', title: t('prev') }}
+      next={{ href: '/documentation/couleurs/color-picker', title: t('next') }}
     />
   );
 }

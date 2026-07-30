@@ -8,6 +8,7 @@ import {
   AlertCircle, Monitor, Smartphone, ArrowRight,
 } from 'lucide-react';
 import { z } from 'zod';
+import { useTranslations } from 'next-intl';
 import { userService } from '@/features/user/services/user.service';
 import type { UserSettings } from '@/features/user/types/dto/settings.dto';
 
@@ -17,18 +18,22 @@ import type { UserSettings } from '@/features/user/types/dto/settings.dto';
 
 type Section = 'notifications' | 'security' | 'privacy' | 'danger';
 
-const SECTIONS: { key: Section; label: string; icon: typeof Bell; danger?: boolean }[] = [
-  { key: 'notifications', label: 'Notifications',   icon: Bell    },
-  { key: 'security',      label: 'Sécurité',         icon: Lock    },
-  { key: 'privacy',       label: 'Confidentialité',  icon: Globe   },
-  { key: 'danger',        label: 'Zone de danger',   icon: Trash2, danger: true },
-];
+function getSections(t: any): { key: Section; label: string; icon: typeof Bell; danger?: boolean }[] {
+  return [
+    { key: 'notifications', label: t('sections.notifications'), icon: Bell    },
+    { key: 'security',      label: t('sections.security'),      icon: Lock    },
+    { key: 'privacy',       label: t('sections.privacy'),       icon: Globe   },
+    { key: 'danger',        label: t('sections.danger'),        icon: Trash2, danger: true },
+  ];
+}
 
-const PwdSchema = z.object({
-  current: z.string().min(8, 'Minimum 8 caractères'),
-  next:    z.string().min(8, 'Minimum 8 caractères').regex(/[A-Z]/, 'Une majuscule requise').regex(/[0-9]/, 'Un chiffre requis'),
-  confirm: z.string(),
-}).refine((d) => d.next === d.confirm, { message: 'Les mots de passe ne correspondent pas', path: ['confirm'] });
+function getPwdSchema(t: any) {
+  return z.object({
+    current: z.string().min(8, t('validation.min8')),
+    next:    z.string().min(8, t('validation.min8')).regex(/[A-Z]/, t('validation.uppercase')).regex(/[0-9]/, t('validation.number')),
+    confirm: z.string(),
+  }).refine((d) => d.next === d.confirm, { message: t('validation.noMatch'), path: ['confirm'] });
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MINIMAL STYLES — only what Tailwind can't express
@@ -128,10 +133,10 @@ function SectionCard({ title, icon: Icon, accentClass = 'text-avs-primary', icon
 // PASSWORD FIELD
 // ─────────────────────────────────────────────────────────────────────────────
 
-function PwdField({ id, label, value, onChange, show, onToggle, error, autoComplete }: {
+function PwdField({ id, label, value, onChange, show, onToggle, error, autoComplete, t }: {
   id: string; label: string; value: string;
   onChange: (v: string) => void; show: boolean;
-  onToggle: () => void; error?: string; autoComplete?: string;
+  onToggle: () => void; error?: string; autoComplete?: string; t: any;
 }) {
   return (
     <div>
@@ -150,7 +155,7 @@ function PwdField({ id, label, value, onChange, show, onToggle, error, autoCompl
           type="button"
           onClick={onToggle}
           className="absolute right-3.5 top-1/2 -translate-y-1/2 text-avs-accent/30 hover:text-avs-accent transition-colors"
-          aria-label={show ? 'Masquer le mot de passe' : 'Afficher le mot de passe'}
+          aria-label={show ? t('security.password.hide') : t('security.password.show')}
         >
           {show ? <EyeOff size={14} /> : <Eye size={14} />}
         </button>
@@ -175,6 +180,7 @@ function PwdField({ id, label, value, onChange, show, onToggle, error, autoCompl
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function SettingsPage() {
+  const t = useTranslations('dashboard.settings');
   const [section, setSection] = useState<Section>('notifications');
   const [loading, setLoading] = useState(true);
   const [savingSettings, setSavingSettings] = useState(false);
@@ -299,7 +305,8 @@ export default function SettingsPage() {
   };
 
   const changePwd = async () => {
-    const r = PwdSchema.safeParse(pwd);
+    const schema = getPwdSchema(t);
+    const r = schema.safeParse(pwd);
     if (!r.success) {
       const e: Record<string, string> = {};
       r.error.issues.forEach((err) => { if (err.path[0]) e[String(err.path[0])] = err.message; });
@@ -339,7 +346,7 @@ export default function SettingsPage() {
             <div className="flex flex-col items-center gap-4 rounded-2xl p-8 bg-avs-secondary border border-avs-accent/9">
               <Loader2 size={28} className="animate-spin text-avs-primary" />
               <p className="font-mono text-[10px] tracking-[0.2em] uppercase animate-pulse text-avs-accent/35">
-                Mise à jour du mot de passe…
+                {t('updatingPassword')}
               </p>
             </div>
           </motion.div>
@@ -354,12 +361,12 @@ export default function SettingsPage() {
           <div className="mx-auto max-w-5xl px-4 py-5 sm:px-6 lg:px-8">
             <div className="flex items-center gap-3">
               <div className="h-px w-6 bg-avs-primary" aria-hidden />
-              <span className="font-mono text-[9px] font-bold tracking-[0.24em] uppercase text-avs-primary">Compte</span>
+              <span className="font-mono text-[9px] font-bold tracking-[0.24em] uppercase text-avs-primary">{t('account')}</span>
             </div>
             <h1 className="mt-1 font-display font-black leading-none text-avs-accent" style={{ fontSize: 'clamp(1.25rem,3vw,1.75rem)', letterSpacing: '-0.02em' }}>
-              Paramètres
+              {t('title')}
             </h1>
-            <p className="mt-0.5 text-xs text-avs-accent/35">Gérer votre compte et vos préférences</p>
+            <p className="mt-0.5 text-xs text-avs-accent/35">{t('subtitle')}</p>
           </div>
         </div>
 
@@ -367,8 +374,8 @@ export default function SettingsPage() {
           <div className="grid gap-6 lg:grid-cols-[220px_1fr]">
 
             {/* ══ SIDEBAR NAV ═════════════════════════════════════════════ */}
-            <nav className="space-y-1" aria-label="Sections des paramètres">
-              {SECTIONS.map(({ key, label, icon: Icon, danger }) => {
+            <nav className="space-y-1" aria-label={t('sectionsLabel')}>
+              {getSections(t).map(({ key, label, icon: Icon, danger }) => {
                 const isActive = section === key;
                 return (
                   <button
@@ -411,27 +418,27 @@ export default function SettingsPage() {
                 {/* ── NOTIFICATIONS ──────────────────────────────────────── */}
                 {section === 'notifications' && (
                   <>
-                    <SectionCard title="Notifications Email" icon={Bell}>
-                      <SettingRow label="Commentaires" desc="Recevoir un email quand quelqu'un commente vos motifs">
-                        <Toggle checked={notifs.emailComments}    onChange={(v) => updateNotificationSetting('emailComments', v)}    label="Notifications commentaires" />
+                    <SectionCard title={t('notifications.email.title')} icon={Bell}>
+                      <SettingRow label={t('notifications.email.comments.label')} desc={t('notifications.email.comments.desc')}>
+                        <Toggle checked={notifs.emailComments}    onChange={(v) => updateNotificationSetting('emailComments', v)}    label={t('notifications.email.comments.toggle')} />
                       </SettingRow>
-                      <SettingRow label="Téléchargements" desc="Notifier à chaque téléchargement d'un de vos motifs">
-                        <Toggle checked={notifs.emailDownloads}   onChange={(v) => updateNotificationSetting('emailDownloads', v)}   label="Notifications téléchargements" />
+                      <SettingRow label={t('notifications.email.downloads.label')} desc={t('notifications.email.downloads.desc')}>
+                        <Toggle checked={notifs.emailDownloads}   onChange={(v) => updateNotificationSetting('emailDownloads', v)}   label={t('notifications.email.downloads.toggle')} />
                       </SettingRow>
-                      <SettingRow label="Validations" desc="Recevoir le résultat des révisions de vos soumissions">
-                        <Toggle checked={notifs.emailValidations} onChange={(v) => updateNotificationSetting('emailValidations', v)} label="Notifications validations" />
+                      <SettingRow label={t('notifications.email.validations.label')} desc={t('notifications.email.validations.desc')}>
+                        <Toggle checked={notifs.emailValidations} onChange={(v) => updateNotificationSetting('emailValidations', v)} label={t('notifications.email.validations.toggle')} />
                       </SettingRow>
-                      <SettingRow label="Newsletter AVS" desc="Actualités, nouvelles fonctionnalités et événements">
-                        <Toggle checked={notifs.emailNewsletter}  onChange={(v) => updateNotificationSetting('emailNewsletter', v)}  label="Newsletter" />
+                      <SettingRow label={t('notifications.email.newsletter.label')} desc={t('notifications.email.newsletter.desc')}>
+                        <Toggle checked={notifs.emailNewsletter}  onChange={(v) => updateNotificationSetting('emailNewsletter', v)}  label={t('notifications.email.newsletter.toggle')} />
                       </SettingRow>
                     </SectionCard>
 
-                    <SectionCard title="Notifications Navigateur" icon={Monitor}>
-                      <SettingRow label="Push actives" desc="Autoriser les notifications push du navigateur">
-                        <Toggle checked={notifs.pushBrowser}     onChange={(v) => updateNotificationSetting('pushBrowser', v)}     label="Push navigateur" />
+                    <SectionCard title={t('notifications.browser.title')} icon={Monitor}>
+                      <SettingRow label={t('notifications.browser.push.label')} desc={t('notifications.browser.push.desc')}>
+                        <Toggle checked={notifs.pushBrowser}     onChange={(v) => updateNotificationSetting('pushBrowser', v)}     label={t('notifications.browser.push.toggle')} />
                       </SettingRow>
-                      <SettingRow label="Résultats de révision" desc="Notification immédiate à la validation d'un motif">
-                        <Toggle checked={notifs.pushValidations} onChange={(v) => updateNotificationSetting('pushValidations', v)} label="Push validations" />
+                      <SettingRow label={t('notifications.browser.reviews.label')} desc={t('notifications.browser.reviews.desc')}>
+                        <Toggle checked={notifs.pushValidations} onChange={(v) => updateNotificationSetting('pushValidations', v)} label={t('notifications.browser.reviews.toggle')} />
                       </SettingRow>
                     </SectionCard>
                   </>
@@ -440,11 +447,11 @@ export default function SettingsPage() {
                 {/* ── SÉCURITÉ ───────────────────────────────────────────── */}
                 {section === 'security' && (
                   <>
-                    <SectionCard title="Changer le mot de passe" icon={Lock}>
+                    <SectionCard title={t('security.password.title')} icon={Lock}>
                       <div className="space-y-4">
-                        <PwdField id="current" label="Mot de passe actuel"  value={pwd.current} onChange={(v) => setPwd((p) => ({ ...p, current: v }))} show={showPwd.current} onToggle={() => setShowPwd((s) => ({ ...s, current: !s.current }))} error={pwdErrors['current']} autoComplete="current-password" />
-                        <PwdField id="next"    label="Nouveau mot de passe" value={pwd.next}    onChange={(v) => setPwd((p) => ({ ...p, next: v }))}    show={showPwd.next}    onToggle={() => setShowPwd((s) => ({ ...s, next: !s.next }))}       error={pwdErrors['next']}    autoComplete="new-password" />
-                        <PwdField id="confirm" label="Confirmer le nouveau" value={pwd.confirm} onChange={(v) => setPwd((p) => ({ ...p, confirm: v }))} show={showPwd.confirm} onToggle={() => setShowPwd((s) => ({ ...s, confirm: !s.confirm }))} error={pwdErrors['confirm']} autoComplete="new-password" />
+                        <PwdField id="current" label={t('security.password.current')}  value={pwd.current} onChange={(v) => setPwd((p) => ({ ...p, current: v }))} show={showPwd.current} onToggle={() => setShowPwd((s) => ({ ...s, current: !s.current }))} error={pwdErrors['current']} autoComplete="current-password" t={t} />
+                        <PwdField id="next"    label={t('security.password.new')} value={pwd.next}    onChange={(v) => setPwd((p) => ({ ...p, next: v }))}    show={showPwd.next}    onToggle={() => setShowPwd((s) => ({ ...s, next: !s.next }))}       error={pwdErrors['next']}    autoComplete="new-password" t={t} />
+                        <PwdField id="confirm" label={t('security.password.confirm')} value={pwd.confirm} onChange={(v) => setPwd((p) => ({ ...p, confirm: v }))} show={showPwd.confirm} onToggle={() => setShowPwd((s) => ({ ...s, confirm: !s.confirm }))} error={pwdErrors['confirm']} autoComplete="new-password" t={t} />
 
                         <AnimatePresence>
                           {pwdError && (
@@ -472,9 +479,9 @@ export default function SettingsPage() {
                               transition={{ duration: 0.15 }}
                               className="flex items-center gap-2"
                             >
-                              {savingPwd ? <><Loader2 size={13} className="animate-spin" /> Mise à jour…</>
-                              : pwdSaved  ? <><CheckCircle2 size={13} /> Modifié !</>
-                              :             <><Save size={13} /> Mettre à jour</>}
+                              {savingPwd ? <><Loader2 size={13} className="animate-spin" /> {t('security.password.updating')}</>
+                              : pwdSaved  ? <><CheckCircle2 size={13} /> {t('security.password.updated')}</>
+                              :             <><Save size={13} /> {t('security.password.update')}</>}
                             </motion.span>
                           </AnimatePresence>
                         </button>
@@ -482,12 +489,12 @@ export default function SettingsPage() {
                     </SectionCard>
 
                     {/* 2FA */}
-                    <SectionCard title="Double authentification (2FA)" icon={Shield} accentClass="text-avs-ndop" iconBgClass="bg-avs-ndop/10">
+                    <SectionCard title={t('security.2fa.title')} icon={Shield} accentClass="text-avs-ndop" iconBgClass="bg-avs-ndop/10">
                       <div className="flex items-start justify-between gap-6">
                         <p className="text-sm leading-relaxed text-avs-accent/55">
-                          Ajoutez une couche de sécurité via une application TOTP (Google Authenticator, Authy).
+                          {t('security.2fa.description')}
                         </p>
-                        <Toggle checked={twoFA} onChange={update2FASetting} label="Activer 2FA" />
+                        <Toggle checked={twoFA} onChange={update2FASetting} label={t('security.2fa.toggle')} />
                       </div>
                       <AnimatePresence>
                         {twoFA && (
@@ -497,9 +504,9 @@ export default function SettingsPage() {
                             className="mt-4 overflow-hidden"
                           >
                             <div className="rounded-xl px-4 py-3 text-sm leading-relaxed bg-avs-ndop/10 border-l-[3px] border border-avs-ndop/22 text-avs-ndop" style={{ borderLeftColor: 'var(--avs-ndop)' }}>
-                              <p className="mb-0.5 font-mono text-[9px] font-black uppercase tracking-[0.18em]">Configuration requise</p>
+                              <p className="mb-0.5 font-mono text-[9px] font-black uppercase tracking-[0.18em]">{t('security.2fa.setupRequired')}</p>
                               <p className="text-xs text-avs-accent/55">
-                                Scannez le QR code avec votre application d&apos;authentification pour terminer la configuration.
+                                {t('security.2fa.scanQR')}
                               </p>
                             </div>
                           </motion.div>
@@ -508,14 +515,14 @@ export default function SettingsPage() {
                     </SectionCard>
 
                     {/* Active sessions */}
-                    <SectionCard title="Sessions actives" icon={Monitor}>
+                    <SectionCard title={t('security.sessions.title')} icon={Monitor}>
                       <div className="space-y-2.5">
                         {loadingSessions ? (
                           <div className="flex items-center justify-center py-8">
                             <Loader2 size={20} className="animate-spin text-avs-accent/35" />
                           </div>
                         ) : sessions.length === 0 ? (
-                          <p className="text-sm text-avs-accent/35 py-4 text-center">Aucune session active</p>
+                          <p className="text-sm text-avs-accent/35 py-4 text-center">{t('security.sessions.noSessions')}</p>
                         ) : (
                           sessions.map((s) => (
                             <div
@@ -531,7 +538,7 @@ export default function SettingsPage() {
                                     <p className="text-sm font-semibold text-avs-accent">{s.device}</p>
                                     {s.current && (
                                       <span className="rounded-md px-2 py-0.5 font-mono text-[8px] font-black uppercase tracking-[0.14em] bg-avs-primary/8 text-avs-primary border border-avs-primary/20">
-                                        Actuelle
+                                        {t('security.sessions.current')}
                                       </span>
                                     )}
                                   </div>
@@ -543,7 +550,7 @@ export default function SettingsPage() {
                                   onClick={() => void handleRevokeSession(s.id)}
                                   className="text-xs font-semibold text-red-500/70 hover:text-red-500 transition-colors"
                                 >
-                                  Révoquer
+                                  {t('security.sessions.revoke')}
                                 </button>
                               )}
                             </div>
@@ -557,28 +564,28 @@ export default function SettingsPage() {
                 {/* ── CONFIDENTIALITÉ ─────────────────────────────────────── */}
                 {section === 'privacy' && (
                   <>
-                    <SectionCard title="Profil Public" icon={Globe}>
-                      <SettingRow label="Profil visible" desc="Votre profil est accessible à tous les utilisateurs AVS">
-                        <Toggle checked={privacy.profilePublic}  onChange={(v) => updatePrivacySetting('profilePublic', v)}  label="Profil public" />
+                    <SectionCard title={t('privacy.profile.title')} icon={Globe}>
+                      <SettingRow label={t('privacy.profile.visible.label')} desc={t('privacy.profile.visible.desc')}>
+                        <Toggle checked={privacy.profilePublic}  onChange={(v) => updatePrivacySetting('profilePublic', v)}  label={t('privacy.profile.visible.toggle')} />
                       </SettingRow>
-                      <SettingRow label="Afficher l'email" desc="Visible sur votre page profil publique">
-                        <Toggle checked={privacy.showEmail}      onChange={(v) => updatePrivacySetting('showEmail', v)}      label="Email public" />
+                      <SettingRow label={t('privacy.profile.email.label')} desc={t('privacy.profile.email.desc')}>
+                        <Toggle checked={privacy.showEmail}      onChange={(v) => updatePrivacySetting('showEmail', v)}      label={t('privacy.profile.email.toggle')} />
                       </SettingRow>
-                      <SettingRow label="Afficher la localisation" desc="Pays et ville sur votre profil">
-                        <Toggle checked={privacy.showLocation}   onChange={(v) => updatePrivacySetting('showLocation', v)}   label="Localisation publique" />
+                      <SettingRow label={t('privacy.profile.location.label')} desc={t('privacy.profile.location.desc')}>
+                        <Toggle checked={privacy.showLocation}   onChange={(v) => updatePrivacySetting('showLocation', v)}   label={t('privacy.profile.location.toggle')} />
                       </SettingRow>
                     </SectionCard>
 
-                    <SectionCard title="Données & Analytique" icon={Shield} accentClass="text-avs-ndop" iconBgClass="bg-avs-ndop/10">
-                      <SettingRow label="Indexation par les moteurs de recherche" desc="Votre profil peut apparaître dans Google/Bing">
-                        <Toggle checked={privacy.allowIndexing}  onChange={(v) => updatePrivacySetting('allowIndexing', v)}  label="Indexation SEO" />
+                    <SectionCard title={t('privacy.data.title')} icon={Shield} accentClass="text-avs-ndop" iconBgClass="bg-avs-ndop/10">
+                      <SettingRow label={t('privacy.data.indexing.label')} desc={t('privacy.data.indexing.desc')}>
+                        <Toggle checked={privacy.allowIndexing}  onChange={(v) => updatePrivacySetting('allowIndexing', v)}  label={t('privacy.data.indexing.toggle')} />
                       </SettingRow>
-                      <SettingRow label="Partager les données d'usage" desc="Aidez-nous à améliorer AVS de façon anonyme">
-                        <Toggle checked={privacy.shareAnalytics} onChange={(v) => updatePrivacySetting('shareAnalytics', v)} label="Analytique anonyme" />
+                      <SettingRow label={t('privacy.data.analytics.label')} desc={t('privacy.data.analytics.desc')}>
+                        <Toggle checked={privacy.shareAnalytics} onChange={(v) => updatePrivacySetting('shareAnalytics', v)} label={t('privacy.data.analytics.toggle')} />
                       </SettingRow>
                       <div className="pt-2">
                         <button className="flex items-center gap-1.5 text-xs font-semibold text-avs-primary underline-offset-3 hover:underline">
-                          Télécharger mes données (RGPD) <ArrowRight size={11} />
+                          {t('privacy.data.download')} <ArrowRight size={11} />
                         </button>
                       </div>
                     </SectionCard>
@@ -596,14 +603,14 @@ export default function SettingsPage() {
                             <Lock size={14} aria-hidden />
                           </div>
                           <div>
-                            <h2 className="font-display font-bold text-avs-accent" style={{ letterSpacing: '-0.01em' }}>Désactiver le compte</h2>
+                            <h2 className="font-display font-bold text-avs-accent" style={{ letterSpacing: '-0.01em' }}>{t('danger.deactivate.title')}</h2>
                             <p className="mt-1 text-sm leading-relaxed text-avs-accent/55">
-                              Votre compte sera désactivé temporairement. Vos motifs restent accessibles mais vous ne pourrez plus vous connecter.
+                              {t('danger.deactivate.description')}
                             </p>
                           </div>
                         </div>
                         <button className="flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold border border-red-500/35 text-red-500 bg-red-500/6 hover:bg-red-500/12 transition-all duration-200">
-                          Désactiver mon compte
+                          {t('danger.deactivate.button')}
                         </button>
                       </div>
                     </div>
@@ -618,28 +625,28 @@ export default function SettingsPage() {
                             <Trash2 size={14} aria-hidden />
                           </div>
                           <div>
-                            <h2 className="font-display font-bold text-red-600" style={{ letterSpacing: '-0.01em' }}>Supprimer le compte</h2>
+                            <h2 className="font-display font-bold text-red-600" style={{ letterSpacing: '-0.01em' }}>{t('danger.delete.title')}</h2>
                             <p className="mt-1 text-sm leading-relaxed text-avs-accent/55">
-                              <strong className="text-red-600">Cette action est irréversible.</strong> Tous vos motifs, données et contributions seront définitivement supprimés.
+                              <strong className="text-red-600">{t('danger.delete.warning')}</strong> {t('danger.delete.description')}
                             </p>
                           </div>
                         </div>
 
                         <div className="mb-5 rounded-xl px-4 py-3 text-sm leading-relaxed bg-red-500/8 border border-red-500/22">
-                          <p className="mb-1 font-mono text-[8px] font-black uppercase tracking-[0.16em] text-red-500">Attention</p>
+                          <p className="mb-1 font-mono text-[8px] font-black uppercase tracking-[0.16em] text-red-500">{t('danger.delete.noteTitle')}</p>
                           <p className="text-xs text-avs-accent/55">
-                            Les motifs publiés et validés par la communauté seront archivés et attribués à «&nbsp;Contributeur Anonyme&nbsp;» pour préserver l&apos;intégrité du standard.
+                            {t('danger.delete.note')}
                           </p>
                         </div>
 
                         <button
-                          onClick={() => confirm('Êtes-vous absolument certain ? Cette action est irréversible.') && alert('Compte supprimé (mock)')}
+                          onClick={() => confirm(t('danger.delete.confirm')) && alert('Compte supprimé (mock)')}
                           className="group relative flex items-center gap-2 overflow-hidden rounded-xl px-5 py-2.5 text-sm font-bold text-avs-secondary bg-red-600 hover:-translate-y-0.5 transition-all duration-200"
                           style={{ boxShadow: '0 4px 16px rgba(220,38,38,0.30)' }}
                         >
                           <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" aria-hidden />
                           <Trash2 size={13} />
-                          Supprimer définitivement mon compte
+                          {t('danger.delete.button')}
                         </button>
                       </div>
                     </div>

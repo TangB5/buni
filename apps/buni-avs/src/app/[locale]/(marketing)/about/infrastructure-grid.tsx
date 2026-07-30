@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
 import { Shapes, Sliders, Palette, Component, PenTool, BookMarked, Plug } from 'lucide-react';
-import { useTranslations } from '@buni/i18n';
+import { useTranslations } from '@/i18n';
 
 interface Brick {
   icon: LucideIcon;

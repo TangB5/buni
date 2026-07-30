@@ -1,14 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus } from 'lucide-react';
+import { useTranslations } from '@/i18n';
 import { 
   Combo, 
-  COMBOS, 
   FilterType, 
   FilterValue 
 } from './data';
+import { useColorsData } from './use-colors-data';
 import { 
   SegmentationFilters 
 } from './components/segmentation-filters';
@@ -29,12 +30,21 @@ import {
 } from './components/custom-palette-builder';
 
 export function ColorsContent() {
-  const [activeCombo, setActiveCombo]   = useState(COMBOS[0]!.id);
+  const t = useTranslations('colors');
+  const { combos: translatedCombos, culturalContext } = useColorsData();
+  const [activeCombo, setActiveCombo]   = useState('');
   const [customCombos, setCustomCombos] = useState<Combo[]>([]);
   const [isBuilderOpen, setIsBuilderOpen] = useState(false);
   const [activeFilters, setActiveFilters] = useState<Partial<Record<FilterType, FilterValue>>>({});
 
-  const allCombos = [...COMBOS, ...customCombos];
+  // Set initial activeCombo when translatedCombos loads
+  useEffect(() => {
+    if (translatedCombos.length > 0 && !activeCombo) {
+      setActiveCombo(translatedCombos[0]!.id);
+    }
+  }, [translatedCombos, activeCombo]);
+
+  const allCombos = [...translatedCombos, ...customCombos];
   
   // Filter combos based on active filters
   const filteredCombos = allCombos.filter((combo) => {
@@ -86,27 +96,26 @@ export function ColorsContent() {
             <div>
               <div className="mb-4 flex items-center gap-3">
                 <div className="h-px w-8 bg-avs-primary" aria-hidden />
-                <span className="font-mono text-[9px] font-bold tracking-[0.26em] uppercase text-avs-primary">Color Picker</span>
+                <span className="font-mono text-[9px] font-bold tracking-[0.26em] uppercase text-avs-primary">{t('hero.label')}</span>
               </div>
               <h1
                 className="font-display font-black leading-none text-avs-accent"
                 style={{ fontSize: 'clamp(2rem,5vw,3.5rem)', letterSpacing: '-0.03em' }}
               >
-                Combos de Couleurs Africaines
+                {t('hero.title')}
               </h1>
               <p className="mt-4 max-w-lg text-sm leading-relaxed text-avs-accent/55">
-                Choisissez une combinaison de couleurs inspirée de textiles et pigments africains,
-                et voyez-la appliquée en direct sur des exemples d&apos;interface. Exportez en CSS, JSON ou Tailwind.
+                {t('hero.description')}
               </p>
             </div>
 
             <div className="flex shrink-0 gap-3 overflow-x-auto pb-2 sm:pb-0 sm:overflow-visible">
               {[
-                { v: `${allCombos.length}`,                                         l: 'combos'   },
-                { v: `${allCombos.reduce((a, c) => a + c.colors.length, 0)}`,       l: 'couleurs' },
-                { v: `${new Set(allCombos.map(c => c.region).filter(Boolean)).size}`, l: 'régions' },
-                { v: `${new Set(allCombos.map(c => c.culture).filter(Boolean)).size}`, l: 'cultures' },
-                { v: '3',                                                            l: 'formats'  },
+                { v: `${allCombos.length}`,                                         l: t('stats.combos')   },
+                { v: `${allCombos.reduce((a, c) => a + c.colors.length, 0)}`,       l: t('stats.colors') },
+                { v: `${new Set(allCombos.map(c => c.region).filter(Boolean)).size}`, l: t('stats.regions') },
+                { v: `${new Set(allCombos.map(c => c.culture).filter(Boolean)).size}`, l: t('stats.cultures') },
+                { v: '3',                                                            l: t('stats.formats')  },
               ].map(({ v, l }) => (
                 <div key={l} className="rounded-xl px-4 py-3 text-center bg-avs-secondary border border-avs-accent/9 shrink-0">
                   <p className="font-display text-2xl font-black leading-none text-avs-accent" style={{ letterSpacing: '-0.02em' }}>{v}</p>
@@ -123,7 +132,7 @@ export function ColorsContent() {
         {/* ══ SEGMENTATION FILTERS ══════════════════════════════════════ */}
         <div className="mb-8">
           <p className="mb-3 font-mono text-[9px] font-bold tracking-[0.22em] uppercase text-avs-accent/40">
-            Filtrer par région, culture ou thème
+            {t('filters.label')}
           </p>
           <SegmentationFilters
             combos={allCombos}
@@ -135,14 +144,14 @@ export function ColorsContent() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-3">
             <p className="font-mono text-[9px] font-bold tracking-[0.22em] uppercase text-avs-accent/40">
-              Choisir un combo {filteredCombos.length !== allCombos.length && `(${filteredCombos.length} filtrés)`}
+              {t('filters.selectCombo')} {filteredCombos.length !== allCombos.length && t('filters.filtered', { count: filteredCombos.length })}
             </p>
             {(activeFilters.region || activeFilters.culture || activeFilters.theme) && (
               <button
                 onClick={() => setActiveFilters({})}
                 className="font-mono text-[9px] font-bold uppercase tracking-wide text-avs-accent/40 hover:text-avs-accent"
               >
-                Réinitialiser les filtres
+                {t('filters.reset')}
               </button>
             )}
           </div>
@@ -191,7 +200,7 @@ export function ColorsContent() {
               <div className="flex h-7 w-7 items-center justify-center rounded-full bg-avs-primary/10">
                 <Plus size={14} className="text-avs-primary" aria-hidden />
               </div>
-              <p className="text-[11px] font-bold text-avs-accent/60">Créer un combo</p>
+              <p className="text-[11px] font-bold text-avs-accent/60">{t('createCombo')}</p>
             </button>
           </div>
         </div>
@@ -244,7 +253,7 @@ export function ColorsContent() {
 
             {/* Droite — exemples d'usage + contexte culturel + export */}
             <div className="space-y-6">
-              <CulturalContext combo={combo} />
+              <CulturalContext combo={combo} culturalContext={culturalContext} />
               <div className="rounded-2xl border border-avs-accent/9 bg-avs-secondary p-5">
                 <UsageExamples combo={combo} />
               </div>

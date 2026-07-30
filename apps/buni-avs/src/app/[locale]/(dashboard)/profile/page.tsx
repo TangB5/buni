@@ -9,6 +9,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { useAuth, useLogout } from '@buni/auth';
+import { useTranslations } from 'next-intl';
 import { formatDate } from '@buni/utils';
 import { z } from 'zod';
 import Link from 'next/link';
@@ -21,11 +22,11 @@ import CuratorModal from '@/components/curator-modal';
 // SCHEMA
 // ─────────────────────────────────────────────────────────────────────────────
 
-const ProfileSchema = z.object({
-  name:      z.string().min(2, 'Minimum 2 caractères').max(64),
+const getProfileSchema = (t: any) => z.object({
+  name:      z.string().min(2, t('validation.nameMin')).max(64),
   bio:       z.string().max(280).optional(),
   location:  z.string().max(64).optional(),
-  website:   z.string().url('URL invalide').optional().or(z.literal('')),
+  website:   z.string().url(t('validation.invalidUrl')).optional().or(z.literal('')),
   github:    z.string().max(39).optional(),
   twitter:   z.string().max(15).optional(),
   specialty: z.string().max(64).optional(),
@@ -89,18 +90,22 @@ const PAGE_STYLES = `
 // CONFIG
 // ─────────────────────────────────────────────────────────────────────────────
 
-const ROLE_CONFIG: Record<string, { label: string; color: string; accentClass: string; pattern: string }> = {
-  admin:       { label: 'Administrateur', color: '#C0573E', accentClass: 'text-avs-primary', pattern: 'avs-pattern-ndop-sultan'     },
-  curator:     { label: 'Curateur',       color: '#D4A017', accentClass: 'text-avs-kente',   pattern: 'avs-pattern-kente-royale'   },
-  contributor: { label: 'Contributeur',   color: '#4A6741', accentClass: 'text-avs-ndop',    pattern: 'avs-pattern-bogolan-fanga'  },
-  viewer:      { label: 'Explorateur',    color: '#2A4A6B', accentClass: 'text-avs-indigo',  pattern: 'avs-pattern-adinkra-sankofa'},
-};
+function getRoleConfig(t: any): Record<string, { label: string; color: string; accentClass: string; pattern: string }> {
+  return {
+    admin:       { label: t('roles.admin'),       color: '#C0573E', accentClass: 'text-avs-primary', pattern: 'avs-pattern-ndop-sultan'     },
+    curator:     { label: t('roles.curator'),     color: '#D4A017', accentClass: 'text-avs-kente',   pattern: 'avs-pattern-kente-royale'   },
+    contributor: { label: t('roles.contributor'), color: '#4A6741', accentClass: 'text-avs-ndop',    pattern: 'avs-pattern-bogolan-fanga'  },
+    viewer:      { label: t('roles.viewer'),      color: '#2A4A6B', accentClass: 'text-avs-indigo',  pattern: 'avs-pattern-adinkra-sankofa'},
+  };
+}
 
-const TABS = [
-  { id: 'infos',  label: 'Informations',    icon: Users    },
-  { id: 'social', label: 'Réseaux sociaux', icon: Globe   },
-] as const;
-type TabId = typeof TABS[number]['id'];
+function getTabs(t: any) {
+  return [
+    { id: 'infos',  label: t('tabs.info'),    icon: Users    },
+    { id: 'social', label: t('tabs.social'), icon: Globe   },
+  ] as const;
+}
+type TabId = ReturnType<typeof getTabs>[number]['id'];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // FIELD WRAPPER
@@ -200,6 +205,7 @@ function SocialRow({ icon, platform, prefix, value, onChange, maxLength, placeho
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function ProfilePage() {
+  const t = useTranslations('dashboard.profile');
   const { user, isAuthenticated, isHydrated, canContribute } = useAuth();
   const logout = useLogout();
   const { add: addToast, ToastContainer } = useToast();
@@ -240,24 +246,24 @@ export default function ProfilePage() {
 
     // Validate file size (5MB)
     if (file.size > 5 * 1024 * 1024) {
-      addToast({ variant: 'error', title: 'Fichier trop volumineux', message: 'L\'image ne doit pas dépasser 5MB' });
+      addToast({ variant: 'error', title: t('avatar.fileTooLarge'), message: t('avatar.fileTooLargeDesc') });
       return;
     }
 
     // Validate file type
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
     if (!allowedTypes.includes(file.type)) {
-      addToast({ variant: 'error', title: 'Format non supporté', message: 'Seuls JPEG, PNG, WebP et GIF sont acceptés' });
+      addToast({ variant: 'error', title: t('avatar.unsupportedFormat'), message: t('avatar.unsupportedFormatDesc') });
       return;
     }
 
     setUploading(true);
     try {
       await uploadAvatar.mutateAsync(file);
-      addToast({ variant: 'success', title: 'Avatar mis à jour', message: 'Votre photo de profil a été changée avec succès' });
+      addToast({ variant: 'success', title: t('avatar.updated'), message: t('avatar.updatedDesc') });
     } catch (error) {
       console.error('Failed to upload avatar:', error);
-      addToast({ variant: 'error', title: 'Erreur', message: 'Impossible de télécharger l\'avatar. Veuillez réessayer.' });
+      addToast({ variant: 'error', title: t('avatar.error'), message: t('avatar.errorDesc') });
     } finally {
       setUploading(false);
     }
@@ -270,7 +276,7 @@ export default function ProfilePage() {
         <div className="flex flex-col items-center gap-4">
           <div className="avs-pattern-kente-royale h-12 w-12 animate-spin rounded-full opacity-70" style={{ animationDuration: '2s' }} />
           <p className="font-mono text-[10px] tracking-[0.2em] uppercase animate-pulse text-avs-accent/35">
-            Chargement du profil…
+            {t('loading')}
           </p>
         </div>
       </div>
@@ -285,7 +291,7 @@ export default function ProfilePage() {
         <div className="flex flex-col items-center gap-4">
           <div className="avs-pattern-kente-royale h-12 w-12 animate-spin rounded-full opacity-70" style={{ animationDuration: '2s' }} />
           <p className="font-mono text-[10px] tracking-[0.2em] uppercase animate-pulse text-avs-accent/35">
-            Chargement des données…
+            {t('loadingData')}
           </p>
         </div>
       </div>
@@ -293,27 +299,28 @@ export default function ProfilePage() {
   }
 
   const roleKey = (user?.role || 'viewer').toLowerCase();
-  const role    = ROLE_CONFIG[roleKey] ?? ROLE_CONFIG['viewer']!;
+  const role    = getRoleConfig(t)[roleKey] ?? getRoleConfig(t)['viewer']!;
   const set     = (key: keyof ProfileForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm((f) => ({ ...f, [key]: e.target.value }));
 
   const save = async () => {
-    const result = ProfileSchema.safeParse(form);
+    const schema = getProfileSchema(t);
+    const result = schema.safeParse(form);
     if (!result.success) {
       const fe: FieldErrors = {};
       result.error.issues.forEach((e) => { if (e.path[0]) fe[e.path[0] as keyof ProfileForm] = e.message; });
       setErrors(fe);
-      addToast({ variant: 'error', title: 'Erreur de validation', message: 'Veuillez vérifier les champs du formulaire' });
+      addToast({ variant: 'error', title: t('validationError'), message: t('validationErrorDesc') });
       return;
     }
     setErrors({});
     setSaving(true);
     try {
       await updateProfile.mutateAsync(form);
-      addToast({ variant: 'success', title: 'Profil mis à jour', message: 'Vos modifications ont été enregistrées avec succès' });
+      addToast({ variant: 'success', title: t('saved'), message: t('savedDesc') });
     } catch (error) {
       console.error('Failed to save profile:', error);
-      addToast({ variant: 'error', title: 'Erreur', message: 'Impossible de sauvegarder le profil. Veuillez réessayer.' });
+      addToast({ variant: 'error', title: t('error'), message: t('errorDesc') });
     } finally {
       setSaving(false);
     }
@@ -341,15 +348,15 @@ export default function ProfilePage() {
               <Link
                 href="/dashboard"
                 className="flex h-9 w-9 items-center justify-center rounded-xl border border-avs-accent/16 text-avs-accent/55 hover:text-avs-accent transition-all duration-150"
-                title="Retour au tableau de bord"
+                title={t('back')}
               >
                 <ArrowLeft size={16} />
               </Link>
               <div>
                 <h1 className="font-display font-black leading-none text-avs-accent" style={{ fontSize: 'clamp(1.1rem,3vw,1.4rem)', letterSpacing: '-0.02em' }}>
-                  Mon Profil
+                  {t('title')}
                 </h1>
-                <p className="mt-0.5 text-xs text-avs-accent/35">Gérer vos informations publiques</p>
+                <p className="mt-0.5 text-xs text-avs-accent/35">{t('subtitle')}</p>
               </div>
             </div>
 
@@ -362,7 +369,7 @@ export default function ProfilePage() {
               aria-busy={saving}
             >
               <span className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" aria-hidden />
-              {saving ? <><Loader2 size={13} className="animate-spin" /> Sauvegarde…</> : <><Save size={13} /> Enregistrer</>}
+              {saving ? <><Loader2 size={13} className="animate-spin" /> {t('saving')}</> : <><Save size={13} /> {t('save')}</>}
             </motion.button>
           </div>
         </div>
@@ -405,7 +412,7 @@ export default function ProfilePage() {
                       </div>
                     )}
                   </div>
-                  <span className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-emerald-500 ring-2 ring-avs-secondary" aria-label="En ligne" />
+                  <span className="absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-emerald-500 ring-2 ring-avs-secondary" aria-label={t('online')} />
                 </div>
 
                 <div className="flex-1 min-w-0">
@@ -425,19 +432,19 @@ export default function ProfilePage() {
                     {user?.verified ? (
                       <span className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 font-mono text-[9px] font-black uppercase tracking-[0.16em] bg-emerald-500/10 text-emerald-500 border border-emerald-500/25">
                         <Shield size={10} aria-hidden />
-                        Vérifié
+                        {t('verified')}
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 font-mono text-[9px] font-black uppercase tracking-[0.16em] bg-amber-500/10 text-amber-500 border border-amber-500/25">
                         <AlertCircle size={10} aria-hidden />
-                        Non vérifié
+                        {t('notVerified')}
                       </span>
                     )}
                   </div>
                   <p className="mt-1 text-sm text-avs-accent/55">{user?.email}</p>
                   <p className="mt-1 flex items-center gap-1.5 text-xs text-avs-accent/35">
                     <Calendar size={10} aria-hidden />
-                    Membre depuis {memberSince}
+                    {t('memberSince')} {memberSince}
                   </p>
                 </div>
 
@@ -454,7 +461,7 @@ export default function ProfilePage() {
                   htmlFor="avatar-upload"
                   className="flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold border border-avs-accent/16 text-avs-accent/55 hover:border-avs-primary/20 hover:text-avs-primary transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <Camera size={14} /> {uploading ? 'Téléchargement...' : 'Modifier l\'avatar'}
+                  <Camera size={14} /> {uploading ? t('uploading') : t('changeAvatar')}
                 </label>
               </div>
             </div>
@@ -462,7 +469,7 @@ export default function ProfilePage() {
 
           {/* ══ TABS ════════════════════════════════════════════════════════ */}
           <div className="flex gap-0 border-b border-avs-accent/9">
-            {TABS.map(({ id, label, icon: Icon }) => (
+            {getTabs(t).map(({ id, label, icon: Icon }) => (
               <button
                 key={id}
                 onClick={() => setActiveTab(id)}
@@ -498,16 +505,16 @@ export default function ProfilePage() {
                     <div className="flex flex-col items-center justify-center gap-4 py-12 text-center">
                       <div className="avs-pattern-adinkra-sankofa h-16 w-16 rounded-full opacity-40" aria-hidden />
                       <div>
-                        <p className="font-display text-lg font-bold text-avs-accent">Édition restreinte</p>
+                        <p className="font-display text-lg font-bold text-avs-accent">{t('restricted.title')}</p>
                         <p className="mt-2 text-sm text-avs-accent/40 max-w-md">
-                          En tant qu'Explorateur, vous ne pouvez pas modifier votre profil. Devenez Curateur pour accéder à toutes les fonctionnalités d'édition.
+                          {t('restricted.description')}
                         </p>
                       </div>
                       <button
                         onClick={() => setIsCuratorModalOpen(true)}
                         className="inline-flex items-center gap-2 rounded-xl bg-avs-primary px-6 py-3 text-sm font-bold text-avs-secondary shadow-lg shadow-avs-primary/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-avs-primary/30"
                       >
-                        Devenir Curateur
+                        {t('restricted.becomeCurator')}
                         <ArrowRight size={14} aria-hidden />
                       </button>
                     </div>
@@ -515,36 +522,36 @@ export default function ProfilePage() {
                     // Curator/Contributor/Admin edit form
                     <>
                       <div className="grid gap-5 sm:grid-cols-2">
-                        <Field label="Nom complet" error={errors.name}>
-                          <input type="text" value={form.name} onChange={set('name')} className="prf-input" placeholder="Amara Diop" />
+                        <Field label={t('fields.name')} error={errors.name}>
+                          <input type="text" value={form.name} onChange={set('name')} className="prf-input" placeholder={t('placeholders.name')} />
                         </Field>
-                        <Field label="Spécialité" hint="Votre domaine d'expertise (Ndop, Bogolan…)" error={errors.specialty}>
-                          <input type="text" value={form.specialty} onChange={set('specialty')} className="prf-input" placeholder="Tisserand Ndop" />
+                        <Field label={t('fields.specialty')} hint={t('hints.specialty')} error={errors.specialty}>
+                          <input type="text" value={form.specialty} onChange={set('specialty')} className="prf-input" placeholder={t('placeholders.specialty')} />
                         </Field>
                       </div>
 
-                      <Field label="Bio" hint="Décrivez-vous en 280 caractères ou moins" error={errors.bio}>
+                      <Field label={t('fields.bio')} hint={t('hints.bio')} error={errors.bio}>
                         <textarea
                           value={form.bio} onChange={set('bio')} maxLength={280} rows={3}
                           className="prf-input"
-                          placeholder="Tisserand de tradition, je documente les motifs Ndop depuis 20 ans…"
+                          placeholder={t('placeholders.bio')}
                         />
                         <div className="mt-1.5 flex justify-end">
                           <span className="font-mono text-[9px] text-avs-accent/35">{form.bio?.length ?? 0}/280</span>
                         </div>
                       </Field>
 
-                      <Field label="Localisation" error={errors.location}>
+                      <Field label={t('fields.location')} error={errors.location}>
                         <div className="prf-input-icon">
                           <MapPin size={14} className="text-avs-accent/30 shrink-0" aria-hidden />
-                          <input type="text" value={form.location} onChange={set('location')} placeholder="Foumban, Cameroun" />
+                          <input type="text" value={form.location} onChange={set('location')} placeholder={t('placeholders.location')} />
                         </div>
                       </Field>
 
-                      <Field label="Site web" error={errors.website}>
+                      <Field label={t('fields.website')} error={errors.website}>
                         <div className="prf-input-icon">
                           <Globe size={14} className="text-avs-accent/30 shrink-0" aria-hidden />
-                          <input type="url" value={form.website} onChange={set('website')} placeholder="https://exemple.com" />
+                          <input type="url" value={form.website} onChange={set('website')} placeholder={t('placeholders.website')} />
                         </div>
                       </Field>
                     </>
@@ -560,16 +567,16 @@ export default function ProfilePage() {
                     <div className="flex flex-col items-center justify-center gap-4 py-12 text-center">
                       <div className="avs-pattern-adinkra-sankofa h-16 w-16 rounded-full opacity-40" aria-hidden />
                       <div>
-                        <p className="font-display text-lg font-bold text-avs-accent">Édition restreinte</p>
+                        <p className="font-display text-lg font-bold text-avs-accent">{t('restricted.title')}</p>
                         <p className="mt-2 text-sm text-avs-accent/40 max-w-md">
-                          En tant qu'Explorateur, vous ne pouvez pas modifier vos réseaux sociaux. Devenez Curateur pour accéder à toutes les fonctionnalités d'édition.
+                          {t('restricted.socialDescription')}
                         </p>
                       </div>
                       <button
                         onClick={() => setIsCuratorModalOpen(true)}
                         className="inline-flex items-center gap-2 rounded-xl bg-avs-primary px-6 py-3 text-sm font-bold text-avs-secondary shadow-lg shadow-avs-primary/20 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-avs-primary/30"
                       >
-                        Devenir Curateur
+                        {t('restricted.becomeCurator')}
                         <ArrowRight size={14} aria-hidden />
                       </button>
                     </div>
@@ -578,22 +585,22 @@ export default function ProfilePage() {
                     <>
                       <SocialRow
                         icon={<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>}
-                        platform="GitHub" prefix="github.com/"
+                        platform={t('social.github')} prefix="github.com/"
                         value={form.github ?? ''} onChange={(v) => setForm((f) => ({ ...f, github: v }))}
-                        maxLength={39} placeholder="username"
+                        maxLength={39} placeholder={t('placeholders.username')}
                       />
 
                       <SocialRow
                         icon={<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.73-8.835L1.254 2.25H8.08l4.259 5.63zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>}
-                        platform="Twitter / X" prefix="x.com/"
+                        platform={t('social.twitter')} prefix="x.com/"
                         value={form.twitter ?? ''} onChange={(v) => setForm((f) => ({ ...f, twitter: v }))}
-                        maxLength={15} placeholder="username"
+                        maxLength={15} placeholder={t('placeholders.username')}
                       />
 
                       {/* Preview links */}
                       {(form.github || form.twitter) && (
                         <div className="rounded-xl p-4 bg-avs-accent/4 border border-avs-accent/9">
-                          <p className="mb-3 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-avs-accent/35">Aperçu des liens</p>
+                          <p className="mb-3 font-mono text-[9px] font-bold uppercase tracking-[0.18em] text-avs-accent/35">{t('social.preview')}</p>
                           <div className="flex flex-wrap gap-2">
                             {form.github && (
                               <a href={`https://github.com/${form.github}`} target="_blank" rel="noopener noreferrer"

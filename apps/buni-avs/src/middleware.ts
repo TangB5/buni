@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
-import { locales, defaultLocale } from '@buni/i18n';
+import { locales, defaultLocale } from '@/i18n';
 
 // Routes qui NÉCESSITENT une authentification
 const PROTECTED_PREFIXES = ['/dashboard', '/profile'];
@@ -12,11 +12,17 @@ const AUTH_ROUTES = ['/auth/login', '/auth/register'];
 const intlMiddleware = createMiddleware({
   locales,
   defaultLocale,
-  localePrefix: 'always',
+  
 });
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // ── Redirection racine vers locale par défaut ─────────────────────────────────
+  if (pathname === '/') {
+    const url = new URL(`/${defaultLocale}`, request.url);
+    return NextResponse.redirect(url);
+  }
 
   // ── Gestion i18n ─────────────────────────────────────────────────────────────
   const response = intlMiddleware(request);
@@ -53,5 +59,5 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   // Exclure les assets statiques et les routes Next.js internes
-  matcher: ['/((?!_next/static|_next/image|favicon.ico|public/|patterns/|api/).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|public/|patterns/|api/|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.gif|.*\\.svg|.*\\.webp).*)'],
 };

@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { formatDate, formatNumber } from '@buni/utils';
 import { useAuth } from '@buni/auth';
+import { useTranslations } from 'next-intl';
 
 import { Route } from 'next';
 import type { Pattern, PatternStatus, PatternSymbol } from '@buni/patterns';
@@ -43,36 +44,40 @@ type SortKey = 'name' | 'views' | 'downloads' | 'updatedAt';
 // STATUS CONFIG
 // ─────────────────────────────────────────────────────────────────────────────
 
-const STATUS_CFG: Record<
+function getStatusConfig(t: any): Record<
   PatternStatus,
   { label: string; icon: typeof CheckCircle2; pill: string; dot: string }
-> = {
-  published: {
-    label: 'Publié',
-    icon: CheckCircle2,
-    pill: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
-    dot: 'bg-emerald-500',
-  },
-  draft: {
-    label: 'Brouillon',
-    icon: FileText,
-    pill: 'bg-avs-accent/8 text-avs-accent/50 border border-avs-accent/10',
-    dot: 'bg-avs-accent/30',
-  },
-  review: {
-    label: 'En révision',
-    icon: Hourglass,
-    pill: 'bg-avs-kente/10 text-avs-kente border border-avs-kente/20',
-    dot: 'bg-avs-kente',
-  },
-};
+> {
+  return {
+    published: {
+      label: t('status.published'),
+      icon: CheckCircle2,
+      pill: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
+      dot: 'bg-emerald-500',
+    },
+    draft: {
+      label: t('status.draft'),
+      icon: FileText,
+      pill: 'bg-avs-accent/8 text-avs-accent/50 border border-avs-accent/10',
+      dot: 'bg-avs-accent/30',
+    },
+    review: {
+      label: t('status.review'),
+      icon: Hourglass,
+      pill: 'bg-avs-kente/10 text-avs-kente border border-avs-kente/20',
+      dot: 'bg-avs-kente',
+    },
+  };
+}
 
-const STATUS_FILTERS: { value: PatternStatus | 'all'; label: string }[] = [
-  { value: 'all', label: 'Tous' },
-  { value: 'published', label: 'Publiés' },
-  { value: 'draft', label: 'Brouillons' },
-  { value: 'review', label: 'En révision' },
-];
+function getStatusFilters(t: any): { value: PatternStatus | 'all'; label: string }[] {
+  return [
+    { value: 'all', label: t('filter.all') },
+    { value: 'published', label: t('filter.published') },
+    { value: 'draft', label: t('filter.draft') },
+    { value: 'review', label: t('filter.review') },
+  ];
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // STAT CARD  — même patron que profil : top-accent + glow
@@ -137,10 +142,10 @@ function StatCard({
 // STATUS BADGE
 // ─────────────────────────────────────────────────────────────────────────────
 
-function StatusBadge({ status }: { status: PatternStatus }) {
+function StatusBadge({ status, t }: { status: PatternStatus; t: any }) {
   const normalizedStatus = status?.toLowerCase() as PatternStatus;
 
-  const { label, dot, pill } = STATUS_CFG[normalizedStatus];
+  const { label, dot, pill } = getStatusConfig(t)[normalizedStatus];
   return (
     <span
       className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 font-mono text-[9px] font-black tracking-[0.14em] uppercase ${pill}`}
@@ -225,14 +230,14 @@ function ActionMenu({
                 onClick={() => setOpen(false)}
                 className="text-avs-accent/70 hover:bg-avs-primary/5 hover:text-avs-primary flex items-center gap-2.5 px-4 py-2.5 text-sm"
               >
-                <Edit2 size={13} /> Modifier
+                <Edit2 size={13} /> {t('actions.edit')}
               </Link>
               <Link
                 href={`/patternsDashboard/${pattern.slug}` as Route}
                 onClick={() => setOpen(false)}
                 className="text-avs-accent/70 hover:bg-avs-primary/5 hover:text-avs-primary flex items-center gap-2.5 px-4 py-2.5 text-sm"
               >
-                <Eye size={13} /> Voir détails
+                <Eye size={13} /> {t('actions.view')}
               </Link>
               {canManageStatus && (
                 <button
@@ -245,11 +250,11 @@ function ActionMenu({
                 >
                   {pattern.featured ? (
                     <>
-                      <EyeOff size={13} /> Retirer vedette
+                      <EyeOff size={13} /> {t('actions.unfeature')}
                     </>
                   ) : (
                     <>
-                      <Star size={13} /> Mettre en vedette
+                      <Star size={13} /> {t('actions.feature')}
                     </>
                   )}
                 </button>
@@ -262,7 +267,7 @@ function ActionMenu({
                 }}
                 className="flex w-full items-center gap-2.5 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50"
               >
-                <Trash2 size={13} /> Supprimer
+                <Trash2 size={13} /> {t('actions.delete')}
               </button>
             </motion.div>
           </>
@@ -276,21 +281,21 @@ function ActionMenu({
 // EMPTY STATE
 // ─────────────────────────────────────────────────────────────────────────────
 
-function EmptyState({ search }: { search: string }) {
+function EmptyState({ search, t }: { search: string; t: any }) {
   return (
     <div className="flex flex-col items-center justify-center gap-3 py-16 text-center">
       <div className="avs-pattern-wax-dakar h-12 w-12 rounded-2xl opacity-20" aria-hidden />
       <p className="font-display text-avs-accent text-base font-bold">
-        {search ? 'Aucun résultat' : 'Aucun motif'}
+        {search ? t('empty.noResults') : t('empty.noPatterns')}
       </p>
       <p className="text-avs-accent/40 max-w-xs text-sm">
         {search
-          ? `Aucun motif ne correspond à « ${search} »`
-          : 'Créez votre premier motif pour commencer'}
+          ? t('empty.noResultsSearch', { search })
+          : t('empty.noPatternsDesc')}
       </p>
       {!search && (
         <Link href={'/dashboard/patterns/new' as Route} className="avs-btn-primary mt-2 gap-2">
-          <Plus size={14} /> Nouveau motif
+          <Plus size={14} /> {t('empty.createFirst')}
         </Link>
       )}
     </div> 
@@ -302,6 +307,7 @@ function EmptyState({ search }: { search: string }) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function MyPatternsPage() {
+  const t = useTranslations('dashboard.patterns');
   const { user, isAdmin, isCurator } = useAuth();
   const [patterns, setPatterns] = useState<Pattern[]>([]);
   const [search, setSearch] = useState('');
@@ -479,12 +485,10 @@ export default function MyPatternsPage() {
               <div className="space-y-4 p-6">
                 <div>
                   <h2 className="font-display text-avs-accent text-lg font-bold">
-                    Supprimer ce motif ?
+                    {t('deleteModal.title')}
                   </h2>
                   <p className="text-avs-accent/50 mt-1 text-sm">
-                    Le motif{' '}
-                    <span className="text-avs-accent font-semibold">{deleteModal.patternName}</span>{' '}
-                    sera supprimé définitivement. Cette action est irréversible.
+                    {t('deleteModal.description', { name: deleteModal.patternName })}
                   </p>
                 </div>
 
@@ -495,13 +499,13 @@ export default function MyPatternsPage() {
                     }
                     className="border-avs-accent/15 text-avs-accent/70 hover:border-avs-accent/30 hover:text-avs-accent flex-1 rounded-xl border px-4 py-2.5 font-semibold transition-colors"
                   >
-                    Annuler
+                    {t('deleteModal.cancel')}
                   </button>
                   <button
                     onClick={confirmDelete}
                     className="flex-1 rounded-xl bg-red-600 px-4 py-2.5 font-semibold text-white transition-colors hover:bg-red-700"
                   >
-                    Supprimer
+                    {t('deleteModal.delete')}
                   </button>
                 </div>
               </div>
@@ -522,7 +526,7 @@ export default function MyPatternsPage() {
             <Link
               href="/dashboard"
               className="border-avs-accent/16 text-avs-accent/55 hover:text-avs-accent flex h-9 w-9 items-center justify-center rounded-xl border transition-all duration-150"
-              title="Retour au tableau de bord"
+              title={t('back')}
             >
               <ArrowLeft size={16} />
             </Link>
@@ -531,10 +535,10 @@ export default function MyPatternsPage() {
                 className="font-display text-avs-accent leading-none font-black"
                 style={{ fontSize: 'clamp(1.1rem,3vw,1.4rem)', letterSpacing: '-0.02em' }}
               >
-                Mes Motifs
+                {t('title')}
               </h1>
               <p className="text-avs-accent/35 mt-0.5 text-xs">
-                {patterns.length} motif{patterns.length > 1 ? 's' : ''} au total
+                {t('subtitle', { count: patterns.length })}
               </p>
             </div>
           </div>
@@ -547,7 +551,7 @@ export default function MyPatternsPage() {
               className="pointer-events-none absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full"
               aria-hidden
             />
-            <Plus size={15} /> Nouveau motif
+            <Plus size={15} /> {t('newPattern')}
           </Link>
         </div>
       </div>
@@ -556,11 +560,11 @@ export default function MyPatternsPage() {
         {/* ══ STAT CARDS — même patron que profil ════════════════════════════ */}
         {(isAdmin ) && (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <StatCard label="Publiés" value={stats.published} icon={CheckCircle2} color="#4A6741" />
-            <StatCard label="Brouillons" value={stats.drafts} icon={FileText} color="#1D1D1B" />
-            <StatCard label="En révision" value={stats.review} icon={Hourglass} color="#D4A017" />
+            <StatCard label={t('stats.published')} value={stats.published} icon={CheckCircle2} color="#4A6741" />
+            <StatCard label={t('stats.draft')} value={stats.drafts} icon={FileText} color="#1D1D1B" />
+            <StatCard label={t('stats.review')} value={stats.review} icon={Hourglass} color="#D4A017" />
             <StatCard
-              label="Vues totales"
+              label={t('stats.totalViews')}
               value={stats.totalViews}
               icon={BarChart3}
               color="#C0573E"
@@ -580,7 +584,7 @@ export default function MyPatternsPage() {
               type="search"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Motif, type, région…"
+              placeholder={t('search')}
               className="avs-input pl-10 text-sm"
             />
             <AnimatePresence>
@@ -590,7 +594,7 @@ export default function MyPatternsPage() {
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.8 }}
                   onClick={() => setSearch('')}
-                  aria-label="Effacer"
+                  aria-label={t('clear')}
                   className="text-avs-accent/40 hover:text-avs-accent absolute top-1/2 right-3 -translate-y-1/2 transition-colors"
                 >
                   <X size={12} />
@@ -602,9 +606,9 @@ export default function MyPatternsPage() {
           {(isAdmin ) && (
             <div className="flex items-center gap-1.5">
               <Filter size={12} className="text-avs-accent/30 shrink-0" aria-hidden />
-              {STATUS_FILTERS.map(({ value, label }) => {
+              {getStatusFilters(t).map(({ value, label }) => {
                 const isActive = statusF === value;
-                const statusConfig = value !== 'all' ? STATUS_CFG[value as PatternStatus] : null;
+                const statusConfig = value !== 'all' ? getStatusConfig(t)[value as PatternStatus] : null;
                 const activeStyle = value === 'all' 
                   ? 'bg-avs-primary text-avs-secondary shadow-avs'
                   : statusConfig?.pill || 'bg-avs-primary text-avs-secondary shadow-avs';
@@ -634,20 +638,20 @@ export default function MyPatternsPage() {
             >
               <div className="border-avs-primary/25 bg-avs-primary/8 flex items-center gap-4 rounded-xl border px-4 py-3">
                 <span className="text-avs-primary font-mono text-xs font-bold">
-                  {selected.size} sélectionné{selected.size > 1 ? 's' : ''}
+                  {t('bulk.selected', { count: selected.size })}
                 </span>
                 <div className="bg-avs-accent/15 h-3.5 w-px" />
                 <button className="text-avs-accent/50 flex items-center gap-1.5 text-xs font-semibold transition-colors hover:text-red-500">
-                  <Trash2 size={12} /> Supprimer
+                  <Trash2 size={12} /> {t('bulk.delete')}
                 </button>
                 <button className="text-avs-accent/50 hover:text-avs-primary flex items-center gap-1.5 text-xs font-semibold transition-colors">
-                  <Download size={12} /> Exporter
+                  <Download size={12} /> {t('bulk.export')}
                 </button>
                 <button
                   onClick={() => setSelected(new Set())}
                   className="text-avs-accent/30 hover:text-avs-accent ml-auto font-mono text-[9px] font-bold tracking-wider uppercase transition-colors"
                 >
-                  Annuler
+                  {t('bulk.cancel')}
                 </button>
               </div>
             </motion.div>
@@ -666,24 +670,24 @@ export default function MyPatternsPage() {
               checked={allSelected}
               onChange={toggleAll}
               className="accent-avs-primary rounded"
-              aria-label="Tout sélectionner"
+              aria-label={t('table.selectAll')}
             />
             <span className="text-avs-accent/30 font-mono text-[9px] font-bold tracking-[0.14em] uppercase">
-              Aperçu
+              {t('table.preview')}
             </span>
-            <SortBtn col="name" label="Motif" sortKey={sortKey} toggleSort={toggleSort} />
+            <SortBtn col="name" label={t('table.name')} sortKey={sortKey} toggleSort={toggleSort} />
             <span className="text-avs-accent/30 font-mono text-[9px] font-bold tracking-[0.14em] uppercase">
-              Statut
+              {t('table.status')}
             </span>
-            <SortBtn col="views" label="Vues" sortKey={sortKey} toggleSort={toggleSort} />
-            <SortBtn col="downloads" label="DL" sortKey={sortKey} toggleSort={toggleSort} />
-            <SortBtn col="updatedAt" label="Modifié" sortKey={sortKey} toggleSort={toggleSort} />
+            <SortBtn col="views" label={t('table.views')} sortKey={sortKey} toggleSort={toggleSort} />
+            <SortBtn col="downloads" label={t('table.downloads')} sortKey={sortKey} toggleSort={toggleSort} />
+            <SortBtn col="updatedAt" label={t('table.modified')} sortKey={sortKey} toggleSort={toggleSort} />
             <span />
           </div>
 
           {/* Rows */}
           {filtered.length === 0 ? (
-            <EmptyState search={search} />
+            <EmptyState search={search} t={t} />
           ) : (
             <AnimatePresence initial={false}>
               {filtered.map((p, i) => (
@@ -700,7 +704,7 @@ export default function MyPatternsPage() {
                     checked={selected.has(p.id)}
                     onChange={() => toggleSelect(p.id)}
                     className="accent-avs-primary rounded"
-                    aria-label={`Sélectionner ${p.name}`}
+                    aria-label={t('table.select', { name: p.name })}
                   />
 
                   <div
@@ -715,7 +719,7 @@ export default function MyPatternsPage() {
                         <Star
                           size={11}
                           className="fill-avs-kente text-avs-kente shrink-0"
-                          aria-label="En vedette"
+                          aria-label={t('table.featured')}
                         />
                       )}
                     </div>
@@ -724,7 +728,7 @@ export default function MyPatternsPage() {
                     </p>
                   </div>
 
-                  <StatusBadge status={p.status} />
+                  <StatusBadge status={p.status} t={t} />
 
                   <p className="text-avs-accent/60 text-sm font-medium tabular-nums">
                     {formatNumber(p.views)}
@@ -754,8 +758,7 @@ export default function MyPatternsPage() {
           {filtered.length > 0 && (
             <div className="border-avs-accent/8 bg-avs-accent/3 flex items-center justify-between border-t px-5 py-3">
               <span className="text-avs-accent/30 font-mono text-[9px] tracking-wider uppercase">
-                {filtered.length} motif{filtered.length > 1 ? 's' : ''} affiché
-                {filtered.length > 1 ? 's' : ''}
+                {t('table.footer', { count: filtered.length })}
               </span>
               {(search || statusF !== 'all') && (
                 <button
@@ -765,7 +768,7 @@ export default function MyPatternsPage() {
                   }}
                   className="text-avs-primary font-mono text-[9px] font-bold tracking-wider uppercase underline underline-offset-2 transition-opacity hover:opacity-70"
                 >
-                  Réinitialiser
+                  {t('table.reset')}
                 </button>
               )}
             </div>

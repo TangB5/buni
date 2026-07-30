@@ -17,7 +17,7 @@ export function LoadingOverlay({ isLoading, message }: LoadingOverlayProps) {
       aria-live="polite"
       aria-label={message || 'Chargement…'}
     >
-      <BuniLoader size={120} showText={true} />
+      <BuniLoader size={120} showText={true} theme="dark" />
       {message && (
         <p className="mt-8 text-center text-avs-secondary text-lg font-semibold">
           {message}

@@ -1,33 +1,45 @@
 import type { Metadata } from 'next';
 import { DocPageTemplate, type DocTocEntry } from '../../doc-page-template';
 import { Callout } from '../../doc-primitives';
+import { useNavSpaces } from '../../nav-data';
+import { useTranslations } from '@/i18n';
 
-export const metadata: Metadata = { title: 'Philosophie', description: 'La philosophie qui guide African Visual System.' };
-
-const TOC: DocTocEntry[] = [{ id: 'explication', label: 'Les trois piliers', level: 2 }, { id: 'references-culturelles', label: 'Ancrage culturel', level: 2 }];
+export const metadata: Metadata = {
+  title: 'Philosophie',
+  description: 'La philosophie qui guide African Visual System.',
+};
 
 export default function PhilosophiePage() {
+  const t = useTranslations('documentation.philosophie');
+  const NAV_SPACES = useNavSpaces();
+  const space = NAV_SPACES.find(s => s.slug === 'concepts')!;
+
+  const TOC: DocTocEntry[] = [
+    { id: 'explication', label: t('toc.explanation'), level: 2 },
+    { id: 'references-culturelles', label: t('toc.culturalRefs'), level: 2 }
+  ];
+
   return (
     <DocPageTemplate
-      space={{ label: 'Concepts fondamentaux', color: '#2A4A6B', icon: 'compass' }}
-      title="Philosophie"
-      summary="AVS repose sur trois piliers : rigueur documentaire, souveraineté culturelle, accès universel."
-      why={<p>Comprendre la philosophie avant les outils évite les usages hors-contexte — un motif sans sa source n&apos;est qu&apos;un décor.</p>}
+      space={space}
+      title={t('title')}
+      summary={t('summary')}
+      why={<p>{t('why')}</p>}
       explanation={
         <ol>
-          <li><strong>Rigueur documentaire</strong> — chaque ressource porte sa source, sa région, son époque.</li>
-          <li><strong>Souveraineté culturelle</strong> — les communautés sources gardent un droit de regard permanent.</li>
-          <li><strong>Accès universel</strong> — la majorité des ressources est libre (CC BY 4.0).</li>
+          <li><strong>{t('explanation.pillar1')}</strong></li>
+          <li><strong>{t('explanation.pillar2')}</strong></li>
+          <li><strong>{t('explanation.pillar3')}</strong></li>
         </ol>
       }
       culturalRefs={
         <Callout type="info">
-          Ces principes sont directement inspirés des standards de gouvernance muséale (ICOM) adaptés à un contexte numérique.
+          {t('culturalRefs')}
         </Callout>
       }
       toc={TOC}
-      prev={{ href: '/documentation/commencer/structure', title: 'Structure du projet' }}
-      next={{ href: '/documentation/concepts/tracability', title: 'Traçabilité' }}
+      prev={{ href: '/documentation/commencer/structure', title: t('prev') }}
+      next={{ href: '/documentation/concepts/tracability', title: t('next') }}
     />
   );
 }

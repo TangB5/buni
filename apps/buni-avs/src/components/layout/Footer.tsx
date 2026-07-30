@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Coffee } from 'lucide-react';
 import { Route } from 'next';
+import { useTheme } from '@buni/theme';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DATA
@@ -92,6 +93,20 @@ const FOOTER_STYLES = `
 `;
 
 // ─────────────────────────────────────────────────────────────────────────────
+// FOOTER LOGO COMPONENT
+// ─────────────────────────────────────────────────────────────────────────────
+function FooterLogo() {
+  const { theme } = useTheme();
+  return (
+    <img 
+      src={'/logo_fond_noir.png' } 
+      alt="logo de buni"
+      className="h-10 w-10 rounded-xl transition-transform duration-300 hover:scale-105"
+    />
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // FOOTER
 // ─────────────────────────────────────────────────────────────────────────────
 export function Footer() {
@@ -104,12 +119,13 @@ export function Footer() {
         style={{ background: '#0A0806', borderTop: '1px solid rgba(245,235,224,0.06)' }}
       >
         {/* ── Background effects ─────────────────────────────────────────── */}
-        {/* Fine grid */}
+        {/* Motif de fond premium - remplace la grille fine */}
         <div
-          className="pointer-events-none absolute inset-0"
+          className="pointer-events-none absolute inset-0 opacity-15"
           style={{
-            backgroundImage: 'linear-gradient(rgba(245,235,224,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(245,235,224,0.04) 1px, transparent 1px)',
-            backgroundSize: '48px 48px',
+            backgroundImage: 'url(/motif_fond_noire.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
           }}
           aria-hidden
         />
@@ -185,11 +201,7 @@ export function Footer() {
             <div className="col-span-2 lg:col-span-2">
               {/* Logo */}
               <div className="flex items-center gap-3">
-                <div className="avs-pattern-kente-royale relative h-10 w-10 overflow-hidden rounded-xl ring-1 ring-white/10 transition-transform duration-300 hover:scale-105">
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                    <span className="font-display text-base font-black text-white drop-shadow-md">A</span>
-                  </div>
-                </div>
+                <FooterLogo />
                 <div className="flex flex-col leading-tight">
                   <span
                     className="font-display font-black"
@@ -246,6 +258,29 @@ export function Footer() {
                   Apache 2.0 + Commons Clause
                 </span>
               </div>
+
+              {/* Coffee CTA */}
+              <Link
+                href={'/coffee' as Route}
+                className="mt-5 inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5"
+                style={{
+                  background: 'rgba(192,87,62,0.12)',
+                  border: '1px solid rgba(192,87,62,0.25)',
+                  color: '#C08552',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(192,87,62,0.18)';
+                  e.currentTarget.style.borderColor = 'rgba(192,87,62,0.4)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'rgba(192,87,62,0.12)';
+                  e.currentTarget.style.borderColor = 'rgba(192,87,62,0.25)';
+                }}
+                aria-label="Offer me a coffee"
+              >
+                <Coffee size={14} />
+                <span>Offer me a coffee</span>
+              </Link>
             </div>
 
             {/* Link columns */}

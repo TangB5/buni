@@ -13,7 +13,8 @@ import {
   useReducedMotion,
 } from 'framer-motion';
 import { ArrowRight, Check, Command, Copy, MoveDown } from 'lucide-react';
-import { useTranslations } from '@buni/i18n';
+import { useTranslations } from '@/i18n';
+import { useTheme } from 'next-themes';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // DATA — the hero IS a live instance of the design system, not a picture of it
@@ -376,6 +377,7 @@ export function HeroSection() {
   const heroRef = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
   const t = useTranslations('hero');
+  const { theme } = useTheme();
 
   // Scroll-linked exit for the whole hero
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
@@ -441,6 +443,21 @@ export function HeroSection() {
         style={{ background: 'var(--hp-bg)' }}
       >
         {/* ── Ambient background: grid + faint texture + bloom ── */}
+        {/* Motif de fond premium PNG (optionnel - commenter pour utiliser le motif CSS) */}
+        {/* <div
+          className="pointer-events-none absolute inset-0 opacity-20"
+          style={{
+            backgroundImage: `url(${theme === 'dark' ? '/motif_fond_noir.png' : '/motif_fond_blanc.png'})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
+          aria-hidden
+        /> */}
+        {/* Motif CSS original */}
+        <div
+          className="avs-pattern-kente-royale pointer-events-none absolute inset-0 opacity-[.02]"
+          aria-hidden
+        />
         <div
           className="pointer-events-none absolute inset-0"
           aria-hidden
@@ -454,10 +471,6 @@ export function HeroSection() {
           className="w-150rounded-full pointer-events-none absolute -top-[10%] -right-[5%] h-150"
           aria-hidden
           style={{ background: 'radial-gradient(circle,rgba(192,87,62,.13) 0%,transparent 65%)' }}
-        />
-        <div
-          className="avs-pattern-kente-royale pointer-events-none absolute inset-0 opacity-[.02]"
-          aria-hidden
         />
 
         {/* ══════════════════════════════════════════
@@ -820,3 +833,4 @@ export function HeroSection() {
     </>
   );
 }
+

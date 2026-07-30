@@ -4,6 +4,7 @@ import Link from 'next/link';
 import type { Route } from 'next';
 import { motion } from 'framer-motion';
 import { useActiveHeading } from './doc-primitives';
+import { useTranslations } from '@/i18n';
 
 
 export interface DocTocEntry { id: string; label: string; level: 1 | 2 | 3 }
@@ -48,6 +49,7 @@ function Block({ id, heading, children }: { id: string; heading: string; childre
 export function DocPageTemplate({
   space, title, summary, why, explanation, interactive, useCases, bestPractices, pitfalls, culturalRefs, downloads, toc = [], prev, next,
 }: DocPageTemplateProps) {
+  const t = useTranslations('documentation.template');
   const activeHeading = useActiveHeading(toc);
 
   return (
@@ -73,16 +75,16 @@ export function DocPageTemplate({
         {summary}
       </motion.p>
 
-      {why && <Block id="pourquoi" heading="Pourquoi ce sujet est important">{why}</Block>}
-      <Block id="explication" heading="Explication">{explanation}</Block>
-      {interactive && <Block id="exemples" heading="Exemples interactifs">{interactive}</Block>}
-      {useCases && <Block id="cas-usage" heading="Cas d'utilisation">{useCases}</Block>}
-      {bestPractices && <Block id="bonnes-pratiques" heading="Bonnes pratiques">{bestPractices}</Block>}
-      {pitfalls && <Block id="erreurs" heading="Erreurs fréquentes">{pitfalls}</Block>}
-      {culturalRefs && <Block id="references-culturelles" heading="Références culturelles">{culturalRefs}</Block>}
+      {why && <Block id="pourquoi" heading={t('whyImportant')}>{why}</Block>}
+      <Block id="explication" heading={t('explanation')}>{explanation}</Block>
+      {interactive && <Block id="exemples" heading={t('interactiveExamples')}>{interactive}</Block>}
+      {useCases && <Block id="cas-usage" heading={t('useCases')}>{useCases}</Block>}
+      {bestPractices && <Block id="bonnes-pratiques" heading={t('bestPractices')}>{bestPractices}</Block>}
+      {pitfalls && <Block id="erreurs" heading={t('commonPitfalls')}>{pitfalls}</Block>}
+      {culturalRefs && <Block id="references-culturelles" heading={t('culturalReferences')}>{culturalRefs}</Block>}
 
       {downloads && downloads.length > 0 && (
-        <Block id="telechargements" heading="Téléchargements">
+        <Block id="telechargements" heading={t('downloads')}>
           <div className="grid gap-3 sm:grid-cols-2">
             {downloads.map((d) => (
               <a

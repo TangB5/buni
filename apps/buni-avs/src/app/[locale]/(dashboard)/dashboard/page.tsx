@@ -9,7 +9,10 @@ import {
   Sparkles, Zap, BarChart2, Clock, Star, Activity, CheckCircle2, AlertCircle,
 } from 'lucide-react';
 import { useAuth, useLogout } from '@buni/auth';
+import { useTranslations } from 'next-intl';
 import { timeAgo, formatNumber, formatDate } from '@buni/utils';
+import { useTheme } from 'next-themes';
+import { BuniLoader } from '@buni/ui';
 
 import { Route } from 'next';
 import { DashboardStats, UserPattern, DashboardActivity, dashboardService } from '@/features/dashboard/services/dashboard.service';
@@ -21,12 +24,14 @@ import CuratorModal from '@/components/curator-modal';
 // TYPES & CONFIG
 // ─────────────────────────────────────────────────────────────────────────────
 
-const STATUS_CONFIG: Record<string, { label: string; dot: string; ring: string; text: string }> = {
-  published: { label: 'Publié',     dot: '#10B981', ring: 'rgba(16,185,129,0.15)', text: '#10B981' },
-  draft:     { label: 'Brouillon', dot: '#6B7280', ring: 'rgba(107,114,128,0.15)', text: '#6B7280' },
-  review:    { label: 'Révision',  dot: '#F59E0B', ring: 'rgba(245,158,11,0.15)',  text: '#F59E0B' },
-  rejected:  { label: 'Rejeté',   dot: '#EF4444', ring: 'rgba(239,68,68,0.15)',   text: '#EF4444' },
-};
+function getStatusConfig(t: any): Record<string, { label: string; dot: string; ring: string; text: string }> {
+  return {
+    published: { label: t('status.published'), dot: '#10B981', ring: 'rgba(16,185,129,0.15)', text: '#10B981' },
+    draft:     { label: t('status.draft'),     dot: '#6B7280', ring: 'rgba(107,114,128,0.15)', text: '#6B7280' },
+    review:    { label: t('status.review'),    dot: '#F59E0B', ring: 'rgba(245,158,11,0.15)',  text: '#F59E0B' },
+    rejected:  { label: t('status.rejected'),  dot: '#EF4444', ring: 'rgba(239,68,68,0.15)',   text: '#EF4444' },
+  };
+}
 
 const ACTIVITY_CONFIG: Record<string, { icon: typeof MessageSquare; color: string }> = {
   comment:  { icon: MessageSquare, color: '#C0573E' },
@@ -150,7 +155,7 @@ function KpiCard({ label, value, trend, trendUp = true, icon: Icon, color, patte
 // HERO BANNER — contribution
 // ─────────────────────────────────────────────────────────────────────────────
 
-function HeroBanner({ patternsCount }: { patternsCount: number }) {
+function HeroBanner({ patternsCount, t }: { patternsCount: number; t: any }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -176,14 +181,14 @@ function HeroBanner({ patternsCount }: { patternsCount: number }) {
         {/* Texte */}
         <div className="max-w-lg">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-avs-primary/30 bg-avs-primary/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.15em] text-avs-primary">
-            <Sparkles size={8} aria-hidden /> Standard AVS — Contributeur
+            <Sparkles size={8} aria-hidden /> {t('hero.badge')}
           </span>
           <h2 className="font-display mt-3 text-2xl font-black leading-snug text-avs-secondary sm:text-3xl">
-            {patternsCount} motifs codifiés.{' '}
-            <span className="text-avs-primary">Chaque ligne, un héritage.</span>
+            {t('hero.title', { count: patternsCount })}{' '}
+            <span className="text-avs-primary">{t('hero.highlight')}</span>
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-avs-secondary/45">
-            Vous façonnez le premier standard visuel africain du numérique.
+            {t('hero.description')}
           </p>
         </div>
 
@@ -193,14 +198,14 @@ function HeroBanner({ patternsCount }: { patternsCount: number }) {
             href={'/patternsDashboard/new' as Route}
             className="group inline-flex items-center gap-2.5 rounded-xl bg-avs-primary px-6 py-3 text-sm font-bold text-avs-secondary shadow-lg shadow-avs-primary/25 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-avs-primary/35"
           >
-            Soumettre un motif
+            {t('hero.submitPattern')}
             <ArrowRight size={13} className="transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden />
           </Link>
           <Link
             href={'/analytics' as Route}
             className="inline-flex items-center gap-2 rounded-xl border border-avs-secondary/15 px-6 py-3 text-sm font-semibold text-avs-secondary/55 transition-all duration-200 hover:border-avs-secondary/30 hover:text-avs-secondary/90"
           >
-            <BarChart2 size={14} aria-hidden /> Analytique
+            <BarChart2 size={14} aria-hidden /> {t('hero.analytics')}
           </Link>
         </div>
       </div>
@@ -212,8 +217,8 @@ function HeroBanner({ patternsCount }: { patternsCount: number }) {
 // PATTERN ROW
 // ─────────────────────────────────────────────────────────────────────────────
 
-function PatternRow({ pattern, index }: { pattern: UserPattern; index: number }) {
-  const status = STATUS_CONFIG[pattern.status] ?? STATUS_CONFIG.draft!;
+function PatternRow({ pattern, index, t }: { pattern: UserPattern; index: number; t: any }) {
+  const status = getStatusConfig(t)[pattern.status] ?? getStatusConfig(t).draft!;
   const patCss = CSS_PATTERN_MAP[pattern.type] ?? 'avs-pattern-wax-dakar';
 
   return (
@@ -370,7 +375,7 @@ function PanelHeader({
 // LOADING STATE
 // ─────────────────────────────────────────────────────────────────────────────
 
-function PageLoader() {
+function PageLoader({ t }: { t: any }) {
   return (
     <div className="flex min-h-[70vh] flex-col items-center justify-center gap-4">
       <div className="relative h-12 w-12">
@@ -378,7 +383,7 @@ function PageLoader() {
         <div className="absolute inset-2.5 rounded-full bg-avs-secondary" />
       </div>
       <p className="font-mono text-[9px] tracking-[0.25em] uppercase text-avs-accent/25 animate-pulse">
-        Chargement BUNI AVS…
+        {t('loading')}
       </p>
     </div>
   );
@@ -389,8 +394,8 @@ function PageLoader() {
 // ─────────────────────────────────────────────────────────────────────────────
 
 function ProfileStrip({
-  user, roleLabel, avatarPattern,
-}: { user: any; roleLabel: string; avatarPattern: string }) {
+  user, roleLabel, avatarPattern, t,
+}: { user: any; roleLabel: string; avatarPattern: string; t: any }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -413,11 +418,11 @@ function ProfileStrip({
             {/* Verification badge */}
             {user?.verified ? (
               <span className="ml-1 hidden sm:inline-flex items-center gap-1 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widset text-emerald-500">
-                <CheckCircle2 size={10} aria-hidden /> Vérifié
+                <CheckCircle2 size={10} aria-hidden /> {t('profile.verification.verified')}
               </span>
             ) : (
               <span className="ml-1 hidden sm:inline-flex items-center gap-1 rounded-full border border-amber-500/25 bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widset text-amber-500">
-                <AlertCircle size={10} aria-hidden /> Non vérifié
+                <AlertCircle size={10} aria-hidden /> {t('profile.verification.notVerified')}
               </span>
             )}
           </div>
@@ -426,7 +431,7 @@ function ProfileStrip({
           <div className="flex items-center gap-6 text-[11px]">
             {user?.createdAt && (
               <div>
-                <p className="font-mono uppercase tracking-widset text-avs-accent/30">Membre depuis</p>
+                <p className="font-mono uppercase tracking-widset text-avs-accent/30">{t('profile.memberSince')}</p>
                 <p className="mt-0.5 font-semibold text-avs-accent">
                   {formatDate(user.createdAt)}
                 </p>
@@ -437,7 +442,7 @@ function ProfileStrip({
               className="group flex items-center gap-1.5 rounded-lg border border-avs-accent/12 px-3.5 py-2 text-[12px] font-semibold text-avs-accent/50 transition-all duration-200 hover:border-avs-primary/35 hover:text-avs-primary"
             >
               <User size={12} aria-hidden />
-              Profil
+              {t('profile.profile')}
               <ArrowUpRight size={10} className="opacity-0 transition-opacity group-hover:opacity-100" aria-hidden />
             </Link>
           </div>
@@ -452,9 +457,10 @@ function ProfileStrip({
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function DashboardPage() {
+  const t = useTranslations('dashboard.main');
   const { user, isAuthenticated, isHydrated, isAdmin, isCurator, canContribute } = useAuth();
   const logout = useLogout();
-
+  const {theme}=useTheme()
   const [stats, setStats]       = useState<DashboardStats | null>(null);
   const [patterns, setPatterns] = useState<UserPattern[]>([]);
   const [activity, setActivity] = useState<DashboardActivity[]>([]);
@@ -479,10 +485,10 @@ export default function DashboardPage() {
             totalViews: pStats.totalViews,
             favoritesCount: 0,
             trends: {
-              patternsTrend: '+0 ce mois',
-              downloadsTrend: '+0% vs mois dernier',
-              viewsTrend: '+0 ce mois',
-              favoritesTrend: '+0 nouveaux',
+              patternsTrend: t('trends.thisMonth'),
+              downloadsTrend: t('trends.vsLastMonth'),
+              viewsTrend: t('trends.thisMonth'),
+              favoritesTrend: t('trends.new'),
             },
           });
           
@@ -516,10 +522,10 @@ export default function DashboardPage() {
           totalViews: 0,
           favoritesCount: 0,
           trends: {
-            patternsTrend: '+0 ce mois',
-            downloadsTrend: '+0% vs mois dernier',
-            viewsTrend: '+0 ce mois',
-            favoritesTrend: '+0 nouveaux',
+            patternsTrend: t('trends.thisMonth'),
+            downloadsTrend: t('trends.vsLastMonth'),
+            viewsTrend: t('trends.thisMonth'),
+            favoritesTrend: t('trends.new'),
           },
         });
         setPatterns([]);
@@ -532,7 +538,7 @@ export default function DashboardPage() {
   }, [isHydrated, isAuthenticated, isAdmin, canContribute]);
 
   
-  if (!isHydrated) return <PageLoader />;
+  if (!isHydrated) return <PageLoader t={t} />;
 
   // Show viewer dashboard for VIEWER role
   if (user?.role?.toLowerCase() === 'viewer') {
@@ -553,7 +559,7 @@ export default function DashboardPage() {
     );
   }
 
-  const roleLabel = user?.role?.toLowerCase() === 'super_admin' ? 'Super Administrateur' : isAdmin ? 'Administrateur' : isCurator ? 'Curateur' : 'Contributeur';
+  const roleLabel = user?.role?.toLowerCase() === 'super_admin' ? t('roles.superAdmin') : isAdmin ? t('kpi.admins') : isCurator ? t('kpi.curators', { count: 1 }) : t('kpi.contributors');
   const avatarPattern = user?.role?.toLowerCase() === 'super_admin'
     ? 'avs-pattern-kente-royale'
     : isAdmin
@@ -563,50 +569,80 @@ export default function DashboardPage() {
   // ── KPI cards config ────────────────────────────────────────────────────────
   const kpiCards: KpiCardProps[] = isAdmin && platformStats ? [
     {
-      label: 'Total utilisateurs', value: platformStats.totalUsers, trend: '+0 ce mois',
+      label: t('kpi.totalUsers'), value: platformStats.totalUsers, trend: t('trends.thisMonth'),
       icon: Users, color: '#C0573E', patternCss: 'avs-pattern-kente-royale', delay: 0.1,
     },
     {
-      label: 'Total motifs', value: platformStats.totalPatterns, trend: '+0 ce mois',
+      label: t('kpi.totalPatterns'), value: platformStats.totalPatterns, trend: t('trends.thisMonth'),
       icon: Layers, color: '#4F7CFF', patternCss: 'avs-pattern-ndop-sultan', delay: 0.17,
     },
     {
-      label: 'Téléchargements', value: platformStats.totalDownloads, trend: '+0% vs mois dernier',
+      label: t('kpi.downloads'), value: platformStats.totalDownloads, trend: t('trends.vsLastMonth'),
       icon: Download, color: '#8B5CF6', patternCss: 'avs-pattern-bogolan-fanga', delay: 0.24,
     },
     {
-      label: 'Vues totales', value: platformStats.totalViews, trend: '+0 ce mois',
+      label: t('kpi.totalViews'), value: platformStats.totalViews, trend: t('trends.thisMonth'),
       icon: Eye, color: '#F59E0B', patternCss: 'avs-pattern-adinkra-sankofa', delay: 0.31,
     },
   ] : [
     {
-      label: 'Mes motifs',     value: stats?.patternsCreated  ?? 0, trend: stats?.trends?.patternsTrend ?? '+0 ce mois',
+      label: t('kpi.myPatterns'),     value: stats?.patternsCreated  ?? 0, trend: stats?.trends?.patternsTrend ?? t('trends.thisMonth'),
       icon: Layers,   color: '#C0573E', patternCss: 'avs-pattern-kente-royale',  delay: 0.1,
     },
     {
-      label: 'Téléchargements',value: stats?.downloadsTotal ?? 0, trend: stats?.trends?.downloadsTrend ?? '+0% vs mois dernier',
+      label: t('kpi.downloads'),value: stats?.downloadsTotal ?? 0, trend: stats?.trends?.downloadsTrend ?? t('trends.vsLastMonth'),
       icon: Download, color: '#4F7CFF', patternCss: 'avs-pattern-ndop-sultan',   delay: 0.17,
     },
     {
-      label: 'Vues totales',   value: stats?.totalViews     ?? 0, trend: stats?.trends?.viewsTrend ?? '+0 ce mois',
+      label: t('kpi.totalViews'),   value: stats?.totalViews     ?? 0, trend: stats?.trends?.viewsTrend ?? t('trends.thisMonth'),
       icon: Eye,      color: '#8B5CF6', patternCss: 'avs-pattern-bogolan-fanga', delay: 0.24,
     },
     {
-      label: 'Favoris reçus',  value: stats?.favoritesCount ?? 0, trend: stats?.trends?.favoritesTrend ?? '+0 nouveaux',
+      label: t('kpi.favorites'),  value: stats?.favoritesCount ?? 0, trend: stats?.trends?.favoritesTrend ?? t('trends.new'),
       icon: Star,     color: '#F59E0B', patternCss: 'avs-pattern-adinkra-sankofa', delay: 0.31,
     },
   ];
 
   
   return (
-    <div className="min-h-screen bg-avs-secondary">
-      <div className="mx-auto max-w-7xl space-y-5 px-5 py-7 lg:px-8">
+    <>
+      {/* Loading overlay */}
+      <AnimatePresence>
+        {loading && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-avs-accent/60 backdrop-blur-sm"
+          >
+            <div className="avs-card flex flex-col items-center gap-4 p-8">
+              <BuniLoader size={80} showText={false} theme="dark" />
+              <p className="animate-pulse font-mono text-[10px] uppercase tracking-[0.2em] text-avs-accent/40">
+                Chargement…
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="min-h-screen bg-avs-secondary relative">
+      {/* Motif de fond subtil premium */}
+      <div
+        className="pointer-events-none absolute inset-0 opacity-10"
+        style={{
+          backgroundImage: `url(${theme === 'dark' ? '/motif_fond_noire.png' : '/motif_fond_blanc.png'})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+        aria-hidden
+      />
+      <div className="relative mx-auto max-w-7xl space-y-5 px-5 py-7 lg:px-8">
 
         {/* ══ 1. PROFILE STRIP ══════════════════════════════════════════ */}
-        <ProfileStrip user={user} roleLabel={roleLabel} avatarPattern={avatarPattern} />
+        <ProfileStrip user={user} roleLabel={roleLabel} avatarPattern={avatarPattern} t={t} />
 
         {/* ══ 2. KPI CARDS ══════════════════════════════════════════════ */}
-        <section aria-label="Statistiques clés">
+        <section aria-label={t('statsLabel')}>
           {loading ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {Array.from({ length: 4 }).map((_, i) => (
@@ -636,27 +672,27 @@ export default function DashboardPage() {
             aria-label="Statistiques plateforme"
           >
             <Panel>
-              <PanelHeader title="Statistiques plateforme" patternCss="avs-pattern-kuba-kasai" />
+              <PanelHeader title={t('platformStats')} patternCss="avs-pattern-kuba-kasai" />
               <div className="grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-4">
                 <div className="rounded-xl border border-avs-accent/6 bg-avs-accent/[0.02] p-4">
-                  <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-avs-accent/40">Utilisateurs vérifiés</p>
+                  <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-avs-accent/40">{t('kpi.verifiedUsers')}</p>
                   <p className="mt-2 font-display text-2xl font-black text-avs-accent">{formatNumber(platformStats.verifiedUsers)}</p>
                   <p className="mt-1 text-xs text-avs-accent/35">sur {formatNumber(platformStats.totalUsers)} total</p>
                 </div>
                 <div className="rounded-xl border border-avs-accent/6 bg-avs-accent/[0.02] p-4">
-                  <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-avs-accent/40">Administrateurs</p>
+                  <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-avs-accent/40">{t('kpi.admins')}</p>
                   <p className="mt-2 font-display text-2xl font-black text-avs-accent">{formatNumber(platformStats.admins)}</p>
-                  <p className="mt-1 text-xs text-avs-accent/35">Curateurs: {formatNumber(platformStats.curators)}</p>
+                  <p className="mt-1 text-xs text-avs-accent/35">{t('kpi.curators', { count: platformStats.curators })}</p>
                 </div>
                 <div className="rounded-xl border border-avs-accent/6 bg-avs-accent/[0.02] p-4">
-                  <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-avs-accent/40">Contributeurs</p>
+                  <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-avs-accent/40">{t('kpi.contributors')}</p>
                   <p className="mt-2 font-display text-2xl font-black text-avs-accent">{formatNumber(platformStats.contributors)}</p>
-                  <p className="mt-1 text-xs text-avs-accent/35">Actifs sur la plateforme</p>
+                  <p className="mt-1 text-xs text-avs-accent/35">{t('kpi.activeOnPlatform')}</p>
                 </div>
                 <div className="rounded-xl border border-avs-accent/6 bg-avs-accent/[0.02] p-4">
-                  <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-avs-accent/40">Motifs publiés</p>
+                  <p className="font-mono text-[10px] font-bold uppercase tracking-wider text-avs-accent/40">{t('kpi.publishedPatterns')}</p>
                   <p className="mt-2 font-display text-2xl font-black text-avs-accent">{formatNumber(platformStats.patternsByStatus.published)}</p>
-                  <p className="mt-1 text-xs text-avs-accent/35">En révision: {formatNumber(platformStats.patternsByStatus.review)}</p>
+                  <p className="mt-1 text-xs text-avs-accent/35">{t('kpi.inReview')}: {formatNumber(platformStats.patternsByStatus.review)}</p>
                 </div>
               </div>
             </Panel>
@@ -664,7 +700,7 @@ export default function DashboardPage() {
         )}
 
         {/* ══ 3. HERO BANNER ════════════════════════════════════════════ */}
-        {!isAdmin && <HeroBanner patternsCount={stats?.patternsCreated ?? 0} />}
+        {!isAdmin && <HeroBanner patternsCount={stats?.patternsCreated ?? 0} t={t} />}
 
         {/* ══ 4. PATTERNS + ACTIVITY — layout 3/5 + 2/5 ════════════════ */}
         <div className="grid gap-5 lg:grid-cols-5">
@@ -675,14 +711,14 @@ export default function DashboardPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.28, ease: [0.22, 1, 0.36, 1] }}
             className="lg:col-span-3"
-            aria-label="Motifs récents"
+            aria-label={t('recentPatternsLabel')}
           >
             <Panel className="h-full">
               <PanelHeader
-                title="Motifs récents"
+                title={t('recentPatterns.title')}
                 patternCss="avs-pattern-kente-royale"
                 href="/patternsDashboard"
-                linkLabel="Voir tout"
+                linkLabel={t('recentPatterns.viewAll')}
               />
 
               {loading ? (
@@ -700,7 +736,7 @@ export default function DashboardPage() {
                 </div>
               ) : patterns.length > 0 ? (
                 <div className="divide-y divide-avs-accent/5">
-                  {patterns.map((p, i) => <PatternRow key={p.id} pattern={p} index={i} />)}
+                  {patterns.map((p, i) => <PatternRow key={p.id} pattern={p} index={i} t={t} />)}
                 </div>
               ) : (
                 /* État vide */
@@ -708,13 +744,13 @@ export default function DashboardPage() {
                   <div className="avs-pattern-wax-dakar h-12 w-12 rounded-full ring-1 ring-avs-accent/10 opacity-40" aria-hidden />
                   <div>
                     <p className="text-sm font-semibold text-avs-accent/40">Aucun motif</p>
-                    <p className="mt-0.5 text-xs text-avs-accent/30">Créez votre premier motif AVS</p>
+                    <p className="mt-0.5 text-xs text-avs-accent/30">Commencez par soumettre votre premier motif</p>
                   </div>
                   <Link
                     href={'/patternsDashboard/new' as Route}
                     className="inline-flex items-center gap-1.5 rounded-xl bg-avs-primary px-4 py-2 text-xs font-bold text-avs-secondary"
                   >
-                    <Plus size={11} /> Nouveau motif
+                    <Plus size={11} /> Soumettre un motif
                   </Link>
                 </div>
               )}
@@ -730,7 +766,7 @@ export default function DashboardPage() {
             aria-label="Activité récente"
           >
             <Panel className="h-full">
-              <PanelHeader title="Activité" patternCss="avs-pattern-adinkra-sankofa" />
+              <PanelHeader title="Activité récente" patternCss="avs-pattern-adinkra-sankofa" />
 
               {loading ? (
                 <div className="divide-y divide-avs-accent/5">
@@ -750,7 +786,7 @@ export default function DashboardPage() {
                 </div>
               ) : (
                 <div className="flex flex-col items-center justify-center py-14">
-                  <p className="text-sm text-avs-accent/35">Aucune activité récente</p>
+                  <p className="text-sm text-avs-accent/35">Votre activité apparaîtra ici</p>
                 </div>
               )}
             </Panel>
@@ -762,18 +798,18 @@ export default function DashboardPage() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          aria-label="Actions rapides"
+          aria-label={t('quickActionsLabel')}
         >
           <Panel>
-            <PanelHeader title="Actions rapides" patternCss="avs-pattern-kuba-kasai" />
+            <PanelHeader title={t('quickActions.title')} patternCss="avs-pattern-kuba-kasai" />
             <div className="grid grid-cols-2 gap-3 p-4 sm:grid-cols-4">
-              <QuickAction href="/patternsDashboard/new" icon={Plus}    label="Nouveau motif"  sub="Soumettre au catalogue" accent />
-              <QuickAction href="/patterns"              icon={Layers}  label="Bibliothèque"   sub="Explorer les motifs" />
-              <QuickAction href="/profile"    icon={User}    label="Mon profil"     sub="Gérer le compte" />
-              <QuickAction href="/activity"    icon={Activity} label="Mon activité" sub="Historique" />
-              <QuickAction href="/colors"               icon={Palette} label="Palettes"       sub="Couleurs & thèmes" />
+              <QuickAction href="/patternsDashboard/new" icon={Plus}    label={t('quickActions.newPattern.label')}  sub={t('quickActions.newPattern.sub')} accent />
+              <QuickAction href="/patterns"              icon={Layers}  label={t('quickActions.library.label')}   sub={t('quickActions.library.sub')} />
+              <QuickAction href="/profile"    icon={User}    label={t('quickActions.profile.label')}     sub={t('quickActions.profile.sub')} />
+              <QuickAction href="/activity"    icon={Activity} label={t('quickActions.activity.label')} sub={t('quickActions.activity.sub')} />
+              <QuickAction href="/colors"               icon={Palette} label={t('quickActions.palettes.label')}       sub={t('quickActions.palettes.sub')} />
               {isAdmin && (
-                <QuickAction href="/users" icon={Users} label="Utilisateurs" sub="Gérer les comptes" />
+                <QuickAction href="/users" icon={Users} label={t('quickActions.users.label')} sub={t('quickActions.users.sub')} />
               )}
             </div>
           </Panel>
@@ -781,5 +817,6 @@ export default function DashboardPage() {
 
       </div>
     </div>
+    </>
   );
 }

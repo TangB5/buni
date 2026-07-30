@@ -8,6 +8,7 @@ import {
   AlertCircle, Layers, Star,
 } from 'lucide-react';
 import { useAuth } from '@buni/auth';
+import { useTranslations } from 'next-intl';
 import { formatDate } from '@buni/utils';
 import { Route } from 'next';
 import Link from 'next/link';
@@ -24,7 +25,7 @@ function Skeleton({ className = '' }: { className?: string }) {
 // PROFILE STRIP
 // ─────────────────────────────────────────────────────────────────────────────
 
-function ProfileStrip({ user, avatarPattern }: { user: any; avatarPattern: string }) {
+function ProfileStrip({ user, avatarPattern, t }: { user: any; avatarPattern: string; t: any }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -42,16 +43,16 @@ function ProfileStrip({ user, avatarPattern }: { user: any; avatarPattern: strin
           </div>
           {/* Role badge */}
           <span className="ml-1 hidden rounded-full border border-avs-primary/25 bg-avs-primary/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widset text-avs-primary sm:inline-flex">
-            Explorateur
+            {t('role')}
           </span>
           {/* Verification badge */}
           {user?.verified ? (
             <span className="ml-1 hidden sm:inline-flex items-center gap-1 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widset text-emerald-500">
-              <CheckCircle2 size={10} aria-hidden /> Vérifié
+              <CheckCircle2 size={10} aria-hidden /> {t('verified')}
             </span>
           ) : (
             <span className="ml-1 hidden sm:inline-flex items-center gap-1 rounded-full border border-amber-500/25 bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widset text-amber-500">
-              <AlertCircle size={10} aria-hidden /> Non vérifié
+              <AlertCircle size={10} aria-hidden /> {t('notVerified')}
             </span>
           )}
         </div>
@@ -60,7 +61,7 @@ function ProfileStrip({ user, avatarPattern }: { user: any; avatarPattern: strin
         <div className="flex items-center gap-6 text-[11px]">
           {user?.createdAt && (
             <div>
-              <p className="font-mono uppercase tracking-widset text-avs-accent/30">Membre depuis</p>
+              <p className="font-mono uppercase tracking-widset text-avs-accent/30">{t('memberSince')}</p>
               <p className="mt-0.5 font-semibold text-avs-accent">
                 {formatDate(user.createdAt)}
               </p>
@@ -71,7 +72,7 @@ function ProfileStrip({ user, avatarPattern }: { user: any; avatarPattern: strin
             className="group flex items-center gap-1.5 rounded-lg border border-avs-accent/12 px-3.5 py-2 text-[12px] font-semibold text-avs-accent/50 transition-all duration-200 hover:border-avs-primary/35 hover:text-avs-primary"
           >
             <User size={12} aria-hidden />
-            Profil
+            {t('profile')}
             <ArrowRight size={10} className="opacity-0 transition-opacity group-hover:opacity-100" aria-hidden />
           </Link>
         </div>
@@ -84,7 +85,7 @@ function ProfileStrip({ user, avatarPattern }: { user: any; avatarPattern: strin
 // HERO CARD - Become Curator
 // ─────────────────────────────────────────────────────────────────────────────
 
-function BecomeCuratorCard({ onOpenModal }: { onOpenModal: () => void }) {
+function BecomeCuratorCard({ onOpenModal, t }: { onOpenModal: () => void; t: any }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -110,14 +111,14 @@ function BecomeCuratorCard({ onOpenModal }: { onOpenModal: () => void }) {
         {/* Texte */}
         <div className="max-w-lg">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-avs-primary/30 bg-avs-primary/15 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.15em] text-avs-primary">
-            <Sparkles size={8} aria-hidden /> Devenez Curateur
+            <Sparkles size={8} aria-hidden /> {t('becomeCurator.badge')}
           </span>
           <h2 className="font-display mt-3 text-2xl font-black leading-snug text-avs-secondary sm:text-3xl">
-            Partagez votre expertise.{' '}
-            <span className="text-avs-primary">Contribuez à l'encyclopédie.</span>
+            {t('becomeCurator.title')}{' '}
+            <span className="text-avs-primary">{t('becomeCurator.subtitle')}</span>
           </h2>
           <p className="mt-2 text-sm leading-relaxed text-avs-secondary/45">
-            Les curateurs peuvent soumettre des motifs, gérer des collections et participer à la validation des contributions.
+            {t('becomeCurator.description')}
           </p>
         </div>
 
@@ -127,14 +128,14 @@ function BecomeCuratorCard({ onOpenModal }: { onOpenModal: () => void }) {
             onClick={onOpenModal}
             className="group inline-flex items-center gap-2.5 rounded-xl bg-avs-primary px-6 py-3 text-sm font-bold text-avs-secondary shadow-lg shadow-avs-primary/25 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-avs-primary/35"
           >
-            Devenir Curateur
+            {t('becomeCurator.button')}
             <ArrowRight size={13} className="transition-transform duration-200 group-hover:translate-x-0.5" aria-hidden />
           </button>
           <Link
             href={'/patterns' as Route}
             className="inline-flex items-center gap-2 rounded-xl border border-avs-secondary/15 px-6 py-3 text-sm font-semibold text-avs-secondary/55 transition-all duration-200 hover:border-avs-secondary/30 hover:text-avs-secondary/90"
           >
-            <Eye size={14} aria-hidden /> Explorer
+            <Eye size={14} aria-hidden /> {t('becomeCurator.explore')}
           </Link>
         </div>
       </div>
@@ -151,6 +152,7 @@ interface ViewerDashboardProps {
 }
 
 export default function ViewerDashboard({ onOpenCuratorModal }: ViewerDashboardProps) {
+  const t = useTranslations('dashboard.viewerDashboard');
   const { user } = useAuth();
 
   const avatarPattern = 'avs-pattern-adinkra-sankofa';
@@ -160,23 +162,23 @@ export default function ViewerDashboard({ onOpenCuratorModal }: ViewerDashboardP
       <div className="mx-auto max-w-7xl space-y-5 px-5 py-7 lg:px-8">
 
         {/* ══ 1. PROFILE STRIP ══════════════════════════════════════════ */}
-        <ProfileStrip user={user} avatarPattern={avatarPattern} />
+        <ProfileStrip user={user} avatarPattern={avatarPattern} t={t} />
 
         {/* ══ 2. BECOME CURATOR HERO ════════════════════════════════════ */}
-        <BecomeCuratorCard onOpenModal={onOpenCuratorModal} />
+        <BecomeCuratorCard onOpenModal={onOpenCuratorModal} t={t} />
 
         {/* ══ 4. EXPLORATION QUICK ACTIONS ═══════════════════════════════ */}
         <motion.section
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
-          aria-label="Actions rapides"
+          aria-label={t('quickActionsLabel')}
         >
           <div className="rounded-2xl border border-avs-accent/8 bg-avs-secondary overflow-hidden">
             <div className="flex items-center justify-between border-b border-avs-accent/8 px-5 py-4">
               <div className="flex items-center gap-2.5">
                 <div className="avs-pattern-kuba-kasai h-5 w-5 overflow-hidden rounded-md opacity-90" aria-hidden />
-                <h3 className="text-[13px] font-bold text-avs-accent">Explorer la plateforme</h3>
+                <h3 className="text-[13px] font-bold text-avs-accent">{t('explorePlatform.title')}</h3>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3 p-4 sm:grid-cols-4">
@@ -188,8 +190,8 @@ export default function ViewerDashboard({ onOpenCuratorModal }: ViewerDashboardP
                   <Layers size={15} aria-hidden />
                 </div>
                 <div className="relative">
-                  <p className="text-[13px] font-bold leading-tight">Bibliothèque</p>
-                  <p className="mt-0.5 text-[11px] leading-snug text-avs-accent/40">Explorer les motifs</p>
+                  <p className="text-[13px] font-bold leading-tight">{t('quickActions.library.title')}</p>
+                  <p className="mt-0.5 text-[11px] leading-snug text-avs-accent/40">{t('quickActions.library.description')}</p>
                 </div>
               </Link>
               <Link
@@ -200,8 +202,8 @@ export default function ViewerDashboard({ onOpenCuratorModal }: ViewerDashboardP
                   <Star size={15} aria-hidden />
                 </div>
                 <div className="relative">
-                  <p className="text-[13px] font-bold leading-tight">Palettes</p>
-                  <p className="mt-0.5 text-[11px] leading-snug text-avs-accent/40">Couleurs & thèmes</p>
+                  <p className="text-[13px] font-bold leading-tight">{t('quickActions.palettes.title')}</p>
+                  <p className="mt-0.5 text-[11px] leading-snug text-avs-accent/40">{t('quickActions.palettes.description')}</p>
                 </div>
               </Link>
               <Link
@@ -212,8 +214,8 @@ export default function ViewerDashboard({ onOpenCuratorModal }: ViewerDashboardP
                   <User size={15} aria-hidden />
                 </div>
                 <div className="relative">
-                  <p className="text-[13px] font-bold leading-tight">Mon profil</p>
-                  <p className="mt-0.5 text-[11px] leading-snug text-avs-accent/40">Gérer le compte</p>
+                  <p className="text-[13px] font-bold leading-tight">{t('quickActions.profile.title')}</p>
+                  <p className="mt-0.5 text-[11px] leading-snug text-avs-accent/40">{t('quickActions.profile.description')}</p>
                 </div>
               </Link>
               <button
@@ -225,8 +227,8 @@ export default function ViewerDashboard({ onOpenCuratorModal }: ViewerDashboardP
                   <Sparkles size={15} aria-hidden />
                 </div>
                 <div className="relative">
-                  <p className="text-[13px] font-bold leading-tight">Curateur</p>
-                  <p className="mt-0.5 text-[11px] leading-snug text-avs-secondary/50">Devenir contributeur</p>
+                  <p className="text-[13px] font-bold leading-tight">{t('quickActions.curator.title')}</p>
+                  <p className="mt-0.5 text-[11px] leading-snug text-avs-secondary/50">{t('quickActions.curator.description')}</p>
                 </div>
               </button>
             </div>

@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Shield, ShieldCheck, ShieldAlert, Search, Filter, LayoutGrid, Table, Users2, UserCheck, Clock, TrendingUp, ChevronRight } from 'lucide-react';
 import { useAuth } from '@buni/auth';
+import { useTranslations } from 'next-intl';
 import { userService } from '@/features/user/services/user.service';
 import { formatNumber } from '@buni/utils';
 
@@ -126,17 +127,19 @@ function KpiCard({ label, value, icon: Icon, color, patternCss, delay }: KpiCard
 // avs-indigo, avs-earth, avs-accent — doivent être dans le safelist Tailwind.
 // ─────────────────────────────────────────────────────────────────────────────
 
-const ROLE_CONFIG = {
-  super_admin: { label: 'Super Admin',  icon: ShieldAlert, color: 'avs-kente'  },
-  admin:       { label: 'Admin',        icon: ShieldAlert, color: 'avs-kente'  },
-  curator:     { label: 'Curateur',     icon: ShieldCheck, color: 'avs-indigo' },
-  contributor: { label: 'Curateur',     icon: ShieldCheck, color: 'avs-indigo' },
-  viewer:      { label: 'Visiteur',     icon: Shield,      color: 'avs-accent' },
-} as const;
+function getRoleConfig(t: any) {
+  return {
+    super_admin: { label: t('roles.superAdmin'),  icon: ShieldAlert, color: 'avs-kente'  },
+    admin:       { label: t('roles.admin'),        icon: ShieldAlert, color: 'avs-kente'  },
+    curator:     { label: t('roles.curator'),     icon: ShieldCheck, color: 'avs-indigo' },
+    contributor: { label: t('roles.contributor'), icon: ShieldCheck, color: 'avs-indigo' },
+    viewer:      { label: t('roles.viewer'),      icon: Shield,      color: 'avs-accent' },
+  } as const;
+}
 
-function RoleBadge({ role }: { role: string }) {
+function RoleBadge({ role, t }: { role: string; t: any }) {
   const normalizedRole = role?.toLowerCase() || 'viewer';
-  const cfg = ROLE_CONFIG[normalizedRole as keyof typeof ROLE_CONFIG] ?? ROLE_CONFIG.viewer;
+  const cfg = getRoleConfig(t)[normalizedRole as keyof ReturnType<typeof getRoleConfig>] ?? getRoleConfig(t).viewer;
   const Icon = cfg.icon;
   return (
     <span
@@ -148,16 +151,16 @@ function RoleBadge({ role }: { role: string }) {
   );
 }
 
-function VerifiedBadge({ verified }: { verified: boolean }) {
+function VerifiedBadge({ verified, t }: { verified: boolean; t: any }) {
   return verified ? (
     <span className="bg-avs-ndop/10 text-avs-ndop border-avs-ndop/25 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold">
       <ShieldCheck size={12} />
-      Vérifié
+      {t('verified')}
     </span>
   ) : (
     <span className="bg-avs-golden/10 text-avs-golden border-avs-golden/25 inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-semibold">
       <ShieldAlert size={12} />
-      Non vérifié
+      {t('notVerified')}
     </span>
   );
 }
@@ -179,6 +182,7 @@ function Avatar({ name, email }: { name?: string | null; email: string }) {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function UsersManagementPage() {
+  const t = useTranslations('dashboard.users');
   const { user: currentUser, isAdmin } = useAuth();
   const qc = useQueryClient();
   const [searchTerm, setSearchTerm] = useState('');
@@ -245,8 +249,8 @@ export default function UsersManagementPage() {
           <div className="bg-avs-golden/10 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl">
             <ShieldAlert className="text-avs-golden h-8 w-8" />
           </div>
-          <h2 className="font-display text-avs-accent text-xl font-bold">Accès refusé</h2>
-          <p className="text-avs-accent/50 mt-2 text-sm">Seuls les administrateurs peuvent accéder à cette page.</p>
+          <h2 className="font-display text-avs-accent text-xl font-bold">{t('accessDenied.title')}</h2>
+          <p className="text-avs-accent/50 mt-2 text-sm">{t('accessDenied.description')}</p>
         </div>
       </div>
     );
@@ -254,16 +258,16 @@ export default function UsersManagementPage() {
 
   const kpiCards: KpiCardProps[] = [
     {
-      label: 'Total utilisateurs', value: stats.total, icon: Users2, color: '#C0573E', patternCss: 'avs-pattern-kente-royale', delay: 0.1,
+      label: t('kpi.total'), value: stats.total, icon: Users2, color: '#C0573E', patternCss: 'avs-pattern-kente-royale', delay: 0.1,
     },
     {
-      label: 'Vérifiés', value: stats.verified, icon: UserCheck, color: '#4F7CFF', patternCss: 'avs-pattern-ndop-sultan', delay: 0.17,
+      label: t('kpi.verified'), value: stats.verified, icon: UserCheck, color: '#4F7CFF', patternCss: 'avs-pattern-ndop-sultan', delay: 0.17,
     },
     {
-      label: 'Administrateurs', value: stats.admins, icon: ShieldAlert, color: '#8B5CF6', patternCss: 'avs-pattern-bogolan-fanga', delay: 0.24,
+      label: t('kpi.admins'), value: stats.admins, icon: ShieldAlert, color: '#8B5CF6', patternCss: 'avs-pattern-bogolan-fanga', delay: 0.24,
     },
     {
-      label: 'Nouveaux ce mois', value: stats.newThisMonth, icon: TrendingUp, color: '#F59E0B', patternCss: 'avs-pattern-adinkra-sankofa', delay: 0.31,
+      label: t('kpi.newThisMonth'), value: stats.newThisMonth, icon: TrendingUp, color: '#F59E0B', patternCss: 'avs-pattern-adinkra-sankofa', delay: 0.31,
     },
   ];
 
@@ -282,25 +286,25 @@ export default function UsersManagementPage() {
             <div>
               <div className="mb-2 flex items-center gap-2">
                 <div className="h-px w-6 bg-avs-primary" aria-hidden />
-                <span className="font-mono text-[9px] font-bold uppercase tracking-[0.22em] text-avs-primary">Administration</span>
+                <span className="font-mono text-[9px] font-bold uppercase tracking-[0.22em] text-avs-primary">{t('header.admin')}</span>
               </div>
               <h1 className="font-display text-2xl font-black leading-none text-avs-accent sm:text-3xl" style={{ letterSpacing: '-0.02em' }}>
-                Gestion des utilisateurs
+                {t('header.title')}
               </h1>
-              <p className="mt-1.5 text-sm text-avs-accent/50">Gérer les utilisateurs, les rôles et les vérifications</p>
+              <p className="mt-1.5 text-sm text-avs-accent/50">{t('header.subtitle')}</p>
             </div>
 
             <div className="flex items-center gap-1 self-start rounded-xl border border-avs-accent/9 bg-avs-secondary p-1 sm:self-auto">
               <button
                 onClick={() => setViewMode('table')}
-                aria-label="Vue tableau"
+                aria-label={t('view.table')}
                 className={`rounded-lg p-2 transition-colors ${viewMode === 'table' ? 'bg-avs-primary text-avs-secondary' : 'text-avs-accent/35 hover:text-avs-accent'}`}
               >
                 <Table size={18} />
               </button>
               <button
                 onClick={() => setViewMode('grid')}
-                aria-label="Vue grille"
+                aria-label={t('view.grid')}
                 className={`rounded-lg p-2 transition-colors ${viewMode === 'grid' ? 'bg-avs-primary text-avs-secondary' : 'text-avs-accent/35 hover:text-avs-accent'}`}
               >
                 <LayoutGrid size={18} />
@@ -310,7 +314,7 @@ export default function UsersManagementPage() {
         </motion.div>
 
         {/* ══ STATS ═══════════════════════════════════════════════════════ */}
-        <section aria-label="Statistiques clés">
+        <section aria-label={t('statsLabel')}>
           {isLoading ? (
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               {Array.from({ length: 4 }).map((_, i) => (
@@ -342,7 +346,7 @@ export default function UsersManagementPage() {
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-avs-accent/30" />
             <input
               type="text"
-              placeholder="Rechercher par nom ou email..."
+              placeholder={t('search.placeholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full rounded-xl border border-avs-accent/12 bg-avs-secondary py-2.5 pl-10 pr-4 text-sm text-avs-accent outline-none transition-all placeholder:text-avs-accent/30 focus:border-avs-primary/40 focus:ring-2 focus:ring-avs-primary/10"
@@ -356,16 +360,16 @@ export default function UsersManagementPage() {
                 onChange={(e) => setRoleFilter(e.target.value)}
                 className="rounded-xl border border-avs-accent/12 bg-avs-secondary px-3.5 py-2.5 text-sm font-medium text-avs-accent outline-none transition-all focus:border-avs-primary/40 focus:ring-2 focus:ring-avs-primary/10"
               >
-                <option value="all">Tous les rôles</option>
-                <option value="super_admin">Super Admin</option>
-                <option value="admin">Admin</option>
-                <option value="curator">Curateur</option>
-                <option value="contributor">Curateur</option>
-                <option value="viewer">Visiteur</option>
+                <option value="all">{t('filter.allRoles')}</option>
+                <option value="super_admin">{t('roles.superAdmin')}</option>
+                <option value="admin">{t('roles.admin')}</option>
+                <option value="curator">{t('roles.curator')}</option>
+                <option value="contributor">{t('roles.contributor')}</option>
+                <option value="viewer">{t('roles.viewer')}</option>
               </select>
             </div>
             <div className="whitespace-nowrap font-mono text-[11px] text-avs-accent/40">
-              {filteredUsers.length} utilisateur{filteredUsers.length !== 1 ? 's' : ''}
+              {t('filter.count', { count: filteredUsers.length })}
             </div>
           </div>
         </motion.div>
@@ -393,8 +397,8 @@ export default function UsersManagementPage() {
             <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
               <div className="avs-pattern-wax-dakar h-12 w-12 rounded-full ring-1 ring-avs-accent/10 opacity-40" aria-hidden />
               <div>
-                <p className="text-sm font-semibold text-avs-accent/40">Aucun utilisateur trouvé</p>
-                <p className="mt-0.5 text-xs text-avs-accent/30">Essayez d'ajuster vos filtres de recherche</p>
+                <p className="text-sm font-semibold text-avs-accent/40">{t('empty.title')}</p>
+                <p className="mt-0.5 text-xs text-avs-accent/30">{t('empty.description')}</p>
               </div>
             </div>
           </Panel>
@@ -405,12 +409,12 @@ export default function UsersManagementPage() {
             transition={{ duration: 0.5, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
           >
             <Panel>
-              <PanelHeader title="Liste des utilisateurs" patternCss="avs-pattern-kente-royale" />
+              <PanelHeader title={t('table.title')} patternCss="avs-pattern-kente-royale" />
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[720px]">
                   <thead className="border-b border-avs-accent/9 bg-avs-accent/[0.02]">
                     <tr>
-                      {['Utilisateur', 'Statut', 'Membre depuis', 'Rôle'].map((h, i) => (
+                      {[t('table.user'), t('table.status'), t('table.memberSince'), t('table.role')].map((h, i) => (
                         <th
                           key={h || i}
                           className={`px-5 py-3.5 font-mono text-[9px] font-bold uppercase tracking-wider text-avs-accent/40 ${i === 3 ? 'text-right' : 'text-left'}`}
@@ -433,12 +437,12 @@ export default function UsersManagementPage() {
                           <div className="flex items-center gap-3">
                             <Avatar name={user.name} email={user.email} />
                             <div className="min-w-0">
-                              <p className="truncate font-semibold text-avs-accent">{user.name || 'Non renseigné'}</p>
+                              <p className="truncate font-semibold text-avs-accent">{user.name || t('notProvided')}</p>
                               <p className="truncate text-xs text-avs-accent/45">{user.email}</p>
                             </div>
                           </div>
                         </td>
-                        <td className="px-5 py-3.5"><VerifiedBadge verified={user.verified} /></td>
+                        <td className="px-5 py-3.5"><VerifiedBadge verified={user.verified} t={t} /></td>
                         <td className="px-5 py-3.5">
                           <div className="flex items-center gap-1.5 whitespace-nowrap text-xs text-avs-accent/45">
                             <Clock size={13} />
@@ -453,9 +457,9 @@ export default function UsersManagementPage() {
                               disabled={user.id === currentUser.id || updateRoleMutation.isPending}
                               className="rounded-lg border border-avs-accent/12 bg-avs-secondary px-2.5 py-2 text-xs font-medium text-avs-accent outline-none transition-all focus:border-avs-primary/40 focus:ring-2 focus:ring-avs-primary/10 disabled:cursor-not-allowed disabled:opacity-40"
                             >
-                              <option value="viewer">Visiteur</option>
-                              <option value="curator">Curateur</option>
-                              <option value="admin">Admin</option>
+                              <option value="viewer">{t('roles.viewer')}</option>
+                              <option value="curator">{t('roles.curator')}</option>
+                              <option value="admin">{t('roles.admin')}</option>
                             </select>
                             <button
                               onClick={() => toggleVerificationMutation.mutate({ userId: user.id, verified: !user.verified })}
@@ -466,7 +470,7 @@ export default function UsersManagementPage() {
                                   : 'border border-avs-ndop/25 bg-avs-ndop/10 text-avs-ndop hover:bg-avs-ndop/15'
                               }`}
                             >
-                              {user.verified ? 'Révoquer' : 'Vérifier'}
+                              {user.verified ? t('actions.revoke') : t('actions.verify')}
                             </button>
                           </div>
                         </td>
@@ -496,16 +500,16 @@ export default function UsersManagementPage() {
                   <div className="flex min-w-0 items-center gap-3">
                     <Avatar name={user.name} email={user.email} />
                     <div className="min-w-0">
-                      <p className="truncate font-semibold text-avs-accent">{user.name || 'Non renseigné'}</p>
+                      <p className="truncate font-semibold text-avs-accent">{user.name || t('notProvided')}</p>
                       <p className="truncate text-xs text-avs-accent/45">{user.email}</p>
                     </div>
                   </div>
-                  <div className="shrink-0"><VerifiedBadge verified={user.verified} /></div>
+                  <div className="shrink-0"><VerifiedBadge verified={user.verified} t={t} /></div>
                 </div>
 
                 <div className="mb-4 flex items-center gap-1.5 text-xs text-avs-accent/45">
                   <Clock size={13} />
-                  Membre depuis {new Date(user.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  {t('memberSince')} {new Date(user.createdAt).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
                 </div>
 
                 <div className="flex items-center justify-end gap-2 border-t border-avs-accent/8 pt-4">
@@ -515,9 +519,9 @@ export default function UsersManagementPage() {
                     disabled={user.id === currentUser.id || updateRoleMutation.isPending}
                     className="rounded-lg border border-avs-accent/12 bg-avs-secondary px-2.5 py-2 text-xs font-medium text-avs-accent outline-none transition-all focus:border-avs-primary/40 focus:ring-2 focus:ring-avs-primary/10 disabled:cursor-not-allowed disabled:opacity-40"
                   >
-                    <option value="viewer">Visiteur</option>
-                    <option value="curator">Curateur</option>
-                    <option value="admin">Admin</option>
+                    <option value="viewer">{t('roles.viewer')}</option>
+                    <option value="curator">{t('roles.curator')}</option>
+                    <option value="admin">{t('roles.admin')}</option>
                   </select>
                   <button
                     onClick={() => toggleVerificationMutation.mutate({ userId: user.id, verified: !user.verified })}
@@ -528,7 +532,7 @@ export default function UsersManagementPage() {
                         : 'border border-avs-ndop/25 bg-avs-ndop/10 text-avs-ndop hover:bg-avs-ndop/15'
                     }`}
                   >
-                    {user.verified ? 'Révoquer' : 'Vérifier'}
+                    {user.verified ? t('actions.revoke') : t('actions.verify')}
                   </button>
                 </div>
               </motion.div>

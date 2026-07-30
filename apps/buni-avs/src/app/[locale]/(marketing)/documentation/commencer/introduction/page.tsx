@@ -1,28 +1,25 @@
 import { DocPageTemplate } from '../../doc-page-template';
-import { NAV_SPACES } from '../../nav-data';
+import { useNavSpaces } from '../../nav-data';
 import { IntroductionExplanation, IntroductionWhy } from './introduction-content';
-
-
-const space = NAV_SPACES.find(s => s.slug === 'commencer')!;
-
-export const metadata = {
-  title: 'Introduction - AVS Documentation',
-  description: 'Découvrez AVS - African Visual Standard, un design system open-source inspiré du patrimoine visuel africain.',
-};
+import { useTranslations } from '@/i18n';
 
 export default function IntroductionPage() {
+  const t = useTranslations('documentation.introduction');
+  const NAV_SPACES = useNavSpaces();
+  const space = NAV_SPACES.find(s => s.slug === 'commencer')!;
+
   return (
     <DocPageTemplate
       space={space}
-      title="Introduction"
-      summary="AVS est un design system open-source inspiré du patrimoine visuel africain. Découvrez sa philosophie et ses principes fondamentaux."
+      title={t('title')}
+      summary={t('summary')}
       why={<IntroductionWhy />}
       explanation={<IntroductionExplanation />}
       toc={[
-        { id: 'pourquoi', level: 2, label: 'Pourquoi ce sujet est important' },
-        { id: 'explication', level: 2, label: 'Explication' },
+        { id: 'pourquoi', level: 2, label: t('toc.why') },
+        { id: 'explication', level: 2, label: t('toc.explanation') },
       ]}
-      next={{ href: '/documentation/commencer/installation', title: 'Installation' }}
+      next={{ href: '/documentation/commencer/installation', title: t('next') }}
     />
   );
 }

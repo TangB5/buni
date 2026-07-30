@@ -1,19 +1,17 @@
 import { DocPageTemplate } from '../../doc-page-template';
-import { NAV_SPACES } from '../../nav-data';
-
-const space = NAV_SPACES.find(s => s.slug === 'svg')!;
-
-export const metadata = {
-  title: "Guide d'export - AVS Documentation",
-  description: "Guide pour exporter et utiliser les fichiers SVG d'AVS.",
-};
+import { useNavSpaces } from '../../nav-data';
+import { useTranslations } from '@/i18n';
 
 export default function ExportPage() {
+  const t = useTranslations('documentation.svg.export');
+  const NAV_SPACES = useNavSpaces();
+  const space = NAV_SPACES.find(s => s.slug === 'svg')!;
+
   return (
     <DocPageTemplate
       space={space}
-      title="Guide d'export"
-      summary="Instructions pour exporter et intégrer les fichiers SVG haute-fidélité dans vos projets."
+      title={t('title')}
+      summary={t('summary')}
       explanation={<p>Contenu à venir.</p>}
       toc={[]}
     />

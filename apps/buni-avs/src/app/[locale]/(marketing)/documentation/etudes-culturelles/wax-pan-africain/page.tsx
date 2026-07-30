@@ -1,19 +1,17 @@
 import { DocPageTemplate } from '../../doc-page-template';
-import { NAV_SPACES } from '../../nav-data';
-
-const space = NAV_SPACES.find(s => s.slug === 'etudes-culturelles')!;
-
-export const metadata = {
-  title: 'Le wax pan-africain - AVS Documentation',
-  description: 'Étude culturelle sur le wax pan-africain.',
-};
+import { useNavSpaces } from '../../nav-data';
+import { useTranslations } from '@/i18n';
 
 export default function WaxPanAfricainPage() {
+  const t = useTranslations('documentation.etudesCulturelles.waxPanAfricain');
+  const NAV_SPACES = useNavSpaces();
+  const space = NAV_SPACES.find(s => s.slug === 'etudes-culturelles')!;
+
   return (
     <DocPageTemplate
       space={space}
-      title="Le wax pan-africain"
-      summary="Origine, symbolique et histoire du wax dans le contexte pan-africain."
+      title={t('title')}
+      summary={t('summary')}
       explanation={<p>Contenu à venir.</p>}
       toc={[]}
     />

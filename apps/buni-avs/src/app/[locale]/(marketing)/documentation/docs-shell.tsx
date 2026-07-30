@@ -18,7 +18,7 @@ export function DocsShell({ children, showSidebar = true }: { children: React.Re
       <ReadingProgress />
       {showSidebar && <DocsSidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />}
 
-      <div className="flex min-w-0 flex-1 flex-col">
+      <div className="flex min-w-0 flex-1 flex-col lg:ml-72">
         {/* Topbar */}
         <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center gap-3 px-4 backdrop-blur lg:px-8" style={{ borderBottom: '1px solid var(--doc-border, rgba(29,29,27,0.09))', background: 'var(--doc-surface, #ffffff)' }}>
           <button

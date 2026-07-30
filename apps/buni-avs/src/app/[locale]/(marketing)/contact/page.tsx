@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Mail, MapPin, MessageSquare, Send,
@@ -10,6 +10,7 @@ import {
 import Link from 'next/link';
 import { Route } from 'next';
 import { z } from 'zod';
+import { useTranslations } from '@/i18n';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PANEL WRAPPER
@@ -36,13 +37,15 @@ function PanelHeader({ title, patternCss }: { title: string; patternCss: string 
 // VALIDATION
 // ─────────────────────────────────────────────────────────────────────────────
 
-const ContactSchema = z.object({
-  name:    z.string().min(2, 'Minimum 2 caractères'),
-  email:   z.string().email('Email invalide'),
-  subject: z.string().min(3, 'Minimum 3 caractères').max(128),
-  message: z.string().min(20, 'Minimum 20 caractères').max(2000),
-  role:    z.enum(['artisan', 'designer', 'researcher', 'developer', 'other']),
-});
+function createContactSchema(t: any) {
+  return z.object({
+    name:    z.string().min(2, t('form.validation.nameMin')),
+    email:   z.string().email(t('form.validation.emailInvalid')),
+    subject: z.string().min(3, t('form.validation.subjectMin')).max(128),
+    message: z.string().min(20, t('form.validation.messageMin')).max(2000),
+    role:    z.enum(['artisan', 'designer', 'researcher', 'developer', 'other']),
+  });
+}
 type ContactForm = z.infer<typeof ContactSchema>;
 type FieldErrors = Partial<Record<keyof ContactForm, string>>;
 
@@ -50,11 +53,10 @@ type FieldErrors = Partial<Record<keyof ContactForm, string>>;
 // DATA
 // ─────────────────────────────────────────────────────────────────────────────
 
-const CONTACT_CHANNELS = [
+const CHANNEL_CONFIG = [
   {
     icon:    Mail,
-    label:   'Email général',
-    value:   'buni@avs-standard.com',
+    key:     'email',
     href:    'mailto:buni@avs-standard.com',
     pattern: 'avs-pattern-wax-dakar',
     accentClass: 'text-avs-primary',
@@ -62,8 +64,7 @@ const CONTACT_CHANNELS = [
   },
   {
     icon:    MessageSquare,
-    label:   'Support & contributions',
-    value:   'contrib@avs-standard.com',
+    key:     'support',
     href:    'mailto:contrib@avs-standard.com',
     pattern: 'avs-pattern-kente-royale',
     accentClass: 'text-avs-kente',
@@ -71,8 +72,7 @@ const CONTACT_CHANNELS = [
   },
   {
     icon:    MapPin,
-    label:   'Basé à',
-    value:   'Douala-bonamoussadi',
+    key:     'location',
     href:    undefined,
     pattern: 'avs-pattern-ndop-sultan',
     accentClass: 'text-avs-ndop',
@@ -80,20 +80,7 @@ const CONTACT_CHANNELS = [
   },
 ] as const;
 
-const ROLES = [
-  { value: 'artisan',    label: 'Artisan / Créateur'   },
-  { value: 'designer',   label: 'Designer'              },
-  { value: 'researcher', label: 'Chercheur / Académique'},
-  { value: 'developer',  label: 'Développeur'           },
-  { value: 'other',      label: 'Autre'                 },
-] as const;
-
-const FAQS = [
-  { q: 'Comment soumettre un motif ?',        a: 'Créez un compte, puis utilisez le formulaire "Nouveau motif" dans votre tableau de bord.' },
-  { q: 'Les ressources sont-elles gratuites ?',a: 'Oui. La majorité est sous licence CC BY 4.0, téléchargeable sans compte.' },
-  { q: 'Comment devenir curateur ?',           a: 'Contribuez régulièrement pendant 3 mois, puis contactez-nous via ce formulaire.' },
-  { q: 'AVS accepte-t-il les partenariats ?', a: 'Oui — musées, universités et entreprises alignées sur nos valeurs culturelles.' },
-] as const;
+const ROLE_VALUES = ['artisan', 'designer', 'researcher', 'developer', 'other'] as const;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // MINIMAL STYLES
@@ -188,6 +175,10 @@ function Field({ label, error, required, hint, children }: {
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function ContactPage() {
+  const t = useTranslations('contact');
+  
+  const ContactSchema = useMemo(() => createContactSchema(t), [t]);
+  
   const [form, setForm] = useState<ContactForm>({
     name: '', email: '', subject: '', message: '', role: 'other',
   });
@@ -196,11 +187,28 @@ export default function ContactPage() {
   const [sent,      setSent]      = useState(false);
   const [openFaq,   setOpenFaq]   = useState<number | null>(null);
 
+  const contactChannels = CHANNEL_CONFIG.map((ch) => ({
+    ...ch,
+    label: t(`channels.${ch.key}.label`),
+    value: t(`channels.${ch.key}.value`),
+  }));
+
+  const roles = ROLE_VALUES.map((value) => ({
+    value,
+    label: t(`form.fields.role.options.${value}`),
+  }));
+
+  const faqs = t.raw('faq.items').map((item: any, i: number) => ({
+    q: item.q,
+    a: item.a,
+  }));
+
   const set = (k: keyof ContactForm) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setForm((f) => ({ ...f, [k]: e.target.value }));
 
   const validate = (): boolean => {
-    const r = ContactSchema.safeParse(form);
+    const schema = createContactSchema(t);
+    const r = schema.safeParse(form);
     if (!r.success) {
       const fe: FieldErrors = {};
       r.error.issues.forEach((e) => { if (e.path[0]) fe[e.path[0] as keyof ContactForm] = e.message; });
@@ -247,13 +255,12 @@ export default function ContactPage() {
               className="font-display font-black leading-[.9] text-avs-secondary"
               style={{ fontSize: 'clamp(2.5rem,6vw,4rem)', letterSpacing: '-0.025em' }}
             >
-              Parlons<br />
-              <span className="text-avs-primary">patrimoine</span>
+              {t('hero.title')}<br />
+              <span className="text-avs-primary">{t('hero.titleHighlight')}</span>
             </motion.h1>
 
             <motion.p {...fadeUp(0.2)} className="mx-auto mt-6 max-w-lg text-sm leading-relaxed text-avs-secondary/55">
-              Une question, un partenariat, une contribution à soumettre ?
-              Notre équipe distribuée à travers le continent vous répond sous 48h.
+              {t('hero.description')}
             </motion.p>
           </div>
         </section>
@@ -267,7 +274,7 @@ export default function ContactPage() {
               transition={{ duration: 0.5, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
               className="grid gap-4 sm:grid-cols-3"
             >
-              {CONTACT_CHANNELS.map(({ icon: Icon, label, value, href, pattern, accentClass, bgClass }) => (
+              {contactChannels.map(({ icon: Icon, label, value, href, pattern, accentClass, bgClass }) => (
                 <motion.div
                   key={label}
                   initial={{ opacity: 0, y: 8 }}
@@ -299,7 +306,7 @@ export default function ContactPage() {
                 transition={{ duration: 0.5, delay: 0.28, ease: [0.22, 1, 0.36, 1] }}
               >
                 <Panel>
-                  <PanelHeader title="Formulaire de contact" patternCss="avs-pattern-kente-royale" />
+                  <PanelHeader title={t('form.title')} patternCss="avs-pattern-kente-royale" />
                   <div className="p-7">
                     {/* Success state */}
                     <AnimatePresence>
@@ -313,14 +320,14 @@ export default function ContactPage() {
                             <CheckCircle2 size={32} />
                           </div>
                           <div>
-                            <h3 className="font-display text-xl font-black text-avs-accent" style={{ letterSpacing: '-0.015em' }}>Message envoyé !</h3>
-                            <p className="mt-2 text-sm text-avs-accent/55">Nous vous répondrons dans les 48h ouvrées.</p>
+                            <h3 className="font-display text-xl font-black text-avs-accent" style={{ letterSpacing: '-0.015em' }}>{t('form.success.title')}</h3>
+                            <p className="mt-2 text-sm text-avs-accent/55">{t('form.success.description')}</p>
                           </div>
                           <button
                             onClick={() => { setSent(false); setForm({ name:'', email:'', subject:'', message:'', role:'other' }); }}
                             className="text-sm font-semibold text-avs-primary underline-offset-3 hover:underline"
                           >
-                            Envoyer un autre message
+                            {t('form.success.sendAnother')}
                           </button>
                         </motion.div>
                       ) : (
@@ -330,30 +337,30 @@ export default function ContactPage() {
                           noValidate
                         >
                           <div className="grid gap-5 sm:grid-cols-2">
-                            <Field label="Nom complet" error={errors.name} required>
-                              <input className="ct-input" value={form.name} onChange={set('name')} placeholder="Amara Diop" disabled={sending} />
+                            <Field label={t('form.fields.name.label')} error={errors.name} required>
+                              <input className="ct-input" value={form.name} onChange={set('name')} placeholder={t('form.fields.name.placeholder')} disabled={sending} />
                             </Field>
-                            <Field label="Email" error={errors.email} required>
-                              <input type="email" className="ct-input" value={form.email} onChange={set('email')} placeholder="vous@exemple.com" disabled={sending} />
+                            <Field label={t('form.fields.email.label')} error={errors.email} required>
+                              <input type="email" className="ct-input" value={form.email} onChange={set('email')} placeholder={t('form.fields.email.placeholder')} disabled={sending} />
                             </Field>
                           </div>
 
-                          <Field label="Vous êtes" error={errors.role} required>
+                          <Field label={t('form.fields.role.label')} error={errors.role} required>
                             <select className="ct-select" value={form.role} onChange={set('role')} disabled={sending}>
-                              {ROLES.map(({ value, label }) => (
+                              {roles.map(({ value, label }) => (
                                 <option key={value} value={value}>{label}</option>
                               ))}
                             </select>
                           </Field>
 
-                          <Field label="Sujet" error={errors.subject} required>
-                            <input className="ct-input" value={form.subject} onChange={set('subject')} placeholder="Partenariat, contribution, question…" disabled={sending} />
+                          <Field label={t('form.fields.subject.label')} error={errors.subject} required>
+                            <input className="ct-input" value={form.subject} onChange={set('subject')} placeholder={t('form.fields.subject.placeholder')} disabled={sending} />
                           </Field>
 
-                          <Field label="Message" error={errors.message} required hint="Minimum 20 caractères">
-                            <textarea className="ct-input" rows={5} value={form.message} onChange={set('message')} placeholder="Décrivez votre demande en détail…" disabled={sending} />
+                          <Field label={t('form.fields.message.label')} error={errors.message} required hint={t('form.fields.message.hint')}>
+                            <textarea className="ct-input" rows={5} value={form.message} onChange={set('message')} placeholder={t('form.fields.message.placeholder')} disabled={sending} />
                             <div className="mt-1.5 flex justify-end">
-                              <span className="font-mono text-[9px] text-avs-accent/35">{form.message.length}/2000</span>
+                              <span className="font-mono text-[9px] text-avs-accent/35">{t('form.fields.message.charCount', { count: form.message.length })}</span>
                             </div>
                           </Field>
 
@@ -365,8 +372,8 @@ export default function ContactPage() {
                           >
                             <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" aria-hidden />
                             {sending
-                              ? <><span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-avs-secondary/30 border-t-avs-secondary" /> Envoi en cours…</>
-                              : <><Send size={14} /> Envoyer le message</>
+                              ? <><span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-avs-secondary/30 border-t-avs-secondary" /> {t('form.submit.sending')}</>
+                              : <><Send size={14} /> {t('form.submit.send')}</>
                             }
                           </button>
                         </motion.form>
@@ -386,9 +393,9 @@ export default function ContactPage() {
                   transition={{ duration: 0.5, delay: 0.35, ease: [0.22, 1, 0.36, 1] }}
                 >
                   <Panel>
-                    <PanelHeader title="Questions fréquentes" patternCss="avs-pattern-adinkra-sankofa" />
+                    <PanelHeader title={t('faq.title')} patternCss="avs-pattern-adinkra-sankofa" />
                     <div className="divide-y divide-avs-accent/6">
-                      {FAQS.map(({ q, a }, i) => (
+                      {faqs.map(({ q, a }, i) => (
                         <div key={i} className="overflow-hidden">
                           <button
                             type="button"
@@ -429,8 +436,8 @@ export default function ContactPage() {
                     <span className="h-2 w-2 rounded-full bg-avs-kente relative" />
                   </span>
                   <div className="min-w-0">
-                    <p className="text-xs font-semibold text-avs-accent">Délai de réponse</p>
-                    <p className="mt-0.5 font-mono text-[9px] text-avs-accent/35">Généralement sous 48h ouvrées</p>
+                    <p className="text-xs font-semibold text-avs-accent">{t('responseTime.label')}</p>
+                    <p className="mt-0.5 font-mono text-[9px] text-avs-accent/35">{t('responseTime.description')}</p>
                   </div>
                 </motion.div>
               </div>
@@ -443,10 +450,10 @@ export default function ContactPage() {
           <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, rgba(10,8,6,0.96) 0%, rgba(26,18,8,0.90) 100%)' }} />
           <div className="relative mx-auto max-w-2xl text-center">
             <h2 className="font-display text-2xl font-black text-avs-secondary sm:text-3xl" style={{ letterSpacing: '-0.02em' }}>
-              Prêt à contribuer au <span className="text-avs-primary">standard africain</span> ?
+              {t('cta.title')} <span className="text-avs-primary">{t('cta.titleHighlight')}</span> {t('cta.titleEnd')}
             </h2>
             <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-avs-secondary/50">
-              Rejoignez 312 artisans, chercheurs et designers qui construisent ensemble la plus grande archive visuelle africaine open-source.
+              {t('cta.description')}
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-4">
               <Link
@@ -454,14 +461,14 @@ export default function ContactPage() {
                 className="group relative inline-flex items-center gap-2 overflow-hidden rounded-xl px-7 py-3.5 text-sm font-bold text-avs-secondary bg-avs-primary shadow-avs-md hover:-translate-y-0.5 transition-all duration-300"
               >
                 <span className="pointer-events-none absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/15 to-transparent transition-transform duration-700 group-hover:translate-x-full" aria-hidden />
-                Créer un compte gratuit
+                {t('cta.createAccount')}
                 <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
               </Link>
               <Link
                 href={'/patterns' as Route}
                 className="inline-flex items-center gap-2 rounded-xl border border-avs-secondary/14 px-7 py-3.5 text-sm font-semibold text-avs-secondary/72 hover:border-avs-secondary/28 hover:text-avs-secondary transition-all duration-200"
               >
-                Explorer les motifs
+                {t('cta.explorePatterns')}
               </Link>
             </div>
           </div>

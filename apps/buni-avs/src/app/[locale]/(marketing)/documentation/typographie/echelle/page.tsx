@@ -1,19 +1,17 @@
 import { DocPageTemplate } from '../../doc-page-template';
-import { NAV_SPACES } from '../../nav-data';
-
-const space = NAV_SPACES.find(s => s.slug === 'typographie')!;
-
-export const metadata = {
-  title: 'Échelle typographique - AVS Documentation',
-  description: 'Échelle typographique et familles de polices AVS.',
-};
+import { useNavSpaces } from '../../nav-data';
+import { useTranslations } from '@/i18n';
 
 export default function EchellePage() {
+  const t = useTranslations('documentation.typographie.echelle');
+  const NAV_SPACES = useNavSpaces();
+  const space = NAV_SPACES.find(s => s.slug === 'typographie')!;
+
   return (
     <DocPageTemplate
       space={space}
-      title="Échelle typographique"
-      summary="Découvrez l'échelle typographique, les familles de polices et leurs usages recommandés dans AVS."
+      title={t('title')}
+      summary={t('summary')}
       explanation={<p>Contenu à venir.</p>}
       toc={[]}
     />

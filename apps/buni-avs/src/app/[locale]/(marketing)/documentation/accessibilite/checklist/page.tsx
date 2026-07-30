@@ -1,19 +1,17 @@
 import { DocPageTemplate } from '../../doc-page-template';
-import { NAV_SPACES } from '../../nav-data';
-
-const space = NAV_SPACES.find(s => s.slug === 'accessibilite')!;
-
-export const metadata = {
-  title: 'Checklist WCAG - AVS Documentation',
-  description: 'Checklist d\'accessibilité WCAG pour AVS.',
-};
+import { useNavSpaces } from '../../nav-data';
+import { useTranslations } from '@/i18n';
 
 export default function ChecklistPage() {
+  const t = useTranslations('documentation.accessibilite.checklist');
+  const NAV_SPACES = useNavSpaces();
+  const space = NAV_SPACES.find(s => s.slug === 'accessibilite')!;
+
   return (
     <DocPageTemplate
       space={space}
-      title="Checklist WCAG"
-      summary="Liste de contrôle pour assurer l'accessibilité de vos interfaces selon les normes WCAG."
+      title={t('title')}
+      summary={t('summary')}
       explanation={<p>Contenu à venir.</p>}
       toc={[]}
     />

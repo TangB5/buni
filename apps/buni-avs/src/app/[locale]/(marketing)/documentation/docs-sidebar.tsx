@@ -4,7 +4,8 @@ import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
-import { NAV_SPACES } from './nav-data';
+import { useNavSpaces } from './nav-data';
+import { useTranslations } from '@/i18n';
 import { Route } from 'next';
 
 const FAVORITES_KEY = 'avs-docs-favorites';
@@ -33,11 +34,13 @@ function useLocalList(key: string) {
 }
 
 export function DocsSidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const t = useTranslations('documentation.nav.sidebar');
   const pathname = usePathname();
   const [expanded, setExpanded] = useState<Record<string, boolean>>({});
   const [favorites, setFavorites] = useLocalList(FAVORITES_KEY);
   const [history] = useLocalList(HISTORY_KEY);
   const [tab, setTab] = useState<'nav' | 'favoris' | 'historique'>('nav');
+  const NAV_SPACES = useNavSpaces();
 
   // Track visited pages for the "récemment consultés" list
   useEffect(() => {
@@ -69,9 +72,9 @@ export function DocsSidebar({ open, onClose }: { open: boolean; onClose: () => v
       >
         {(
           [
-            ['nav', 'pi-list', 'Navigation'],
-            ['favoris', 'pi-star', 'Favoris'],
-            ['historique', 'pi-clock', 'Historique'],
+            ['nav', 'pi-list', t('tabs.nav')],
+            ['favoris', 'pi-star', t('tabs.favorites')],
+            ['historique', 'pi-clock', t('tabs.history')],
           ] as const
         ).map(([id, iconClass, label]) => (
           <button
@@ -106,7 +109,7 @@ export function DocsSidebar({ open, onClose }: { open: boolean; onClose: () => v
           scrollbarWidth: 'thin',
           scrollbarColor: 'var(--doc-border-md, rgba(29,29,27,0.14)) transparent',
         }}
-        aria-label="Navigation de la documentation"
+        aria-label={t('aria.navigation')}
       >
         {tab === 'nav' &&
           NAV_SPACES.map((space) => {
@@ -173,8 +176,8 @@ export function DocsSidebar({ open, onClose }: { open: boolean; onClose: () => v
                               onClick={() => toggleFavorite(href)}
                               aria-label={
                                 favorites.includes(href)
-                                  ? 'Retirer des favoris'
-                                  : 'Ajouter aux favoris'
+                                  ? t('aria.removeFromFavorites')
+                                  : t('aria.addToFavorites')
                               }
                               className="px-1.5 opacity-0 transition-opacity group-hover:opacity-100"
                               style={
@@ -204,7 +207,7 @@ export function DocsSidebar({ open, onClose }: { open: boolean; onClose: () => v
               className="px-3 py-6 text-center text-[13px]"
               style={{ color: 'var(--doc-hint, rgba(29,29,27,0.32))' }}
             >
-              Aucun favori pour l&apos;instant. Cliquez sur l&apos;étoile d&apos;une page.
+              {t('emptyFavorites')}
             </p>
           ) : (
             favorites.map((href) => (
@@ -218,7 +221,7 @@ export function DocsSidebar({ open, onClose }: { open: boolean; onClose: () => v
               className="px-3 py-6 text-center text-[13px]"
               style={{ color: 'var(--doc-hint, rgba(29,29,27,0.32))' }}
             >
-              Votre historique de lecture apparaîtra ici.
+              {t('emptyHistory')}
             </p>
           ) : (
             history.map((href) => <SidebarLink key={href} href={href} active={pathname === href} />)
@@ -233,12 +236,12 @@ export function DocsSidebar({ open, onClose }: { open: boolean; onClose: () => v
         {[
           {
             href: 'https://github.com/avs-standard',
-            label: 'GitHub',
+            label: t('quickAccess.github'),
             icon: 'pi-github',
             external: true,
           },
-          { href: '/documentation/composants', label: 'Composants', icon: 'pi-box' },
-          { href: '/documentation/icones', label: 'Icônes', icon: 'pi-sun' },
+          { href: '/documentation/composants', label: t('quickAccess.components'), icon: 'pi-box' },
+          { href: '/documentation/icones', label: t('quickAccess.icons'), icon: 'pi-sun' },
         ].map(({ href, label, icon, external }) => (
           <a
             key={href}
@@ -263,7 +266,7 @@ export function DocsSidebar({ open, onClose }: { open: boolean; onClose: () => v
     <>
       {/* Desktop — persistent */}
       <aside
-        className="doc-scroll sticky top-0 hidden h-screen w-72 shrink-0 lg:block"
+        className=" fixed top-0 left-0 hidden h-screen w-72 shrink-0 lg:block z-20"
         style={{ borderRight: '1px solid var(--doc-border, rgba(29,29,27,0.09))' }}
       >
         {content}
@@ -291,7 +294,7 @@ export function DocsSidebar({ open, onClose }: { open: boolean; onClose: () => v
               style={{ borderRight: '1px solid var(--doc-border, rgba(29,29,27,0.09))' }}
               role="dialog"
               aria-modal="true"
-              aria-label="Navigation"
+              aria-label={t('aria.navigation')}
             >
               {content}
             </motion.aside>
@@ -307,22 +310,13 @@ function SidebarLink({ href, active }: { href: string; active: boolean }) {
   return (
     <Link
       href={href as Route}
-      className="block truncate rounded-lg px-3 py-2 text-[13px] capitalize transition-colors"
-      style={
-        active
-          ? {
-              background: 'var(--doc-primary-10, rgba(192,87,62,0.10))',
-              fontWeight: 600,
-              color: 'var(--doc-primary, #C0573E)',
-            }
-          : { color: 'var(--doc-muted, rgba(29,29,27,0.52))' }
-      }
-      onMouseEnter={(e) => {
-        if (!active) e.currentTarget.style.color = 'var(--doc-text, #1D1D1B)';
-      }}
-      onMouseLeave={(e) => {
-        if (!active) e.currentTarget.style.color = 'var(--doc-muted, rgba(29,29,27,0.52))';
-      }}
+      className={`
+        block truncate rounded-lg px-3 py-2 text-[13px] capitalize transition-colors
+        ${active 
+          ? 'bg-[var(--doc-primary-10,rgba(192,87,62,0.10))] font-semibold text-[var(--doc-primary,#C0573E)]' 
+          : 'text-[var(--doc-muted,rgba(29,29,27,0.52))] hover:text-[var(--doc-text,#1D1D1B)]'
+        }
+      `}
     >
       {title}
     </Link>

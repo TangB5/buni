@@ -14,13 +14,13 @@
     "@buni/api": "workspace:*",
     "@buni/auth": "workspace:*",
     "@buni/config": "workspace:*",
-    "@buni/i18n": "workspace:*",
     "@buni/patterns": "workspace:*",
     "@buni/theme": "workspace:*",
     "@buni/tokens": "workspace:*",
     "@buni/ui": "workspace:*",
     "@buni/utils": "workspace:*",
     "@react-oauth/google": "^0.13.5",
-    "next-intl": "^3.26.5"
+    "next-intl": "^3.26.5",
+    "primeicons": "^7.0.0"
   }
 }

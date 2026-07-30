@@ -2,37 +2,53 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { useTranslations } from '@/i18n';
 
 import { CommandPalette } from './command-palette';
-import { NAV_SPACES } from './nav-data';
+import { useNavSpaces } from './nav-data';
 import { Route } from 'next';
 
-const LATEST = [
-  { title: 'Ndop Bamoum', space: 'Motifs', date: '28 juin 2026' },
-  { title: 'Référence des tokens v1.2', space: 'Design Tokens', date: '24 juin 2026' },
-  { title: 'Checklist WCAG', space: 'Accessibilité', date: '19 juin 2026' },
-];
-
-const POPULAR = [
-  { title: 'Installation', space: 'Commencer', hits: '12,4k' },
-  { title: 'Palette principale', space: 'Couleurs', hits: '9,1k' },
-  { title: 'Bouton', space: 'Composants', hits: '7,8k' },
-];
-
-const PATHS = [
-  { title: 'Designer', desc: 'Motifs, couleurs, typographie, études culturelles.', steps: ['Motifs', 'Couleurs', 'Typographie', 'Études culturelles'] },
-  { title: 'Développeur', desc: 'Installation, tokens, composants, API.', steps: ['Installation', 'Design Tokens', 'Composants', 'API'] },
-  { title: 'Chercheur', desc: 'Concepts, études culturelles, bibliographie.', steps: ['Concepts fondamentaux', 'Études culturelles', 'Ressources'] },
-];
-
-const reveal = {
-  initial: { opacity: 0, y: 20 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: '-60px' },
-  transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const },
-};
-
 export function DocumentationHome() {
+  const t = useTranslations('documentation.home');
+  const NAV_SPACES = useNavSpaces();
+
+  const LATEST = [
+    { title: 'Ndop Bamoum', space: 'Motifs', date: '28 juin 2026' },
+    { title: 'Référence des tokens v1.2', space: 'Design Tokens', date: '24 juin 2026' },
+    { title: 'Checklist WCAG', space: 'Accessibilité', date: '19 juin 2026' },
+  ];
+
+  const POPULAR = [
+    { title: 'Installation', space: 'Commencer', hits: '12,4k' },
+    { title: 'Palette principale', space: 'Couleurs', hits: '9,1k' },
+    { title: 'Bouton', space: 'Composants', hits: '7,8k' },
+  ];
+
+  const PATHS = [
+    { 
+      title: t('paths.designer.title'), 
+      desc: t('paths.designer.desc'), 
+      steps: [t('paths.designer.step1'), t('paths.designer.step2'), t('paths.designer.step3'), t('paths.designer.step4')]
+    },
+    { 
+      title: t('paths.developer.title'), 
+      desc: t('paths.developer.desc'), 
+      steps: [t('paths.developer.step1'), t('paths.developer.step2'), t('paths.developer.step3'), t('paths.developer.step4')]
+    },
+    { 
+      title: t('paths.researcher.title'), 
+      desc: t('paths.researcher.desc'), 
+      steps: [t('paths.researcher.step1'), t('paths.researcher.step2'), t('paths.researcher.step3')]
+    },
+  ];
+
+  const reveal = {
+    initial: { opacity: 0, y: 20 },
+    whileInView: { opacity: 1, y: 0 },
+    viewport: { once: true, margin: '-60px' },
+    transition: { duration: 0.55, ease: [0.22, 1, 0.36, 1] as const },
+  };
+
   return (
     <div>
       {/* ── Hero + recherche centrale ─────────────────────────────────── */}
@@ -44,7 +60,7 @@ export function DocumentationHome() {
         />
         <div className="relative mx-auto max-w-2xl text-center">
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-avs-primary">
-            Documentation
+            {t('hero.label')}
           </motion.p>
           <motion.h1
             initial={{ opacity: 0, y: 16 }}
@@ -53,7 +69,7 @@ export function DocumentationHome() {
             className="font-display mt-3 font-black leading-[.95] text-avs-accent"
             style={{ fontSize: 'clamp(2.25rem,5vw,3.75rem)', letterSpacing: '-0.03em' }}
           >
-            Tout le standard,<br />au bout d&apos;une recherche.
+            {t('hero.title')}<br />{t('hero.titleLine2')}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 12 }}
@@ -61,7 +77,7 @@ export function DocumentationHome() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="mx-auto mt-4 max-w-md text-[15px] leading-relaxed text-avs-accent/55"
           >
-            Motifs, tokens, composants, API, études culturelles — 15 espaces, une seule source de vérité.
+            {t('hero.description')}
           </motion.p>
 
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }} className="mx-auto mt-8 max-w-md">
@@ -74,14 +90,14 @@ export function DocumentationHome() {
       <motion.section {...reveal} className="border-y border-avs-accent/9 bg-avs-accent px-4 py-14 sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-6 sm:flex-row">
           <div>
-            <h2 className="font-display text-xl font-bold text-avs-secondary">Nouveau ici ?</h2>
-            <p className="mt-1 text-sm text-avs-secondary/55">Installez AVS et publiez votre premier composant en moins de 5 minutes.</p>
+            <h2 className="font-display text-xl font-bold text-avs-secondary">{t('newHere.title')}</h2>
+            <p className="mt-1 text-sm text-avs-secondary/55">{t('newHere.description')}</p>
           </div>
           <Link
-            href="/documentation/commencer/introduction"
+            href={`/documentation/commencer/introduction` as Route}
             className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-avs-primary px-6 py-3 text-sm font-bold text-avs-secondary transition-transform hover:-translate-y-0.5"
           >
-            Commencer <i className="pi pi-arrow-right" style={{ fontSize: '11px' }} />
+            {t('newHere.button')} <i className="pi pi-arrow-right" style={{ fontSize: '11px' }} />
           </Link>
         </div>
       </motion.section>
@@ -89,7 +105,7 @@ export function DocumentationHome() {
       {/* ── Grille des catégories ────────────────────────────────────── */}
       <section className="px-4 py-20 sm:px-6 lg:px-8 bg-avs-secondary/95">
         <div className="mx-auto max-w-6xl">
-          <motion.h2 {...reveal} className="font-display mb-8 text-lg font-bold text-avs-accent">Explorer les espaces</motion.h2>
+          <motion.h2 {...reveal} className="font-display mb-8 text-lg font-bold text-avs-accent">{t('exploreSpaces')}</motion.h2>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {NAV_SPACES.map((space, i) => (
               <motion.div
@@ -119,7 +135,7 @@ export function DocumentationHome() {
       <section className="border-t border-avs-accent/9 px-4 py-20 sm:px-6 lg:px-8 bg-avs-secondary">
         <div className="mx-auto grid max-w-6xl gap-14 lg:grid-cols-2">
           <motion.div {...reveal}>
-            <h2 className="font-display mb-5 text-lg font-bold text-avs-accent">Derniers ajouts</h2>
+            <h2 className="font-display mb-5 text-lg font-bold text-avs-accent">{t('latestAdditions')}</h2>
             <ul className="space-y-1">
               {LATEST.map((l) => (
                 <li key={l.title} className="flex items-center justify-between gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-avs-accent/[0.03]">
@@ -134,7 +150,7 @@ export function DocumentationHome() {
           </motion.div>
 
           <motion.div {...reveal}>
-            <h2 className="font-display mb-5 text-lg font-bold text-avs-accent">Ressources populaires</h2>
+            <h2 className="font-display mb-5 text-lg font-bold text-avs-accent">{t('popularResources')}</h2>
             <ul className="space-y-1">
               {POPULAR.map((p) => (
                 <li key={p.title} className="flex items-center justify-between gap-3 rounded-xl px-3 py-3 transition-colors hover:bg-avs-accent/[0.03]">
@@ -142,7 +158,7 @@ export function DocumentationHome() {
                     <p className="truncate text-sm font-semibold text-avs-accent">{p.title}</p>
                     <p className="text-[11px] text-avs-accent/40">{p.space}</p>
                   </div>
-                  <span className="shrink-0 font-mono text-[10px] text-avs-accent/30">{p.hits} vues</span>
+                  <span className="shrink-0 font-mono text-[10px] text-avs-accent/30">{p.hits} {t('views')}</span>
                 </li>
               ))}
             </ul>
@@ -153,7 +169,7 @@ export function DocumentationHome() {
       {/* ── Parcours recommandés ─────────────────────────────────────── */}
       <section className="border-t border-avs-accent/9 bg-avs-secondary/90 px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
-          <motion.h2 {...reveal} className="font-display mb-8 text-lg font-bold text-avs-accent">Parcours recommandés</motion.h2>
+          <motion.h2 {...reveal} className="font-display mb-8 text-lg font-bold text-avs-accent">{t('recommendedPaths')}</motion.h2>
           <div className="grid gap-5 sm:grid-cols-3">
             {PATHS.map((path, i) => (
               <motion.div
@@ -187,7 +203,7 @@ export function DocumentationHome() {
         <div className="absolute inset-0 bg-avs-accent/93" aria-hidden />
         <div className="relative mx-auto max-w-5xl text-center">
           <motion.h2 {...reveal} className="font-display font-black text-avs-secondary" style={{ fontSize: 'clamp(1.5rem,3vw,2.25rem)', letterSpacing: '-0.02em' }}>
-            Un système, sept briques, quinze espaces
+            {t('systemOverview')}
           </motion.h2>
           <motion.div {...reveal} className="mx-auto mt-10 flex max-w-3xl flex-wrap items-center justify-center gap-3">
             {NAV_SPACES.map((s) => (

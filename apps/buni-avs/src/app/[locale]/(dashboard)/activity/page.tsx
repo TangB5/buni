@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@buni/auth';
+import { useTranslations } from 'next-intl';
 import { formatNumber, timeAgo } from '@buni/utils';
 import { 
   Activity, Download, Eye, Heart, MessageSquare, 
@@ -16,12 +17,14 @@ import { dashboardService, DashboardActivity } from '@/features/dashboard/servic
 // ACTIVITY CONFIG
 // ─────────────────────────────────────────────────────────────────────────────
 
-const ACTIVITY_CONFIG: Record<string, { icon: any; color: string; label: string; patternCss: string }> = {
-  download: { icon: Download, color: '#4F7CFF', label: 'Téléchargement', patternCss: 'avs-pattern-ndop-sultan' },
-  favorite: { icon: Heart, color: '#EC4899', label: 'Favori', patternCss: 'avs-pattern-adinkra-sankofa' },
-  comment: { icon: MessageSquare, color: '#8B5CF6', label: 'Commentaire', patternCss: 'avs-pattern-bogolan-fanga' },
-  review: { icon: Star, color: '#F59E0B', label: 'Validation', patternCss: 'avs-pattern-wax-dakar' },
-};
+function getActivityConfig(t: any): Record<string, { icon: any; color: string; label: string; patternCss: string }> {
+  return {
+    download: { icon: Download, color: '#4F7CFF', label: t('types.download'), patternCss: 'avs-pattern-ndop-sultan' },
+    favorite: { icon: Heart, color: '#EC4899', label: t('types.favorite'), patternCss: 'avs-pattern-adinkra-sankofa' },
+    comment: { icon: MessageSquare, color: '#8B5CF6', label: t('types.comment'), patternCss: 'avs-pattern-bogolan-fanga' },
+    review: { icon: Star, color: '#F59E0B', label: t('types.review'), patternCss: 'avs-pattern-wax-dakar' },
+  };
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PANEL WRAPPER
@@ -48,8 +51,8 @@ function PanelHeader({ title, patternCss }: { title: string; patternCss: string 
 // ACTIVITY ITEM
 // ─────────────────────────────────────────────────────────────────────────────
 
-function ActivityItem({ item, index }: { item: DashboardActivity; index: number }) {
-  const config = ACTIVITY_CONFIG[item.type];
+function ActivityItem({ item, index, t }: { item: DashboardActivity; index: number; t: any }) {
+  const config = getActivityConfig(t)[item.type];
   if (!config) return null;
   const Icon = config.icon;
 
@@ -87,6 +90,7 @@ function ActivityItem({ item, index }: { item: DashboardActivity; index: number 
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function ActivityPage() {
+  const t = useTranslations('dashboard.activity');
   const { user, isAuthenticated } = useAuth();
   const [filter, setFilter] = useState<string>('all');
 
@@ -130,12 +134,12 @@ export default function ActivityPage() {
           <div className="relative">
             <div className="mb-2 flex items-center gap-2">
               <div className="h-px w-6 bg-avs-primary" aria-hidden />
-              <span className="font-mono text-[9px] font-bold uppercase tracking-[0.22em] text-avs-primary">Mon activité</span>
+              <span className="font-mono text-[9px] font-bold uppercase tracking-[0.22em] text-avs-primary">{t('title')}</span>
             </div>
             <h1 className="font-display text-2xl font-black leading-none text-avs-accent sm:text-3xl" style={{ letterSpacing: '-0.02em' }}>
-              Historique d'activité
+              {t('title')}
             </h1>
-            <p className="mt-1.5 text-sm text-avs-accent/50">Consultez toutes vos interactions avec la plateforme</p>
+            <p className="mt-1.5 text-sm text-avs-accent/50">{t('subtitle')}</p>
           </div>
         </motion.div>
 
@@ -147,10 +151,10 @@ export default function ActivityPage() {
           className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
         >
           {[
-            { label: 'Total', value: activityCounts.total, icon: Activity, color: '#C0573E', patternCss: 'avs-pattern-kente-royale' },
-            { label: 'Téléchargements', value: activityCounts.downloads, icon: Download, color: '#4F7CFF', patternCss: 'avs-pattern-ndop-sultan' },
-            { label: 'Favoris', value: activityCounts.favorites, icon: Heart, color: '#EC4899', patternCss: 'avs-pattern-adinkra-sankofa' },
-            { label: 'Validations', value: activityCounts.reviews, icon: Star, color: '#F59E0B', patternCss: 'avs-pattern-wax-dakar' },
+            { label: t('stats.total'), value: activityCounts.total, icon: Activity, color: '#C0573E', patternCss: 'avs-pattern-kente-royale' },
+            { label: t('stats.downloads'), value: activityCounts.downloads, icon: Download, color: '#4F7CFF', patternCss: 'avs-pattern-ndop-sultan' },
+            { label: t('stats.favorites'), value: activityCounts.favorites, icon: Heart, color: '#EC4899', patternCss: 'avs-pattern-adinkra-sankofa' },
+            { label: t('stats.reviews'), value: activityCounts.reviews, icon: Star, color: '#F59E0B', patternCss: 'avs-pattern-wax-dakar' },
           ].map((stat, i) => (
             <motion.div
               key={stat.label}
@@ -190,11 +194,11 @@ export default function ActivityPage() {
               onChange={(e) => setFilter(e.target.value)}
               className="rounded-xl border border-avs-accent/12 bg-avs-secondary px-3.5 py-2.5 text-sm font-medium text-avs-accent outline-none transition-all focus:border-avs-primary/40 focus:ring-2 focus:ring-avs-primary/10"
             >
-              <option value="all">Toutes les activités</option>
-              <option value="download">Téléchargements</option>
-              <option value="favorite">Favoris</option>
-              <option value="comment">Commentaires</option>
-              <option value="review">Validations</option>
+              <option value="all">{t('filter.all')}</option>
+              <option value="download">{t('filter.downloads')}</option>
+              <option value="favorite">{t('filter.favorites')}</option>
+              <option value="comment">{t('filter.comments')}</option>
+              <option value="review">{t('filter.reviews')}</option>
             </select>
           </div>
           <div className="whitespace-nowrap font-mono text-[11px] text-avs-accent/40">
@@ -224,10 +228,10 @@ export default function ActivityPage() {
               <div className="avs-pattern-wax-dakar h-12 w-12 rounded-full ring-1 ring-avs-accent/10 opacity-40" aria-hidden />
               <div>
                 <p className="text-sm font-semibold text-avs-accent/40">
-                  {filter === 'all' ? 'Aucune activité trouvée' : `Aucune activité de type "${filter}"`}
+                  {filter === 'all' ? t('empty.all') : t('empty.filtered', { type: t(`types.${filter}`) })}
                 </p>
                 <p className="mt-0.5 text-xs text-avs-accent/30">
-                  {filter === 'all' ? 'Commencez à explorer les motifs pour voir votre activité ici' : 'Essayez un autre filtre'}
+                  {filter === 'all' ? t('empty.tryExplore') : t('empty.tryFilter')}
                 </p>
               </div>
             </div>
@@ -240,7 +244,7 @@ export default function ActivityPage() {
             className="space-y-3"
           >
             {filteredActivities.map((item, index) => (
-              <ActivityItem key={item.id} item={item} index={index} />
+              <ActivityItem key={item.id} item={item} index={index} t={t} />
             ))}
           </motion.div>
         )}

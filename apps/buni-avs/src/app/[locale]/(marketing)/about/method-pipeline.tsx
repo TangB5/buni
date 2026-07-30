@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion';
 import type { LucideIcon } from 'lucide-react';
 import { Search, FileText, UserCheck, ScanLine, Palette, Component, Rocket } from 'lucide-react';
-import { useTranslations } from '@buni/i18n';
+import { useTranslations } from '@/i18n';
 
 const getStages = (t: (key: string) => string): { icon: LucideIcon; label: string; detail: string }[] => [
   { icon: Search,     label: t('method.research'),           detail: t('method.researchDetail') },

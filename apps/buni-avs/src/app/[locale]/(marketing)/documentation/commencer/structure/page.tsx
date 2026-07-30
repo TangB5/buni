@@ -1,28 +1,26 @@
 import { DocPageTemplate } from '../../doc-page-template';
-import { NAV_SPACES } from '../../nav-data';
+import { useNavSpaces } from '../../nav-data';
 import { StructureExplanation, StructureWhy } from './structure-content';
-
-const space = NAV_SPACES.find(s => s.slug === 'commencer')!;
-
-export const metadata = {
-  title: 'Structure du projet - AVS Documentation',
-  description: 'Comprendre l\'architecture et l\'organisation du projet AVS.',
-};
+import { useTranslations } from '@/i18n';
 
 export default function StructurePage() {
+  const t = useTranslations('documentation.structure');
+  const NAV_SPACES = useNavSpaces();
+  const space = NAV_SPACES.find(s => s.slug === 'commencer')!;
+
   return (
     <DocPageTemplate
       space={space}
-      title="Structure du projet"
-      summary="Architecture monorepo avec Nx, organisation des packages et structure des dossiers pour une maintenance optimale."
+      title={t('title')}
+      summary={t('summary')}
       why={<StructureWhy />}
       explanation={<StructureExplanation />}
       toc={[
-        { id: 'pourquoi', level: 2, label: 'Pourquoi ce sujet est important' },
-        { id: 'explication', level: 2, label: 'Explication' },
+        { id: 'pourquoi', level: 2, label: t('toc.why') },
+        { id: 'explication', level: 2, label: t('toc.explanation') },
       ]}
-      prev={{ href: '/documentation/commencer/installation', title: 'Installation' }}
-      next={{ href: '/documentation/concepts/philosophie', title: 'Philosophie' }}
+      prev={{ href: '/documentation/commencer/installation', title: t('prev') }}
+      next={{ href: '/documentation/concepts/philosophie', title: t('next') }}
     />
   );
 }
