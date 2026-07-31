@@ -513,7 +513,7 @@ export function HeroSection() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, delay: 0.42, ease }}
-                    className="mt-6 flex gap-3 sm:mt-8"
+                    className="pt-10 flex gap-3 sm:mt-8 "
                   >
                     <Link
                       href={'/patterns' as Route}
@@ -543,70 +543,11 @@ export function HeroSection() {
                     </Link>
                   </motion.div>
 
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.7, delay: 0.5, ease }}
-                    className="mt-6 flex items-center gap-3 sm:mt-7"
-                  >
-                    <div className="flex">
-                      {COMMUNITY_AVATARS.map(({ letter, bg }, i) => (
-                        <div
-                          key={letter}
-                          className="font-display relative flex h-7 w-7 items-center justify-center overflow-hidden rounded-full text-[11px] font-black text-white"
-                          style={{
-                            background: bg,
-                            border: '2px solid var(--hp-bg)',
-                            marginLeft: i > 0 ? '-8px' : 0,
-                            zIndex: 5 - i,
-                          }}
-                        >
-                          {letter}
-                        </div>
-                      ))}
-                    </div>
-                    <p className="text-[11px]" style={{ color: 'var(--hp-hint)' }}>
-                      <span style={{ color: 'var(--hp-muted)', fontWeight: 600 }}>
-                        {t('communityProof')}
-                      </span>{' '}
-                      {t('verifyEachPattern')}
-                    </p>
-                  </motion.div>
+                  
                 </div>
               </div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.7, delay: 0.28, ease }}
-                className="grid grid-cols-2 sm:flex"
-                style={{ border: '1px solid var(--hp-border)', background: 'var(--hp-faint)' }}
-              >
-                {FOOTNOTES.map(({ index, value, labelKey }, i) => (
-                  <div key={index} className="relative px-3 py-3 sm:px-4 sm:py-3">
-                    {i > 0 && i % 2 === 0 && (
-                      <div
-                        className="absolute top-[20%] left-0 hidden h-[60%] w-px sm:block"
-                        style={{ background: 'var(--hp-border)' }}
-                        aria-hidden
-                      />
-                    )}
-                    
-                    <p
-                      className="font-display mt-1 text-lg leading-none font-black sm:text-xl"
-                      style={{ color: 'var(--hp-text)' }}
-                    >
-                      {value}
-                    </p>
-                    <p
-                      className="tracking-widset mt-1 font-mono text-[8px] leading-tight uppercase sm:text-[9px]"
-                      style={{ color: 'var(--hp-hint)' }}
-                    >
-                      {t(labelKey)}
-                    </p>
-                  </div>
-                ))}
-              </motion.div>
+              
             </div>
 
             <div className="w-[40%]">
@@ -616,22 +557,9 @@ export function HeroSection() {
                 transition={{ duration: 0.9, delay: 0.3, ease }}
                 className="relative order-1 lg:order-2 lg:col-span-1 lg:mt-0"
               >
-                {/* floating verified badge - desktop only */}
-                <motion.div
-                  className="avs-chip-float-a absolute -top-4 left-2 z-10 hidden sm:-top-6 sm:left-4 lg:block"
-                  style={reduceMotion ? undefined : { x: chipX, y: chipY }}
-                >
-                  <FormatChip labelKey="verifiedProvenance" bg="rgba(74,103,65,.9)" />
-                </motion.div>
+                
 
-                {/* floating format chips - desktop only */}
-                <motion.div
-                  className="avs-chip-float-b absolute top-6 -right-2 z-10 flex hidden flex-col gap-1.5 sm:top-8 sm:-right-3 lg:flex"
-                  style={reduceMotion ? undefined : { x: chipX, y: chipY }}
-                >
-                  <FormatChip labelKey="tailwind" bg="rgba(42,74,107,.9)" />
-                  <FormatChip labelKey="figma" bg="rgba(212,160,23,.9)" />
-                </motion.div>
+                
 
                 <PatternInspector
                   active={active!}

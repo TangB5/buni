@@ -1,6 +1,6 @@
 'use client';
 
-import { PaymentProvider } from '../types';
+import type { PaymentProvider } from '../types';
 
 interface PaymentProviderSelectorProps {
   providers: PaymentProvider[];
@@ -8,33 +8,41 @@ interface PaymentProviderSelectorProps {
   onSelect: (providerId: string) => void;
 }
 
-export function PaymentProviderSelector({ providers, selected, onSelect }: PaymentProviderSelectorProps) {
+/**
+ * Sélecteur segmenté des moyens de paiement.
+ * Icônes PrimeIcons uniquement — aucun emoji.
+ */
+export function PaymentProviderSelector({
+  providers,
+  selected,
+  onSelect,
+}: PaymentProviderSelectorProps) {
   return (
-    <div className="flex flex-wrap gap-3 justify-center">
-      {providers.map((provider) => (
-        <button
-          key={provider.id}
-          onClick={() => onSelect(provider.id)}
-          disabled={!provider.enabled}
-          className={`group relative px-6 py-3 rounded-xl border-2 transition-all duration-300 ${
-            !provider.enabled
-              ? 'border-avs-accent/10 opacity-50 cursor-not-allowed'
-              : selected === provider.id
-              ? 'border-avs-primary bg-avs-primary/10'
-              : 'border-avs-accent/20 hover:border-avs-primary/50 hover:bg-avs-primary/5'
-          }`}
-        >
-          <span className="text-2xl mr-2">{provider.icon}</span>
-          <span className={`font-medium ${
-            selected === provider.id ? 'text-avs-primary' : 'text-avs-accent/70'
-          }`}>
+    <div
+      role="radiogroup"
+      aria-label="Moyen de paiement"
+      className="flex flex-wrap items-center justify-center gap-2 rounded-2xl bg-avs-primary/40 p-1.5"
+    >
+      {providers.map((provider) => {
+        const isSelected = provider.id === selected;
+        return (
+          <button
+            key={provider.id}
+            type="button"
+            role="radio"
+            aria-checked={isSelected}
+            onClick={() => onSelect(provider.id)}
+            className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-all ${
+              isSelected
+                ? 'bg-avs-secondary text-avs-accent shadow-sm'
+                : 'text-avs-accent/50 hover:text-avs-accent/80'
+            }`}
+          >
+            <i className={`${provider.icon} text-base ${isSelected ? 'text-avs-kente' : ''}`} />
             {provider.name}
-          </span>
-          {selected === provider.id && (
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-avs-primary rounded-full animate-pulse" />
-          )}
-        </button>
-      ))}
+          </button>
+        );
+      })}
     </div>
   );
 }

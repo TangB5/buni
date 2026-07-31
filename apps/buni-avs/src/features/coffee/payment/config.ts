@@ -5,19 +5,19 @@ export const paymentConfig: PaymentConfig = {
     {
       id: 'stripe',
       name: 'Stripe',
-      icon: '💳',
+      icon: 'pi-credit-card',
       enabled: true,
     },
     {
       id: 'paypal',
       name: 'PayPal',
-      icon: '🅿️',
+      icon: 'pi-paypal',
       enabled: true,
     },
     {
       id: 'mobile-money',
       name: 'Mobile Money',
-      icon: '📱',
+      icon: 'pi-mobile',
       enabled: true,
     },
   ],

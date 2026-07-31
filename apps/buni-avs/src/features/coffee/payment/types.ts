@@ -14,6 +14,9 @@ export interface PaymentTier {
   features: string[];
   popular?: boolean;
   emotionalTagline: string;
+  highlighted?: boolean;
+  icon: string;
+  price: string;
 }
 
 export interface PaymentConfig {
