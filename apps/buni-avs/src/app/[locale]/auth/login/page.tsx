@@ -317,7 +317,7 @@ export default function LoginPage() {
             className="w-full max-w-md"
           >
             {/* Mobile logo */}
-            <Link href="/" className="mb-8 flex items-center gap-2.5 lg:hidden">
+            <Link href={'/' as Route} className="mb-8 flex items-center gap-2.5 lg:hidden">
               <div className="avs-pattern-kente-royale relative h-8 w-8 overflow-hidden rounded-xl">
                 <div className="absolute inset-0 flex items-center justify-center bg-black/20">
                   <span className="font-display text-avs-secondary text-sm font-black">A</span>

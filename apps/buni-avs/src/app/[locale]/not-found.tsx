@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import type { Route } from 'next';
 import { ArrowLeft, Search, Layers } from 'lucide-react';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -113,7 +114,7 @@ export default function NotFound() {
         <div className="nf-anim-4 mt-8 flex flex-wrap justify-center gap-3">
           {/* Primary CTA */}
           <Link
-            href="/"
+            href={'/' as Route}
             className="group relative flex items-center gap-2 overflow-hidden rounded-xl px-6 py-3 text-sm font-bold text-avs-secondary bg-avs-primary hover:-translate-y-0.5 transition-all duration-300"
             style={{ boxShadow: '4px 4px 0 rgba(192,87,62,.32), 0 6px 20px rgba(192,87,62,.20)' }}
           >

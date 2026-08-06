@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@buni/ui';
 import { Input } from '@buni/ui';
 import Link from 'next/link';
+import type { Route } from 'next';
 import { useLogin } from '../hooks/useLogin';
 import { useGoogleLogin } from '../hooks/useGoogleLogin';
 import { useGithubLogin } from '../hooks/useGithubLogin';
@@ -200,7 +201,7 @@ export function LoginForm() {
 
       <p className="text-muted-foreground text-center text-sm">
         Don&apos;t have an account?{' '}
-        <Link href="/auth/register" className="font-medium hover:underline">
+        <Link href={'/auth/register' as Route} className="font-medium hover:underline">
           Register
         </Link>
       </p>

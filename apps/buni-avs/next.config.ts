@@ -5,6 +5,20 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 const config: NextConfig = {
   output: 'standalone',
+  transpilePackages: [
+    '@buni/ui',
+    '@buni/theme',
+    '@buni/auth',
+    '@buni/patterns',
+    '@buni/api',
+    '@buni/tokens',
+    '@buni/icons',
+    '@buni/config',
+    '@buni/analytics',
+    '@buni/utils',
+    '@buni/i18n',
+    '@buni/component',
+  ],
   typedRoutes: true,
   allowedDevOrigins: ['192.168.1.190'],
   images: {

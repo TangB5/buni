@@ -1,7 +1,7 @@
 import { DocPageTemplate } from '../../doc-page-template';
 import { useNavSpaces } from '../../nav-data';
 import { IntroductionExplanation, IntroductionWhy } from './introduction-content';
-import { useTranslations } from '@/i18n';
+import { useTranslations } from 'next-intl';
 
 export default function IntroductionPage() {
   const t = useTranslations('documentation.introduction');

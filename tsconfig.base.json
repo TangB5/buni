@@ -23,7 +23,11 @@
       "@buni/api": ["./packages/api/src/index.ts"],
       "@buni/config": ["./packages/config/src/index.ts"],
       "@buni/analytics": ["./packages/analytics/src/index.ts"],
-      "@buni/utils": ["./packages/utils/src/index.ts"]
+      "@buni/utils": ["./packages/utils/src/index.ts"],
+      "@buni/theme": ["./packages/theme/src/index.ts"],
+      "@buni/i18n": ["./packages/i18n/src/index.ts"],
+      "@buni/component": ["./packages/component/src/index.ts"],
+      "@buni/cli": ["./packages/cli/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "dist", ".next", "coverage"]

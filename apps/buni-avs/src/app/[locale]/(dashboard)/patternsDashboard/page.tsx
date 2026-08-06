@@ -199,6 +199,7 @@ function ActionMenu({
   isAdmin: boolean;
   isCurator: boolean;
 }) {
+  const t = useTranslations('dashboard.patterns');
   const [open, setOpen] = useState(false);
   const featureToggle = useToggleFeature();
 

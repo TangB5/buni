@@ -27,11 +27,11 @@ export function useLocale() {
     // If current path has a locale, replace it
     if (locales.includes(segments[1] as any)) {
       segments[1] = newLocale;
-      router.push(segments.join('/'));
+      router.push(segments.join('/') as any);
     } else {
       // If no locale in path, add it
       segments.splice(1, 0, newLocale);
-      router.push(segments.join('/'));
+      router.push(segments.join('/') as any);
     }
   };
 

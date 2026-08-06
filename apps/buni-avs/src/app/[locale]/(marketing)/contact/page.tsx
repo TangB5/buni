@@ -46,7 +46,7 @@ function createContactSchema(t: any) {
     role:    z.enum(['artisan', 'designer', 'researcher', 'developer', 'other']),
   });
 }
-type ContactForm = z.infer<typeof ContactSchema>;
+type ContactForm = z.infer<ReturnType<typeof createContactSchema>>;
 type FieldErrors = Partial<Record<keyof ContactForm, string>>;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -198,7 +198,7 @@ export default function ContactPage() {
     label: t(`form.fields.role.options.${value}`),
   }));
 
-  const faqs = t.raw('faq.items').map((item: any, i: number) => ({
+  const faqs: { q: string; a: string }[] = (t.raw('faq.items') as any[] || []).map((item: any) => ({
     q: item.q,
     a: item.a,
   }));

@@ -32,6 +32,6 @@ export function useLogout() {
 
   return useCallback(async () => {
     logout();
-    router.push('/');
+    router.push('/' as any);
   }, [logout, router]);
 }

@@ -31,7 +31,7 @@ const getProfileSchema = (t: any) => z.object({
   twitter:   z.string().max(15).optional(),
   specialty: z.string().max(64).optional(),
 });
-type ProfileForm = z.infer<typeof ProfileSchema>;
+type ProfileForm = z.infer<ReturnType<typeof getProfileSchema>>;
 type FieldErrors = Partial<Record<keyof ProfileForm | 'submit', string>>;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -283,7 +283,7 @@ export default function ProfilePage() {
     );
   }
 
-  if (!isAuthenticated) redirect('/auth/login');
+  if (!isAuthenticated) redirect('/auth/login' as any);
 
   if (profileLoading) {
     return (

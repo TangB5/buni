@@ -43,9 +43,10 @@ export function useColorsData() {
   const translatedCulturalContext = Object.keys(CULTURAL_CONTEXT).reduce((acc, region) => {
     const key = regionKeyMap[region];
     const contextData = culturalT.raw(key) as any;
+    const localContext = CULTURAL_CONTEXT[region];
     acc[region] = {
-      description: contextData?.description || CULTURAL_CONTEXT[region].description,
-      significance: contextData?.significance || CULTURAL_CONTEXT[region].significance,
+      description: contextData?.description || localContext?.description || '',
+      significance: contextData?.significance || localContext?.significance || '',
     };
     return acc;
   }, {} as typeof CULTURAL_CONTEXT);
